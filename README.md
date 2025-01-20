@@ -7,7 +7,7 @@
 ---
 
 ### Supervisor
-- Nguyễn Văn An
+- Nguyễn Văn An - AnNV22@fe.edu.vn
 
 ---
 
