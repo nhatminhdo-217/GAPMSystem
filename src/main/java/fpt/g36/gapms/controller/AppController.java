@@ -16,6 +16,6 @@ public class AppController {
         String username = auth.getName();
         model.addAttribute("username", username);
 
-        return "main";
+        return "home";
     }
 }
