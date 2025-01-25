@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -93,37 +94,32 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public String processRegisterForm(@Valid UserDTO user, BindingResult result, Model model, RedirectAttributes redirectAttributes){
+    public String processRegisterForm(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model, RedirectAttributes redirectAttributes){
         if (result.hasErrors()){
-            System.out.println("Error");
             return "register";
         }
 
         //Check re-password
         if (!user.getPassword().equals(user.getRePassword())){
             model.addAttribute("passwordError", "Re-password does not match");
-            System.out.println("Password not match");
             return "register";
         }
 
         //Check unique username
         if (userRepository.existsByUsername(user.getUsername())){
             model.addAttribute("usernameError", "Username already exists");
-            System.out.println("Username exists");
             return "register";
         }
 
         //Check unique email
         if (userRepository.existsByEmail(user.getEmail())){
             model.addAttribute("emailError", "Email already exists");
-            System.out.println("Email exists");
             return "register";
         }
 
         //Check unique phone number
         if (userRepository.existsByPhoneNumber(user.getPhoneNumber())){
             model.addAttribute("phoneError", "Phone number already exists");
-            System.out.println("Phone exists");
             return "register";
         }
 
@@ -131,12 +127,10 @@ public class RegisterController {
         //Generate random 6-digit code
         String code = String.valueOf((int) (Math.random() * 900000) + 100000);
         verificationCode.put(user.getEmail(), new VerificationCode(code, EXPIRED_TIME));
-        System.out.println("Code: " + code + " - Expired in: " + EXPIRED_TIME);
 
         try {
             //Send email
             sendVerifyEmail(user.getEmail(), code);
-            System.out.println("Email sent to " + user.getEmail());
         } catch (Exception e){
             model.addAttribute("error", "Failed to send email");
             return "register";
@@ -156,7 +150,6 @@ public class RegisterController {
     public String showVerifyPage(Model model) {
         //Check flash attribute "email" is existing
         if (!model.containsAttribute("emailFlash")) {
-            System.out.println("Email not found");
             return "redirect:/register";
         }
 
