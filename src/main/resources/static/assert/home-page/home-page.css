@@ -1,0 +1,137 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h5 {
+    margin: 0;
+}
+
+/* Header */
+header {
+    background-color: rgb(0, 113, 188);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+img {
+    filter: brightness(2) contrast(1.2);
+    /* Tăng độ sáng và độ tương phản */
+}
+
+/* Sections */
+section {
+    padding: 2rem 0;
+}
+
+.bg-light {
+    background-color: #f8f9fa;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Footer */
+footer {
+    background-color: rgb(0, 113, 188);
+    color: white;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Form */
+form .form-control {
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+form button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Icons */
+.icon img {
+    width: 50px;
+    height: 50px;
+}
+
+
+
+footer .row {
+    display: flex;
+    align-items: center;
+    /* Căn chỉnh các phần tử theo chiều dọc */
+}
+
+footer .col-md-3,
+footer .col-md-6 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+footer iframe {
+    margin-top: 0;
+}
+
+footer .row.align-items-center {
+    display: flex;
+    align-items: center;
+}
+
+footer .col-md-6 .row {
+    height: 100%;
+}
+
+footer iframe {
+    width: 100%;
+    height: 150px;
+    margin: 0;
+}
+
+footer .col-md-6.text-start {
+    font-size: 0.9rem;
+    /* Giảm kích thước chữ của toàn bộ phần này */
+}
+
+footer .col-md-6.text-start strong {
+    font-size: 1rem;
+    /* Giữ tiêu đề đậm với kích thước vừa phải */
+}
+
+footer .col-md-6.text-start a {
+    font-size: 0.9rem;
+    /* Giảm kích thước chữ của đường link */
+}
+
+footer .col-md-6.text-start p {
+    margin-bottom: 0.4rem;
+    /* Giảm khoảng cách giữa các đoạn văn */
+}

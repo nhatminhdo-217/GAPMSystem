@@ -1,0 +1,90 @@
+/* Định dạng tổng thể */
+body {
+    background: linear-gradient(to right, #0062E6, #33AEFF);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Hộp login */
+.login-box {
+    width: 400px;
+    margin: 80px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo */
+.login-logo a {
+    color: #007bff;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Hiệu ứng input */
+.form-control {
+    border-radius: 25px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: none;
+}
+
+/* Nút đăng nhập */
+.btn-primary {
+    background: #007bff;
+    border-radius: 25px;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+/* Checkbox */
+.icheck input {
+    margin-right: 5px;
+}
+
+/* Liên kết */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Hiệu ứng hover cho nút mạng xã hội */
+.btn-social {
+    border-radius: 25px;
+    padding: 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-facebook {
+    background: #3b5998;
+    color: white;
+}
+
+.btn-facebook:hover {
+    background: #2d4373;
+}
+
+.btn-google {
+    background: #dd4b39;
+    color: white;
+}
+
+.btn-google:hover {
+    background: #c23321;
+}

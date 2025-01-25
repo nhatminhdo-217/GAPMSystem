@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
+
 public class RegisterController {
 
     private final JavaMailSender mailSender;
@@ -87,6 +88,20 @@ public class RegisterController {
             roleRepository.save(role);
         }
     }
+
+
+    @GetMapping("/login_form")
+    public String viewLogin(){
+        return "authencation/login";
+    }
+
+
+
+    @GetMapping("/home_page")
+    public String viewHomePage(){
+        return "home-page/home-page";
+    }
+
     @GetMapping("/register")
     public String registerForm(Model model){
         model.addAttribute("user", new UserDTO());
@@ -206,6 +221,7 @@ public class RegisterController {
         model.addAttribute("email", email);
         return "redirect:/verify";
     }
+
 
     private void sendVerifyEmail(String email, String code) {
         //Send email

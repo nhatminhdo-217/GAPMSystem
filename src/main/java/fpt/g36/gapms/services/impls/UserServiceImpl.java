@@ -50,19 +50,4 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByUsername(username);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(getAuthorities(user.getRole()))
-                .build();
-    }
-
-    private List<SimpleGrantedAuthority> getAuthorities(Role role) {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-    }
 }
