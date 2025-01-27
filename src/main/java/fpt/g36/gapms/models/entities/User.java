@@ -34,6 +34,16 @@ public class User {
     @Column(name = "is_verified", columnDefinition = "boolean default false")
     private boolean isVerified;
 
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     // Getter and Setter vì @Data đang lỗi như con chó
     public Long getId() {
         return id;
