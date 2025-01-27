@@ -47,7 +47,7 @@ public class RegisterController {
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
-
+  
     @Autowired
     public RegisterController(JavaMailSender mailSender, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.mailSender = mailSender;
