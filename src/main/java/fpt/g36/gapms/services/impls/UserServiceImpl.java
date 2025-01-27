@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setRole(userRole);
+        user.setAvatar("default-avatar.png");
         user.setVerified(false);
 
         return userRepository.save(user);
@@ -48,6 +50,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+
+    @Override
+    public Optional<User> findByEmailOrPhone(String emailOrPhone, String emailOrPhone2) {
+           Optional<User> user = userRepository.findByEmailOrPhoneNumber(emailOrPhone, emailOrPhone2);
+        return user;
     }
 
 }

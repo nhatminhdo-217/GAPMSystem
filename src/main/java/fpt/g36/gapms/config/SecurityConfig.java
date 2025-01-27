@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -21,13 +22,14 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form").permitAll() // Cho phép truy cập trang login
-                        .requestMatchers("/test/user/**").hasRole("USER") // ✅ Đúng, tự động thêm "ROLE_"
+                        .requestMatchers("/test/user/**").hasRole("USER") //
                         .requestMatchers("/test/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login_form")
                         .loginProcessingUrl("/login")
+                        .failureUrl("/login-error").permitAll()
                         .usernameParameter("phoneNumber")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler()) // Xử lý chuyển hướng sau khi đăng nhập
@@ -35,7 +37,18 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
 
                         .successHandler(customAuthenticationSuccessHandler()) // Xử lý chuyển hướng sau khi đăng nhập bằng OAuth2
-                );
+                ).logout(logout -> logout
+                        .logoutSuccessUrl("/login_form") // Sau khi logout, quay về trang login
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID", "remember")
+                        .permitAll()
+                ).rememberMe(rememberMe -> rememberMe
+                        .key("mySecretKey")  // Key để mã hóa token (phải cố định)
+                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
+                        .rememberMeParameter("remember") // Tên tham số trên form
+                        .alwaysRemember(false))
+        ;
 
         return http.build();
     }
