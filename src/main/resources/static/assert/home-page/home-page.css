@@ -20,10 +20,10 @@ header {
     padding: 1.5rem 0;
 }
 
-img {
+/*img {
     filter: brightness(2) contrast(1.2);
-    /* Tăng độ sáng và độ tương phản */
-}
+    !* Tăng độ sáng và độ tương phản *!
+}*/
 
 /* Sections */
 section {
@@ -134,4 +134,64 @@ footer .col-md-6.text-start a {
 footer .col-md-6.text-start p {
     margin-bottom: 0.4rem;
     /* Giảm khoảng cách giữa các đoạn văn */
+}
+
+.user-menu .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.user-menu .dropdown-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.animated-dropdown {
+    animation: fadeIn 0.3s ease-in-out;
+    min-width: 200px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-header {
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+}
+
+.dropdown-header img {
+    border: 3px solid white;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+.text-danger {
+    font-weight: bold;
+}
+.dropdown-menu {
+    display: block !important;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease-in-out;
+    visibility: hidden;
+}
+
+/* Khi dropdown được mở */
+.show.dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
 }

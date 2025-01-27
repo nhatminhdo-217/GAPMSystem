@@ -9,11 +9,19 @@ import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,12 +32,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 
 public class RegisterController {
 
+    private static final Map<String, VerificationCode> verificationCode = new ConcurrentHashMap<>();
+    private static final int EXPIRED_TIME = 5;
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -46,9 +57,6 @@ public class RegisterController {
         this.userService = userService;
         this.mailService = mailService;
     }
-
-    private static final Map<String, VerificationCode> verificationCode = new ConcurrentHashMap<>();
-    private static final int EXPIRED_TIME = 5;
 
     //Check if DB don't have any user, create a default admin
     @PostConstruct
@@ -94,49 +102,77 @@ public class RegisterController {
 
 
     @GetMapping("/login_form")
-    public String viewLogin(){
+    public String viewLogin() {
+        return "authencation/login";
+    }
+
+    @GetMapping("/login-error")
+    public String loginError(Model model) {
+        model.addAttribute("loginError", true);
         return "authencation/login";
     }
 
 
-
     @GetMapping("/home_page")
-    public String viewHomePage(){
+    public String viewHomePage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() &&
+                !(authentication instanceof AnonymousAuthenticationToken)) {
+
+            String currentUserName = authentication.getName();
+
+            // Tìm user theo email hoặc số điện thoại
+            Optional<User> optionalUser = userService.findByEmailOrPhone(currentUserName, currentUserName);
+
+            // Nếu tìm thấy user, thêm vào model
+            if (optionalUser.isPresent()) {
+                model.addAttribute("username", optionalUser.get().getUsername());
+                model.addAttribute("email", optionalUser.get().getEmail());
+                model.addAttribute("role", optionalUser.get().getRole().getName());
+                model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+
+                System.out.println(optionalUser.get());
+            }
+
+        }
+
         return "home-page/home-page";
     }
 
+
     @GetMapping("/register")
-    public String registerForm(Model model){
+    public String registerForm(Model model) {
         model.addAttribute("user", new UserDTO());
         return "register";
     }
 
     @PostMapping("/register")
-    public String processRegisterForm(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model, RedirectAttributes redirectAttributes){
-        if (result.hasErrors()){
+    public String processRegisterForm(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
             return "register";
         }
 
         //Check re-password
-        if (!user.getPassword().equals(user.getRePassword())){
+        if (!user.getPassword().equals(user.getRePassword())) {
             model.addAttribute("passwordError", "Re-password does not match");
             return "register";
         }
 
         //Check unique username
-        if (userRepository.existsByUsername(user.getUsername())){
+        if (userRepository.existsByUsername(user.getUsername())) {
             model.addAttribute("usernameError", "Username already exists");
             return "register";
         }
 
         //Check unique email
-        if (userRepository.existsByEmail(user.getEmail())){
+        if (userRepository.existsByEmail(user.getEmail())) {
             model.addAttribute("emailError", "Email already exists");
             return "register";
         }
 
         //Check unique phone number
-        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())){
+        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             model.addAttribute("phoneError", "Phone number already exists");
             return "register";
         }
@@ -155,7 +191,7 @@ public class RegisterController {
         }
 
         User newUser = userService.register(user);
-        if (newUser != null){
+        if (newUser != null) {
             model.addAttribute("registerSuccess", "Register successfully.");
         }
 
@@ -175,20 +211,20 @@ public class RegisterController {
     }
 
     @PostMapping("/verify")
-    public String processVerifyForm(RedirectAttributes redirectAttributes, @RequestParam String code, Model model){
+    public String processVerifyForm(RedirectAttributes redirectAttributes, @RequestParam String code, Model model) {
         //Get email from flash attribute
         String email = (String) redirectAttributes.getFlashAttributes().get("emailFlash");
         VerificationCode verifyCode = verificationCode.get(email);
 
         // Check if code is expired
-        if (verifyCode == null || verifyCode.isExpired()){
+        if (verifyCode == null || verifyCode.isExpired()) {
             model.addAttribute("verifyError", "Code has expired. Please request a new one.");
             model.addAttribute("email", email);
             return "verify";
         }
 
         // Check if code is correct
-        if (!verifyCode.getCode().equals(code)){
+        if (!verifyCode.getCode().equals(code)) {
             model.addAttribute("verifyError", "Invalid verify code");
             model.addAttribute("email", email);
             return "verify";
@@ -204,11 +240,11 @@ public class RegisterController {
         //Remove verification code
         verificationCode.remove(email);
 
-        return "redirect:/login?verified=true";
+        return "redirect:/login_form";
     }
 
     @PostMapping("/resend")
-    public String resendVerifyCode(@RequestParam String email, Model model){
+    public String resendVerifyCode(@RequestParam String email, Model model) {
 
         // Resend verification code
         String newCode = String.valueOf((int) (Math.random() * 900000) + 100000);
@@ -223,5 +259,34 @@ public class RegisterController {
 
         model.addAttribute("email", email);
         return "redirect:/verify";
+    }
+
+    @GetMapping("/user_logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // Xóa session nếu có
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // Xóa cookie
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setValue(null);
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+        }
+
+        // Xóa thông tin xác thực của Spring Security
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        // Chuyển hướng đến trang đăng nhập
+        return "redirect:/login_form";
     }
 }
