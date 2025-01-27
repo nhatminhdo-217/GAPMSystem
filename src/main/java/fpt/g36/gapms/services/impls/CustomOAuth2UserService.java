@@ -29,6 +29,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+
         Role role = roleService.getRole("USER").orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Kiểm tra email trong database
@@ -36,7 +38,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setEmail(email);
+                    newUser.setUsername(name);
                     newUser.setRole(role);
+                    newUser.setVerified(true);
                     return userRepository.save(newUser);
                 });
 

@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form").permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/login_form", "/forgot-password", "/reset-password", "/verify-code").permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/test/user/**").hasRole("USER") // ✅ Đúng, tự động thêm "ROLE_"
                         .requestMatchers("/test/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
