@@ -6,6 +6,7 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
+import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -45,13 +46,16 @@ public class RegisterController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserService userService;
+    private final MailService mailService;
+  
     @Autowired
-    public RegisterController(JavaMailSender mailSender, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService) {
+    public RegisterController(JavaMailSender mailSender, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userService = userService;
+        this.mailService = mailService;
     }
 
     //Check if DB don't have any user, create a default admin
@@ -180,8 +184,8 @@ public class RegisterController {
 
         try {
             //Send email
-            sendVerifyEmail(user.getEmail(), code);
-        } catch (Exception e) {
+            mailService.sendVerifyMail(user.getEmail(), code, EXPIRED_TIME);
+        } catch (Exception e){
             model.addAttribute("error", "Failed to send email");
             return "register";
         }
@@ -243,11 +247,11 @@ public class RegisterController {
     public String resendVerifyCode(@RequestParam String email, Model model) {
 
         // Resend verification code
-        String newCode = String.valueOf((int) (Math.random() * 9000) + 1000);
+        String newCode = String.valueOf((int) (Math.random() * 900000) + 100000);
         verificationCode.put(email, new VerificationCode(newCode, EXPIRED_TIME));
 
-        try {
-            sendVerifyEmail(email, newCode);
+        try{
+            mailService.sendVerifyMail(email, newCode, EXPIRED_TIME);
             model.addAttribute("success-msg", "New verification code has been sent");
         } catch (Exception e) {
             model.addAttribute("error", "Failed to resend code. Try again.");
@@ -284,14 +288,5 @@ public class RegisterController {
 
         // Chuyển hướng đến trang đăng nhập
         return "redirect:/login_form";
-    }
-
-    private void sendVerifyEmail(String email, String code) {
-        //Send email
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Verify your email");
-        message.setText("Your verification code is: " + code + ". It will be expired in " + EXPIRED_TIME + " minutes");
-        mailSender.send(message);
     }
 }

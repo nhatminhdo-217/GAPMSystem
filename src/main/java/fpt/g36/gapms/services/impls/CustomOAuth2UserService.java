@@ -55,6 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     newUser.setUsername(name);
                     newUser.setAvatar(finalPictureSave);
                     newUser.setRole(role);
+                    newUser.setVerified(true);
 
                     return userRepository.save(newUser);
                 });
