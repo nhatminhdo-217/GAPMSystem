@@ -22,6 +22,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form").permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/profile").authenticated()
                         .requestMatchers("/test/user/**").hasRole("USER") //
                         .requestMatchers("/test/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
