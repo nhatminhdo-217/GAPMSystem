@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -131,7 +130,6 @@ public class RegisterController {
                 model.addAttribute("email", optionalUser.get().getEmail());
                 model.addAttribute("role", optionalUser.get().getRole().getName());
                 model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
-
                 System.out.println(optionalUser.get());
             }
 

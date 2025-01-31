@@ -68,7 +68,7 @@ public class SecurityConfig {
 
 
             if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                redirectUrl = request.getContextPath() + "/test/admin";
+                redirectUrl = request.getContextPath() + "/home_page";
             } else if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"))) {
                 redirectUrl = request.getContextPath() + "/home_page";
             }

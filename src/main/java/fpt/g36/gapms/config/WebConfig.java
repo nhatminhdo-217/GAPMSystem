@@ -8,8 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
+    public void addResourceHandlers(ResourceHandlerRegistry registry) { //đăng ký bộ xử lý tài nguyên tĩnh.
+        registry.addResourceHandler("/uploads/**") /*Dòng này khai báo rằng bất kỳ
+                                                                  yêu cầu nào có URL bắt đầu bằng /uploads/
+                                                                     sẽ được xử lý bởi bộ xử lý tài nguyên tĩnh.*/
                 .addResourceLocations("file:uploads/");
     }
 }
