@@ -21,9 +21,11 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form", "/forgot-password", "/reset-password", "/verify-code").permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page","/home_page_2"
+                                , "/assert/**", "/login_form"
+                                , "/forgot-password", "/reset-password", "/verify-code").permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/test/user/**").hasRole("USER")
-                        .requestMatchers("/test/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -67,7 +69,7 @@ public class SecurityConfig {
 
 
             if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                redirectUrl = request.getContextPath() + "/test/admin";
+                redirectUrl = request.getContextPath() + "/home_page";
             } else if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"))) {
                 redirectUrl = request.getContextPath() + "/home_page";
             }
