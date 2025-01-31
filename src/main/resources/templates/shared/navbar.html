@@ -12,6 +12,7 @@
         <a href="/login_form" class="btn btn-light btn-sm me-2">Đăng nhập</a>
         <a href="/register" class="btn btn-light btn-sm">Đăng ký</a>
     </div>
+
     <div class="navbar-nav align-items-center ms-auto" th:if="${#authorization.expression('isAuthenticated()')}">
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -96,7 +97,7 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                <li><a class="dropdown-item d-flex align-items-center" href="/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
                 <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
                 <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fas fa-chart-line me-2"></i> Sales</a></li>
                 <li>

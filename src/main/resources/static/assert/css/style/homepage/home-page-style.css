@@ -279,5 +279,69 @@
 
 /* update footer*/
 
+.footer a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer img {
+    max-width: 150px;
+    height: auto;
+}
+
+.footer p {
+    font-size: 14px;
+}
+
+.footer h5 {
+    font-weight: bold;
+}
+/* Gạch chân tiêu đề */
+
+.title-underline {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.title-underline::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 80%; /* Tăng độ dài gạch chân */
+    height: 3px; /* Tăng độ dày */
+    background-color: #009CFF; /* Màu gạch chân */
+    transform: translateX(-50%);
+}
+
+
+/* Căn giữa các mục bên dưới tiêu đề "Thông tin chung" */
+.footer-links {
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-links li {
+    list-style: none;
+    margin-bottom: 5px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
 
 
