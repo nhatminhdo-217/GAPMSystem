@@ -49,11 +49,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByUsername(username);
     }
 
-
     @Override
     public Optional<User> findByEmailOrPhone(String emailOrPhone, String emailOrPhone2) {
            Optional<User> user = userRepository.findByEmailOrPhoneNumber(emailOrPhone, emailOrPhone2);
         return user;
     }
 
+    @Override
+    public boolean checkPassword(String rawPassword, String encryptedPassword) {
+        return passwordEncoder.matches(rawPassword, encryptedPassword);
+    }
+
+    @Override
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

@@ -21,11 +21,10 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page","/home_page_2"
-                                , "/assert/**", "/login_form"
-                                , "/forgot-password", "/reset-password", "/verify-code").permitAll() // Cho phép truy cập trang login
-                        .requestMatchers("/test/user/**").hasRole("USER")
-                        .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form").permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/profile").authenticated()
+                        .requestMatchers("/test/user/**").hasRole("USER") //
+                        .requestMatchers("/test/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
