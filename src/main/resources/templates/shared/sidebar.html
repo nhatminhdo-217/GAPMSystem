@@ -1,6 +1,6 @@
-<div class="sidebar pe-4 pb-3" th:fragment="sidebar-2">
+<div class="sidebar pe-4 pb-3" th:fragment="sidebar">
     <nav class="navbar bg-light navbar-light">
-        <a href="index.html" class="navbar-brand mx-4 mb-3">
+        <a href="/home_page" class="navbar-brand mx-4 mb-3">
             <!--<h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>-->
             <img class="rounded-circle" src="/assert/images/LG-removebg-preview.png" alt="" style="width: 200px; height: 80px;">
         </a>
@@ -16,22 +16,29 @@
                 <span>Admin</span>
             </div>
         </div>-->
-        <div class="navbar-nav w-100" th:if="${#authorization.expression('not isAuthenticated()')}">
-            <a href="index.html" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>HOME</a>
+        <div id="searchResults" class="navbar-nav w-100" th:if="${#authorization.expression('not isAuthenticated()')}">
+            <a href="/home_page" class="nav-item nav-link active"><i
+                    class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>
+            <a href="#gioiThieu" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Giới thiệu</a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                        class="fa fa-laptop me-2"></i>Elements</a>
+                        class="fa fa-laptop me-2"></i>Dịch vụ sản phẩm</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="button.html" class="dropdown-item">Buttons</a>
-                    <a href="typography.html" class="dropdown-item">Typography</a>
-                    <a href="element.html" class="dropdown-item">Other Elements</a>
+                    <a href="button.html" class="dropdown-item"><i class="fa fa-circle text-primary me-2"></i> Chỉ may quần áo</a>
+                    <a href="typography.html" class="dropdown-item"><i class="fa fa-circle text-primary me-2"></i> Chỉ vắt gấu quần áo</a>
+                    <a href="element.html" class="dropdown-item"><i class="fa fa-circle text-primary me-2"></i> Chỉ may dày dép</a>
+                    <a href="element.html" class="dropdown-item"><i class="fa fa-circle text-primary me-2"></i> Chỉ tơ vắt số</a>
                 </div>
             </div>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
-            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
-            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
-            <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+            <a href="#tinTuc" class="nav-item nav-link">
+                <i class="fa-solid fa-newspaper me-2"></i> Tin Tức
+            </a>
+            <a href="#dangKy" class="nav-item nav-link">
+                <i class="fa-solid fa-file-signature me-2"></i> Đăng ký nhận tin
+            </a>
+            <a href="#footer" class="nav-item nav-link">
+                <i class="fa-solid fa-envelope me-2"></i> Liên Hệ
+            </a>
 
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''USER'')')}">
@@ -41,9 +48,9 @@
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                         class="fa fa-laptop me-2"></i>Elements</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="button.html" class="dropdown-item">Buttons</a>
-                    <a href="typography.html" class="dropdown-item">Typography</a>
-                    <a href="element.html" class="dropdown-item">Other Elements</a>
+                    <a href="#c6" class="dropdown-item">Buttons</a>
+                    <a href="#c3" class="dropdown-item">Typography</a>
+                    <a href="#footer" class="dropdown-item">Other Elements</a>
                 </div>
             </div>
             <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>

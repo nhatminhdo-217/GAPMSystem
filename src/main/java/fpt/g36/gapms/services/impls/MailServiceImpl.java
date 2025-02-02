@@ -4,6 +4,7 @@ import fpt.g36.gapms.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
+    @Async
     public void sendVerifyMail(String email, String code, int EXPIRED_TIME) {
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -27,6 +29,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
+    @Async
     public void sendResetPasswordMail(String email, String token) {
 
         SimpleMailMessage message = new SimpleMailMessage();
