@@ -14,17 +14,16 @@
 </head>
 
 <body>
-<div class="container">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
   <div class="login-box">
     <div class="login-logo text-center">
       <a href="#"><b>Dũng Đông</b></a>
     </div>
-
     <div class="login-box-body">
       <p class="text-center mb-4">Đăng nhập để bắt đầu phiên làm việc</p>
 
       <div th:if="${loginError}" class="alert alert-danger text-center" role="alert">
-        <i class="fa fa-exclamation-circle"></i> Sai số điện thoại hoặc mật khẩu
+        <i class="fa fa-exclamation-circle"></i> Sai thông tin đăng nhập, hãy thử lại
       </div>
 
       <form action="/login" method="POST">
@@ -32,8 +31,9 @@
 
         <div class="mb-3">
           <div class="input-group">
-            <span class="input-group-text"><i class="fa fa-phone"></i></span>
-            <input type="text" class="form-control" name="phoneNumber" placeholder="Số điện thoại" required>
+            <span class="input-group-text"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" name="phoneNumberOrEmail"
+                   placeholder="Số điện thoại hoặc email" required th:value="${phoneNumberOrEmail}">
           </div>
         </div>
 
@@ -47,7 +47,7 @@
         <div class="mb-3 d-flex justify-content-between">
           <div class="form-check">
             <input type="checkbox" name="remember" class="form-check-input" id="remember">
-            <label class="form-check-label" for="remember" >Ghi nhớ đăng nhập</label>
+            <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
           </div>
           <a href="/forgot-password">Quên mật khẩu?</a>
         </div>
@@ -64,6 +64,8 @@
 
       <div class="text-center mt-3">
         <a href="/register">Đăng ký tài khoản mới</a>
+        <!--<br>
+        <a href="/home_page" class="btn btn-outline-secondary mt-2"><i class="fa fa-home"></i> Quay lại trang chủ</a>-->
       </div>
     </div>
   </div>

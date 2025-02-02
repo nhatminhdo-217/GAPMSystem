@@ -106,10 +106,18 @@ public class RegisterController {
     }
 
     @GetMapping("/login-error")
-    public String loginError(Model model) {
+    public String loginError(HttpSession session, Model model) {
         model.addAttribute("loginError", true);
+
+        // Lấy dữ liệu từ Session
+        Object phoneNumberOrEmail = session.getAttribute("phoneNumberOrEmail");
+        model.addAttribute("phoneNumberOrEmail", phoneNumberOrEmail);
+
         return "authencation/login";
     }
+
+
+
 
 
     @GetMapping("/home_page")

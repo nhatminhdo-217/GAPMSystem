@@ -38,7 +38,67 @@
                 </div>
             </div>
         </div>
+        <div class="container mt-5">
+            <div class="row">
+                <!-- Form Đăng ký nhận tin -->
+                <div class="col-md-6">
+                    <h3 class="text-uppercase font-weight-bold">Đăng ký <span class="text-primary">Nhận tin</span></h3>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Họ tên..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Số điện thoại..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="email" class="form-control" placeholder="Email..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Địa chỉ..." required>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <input type="text" class="form-control" placeholder="Dịch vụ bạn quan tâm..." required>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="mt-3">Đăng ký để nhận thông tin và những khuyến mãi mới nhất của chúng tôi!</p>
+                </div>
+
+                <!-- Đối tác thân thiết -->
+                <div class="col-md-6">
+                    <h3 class="text-uppercase font-weight-bold">Đối tác <span class="text-primary">Thân thiết</span></h3>
+                    <div class="row text-center">
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner1.png" class="img-fluid" alt="Perfect Home">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner2.png" class="img-fluid" alt="Linos">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner3.png" class="img-fluid" alt="Minmin Fresh Food">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner4.png" class="img-fluid" alt="Q-SilkArt">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner5.png" class="img-fluid" alt="Bean Store">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assets/images/partner6.png" class="img-fluid" alt="Unique">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Đăng ký nhận tin -->
+
+
 
     <!--!&ndash; Widgets Start &ndash;-->
 
@@ -70,74 +130,246 @@
     <!-- Sales Chart End -->
 
 
-    <!--Recent Sales Start -->
+
     <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('not isAuthenticated()')}">
-        <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Recent Salse</h6>
-                <a href="">Show All</a>
+
+
+        <!--giới thiệu chung-->
+        <div class="container-fluid intro-section py-5" id="gioiThieu" style="margin-bottom: 100px">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Nội dung giới thiệu -->
+                    <div class="col-md-6 text-white">
+                        <h3 class="text-uppercase font-weight-bold animated fadeInLeft">
+                            <span class="text-light">Giới thiệu về</span> <br>
+                            <span class="highlight-text">Dũng Đông</span>
+                        </h3>
+                        <p class="animated fadeInLeft delay-1s">
+                            Trải qua quá trình phát triển, các sản phẩm chỉ may Dũng Đông ngày càng được nhiều khách hàng tín nhiệm và đánh giá cao.
+                            Hiện tại, chúng tôi có hơn 200 cán bộ công nhân viên, vận hành trên 2500 m² nhà máy với dây chuyền thiết bị hiện đại bao gồm
+                            24 máy nhuộm cao áp, 04 dàn máy xe sợi, 04 dàn máy côn xốp, trên 30 dàn máy côn chỉ...
+                        </p>
+                        <button class="btn btn-primary btn-lg animated fadeInUp delay-2s">Xem Chi Tiết</button>
+                    </div>
+
+                    <!-- Hình ảnh bên phải -->
+                    <div class="col-md-6 text-center">
+                        <div class="image-wrapper animated fadeInRight">
+                            <img src="/assert/images/imgGioiThieu.png" class="img-fluid img-top" alt="Dũng Đông Threads">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
-                    <thead>
-                    <tr class="text-dark">
-                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Invoice</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><input class="form-check-input" type="checkbox"></td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>$123</td>
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-check-input" type="checkbox"></td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>$123</td>
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-check-input" type="checkbox"></td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>$123</td>
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-check-input" type="checkbox"></td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>$123</td>
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-check-input" type="checkbox"></td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>$123</td>
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                    </tr>
-                    </tbody>
-                </table>
+        </div>
+
+
+        <!--lý do chọn-->
+        <div class="container mt-5" style="margin-bottom: 100px">
+            <div class="text-center">
+                <h3 class="text-uppercase font-weight-bold">
+                    <span class="text-muted">Lý do bạn nên</span> <br>
+                    <span class="text-primary">Chọn chúng tôi</span>
+                </h3>
+            </div>
+
+            <div class="row mt-4 text-center">
+                <!-- Đơn vị uy tín -->
+                <div class="col-md-4">
+                    <i class="fas fa-award icon-circle"></i>
+                    <h5 class="text-uppercase mt-3">Đơn vị uy tín – Chuyên nghiệp</h5>
+                    <p>
+                        Với kinh nghiệm hợp tác với hơn 1000+ doanh nghiệp lớn nhỏ cùng hàng ngàn dự án đã triển khai,
+                        Dũng Đông cam kết cung cấp sản phẩm chỉ may uy tín trên cả nước.
+                    </p>
+                </div>
+
+                <!-- Dịch vụ chu đáo -->
+                <div class="col-md-4">
+                    <i class="fas fa-tools icon-circle"></i>
+                    <h5 class="text-uppercase mt-3">Dịch vụ chu đáo – Tận tình</h5>
+                    <p>
+                        Đội ngũ nhân viên giàu kinh nghiệm và nhiệt tình, mỗi khách hàng đều nhận được chất lượng dịch vụ chu đáo
+                        và tận tình nhất có thể.
+                    </p>
+                </div>
+
+                <!-- Hỗ trợ hậu mãi -->
+                <div class="col-md-4">
+                    <i class="fas fa-hand-holding-usd icon-circle"></i>
+                    <h5 class="text-uppercase mt-3">Hỗ trợ hậu mãi khách hàng tốt nhất</h5>
+                    <p>
+                        Phương châm “Khách hàng là lợi nhuận của doanh nghiệp”, Dũng Đông cam kết mang lại trải nghiệm tuyệt vời
+                        từ chất lượng sản phẩm đến dịch vụ sau bán hàng.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--tin tức-->
+        <div class="container mt-5" style="margin-bottom: 150px" id="tinTuc">
+            <!-- Hàng đầu tiên: Tiêu đề và trích dẫn -->
+            <div class="row align-items-center">
+                <!-- Cột bên trái: Tiêu đề -->
+                <div class="col-md-4">
+                    <div class="news-title">
+                        <div class="line-top"></div>
+                        <h3 class="text-uppercase">
+                            <span class="text-muted">Tin tức</span> <br>
+                            <span class="fw-bold">Mới nhất</span>
+                        </h3>
+                        <div class="line-bottom"></div>
+                    </div>
+                </div>
+
+                <!-- Cột bên phải: Trích dẫn -->
+                <div class="col-md-8">
+                    <div class="quote-box">
+                        <p>
+                            <i class="fas fa-quote-left text-warning"></i>
+                            Không ngừng học hỏi, cập nhật tin tức về sản phẩm cũng như các thông tin thị trường chính là một trong những kim chỉ nam trong hoạt động của chúng tôi.
+                            <i class="fas fa-quote-right text-warning"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+             <br>
+            <!-- Hàng thứ hai: Carousel tin tức -->
+            <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+                <!-- Dấu chấm chuyển ảnh -->
+
+                <div class="carousel-inner">
+                    <!-- Tin tức 1 -->
+                    <div class="carousel-item active" data-bs-interval="2000">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc1.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>CHỨNG CHỈ OEKO TEX</h5>
+                                    <p>Chứng chỉ Oeko Tex Standard 1000 được thành lập bởi các viện kiểm nghiệm danh tiếng...</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc1.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>DỆT MAY VÀO CUỘC CHƠI MỚI</h5>
+                                    <p>Chưa có yếu tố xán lạn. Năm 2016 là năm khó khăn vô cùng đối với ngành dệt may...</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc1.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>CÁCH MẠNG TỰ ĐỘNG HÓA</h5>
+                                    <p>Nguy cơ thất nghiệp hàng loạt. "Việt Nam cần làm gì để có thể thích ứng..."</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tin tức 2 -->
+                    <div class="carousel-item" data-bs-interval="2000">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc2.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>TƯƠNG LAI NGÀNH DỆT MAY</h5>
+                                    <p>Các doanh nghiệp dệt may phải đổi mới để phù hợp với xu thế...</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc2.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>THỊ TRƯỜNG XUẤT KHẨU</h5>
+                                    <p>Xuất khẩu dệt may đang có sự thay đổi lớn từ các thị trường...</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img src="/assert/images/tintuc2.png" class="img-fluid">
+                                <div class="news-box">
+                                    <h5>THỊ TRƯỜNG NỘI ĐỊA</h5>
+                                    <p>Dệt may trong nước đang dần trở thành xu hướng với sự phát triển mạnh...</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                    <span class="date">Ngày đăng: 02.02.2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div> <!-- Kết thúc carousel -->
+        </div>
+
+        <!--đăng ký-->
+        <div class="container mt-5" id="dangKy">
+            <div class="row">
+                <!-- Form Đăng ký nhận tin -->
+                <div class="col-md-6">
+                    <h3 class="text-uppercase font-weight-bold text-center" >Đăng ký <span class="text-primary">Nhận tin</span></h3>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Họ tên..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Số điện thoại..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="email" class="form-control" placeholder="Email..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Địa chỉ..." required>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <input type="text" class="form-control" placeholder="Dịch vụ bạn quan tâm..." required>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="mt-3">Đăng ký để nhận thông tin và những khuyến mãi mới nhất của chúng tôi!</p>
+                </div>
+
+                <!-- Đối tác thân thiết -->
+                <div class="col-md-6">
+                    <h3 class="text-uppercase font-weight-bold text-center">Đối tác <span class="text-primary">Thân thiết</span></h3>
+                    <div class="row text-center">
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg1.png" class="img-fluid" alt="Perfect Home">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg2.png" class="img-fluid" alt="Linos">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg3.png" class="img-fluid" alt="Minmin Fresh Food">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg4.png" class="img-fluid" alt="Q-SilkArt">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg5.png" class="img-fluid" alt="Bean Store">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <img src="/assert/images/lg6.png" class="img-fluid" alt="Unique">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -146,3 +378,10 @@
 
 
 </div>
+
+<!-- Bootstrap & FontAwesome -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script src="/assert/js/main.js"></script>
+

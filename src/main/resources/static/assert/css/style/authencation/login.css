@@ -88,3 +88,55 @@ a:hover {
 .btn-google:hover {
     background: #c23321;
 }
+/* Responsive styles */
+@media (max-width: 768px) {
+    .login-box {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .form-control {
+        padding: 8px 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-box {
+        width: 95%;
+        margin-top: 50px;
+        padding: 15px;
+    }
+
+    .login-logo a {
+        font-size: 24px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .form-control {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
+/*back to home*/
+/*.btn-outline-secondary {
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+}*/

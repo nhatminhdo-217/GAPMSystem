@@ -87,6 +87,7 @@
 
 }
 
+
 @media (min-width: 992px) {
     .sidebar {
         margin-left: 0;
@@ -119,6 +120,7 @@
         width: 100%;
         margin-left: 0;
     }
+
 }
 
 
@@ -345,3 +347,227 @@
 }
 
 
+/*tin tuc*/
+h3 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.text-muted {
+    color: #999;
+}
+
+/* Trích dẫn */
+.quote-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+/* Tin tức */
+h3 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.text-muted {
+    color: #999;
+}
+
+/* Trích dẫn */
+.quote-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+/* Tin tức */
+.news-title {
+    text-align: left;
+}
+
+.news-title .line-top {
+    width: 80px;
+    height: 5px;
+    background-color: #FFB100;
+    margin-bottom: 5px;
+}
+
+.news-title h3 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.news-title .text-muted {
+    font-size: 18px;
+}
+
+.news-title .line-bottom {
+    width: 120px;
+    height: 5px;
+    background-color: #FFB100;
+    margin-top: 5px;
+}
+
+/* Hộp trích dẫn */
+.quote-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+/* Tin tức */
+.news-box {
+    padding: 15px;
+    background: white;
+    margin-top: 10px;
+    border-bottom: 4px solid #FFEB3B;
+}
+
+.news-box h5 {
+    font-weight: bold;
+}
+
+.news-box p {
+    font-size: 14px;
+    color: #555;
+}
+
+.news-box .date {
+    display: block;
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+}
+
+/* Tùy chỉnh vị trí mũi tên */
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+}
+
+/* Màu sắc cho mũi tên */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+
+
+
+
+/* Đẩy carousel xuống để không bị dính vào nội dung phía dưới */
+#newsCarousel {
+    margin-bottom: 50px; /* Tạo khoảng cách giữa carousel và nội dung bên dưới */
+}
+
+
+/* Định dạng hình ảnh */
+.img-fluid {
+    border-radius: 5px;
+}
+
+.icon-circle {
+    font-size: 40px;
+    color: white;
+    background-color: #007bff;
+    padding: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+
+
+/*giới thiệu chung*/
+
+/* Tạo background nổi bật */
+.intro-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+    url('/static/assert/images/imgGioiThieu.png') center/cover no-repeat;
+    color: white;
+    padding: 80px 0;
+}
+
+/* Hiệu ứng chữ nổi bật */
+.highlight-text {
+    color: #FFD700;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+/* Tạo hiệu ứng fade-in cho nội dung */
+.animated {
+    animation-duration: 1.2s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hiệu ứng nút */
+.btn-primary {
+    background: #FFD700;
+    border: none;
+    font-size: 18px;
+    padding: 12px 24px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #FFC107;
+    transform: scale(1.1);
+}
+
+/* Tạo hiệu ứng hình ảnh */
+.image-wrapper img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.image-wrapper img:hover {
+    transform: scale(1.05);
+}
+
+/*active*/
+.nav-item .nav-link.active {
+    background-color: #007bff; /* Màu nền xanh */
+    color: white; /* Chữ trắng khi active */
+    border-radius: 5px;
+}
