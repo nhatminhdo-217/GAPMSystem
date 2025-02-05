@@ -9,8 +9,6 @@ import fpt.g36.gapms.services.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,6 +61,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(User user) {
         userRepository.save(user);
     }
 }
