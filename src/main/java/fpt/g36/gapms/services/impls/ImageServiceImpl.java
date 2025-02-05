@@ -39,4 +39,27 @@ public class ImageServiceImpl implements ImageService {
 
         return fileNameUnique;
     }
+
+
+    @Override
+    public String saveImageMultiFile(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File áº£nh khÃ´ng há»£p lá»‡");
+        }
+
+        String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+
+        Path pathDir = Paths.get("uploads");
+        if (!Files.exists(pathDir)) {
+            Files.createDirectories(pathDir);
+        }
+
+        Path destination = pathDir.resolve(fileNameUnique);
+
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        return fileNameUnique;
+    }
 }
