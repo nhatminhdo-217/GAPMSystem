@@ -6,12 +6,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
-public interface UserService  {
+public interface UserService {
 
     User register(UserDTO userDTO);
+
     boolean existsByUsername(String username);
+
     Optional<User> findByEmailOrPhone(String emailOrPhone, String emailOrPhone2);
+
     boolean checkPassword(String rawPassword, String encryptedPassword);
+
     void updatePassword(User user, String newPassword);
 
+    String updateUser(Long userId, UserDTO userDTO);
 }

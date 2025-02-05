@@ -1,13 +1,11 @@
 package fpt.g36.gapms.models.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,15 +34,12 @@ public class User {
 
     private String avatar;
 
-    public String getAvatar() {
-        return avatar;
-    }
+    private boolean isActive;
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+    private LocalDate createdAt;
 
-    // Getter and Setter vì @Data đang lỗi như con chó
+    private LocalDate updatedAt;
+
     public Long getId() {
         return id;
     }
@@ -101,4 +96,35 @@ public class User {
         isVerified = verified;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
