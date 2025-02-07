@@ -33,14 +33,6 @@
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .container-fluid {
-            padding: 20px;
-        }
 
         .table th {
             background-color: #007bff;
@@ -64,12 +56,7 @@
             background-color: #0056b3;
         }
 
-        .content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
+
     </style>
 </head>
 
@@ -98,7 +85,7 @@
 
 
         <!-- main content start -->
-        <div class="container pt-4">
+        <div class="container pt-4" style="padding-left: 25px">
             <h3 class="mb-4">Manage Account</h3>
 
             <!-- Form tìm kiếm -->
@@ -106,7 +93,7 @@
             <div class="row">
 
                 <button class="col-2 m-3 btn btn-custom">
-                    <a th:href="@{/admin/account-detail}" style="color: white; text-decoration: none;">Create Account</a>
+                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create Account</a>
                 </button>
 
                 <div class="col-1"></div>
@@ -159,7 +146,7 @@
                               th:classappend="${user.isActive} ? 'badge bg-success' : 'badge bg-danger'"></span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/account-detail/{id}(id=${user.id})}"
+                            <a th:href="@{/admin/account_detail/{id}(id=${user.id})}"
                                class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
@@ -173,7 +160,7 @@
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="${currentPage > 0} ? @{/admin/list-account(page=${currentPage - 1}, size=${size}, search=${search})} : '#'"
+                               th:href="${currentPage > 0} ? @{/admin/list_account(page=${currentPage - 1}, size=${size}, search=${search})} : '#'"
                                aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -182,13 +169,13 @@
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/admin/list-account(page=${i}, size=${size}, search=${search})}"
+                               th:href="@{/admin/list_account(page=${i}, size=${size}, search=${search})}"
                                th:text="${i + 1}"></a>
                         </li>
 
                         <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="${currentPage + 1 < totalPages} ? @{/admin/list-account(page=${currentPage + 1}, size=${size}, search=${search})} : '#'"
+                               th:href="${currentPage + 1 < totalPages} ? @{/admin/list_account(page=${currentPage + 1}, size=${size}, search=${search})} : '#'"
                                aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

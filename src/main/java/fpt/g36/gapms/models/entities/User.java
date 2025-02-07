@@ -96,6 +96,7 @@ public class User {
         isVerified = verified;
     }
 
+
     public String getAvatar() {
         return avatar;
     }

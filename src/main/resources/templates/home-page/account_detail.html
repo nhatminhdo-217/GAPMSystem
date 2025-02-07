@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="utf-8">
     <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -13,15 +12,11 @@
     <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- Libraries Stylesheet -->
@@ -36,7 +31,6 @@
 </head>
 
 <body>
-
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -46,7 +40,6 @@
         </div>
     </div>
     <!-- Spinner End -->
-
 
     <!-- Sidebar Start -->
     <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
@@ -58,48 +51,37 @@
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
         <!-- Navbar End -->
 
-
-        <!-- main content start -->
+        <!-- Main content start -->
         <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <div class="card border-0 shadow-lg rounded-3 p-4">
                 <div class="card-body">
                     <h4 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i> Edit Account</h4>
 
                     <!-- Form cập nhật thông tin người dùng -->
-                    <form th:action="@{'/admin/account-aaaa/' + ${user.id}}" th:object="${user}" method="post">
+                    <form th:action="@{'/admin/account_update/' + ${user.id}}" th:object="${user}" method="post">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">User Name</label>
                                 <input type="text" class="form-control shadow-sm" disabled placeholder="User Name"
                                        th:value="*{username}">
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Phone Number</label>
                                 <input type="text" class="form-control shadow-sm" disabled placeholder="Phone Number"
                                        th:field="*{phoneNumber}">
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Email Address</label>
                                 <input type="email" class="form-control shadow-sm" disabled placeholder="Email"
                                        th:field="*{email}">
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Role</label>
                                 <select class="form-control shadow-sm" th:field="*{role.id}">
                                     <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"
                                             th:selected="${user.role.id == r.id}"></option>
-<!--                                    <option value="10">Sale Staff</option>-->
-<!--                                    <option value="11">Sale Manager</option>-->
-<!--                                    <option value="12">Production Process Team Leader</option>-->
-<!--                                    <option value="13">Quality Assurance (QA)</option>-->
-<!--                                    <option value="14">Technical Department</option>-->
-<!--                                    <option value="15">Production Manager</option>-->
                                 </select>
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Active Status</label>
                                 <select class="form-control shadow-sm" th:field="*{active}">
@@ -108,16 +90,13 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-secondary" > Update Profile</button>
+                            <button type="submit" class="btn btn-secondary"> Update Profile</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-
         <!-- Footer Start -->
         <div th:replace="~{shared/footer.html :: footer}"></div>
         <!-- Footer End -->
@@ -125,32 +104,7 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-<div class="modal fade" id="searchResultModal" tabindex="-1" aria-labelledby="searchResultModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="searchResultModalLabel">Search Results</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody id="searchResults"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -161,10 +115,7 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-<!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-
 </body>
 
 </html>

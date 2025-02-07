@@ -46,6 +46,7 @@ public class UserDTO {
 
     private LocalDate updatedAt;
 
+
     public @NotBlank(message = "Username is required") String getUsername() {
         return username;
     }
@@ -54,8 +55,10 @@ public class UserDTO {
         this.username = username;
     }
 
-    public @NotBlank(message = "Password is required") @Size(min = 6, message = "Password must be at least 8 characters") @Pattern(regexp = Regex.PASSWORD,
-            message = "Password must contain at least 1 number, 1 special character and 1 uppercase character") String getPassword() {
+    public @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 8 characters")
+    @Pattern(regexp = Regex.PASSWORD, message = "Password must contain at least 1 number, 1 special character and 1 uppercase character")
+            String getPassword() {
         return password;
     }
 
