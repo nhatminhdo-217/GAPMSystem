@@ -92,9 +92,77 @@
 
             <div class="row">
 
-                <button class="col-2 m-3 btn btn-custom">
-                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create Account</a>
+                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+                    <a th:href="@{/admin/create_account}" style="color: white; text-decoration: none;">Create Account</a>
                 </button>
+
+<!--                 Create Account Modal-->
+                <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="createAccountModalLabel">Create Account</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="createAccountForm" th:action="@{'/admin/create_account'}" th:object="${user}" method="post">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+<!--                                    <div class="mb-3">-->
+<!--                                        <label for="email" class="form-label">Email</label>-->
+<!--                                        <input type="email" class="form-control" id="email" name="email" required>-->
+<!--                                    </div>-->
+<!--                                    <div class="mb-3">-->
+<!--                                        <label for="phoneNumber" class="form-label">Phone Number</label>-->
+<!--                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>-->
+<!--                                    </div>-->
+
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                        <!-- Hiển thị lỗi email nếu có -->
+                                        <div th:if="${emailError}" class="text-danger" th:text="${emailError}"></div>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                                        <!-- Hiển thị lỗi phone number nếu có -->
+                                        <div th:if="${phoneError}" class="text-danger" th:text="${phoneError}"></div>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="role" class="form-label">Role</label>
+                                            <select class="form-select" id="role" name="role" th:field="*{role.id}" required>
+                                            <option value="" disabled th:text="'Select a role'"></option>
+                                            <option th:each="r : ${roles}"
+                                                    th:value="${r.id}"
+                                                    th:text="${r.name}"></option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select class="form-select" id="status" name="active"  required>
+                                            <option value="" disabled selected>Select status</option>
+                                            <option value="true" th:selected="${user.active}">Active</option>
+                                            <option value="false" th:selected="${!user.active}">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100">Create</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="col-1"></div>
 
@@ -104,7 +172,7 @@
             <i class="bi bi-search text-primary"></i>
         </span>
                         <input type="text" id="searchInput" class="form-control border-0 bg-white rounded-end-pill"
-                               placeholder="Search by username" onkeyup="searchAccount()" />
+                               placeholder="Search by username" onkeyup="searchAccount()"/>
 
                     </div>
 
@@ -245,6 +313,13 @@
             }
         });
     }
+
+</script>
+
+<script th:if="${modalOpen}">
+    $(document).ready(function(){
+        $('#createAccountModal').modal('show');
+    });
 </script>
 
 
