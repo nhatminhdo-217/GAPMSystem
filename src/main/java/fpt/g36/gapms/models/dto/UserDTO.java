@@ -14,25 +14,25 @@ import lombok.*;
 @Builder
 public class UserDTO {
 
-    @NotBlank(message = "Username is required")
+    @NotBlank(message = "Tên đăng nhập không được để trống")
     private String username;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 8 characters")
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
     @Pattern(regexp = Regex.PASSWORD,
-            message = "Password must contain at least 1 number, 1 special character and 1 uppercase character")
+            message = "Mật khẩu phải chứa ít nhất 1 chữ số, 1 ký tự đặc biệt và 1 chữ in hoa")
     private String password;
 
-    @NotBlank(message = "Re-password is required")
+    @NotBlank(message = "Vui lòng nhập lại mật khẩu")
     private String rePassword;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Định dạng email không hợp lệ")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = Regex.PHONENUMBER,
-            message = "Invalid phone number format")
+            message = "Định dạng số điện thoại không hợp lệ")
     private String phoneNumber;
 
     private String role;
