@@ -1,0 +1,109 @@
+body {
+    background: linear-gradient(to right, #0062E6, #33AEFF);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+}
+
+.verify-form {
+    width: 35vw;
+    height: auto; /* Adjust height to fit content */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px; /* Add padding for better spacing */
+}
+
+.verify-header {
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Input Field */
+.verify-form input[type="text"] {
+    width: 150px;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+/* Submit Button */
+.verify-form .btn-primary {
+    margin-top: 15px;
+    padding: 8px 20px;
+}
+
+/* Resend Code Section */
+.resend-code-section {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.resend-code-section p {
+    margin-bottom: 10px;
+}
+
+/* Resend Button */
+.resend-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+/* Expired Time Text */
+.expired-time {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+/* Responsive Styles */
+
+/* For Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .verify-form {
+        padding: 15px; /* Giảm padding */
+    }
+
+    .verify-header {
+        font-size: 20px; /* Giảm kích thước tiêu đề */
+    }
+
+    .verify-form .btn-primary {
+        font-size: 14px; /* Giảm kích thước nút */
+    }
+
+    .resend-button {
+        font-size: 14px; /* Giảm kích thước nút gửi lại */
+    }
+}
+
+/* For Mobile Phones (max-width: 576px) */
+@media (max-width: 576px) {
+    .verify-form {
+        padding: 10px; /* Giảm padding thêm nữa */
+        max-width: 90%; /* Form chiếm 90% chiều rộng màn hình */
+    }
+
+    .verify-header {
+        font-size: 18px; /* Giảm kích thước tiêu đề */
+    }
+
+    .verify-form input[type="text"] {
+        padding: 6px; /* Giảm padding của input */
+    }
+
+    .verify-form .btn-primary {
+        font-size: 14px; /* Giảm kích thước nút */
+        padding: 6px 12px; /* Giảm padding của nút */
+    }
+
+    .resend-button {
+        font-size: 14px; /* Giảm kích thước nút gửi lại */
+    }
+
+    .expired-time {
+        font-size: 12px; /* Giữ nguyên kích thước thông báo thời gian */
+    }
+}

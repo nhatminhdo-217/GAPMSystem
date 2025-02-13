@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Objects;
-import java.util.UUID;
-
 @Controller
 public class ResetPasswordController {
 
@@ -33,7 +30,7 @@ public class ResetPasswordController {
 
     @GetMapping("/forgot-password")
     public String showForgotPasswordPage(Model model) {
-        return "forgot-password";
+        return "authencation/forgot-password";
     }
 
     @PostMapping("/forgot-password")
@@ -43,8 +40,8 @@ public class ResetPasswordController {
         User user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) {
-            model.addAttribute("emailError", "Email not found");
-            return "forgot-password";
+            model.addAttribute("emailError", "Không tìm thấy email.");
+            return "authencation/forgot-password";
         }
 
         //Create token and save to session
@@ -55,7 +52,7 @@ public class ResetPasswordController {
         //Set reset expire time
         session.setMaxInactiveInterval(60 * 15); //15 minutes
 
-        model.addAttribute("emailSuccess", "Reset password link has been sent to your email");
+        model.addAttribute("emailSuccess", "Mã reset mật khẩu đã được gửi vào email của bạn.");
         mailService.sendResetPasswordMail(email, token);
 
         redirectAttributes.addFlashAttribute("success", true);
@@ -76,11 +73,11 @@ public class ResetPasswordController {
 
         //Check code
         if (!code.equals(token)) {
-            model.addAttribute("codeError", "Invalid code");
-            return "forgot-password";
+            model.addAttribute("codeError", "Mã reset mật khẩu bị sai.");
+            return "authencation/forgot-password";
         }
 
-        model.addAttribute("codeSuccess", "Code verified successfully");
+        model.addAttribute("codeSuccess", "Xác thực thành công.");
 
         return "redirect:/reset-password";
     }
@@ -98,7 +95,7 @@ public class ResetPasswordController {
         }
 
         model.addAttribute("email", email);
-        return "reset-password";
+        return "authencation/reset-password";
     }
 
     @PostMapping("/reset-password")
@@ -114,8 +111,8 @@ public class ResetPasswordController {
 
         //Check password meet the requirement
         if (!passwordUtils.isPasswordValid(password)) {
-            model.addAttribute("passwordError", "Password must meet the requirement");
-            return "reset-password";
+            model.addAttribute("passwordError", "Mật khẩu không đạt yêu cầu.");
+            return "authencation/reset-password";
         }
 
         User user = userRepository.findByEmail(sessionEmail)
@@ -126,7 +123,7 @@ public class ResetPasswordController {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        model.addAttribute("passwordSuccess", "Password reset successfully, please login!");
+        model.addAttribute("passwordSuccess", "Mật khẩu đã được reset thành công. Vui lòng đăng nhập.");
 
         //Remove session
         session.removeAttribute("resetToken");
