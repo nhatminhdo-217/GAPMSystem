@@ -45,7 +45,7 @@ public class RegisterController {
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
-
+  
     @Autowired
     public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.passwordEncoder = passwordEncoder;
@@ -113,6 +113,7 @@ public class RegisterController {
 
         return "authencation/login";
     }
+
 
     @GetMapping("/home_page")
     public String viewHomePage(Model model) {
