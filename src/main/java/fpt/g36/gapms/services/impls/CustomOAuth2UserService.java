@@ -6,6 +6,7 @@ import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -16,14 +17,17 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ImageService imageService;
+
     @Autowired
     private RoleService roleService;
 
@@ -35,35 +39,44 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
 
+        // ✅ Kiểm tra nếu email không tồn tại
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user;
 
-        Role role = roleService.getRole("USER").orElseThrow(() -> new RuntimeException("Role not found"));
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
 
+            // ✅ Kiểm tra nếu tài khoản bị khóa
+            if (!user.isActive()) {
+                throw new DisabledException("Tài khoản của bạn đã bị khóa!");
+            }
 
-        // Kiểm tra email trong database
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    String pictureSave = null;
-                    try {
-                        pictureSave = imageService.saveImage(picture);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        } else {
+            // ✅ Nếu user chưa tồn tại, tự động tạo tài khoản mới
+            Role role = roleService.getRole("USER").orElseThrow(() -> new RuntimeException("Role not found"));
+            String pictureSave = null;
 
-                    }
-                    String finalPictureSave = pictureSave;
-                    User newUser = new User();
-                    newUser.setEmail(email);
-                    newUser.setUsername(name);
-                    newUser.setAvatar(finalPictureSave);
-                    newUser.setRole(role);
-                    newUser.setVerified(true);
+            try {
+                pictureSave = imageService.saveImage(picture);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                    return userRepository.save(newUser);
-                });
+            user = new User();
+            user.setEmail(email);
+            user.setUsername(name);
+            user.setAvatar(pictureSave);
+            user.setRole(role);
+            user.setVerified(true);
+            user.setActive(true); // ✅ Mặc định user mới sẽ active
 
+            user = userRepository.save(user);
+        }
+
+        // ✅ Gán quyền cho user
         String roleName = "ROLE_" + user.getRole().getName().toUpperCase();
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(roleName));
 
         return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), "email");
     }
-
 }

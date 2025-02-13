@@ -14,6 +14,7 @@ import fpt.g36.gapms.utils.PasswordGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,8 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static fpt.g36.gapms.utils.PasswordGenerator.generateRandomPassword;
 
@@ -56,7 +56,7 @@ public class AccountController {
     @GetMapping("/list_account")
     public String listAccount(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             Model model) {
 
         List<Role> roles = roleRepository.findAll();
@@ -114,24 +114,6 @@ public class AccountController {
     }
 
 
-//    @PostMapping("/create_account")
-//    public String createAccount(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
-//        // Sinh mật khẩu ngẫu nhiên với độ dài 8 ký tự
-//        String randomPassword = PasswordGenerator.generateRandomPassword(8);
-//
-//        // Tạo tài khoản (bên service sẽ xử lý mã hoá mật khẩu và lưu DB)
-//        accountService.createAccount(user, randomPassword);
-//
-//        // Gửi mật khẩu qua email
-//        emailService.sendPasswordEmail(user.getEmail(), randomPassword);
-//
-//        // Thông báo thành công
-//        redirectAttributes.addFlashAttribute("message", "Tạo tài khoản thành công!");
-//
-//        // Chuyển hướng về trang danh sách tài khoản
-//        return "redirect:/admin/list_account";
-//    }
-
     @PostMapping("/create_account")
     public String createAccount(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
         if (accountService.existsByEmail(user.getEmail())) {
@@ -144,19 +126,39 @@ public class AccountController {
             return "redirect:/admin/list_account";
         }
 
-        // Sinh mật khẩu ngẫu nhiên với độ dài 8 ký tự
         String randomPassword = PasswordGenerator.generateRandomPassword(8);
-
-        // Tạo tài khoản (service sẽ xử lý mã hoá mật khẩu và lưu DB)
         accountService.createAccount(user, randomPassword);
-
-        // Gửi mật khẩu qua email
-         emailService.sendPasswordEmail(user.getEmail(), randomPassword); // Giả sử bạn đã cài đặt emailService
-
-        // Thông báo thành công
+        emailService.sendPasswordEmail(user.getEmail(), randomPassword);
         redirectAttributes.addFlashAttribute("message", "Tạo tài khoản thành công!");
-
-        // Chuyển hướng về trang danh sách tài khoản
         return "redirect:/admin/list_account";
     }
+
+    @GetMapping("/{id}/toggle-status")
+    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        User user = userService.getUserById(id);
+
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("error", "User not found!");
+            return "redirect:/admin/list_account";
+        }
+
+        boolean newStatus = !user.isActive(); // Đảo trạng thái active/inactive
+        userService.updateUserStatus(id, newStatus);
+
+        redirectAttributes.addFlashAttribute("message", "Trạng thái tài khoản đã thay đổi!");
+        return "redirect:/admin/list_account"; // Quay lại trang danh sách
+    }
+
+    @GetMapping("/account_view/{id}")
+    public String accountView(@PathVariable Long id, Model model) {
+        User user = accountService.getUserById(id);
+        List<Role> roles = roleRepository.findAll();
+
+        model.addAttribute("user", user);
+        model.addAttribute("roles", roles);
+
+        return "home-page/view_account_detail"; // Trả về file riêng
+    }
+
+
 }

@@ -40,6 +40,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
+    @Async
     public void sendPasswordEmail(String email, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
