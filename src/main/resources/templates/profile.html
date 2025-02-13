@@ -112,6 +112,11 @@
         <div th:if="${success != null}" class="alert alert-success">
             <p th:text="${success}"></p>
         </div>
+        <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}" class="alert alert-danger">
+            <th:block th:each="error : ${validationErrors}">
+                <p th:text="${error.defaultMessage}"></p>
+            </th:block>
+        </div>
     </div>
     <a href="/home_page" class="btn btn-primary mt-3">Quay lại trang chủ</a>
 </div>
@@ -170,8 +175,9 @@
                 </div>
                 <div class="mb-3">
                     <label for="image">Hình nền đại diện:</label>
-                    <input type="file" id="image" name="avatar" class="form-control">
+                    <input type="file" id="image" name="avatarFile" class="form-control">
                 </div>
+                <input type="hidden" name="avatar" th:value="${user.avatar}">
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Cập nhật</button>
                 </div>

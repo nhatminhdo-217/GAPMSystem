@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.models.dto.UpdateProfileDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
@@ -7,6 +8,7 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,13 +74,33 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public String updateUser(Long userId, UserDTO userDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setAvatar(userDTO.getAvatar());
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
         user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return "User updated successfully";
+    }
+
+    public String updatePersonalUser(Long userId, UpdateProfileDTO userDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Gán trực tiếp giá trị từ DTO vào User
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setAvatar(userDTO.getAvatar());
+        user.setUpdatedAt(LocalDateTime.now());
+
         userRepository.save(user);
         return "User updated successfully";
     }
