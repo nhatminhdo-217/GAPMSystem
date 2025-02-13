@@ -2,6 +2,8 @@ package fpt.g36.gapms.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,6 +37,7 @@ public class User {
 
     private boolean isActive;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

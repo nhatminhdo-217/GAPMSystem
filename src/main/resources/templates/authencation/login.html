@@ -22,16 +22,10 @@
     <div class="login-box-body">
       <p class="text-center mb-4">Đăng nhập để bắt đầu phiên làm việc</p>
 
-      <div th:if="${loginError}" class="alert alert-danger text-center" role="alert">
-        <i class="fa fa-exclamation-circle"></i> Sai thông tin đăng nhập, hãy thử lại
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <i class="fa fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-
-      <!-- Hiển thị cảnh báo nếu có lỗi -->
-      <div th:if="${param.error}" class="alert alert-warning text-center" role="alert">
-        <i class="fa fa-exclamation-circle"></i>
-        <span th:text="${param.error[0] == 'disabled' ? 'Tài khoản của bạn không có quyền truy cập!' : ''}"></span>
-      </div>
-
 
       <form action="/login" method="POST">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
