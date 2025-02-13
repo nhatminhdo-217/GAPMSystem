@@ -46,7 +46,6 @@ public class UserDTO {
 
     private LocalDate updatedAt;
 
-
     public String getUsername() {
         return username;
     }
@@ -55,7 +54,10 @@ public class UserDTO {
         this.username = username;
     }
 
-    public String getPassword() {
+    public @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 8 characters")
+    @Pattern(regexp = Regex.PASSWORD, message = "Password must contain at least 1 number, 1 special character and 1 uppercase character")
+            String getPassword() {
         return password;
     }
 
@@ -63,15 +65,15 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getRePassword() {
+    public @NotBlank(message = "Re-password is required") String getRePassword() {
         return rePassword;
     }
 
-    public void setRePassword(String rePassword) {
+    public void setRePassword(@NotBlank(message = "Re-password is required") String rePassword) {
         this.rePassword = rePassword;
     }
 
-    public String getEmail() {
+    public @NotBlank(message = "Email is required") @Email(message = "Invalid email format") String getEmail() {
         return email;
     }
 
@@ -79,11 +81,13 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
+    public @NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER,
+            message = "Invalid phone number format") String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(@NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER,
+            message = "Invalid phone number format") String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

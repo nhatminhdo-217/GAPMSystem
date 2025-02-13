@@ -20,4 +20,7 @@ public interface UserService {
 
     String updateUser(Long userId, UserDTO userDTO);
 
+    void updateUserStatus(Long id, boolean active);
+
+    User getUserById(Long id);
 }
