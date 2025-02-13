@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form", "/forgot-password", "/reset-password", "/login-error","/verify-code").permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
                         .requestMatchers("/test/user/**").hasRole("USER") //
-                        .requestMatchers("/test/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
