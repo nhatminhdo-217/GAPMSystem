@@ -10,8 +10,7 @@ import fpt.g36.gapms.services.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +44,8 @@ public class UserServiceImpl implements UserService {
         user.setAvatar("default-avatar.png");
         user.setVerified(false);
         user.setActive(true);
-        user.setCreatedAt(LocalDate.now());
-        user.setUpdatedAt(LocalDate.now());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
     }
@@ -73,12 +72,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
     public String updateUser(Long userId, UserDTO userDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
-        user.setUpdatedAt(LocalDate.now());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         return "User updated successfully";
     }

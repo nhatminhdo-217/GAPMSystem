@@ -9,7 +9,6 @@ import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.AccountServiceImpl;
 import fpt.g36.gapms.services.impls.RoleServiceImpl;
-
 import fpt.g36.gapms.utils.PasswordGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.*;
-
 import static fpt.g36.gapms.utils.PasswordGenerator.generateRandomPassword;
 
 @Controller
@@ -159,6 +156,4 @@ public class AccountController {
 
         return "home-page/view_account_detail"; // Trả về file riêng
     }
-
-
 }

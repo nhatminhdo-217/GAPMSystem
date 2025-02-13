@@ -1,0 +1,76 @@
+/* Base Styles */
+body {
+    background: linear-gradient(to right, #0062E6, #33AEFF);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+}
+
+.register-form {
+    width: 35vw;
+    height: auto; /* Adjust height to fit content */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px; /* Add padding for better spacing */
+}
+
+.register-header {
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group input {
+    display: inline;
+    width: 80%;
+}
+
+.error {
+    text-align: start;
+    display: block;
+    margin-left: 11%;
+    margin-top: 10px;
+}
+
+/* Responsive Styles */
+
+/* For screens smaller than 768px (Tablets) */
+@media (max-width: 768px) {
+    .register-form {
+        width: 70vw; /* Increase width to take more space */
+        padding: 15px; /* Reduce padding slightly */
+    }
+
+    .form-group input {
+        width: 90%; /* Make input fields wider */
+    }
+
+    .btn {
+        font-size: 14px; /* Reduce button font size */
+        padding: 8px 15px; /* Adjust button padding */
+    }
+}
+
+/* For screens smaller than 576px (Mobile Phones) */
+@media (max-width: 576px) {
+    .register-form {
+        width: 90vw; /* Take almost full width of the screen */
+        padding: 10px; /* Further reduce padding */
+    }
+
+    .form-group input {
+        width: 100%; /* Make input fields take full width */
+    }
+
+    .btn {
+        font-size: 14px; /* Keep button font size small */
+        padding: 10px; /* Adjust button padding for better touch */
+    }
+
+    .register-header {
+        font-size: 20px; /* Reduce header font size */
+    }
+
+    .error {
+        font-size: 12px; /* Reduce error message font size */
+    }
+}
