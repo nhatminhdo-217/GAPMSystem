@@ -26,6 +26,13 @@
         <i class="fa fa-exclamation-circle"></i> Sai thông tin đăng nhập, hãy thử lại
       </div>
 
+      <!-- Hiển thị cảnh báo nếu có lỗi -->
+      <div th:if="${param.error}" class="alert alert-warning text-center" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        <span th:text="${param.error[0] == 'disabled' ? 'Tài khoản của bạn không có quyền truy cập!' : ''}"></span>
+      </div>
+
+
       <form action="/login" method="POST">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 

@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.models.dto.UpdateProfileDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
@@ -7,9 +8,10 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -72,10 +74,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public String updateUser(Long userId, UserDTO userDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setAvatar(userDTO.getAvatar());
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
         user.setUpdatedAt(LocalDateTime.now());
@@ -83,4 +90,32 @@ public class UserServiceImpl implements UserService {
         return "User updated successfully";
     }
 
+    public String updatePersonalUser(Long userId, UpdateProfileDTO userDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Gán trực tiếp giá trị từ DTO vào User
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setAvatar(userDTO.getAvatar());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+        return "User updated successfully";
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    @Transactional
+    public void updateUserStatus(Long id, boolean active) {
+        User user = getUserById(id);
+        user.setActive(active);
+        userRepository.save(user);
+    }
 }
