@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services;
 
+import fpt.g36.gapms.models.dto.UpdateProfileDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,4 +21,5 @@ public interface UserService {
 
     String updateUser(Long userId, UserDTO userDTO);
 
+    String updatePersonalUser(Long userId, UpdateProfileDTO userDTO);
 }
