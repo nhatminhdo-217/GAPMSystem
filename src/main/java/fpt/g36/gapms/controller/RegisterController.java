@@ -81,6 +81,7 @@ public class RegisterController {
             admin.setPassword(passwordEncoder.encode("Admin@123"));
             admin.setEmail("admin@example.com");
             admin.setPhoneNumber("+84123456789");
+            admin.setActive(true);
             admin.setRole(adminRole);
             admin.setVerified(true); // Thêm trạng thái verified nếu cần
 
@@ -136,9 +137,7 @@ public class RegisterController {
 
             // Nếu tìm thấy user, thêm vào model
             if (optionalUser.isPresent()) {
-                model.addAttribute("username", optionalUser.get().getUsername());
-                model.addAttribute("email", optionalUser.get().getEmail());
-                model.addAttribute("role", optionalUser.get().getRole().getName());
+                model.addAttribute("user", optionalUser.get());
                 model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
                 System.out.println(optionalUser.get());
             }

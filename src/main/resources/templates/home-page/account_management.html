@@ -116,7 +116,7 @@
                     Tạo Tài Khoản
                 </button>
 
-                <!--                 Create Account Modal-->
+                <!--Create Account Modal-->
                 <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true" >
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -125,7 +125,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="createAccountForm" th:action="@{'/admin/create_account'}" th:object="${user}" method="post">
+                                <form id="createAccountForm" th:action="@{'/admin/create_account'}" th:object="${users}" method="post">
                                     <div class="mb-3">
                                         <label for="username" class="form-label"> Họ Và Tên</label>
                                         <input type="text" class="form-control" id="username" name="username" required>

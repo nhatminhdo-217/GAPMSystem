@@ -1,7 +1,6 @@
 package fpt.g36.gapms.controller;
 
 import fpt.g36.gapms.models.dto.UpdateProfileDTO;
-import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.UserService;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
@@ -38,6 +35,7 @@ public class ProfileController {
 
         if (optionalUser.isPresent()) {
             model.addAttribute("user", optionalUser.get());
+            model.addAttribute("username", optionalUser.get().getUsername());
             model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             return "profile";
         } else {
@@ -52,12 +50,6 @@ public class ProfileController {
                                  @RequestParam("confirmPassword") String confirmPassword,
                                  Principal principal,
                                  Model model) {
-        // Kiểm tra mật khẩu cũ và xác nhận mật khẩu mới
-        if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
-            return "profile";
-        }
-
         // Lấy thông tin người dùng hiện tại từ Principal
         String emailOrPhone = principal.getName();
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
@@ -65,9 +57,17 @@ public class ProfileController {
         // Lấy thông tin của người dùng
         User currentUser = optionalUser.get();
 
+        // Kiểm tra mật khẩu cũ và xác nhận mật khẩu mới
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+            model.addAttribute("user", currentUser);
+            return "profile";
+        }
+
         // Kiểm tra mật khẩu cũ
         if (!userService.checkPassword(oldPassword, currentUser.getPassword())) {
             model.addAttribute("error", "Mật khẩu cũ không đúng.");
+            model.addAttribute("user", currentUser);
             return "profile";
         }
 
@@ -111,7 +111,8 @@ public class ProfileController {
 
         // Kiểm tra email đã tồn tại
         if (!updateProfileDTO.getEmail().isEmpty()) {
-            Optional<User> userByEmail = userService.findByEmailOrPhone(updateProfileDTO.getEmail(), updateProfileDTO.getEmail());
+            Optional<User> userByEmail = userService.findByEmailOrPhone
+                    (updateProfileDTO.getEmail(), updateProfileDTO.getEmail());
             if (userByEmail.isPresent() && !userByEmail.get().getId().equals(currentUser.getId())) {
                 model.addAttribute("user", currentUser);
                 model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
@@ -122,7 +123,8 @@ public class ProfileController {
 
         // Kiểm tra số điện thoại đã tồn tại
         if (!updateProfileDTO.getPhoneNumber().isEmpty()) {
-            Optional<User> userByPhone = userService.findByEmailOrPhone(updateProfileDTO.getPhoneNumber(), updateProfileDTO.getPhoneNumber());
+            Optional<User> userByPhone = userService.findByEmailOrPhone
+                    (updateProfileDTO.getPhoneNumber(), updateProfileDTO.getPhoneNumber());
             if (userByPhone.isPresent() && !userByPhone.get().getId().equals(currentUser.getId())) {
                 model.addAttribute("user", currentUser);
                 model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
@@ -131,7 +133,7 @@ public class ProfileController {
             }
         }
 
-        // ✅ Xử lý avatar (sử dụng avatarFile thay vì avatar)
+        //Xử lý avatar (sử dụng avatarFile thay vì avatar)
         if (updateProfileDTO.getAvatarFile() != null && !updateProfileDTO.getAvatarFile().isEmpty()) {
             try {
                 String fileName = imageService.saveImageMultiFile(updateProfileDTO.getAvatarFile());
@@ -141,24 +143,26 @@ public class ProfileController {
                 return "profile";
             }
         } else {
-            updateProfileDTO.setAvatar(currentUser.getAvatar()); // Giữ nguyên ảnh cũ nếu không cập nhật
+            updateProfileDTO.setAvatar(currentUser.getAvatar());
         }
 
         // Cập nhật thông tin người dùng
         userService.updatePersonalUser(currentUser.getId(), updateProfileDTO);
 
-        // ✅ Truy vấn lại User bằng `findByEmailOrPhone`
-        String newEmailOrPhone = updateProfileDTO.getEmail().isEmpty() ? updateProfileDTO.getPhoneNumber() : updateProfileDTO.getEmail();
+        //Truy vấn lại User bằng `findByEmailOrPhone`
+        String newEmailOrPhone = updateProfileDTO.getEmail().isEmpty() ?
+                updateProfileDTO.getPhoneNumber() : updateProfileDTO.getEmail();
         Optional<User> updatedUserOpt = userService.findByEmailOrPhone(newEmailOrPhone, newEmailOrPhone);
 
         if (updatedUserOpt.isEmpty()) {
-            model.addAttribute("error", "Cập nhật thành công nhưng không tìm thấy tài khoản. Vui lòng đăng nhập lại.");
+            model.addAttribute("error", "Cập nhật thành công nhưng không tìm thấy tài khoản. " +
+                    "Vui lòng đăng nhập lại.");
             return "profile";
         }
 
         User updatedUser = updatedUserOpt.get();
 
-        // ✅ Cập nhật lại Security Context
+        //Cập nhật lại Security Context
         Authentication newAuth = new UsernamePasswordAuthenticationToken(
                 newEmailOrPhone, // Dùng email hoặc số điện thoại mới (nếu có thay đổi)
                 authentication.getCredentials(),
