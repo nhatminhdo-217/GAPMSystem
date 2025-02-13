@@ -1,11 +1,14 @@
 package fpt.g36.gapms.models.dto;
 
+import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.utils.Regex;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -35,14 +38,20 @@ public class UserDTO {
             message = "Invalid phone number format")
     private String phoneNumber;
 
-    private String role;
+    private Role role;
 
-    // Getter and Setter vì @Data đang lỗi như con chó
+    private boolean isActive;
+
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
+
+
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername( String username) {
         this.username = username;
     }
 
@@ -50,7 +59,7 @@ public class UserDTO {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword (String password) {
         this.password = password;
     }
 
@@ -66,7 +75,7 @@ public class UserDTO {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail( String email) {
         this.email = email;
     }
 
@@ -78,11 +87,35 @@ public class UserDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
