@@ -6,7 +6,6 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
-import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
