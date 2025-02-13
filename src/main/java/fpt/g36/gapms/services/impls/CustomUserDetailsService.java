@@ -35,7 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
                 throw new DisabledException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
 
-
         }
         return new org.springframework.security.core.userdetails.User(
                 user.getPhoneNumber(),

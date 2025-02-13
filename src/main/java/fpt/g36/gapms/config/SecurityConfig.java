@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Import(PasswordConfig.class)
 public class SecurityConfig {
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -36,7 +37,6 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler())
                         .failureHandler((request, response, exception) -> {
-                            System.out.println("Error: " + exception.getMessage());
                             HttpSession session = request.getSession();
 
                             // ✅ Xử lý lỗi đúng thứ tự

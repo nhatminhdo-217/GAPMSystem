@@ -105,12 +105,10 @@ public class RegisterController {
 
     @GetMapping("/login-error")
     public String loginError(HttpSession session, Model model) {
-        model.addAttribute("loginError", true);
         // ✅ Lấy thông báo lỗi từ session
         Object errorMessage = session.getAttribute("error");
         model.addAttribute("error", errorMessage);
 
-        // Lấy dữ liệu từ Session
         // ✅ Lấy dữ liệu nhập lại
         Object phoneNumberOrEmail = session.getAttribute("phoneNumberOrEmail");
         model.addAttribute("phoneNumberOrEmail", phoneNumberOrEmail);
@@ -121,6 +119,7 @@ public class RegisterController {
 
         return "authencation/login";
     }
+
 
 
     @GetMapping("/home_page")
