@@ -46,7 +46,7 @@ public class RegisterController {
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
-  
+
     @Autowired
     public RegisterController(JavaMailSender mailSender, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.mailSender = mailSender;
@@ -115,10 +115,6 @@ public class RegisterController {
 
         return "authencation/login";
     }
-
-
-
-
 
     @GetMapping("/home_page")
     public String viewHomePage(Model model) {
@@ -191,7 +187,7 @@ public class RegisterController {
         try {
             //Send email
             mailService.sendVerifyMail(user.getEmail(), code, EXPIRED_TIME);
-        } catch (Exception e){
+        } catch (Exception e) {
             model.addAttribute("error", "Failed to send email");
             return "register";
         }
@@ -256,7 +252,7 @@ public class RegisterController {
         String newCode = String.valueOf((int) (Math.random() * 900000) + 100000);
         verificationCode.put(email, new VerificationCode(newCode, EXPIRED_TIME));
 
-        try{
+        try {
             mailService.sendVerifyMail(email, newCode, EXPIRED_TIME);
             model.addAttribute("success-msg", "New verification code has been sent");
         } catch (Exception e) {
