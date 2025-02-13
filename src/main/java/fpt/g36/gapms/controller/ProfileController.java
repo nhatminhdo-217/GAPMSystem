@@ -1,6 +1,7 @@
 package fpt.g36.gapms.controller;
 
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -17,9 +20,11 @@ import java.util.Optional;
 public class ProfileController {
 
     private final UserService userService;
+    private final ImageService imageService;
 
-    public ProfileController(UserService userService) {
+    public ProfileController(UserService userService, ImageService imageService) {
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @GetMapping
@@ -77,4 +82,52 @@ public class ProfileController {
     }
 
 
+    @PostMapping("/updateProfile")
+    public String updateProfile(@RequestParam(value = "username", required = false) String username,
+                                @RequestParam(value = "email", required = false) String email,
+                                @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+                                @RequestParam(value = "avatar", required = false) MultipartFile avatarFile,
+                                Principal principal,
+                                Model model) {
+        String emailOrPhone = principal.getName();
+        Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("error", "Tài khoản không tồn tại.");
+            return "profile";
+        }
+
+        User currentUser = optionalUser.get();
+
+        //
+        if (username != null && !username.isEmpty()) {
+            currentUser.setUsername(username);
+        }
+        if (email != null && !email.isEmpty()) {
+            currentUser.setEmail(email);
+        }
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            currentUser.setPhoneNumber(phoneNumber);
+        }
+
+        //
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            try {
+                String fileName = imageService.saveImageMultiFile(avatarFile);
+                currentUser.setAvatar(fileName);
+            } catch (IOException e) {
+                model.addAttribute("error", "Tải ảnh thất bại!");
+                return "profile";
+            }
+        }
+
+        userService.updateUser(currentUser);
+
+        //
+        model.addAttribute("user", currentUser);
+        model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+        model.addAttribute("success", "Thay đổi thông tin cá nhân thành công!");
+
+        return "profile";
+    }
 }

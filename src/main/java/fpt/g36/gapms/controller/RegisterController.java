@@ -117,9 +117,6 @@ public class RegisterController {
     }
 
 
-
-
-
     @GetMapping("/home_page")
     public String viewHomePage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -256,7 +253,7 @@ public class RegisterController {
         String newCode = String.valueOf((int) (Math.random() * 900000) + 100000);
         verificationCode.put(email, new VerificationCode(newCode, EXPIRED_TIME));
 
-        try{
+        try {
             mailService.sendVerifyMail(email, newCode, EXPIRED_TIME);
             model.addAttribute("success-msg", "New verification code has been sent");
         } catch (Exception e) {

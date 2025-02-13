@@ -1,0 +1,87 @@
+
+.card {
+    border-radius: 10px;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.2);
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #0056b3, #004494);
+    transform: scale(1.05);
+    box-shadow: 0px 6px 12px rgba(0, 123, 255, 0.5);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+ body {
+     font-family: 'Poppins', sans-serif;
+     background-color: #f8f9fa;
+ }
+
+.container-fluid {
+    padding: 20px;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
+.table td {
+    text-align: center;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+}
+
+.content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
