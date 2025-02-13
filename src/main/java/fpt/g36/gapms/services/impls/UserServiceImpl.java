@@ -11,10 +11,7 @@ import fpt.g36.gapms.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,11 +75,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUser(Long userId, UserDTO userDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setAvatar(userDTO.getAvatar());
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
         user.setUpdatedAt(LocalDateTime.now());

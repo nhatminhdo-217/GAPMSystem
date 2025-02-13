@@ -84,15 +84,15 @@
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/uploads/default-avatar.png'}" alt=""
                      style="width: 40px; height: 40px;">
-                <span class="d-none d-lg-inline-flex" th:text="${username}"></span>
+                <span class="d-none d-lg-inline-flex" th:text="${user.username}"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow animated-dropdown">
                 <li class="dropdown-header text-center">
                     <img class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/uploads/default-avatar.png'}"  alt="User Image"
                          style="width: 40px; height: 40px;">
-                    <p class="mt-2 mb-1 fw-bold" th:text="${username}"></p>
-                    <small class="text-muted" th:text="${email}"></small>
-                    <span class="badge bg-primary text-white mt-1" th:text="${role}"></span>
+                    <p class="mt-2 mb-1 fw-bold" th:text="${user.username}"></p>
+                    <small class="text-muted" th:text="${user.email}"></small>
+                    <span class="badge bg-primary text-white mt-1" th:text="${user.role.name}"></span>
                 </li>
                 <li>
                     <hr class="dropdown-divider">

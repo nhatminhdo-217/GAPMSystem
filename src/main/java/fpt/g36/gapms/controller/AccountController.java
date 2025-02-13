@@ -58,7 +58,7 @@ public class AccountController {
 
         List<Role> roles = roleRepository.findAll();
         model.addAttribute("roles", roles);
-        model.addAttribute("user", new User());
+        model.addAttribute("users", new User());
 
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = accountService.getAccounts(pageable);
@@ -72,9 +72,7 @@ public class AccountController {
 
             if (optionalUser.isPresent()) {
                 User currentUser = optionalUser.get();
-                model.addAttribute("username", currentUser.getUsername());
-                model.addAttribute("email", currentUser.getEmail());
-                model.addAttribute("role", currentUser.getRole().getName());
+                model.addAttribute("user", currentUser);
                 model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
                 model.addAttribute("account", users);
                 model.addAttribute("currentPage", page);
