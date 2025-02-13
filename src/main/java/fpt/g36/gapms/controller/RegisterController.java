@@ -40,16 +40,14 @@ public class RegisterController {
 
     private static final Map<String, VerificationCode> verificationCode = new ConcurrentHashMap<>();
     private static final int EXPIRED_TIME = 5;
-    private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
-
+  
     @Autowired
-    public RegisterController(JavaMailSender mailSender, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
-        this.mailSender = mailSender;
+    public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -116,6 +114,7 @@ public class RegisterController {
         return "authencation/login";
     }
 
+
     @GetMapping("/home_page")
     public String viewHomePage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -146,37 +145,31 @@ public class RegisterController {
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new UserDTO());
-        return "register";
+        return "/authencation/register";
     }
 
     @PostMapping("/register")
-    public String processRegisterForm(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String processRegisterForm(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
-            return "register";
+            return "authencation/register";
         }
 
         //Check re-password
         if (!user.getPassword().equals(user.getRePassword())) {
-            model.addAttribute("passwordError", "Re-password does not match");
-            return "register";
-        }
-
-        //Check unique username
-        if (userRepository.existsByUsername(user.getUsername())) {
-            model.addAttribute("usernameError", "Username already exists");
-            return "register";
+            model.addAttribute("passwordError", "Mật khẩu nhập lại bị sai.");
+            return "authencation/register";
         }
 
         //Check unique email
         if (userRepository.existsByEmail(user.getEmail())) {
-            model.addAttribute("emailError", "Email already exists");
-            return "register";
+            model.addAttribute("emailError", "Email này đã tồn tại.");
+            return "authencation/register";
         }
 
         //Check unique phone number
         if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
-            model.addAttribute("phoneError", "Phone number already exists");
-            return "register";
+            model.addAttribute("phoneError", "Số điện thoại này đã tồn tại.");
+            return "authencation/register";
         }
 
         //Create verification code with expired time
@@ -188,56 +181,66 @@ public class RegisterController {
             //Send email
             mailService.sendVerifyMail(user.getEmail(), code, EXPIRED_TIME);
         } catch (Exception e) {
-            model.addAttribute("error", "Failed to send email");
-            return "register";
+            model.addAttribute("error", "Không thể gửi email.");
+            return "authencation/register";
         }
 
         User newUser = userService.register(user);
         if (newUser != null) {
-            model.addAttribute("registerSuccess", "Register successfully.");
+            model.addAttribute("registerSuccess", "Tạo tài khoản thành công.");
         }
 
-        redirectAttributes.addFlashAttribute("emailFlash", user.getEmail());
+        session.setAttribute("emailSession", user.getEmail());
 
         return "redirect:/verify";
     }
 
     @GetMapping("/verify")
-    public String showVerifyPage(Model model) {
-        //Check flash attribute "email" is existing
-        if (!model.containsAttribute("emailFlash")) {
+    public String showVerifyPage(Model model, HttpSession session) {
+        // Check if email exists in the session
+        String email = (String) session.getAttribute("emailSession");
+        if (email == null) {
+            // Redirect to register page if email is not found
             return "redirect:/register";
         }
 
-        return "verify";
+        model.addAttribute("email", email);
+        return "authencation/verify";
     }
 
     @PostMapping("/verify")
-    public String processVerifyForm(RedirectAttributes redirectAttributes, @RequestParam String code, Model model) {
+    public String processVerifyForm(HttpSession session, @RequestParam String code, Model model) {
         //Get email from flash attribute
-        String email = (String) redirectAttributes.getFlashAttributes().get("emailFlash");
+        String email = (String) session.getAttribute("emailSession");
+
+        // Redirect to register page if email is not found
+        if (email == null) {
+            model.addAttribute("verifyError", "Không thể xác thực. Vui lòng thử lại.");
+            return "authencation/verify";
+        }
+
         VerificationCode verifyCode = verificationCode.get(email);
 
         // Check if code is expired
         if (verifyCode == null || verifyCode.isExpired()) {
-            model.addAttribute("verifyError", "Code has expired. Please request a new one.");
+            model.addAttribute("verifyError", "Code đã hết hạn. Vui lòng hãy tạo lại.");
             model.addAttribute("email", email);
-            return "verify";
+            return "authencation/verify";
         }
 
         // Check if code is correct
         if (!verifyCode.getCode().equals(code)) {
-            model.addAttribute("verifyError", "Invalid verify code");
+            model.addAttribute("verifyError", "Mã kiểm tra đã bị sai.");
             model.addAttribute("email", email);
-            return "verify";
+            return "authencation/verify";
         }
 
         //Change user status to verified
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng."));
         user.setVerified(true);
         userRepository.save(user);
-        model.addAttribute("verifySuccess", "Email verified successfully");
+        model.addAttribute("verifySuccess", "Email đã được kiểm tra thành thành công.");
 
         //Remove verification code
         verificationCode.remove(email);
@@ -254,9 +257,9 @@ public class RegisterController {
 
         try {
             mailService.sendVerifyMail(email, newCode, EXPIRED_TIME);
-            model.addAttribute("success-msg", "New verification code has been sent");
+            model.addAttribute("success-msg", "Mã kiểm tra mới đã được gửi.");
         } catch (Exception e) {
-            model.addAttribute("error", "Failed to resend code. Try again.");
+            model.addAttribute("error", "Không thể gửi mã kiểm tra. Vui lòng thử lại.");
         }
 
         model.addAttribute("email", email);

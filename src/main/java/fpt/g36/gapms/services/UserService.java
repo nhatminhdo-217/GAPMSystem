@@ -22,4 +22,8 @@ public interface UserService {
     String updateUser(Long userId, UserDTO userDTO);
 
     String updatePersonalUser(Long userId, UpdateProfileDTO userDTO);
+  
+    void updateUserStatus(Long id, boolean active);
+
+    User getUserById(Long id);
 }

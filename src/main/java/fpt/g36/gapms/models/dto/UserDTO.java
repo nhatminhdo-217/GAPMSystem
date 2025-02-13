@@ -17,25 +17,25 @@ import java.time.LocalDate;
 @Builder
 public class UserDTO {
 
-    @NotBlank(message = "Username is required")
+    @NotBlank(message = "Tên đăng nhập không được để trống")
     private String username;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 8 characters")
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
     @Pattern(regexp = Regex.PASSWORD,
-            message = "Password must contain at least 1 number, 1 special character and 1 uppercase character")
+            message = "Mật khẩu phải chứa ít nhất 1 chữ số, 1 ký tự đặc biệt và 1 chữ in hoa")
     private String password;
 
-    @NotBlank(message = "Re-password is required")
+    @NotBlank(message = "Vui lòng nhập lại mật khẩu")
     private String rePassword;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Định dạng email không hợp lệ")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = Regex.PHONENUMBER,
-            message = "Invalid phone number format")
+            message = "Định dạng số điện thoại không hợp lệ")
     private String phoneNumber;
 
     private Role role;
@@ -46,16 +46,6 @@ public class UserDTO {
 
     private LocalDate updatedAt;
 
-    private String avatar;
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -64,7 +54,10 @@ public class UserDTO {
         this.username = username;
     }
 
-    public String getPassword() {
+    public @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 8 characters")
+    @Pattern(regexp = Regex.PASSWORD, message = "Password must contain at least 1 number, 1 special character and 1 uppercase character")
+            String getPassword() {
         return password;
     }
 
@@ -72,15 +65,15 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getRePassword() {
+    public @NotBlank(message = "Re-password is required") String getRePassword() {
         return rePassword;
     }
 
-    public void setRePassword(String rePassword) {
+    public void setRePassword(@NotBlank(message = "Re-password is required") String rePassword) {
         this.rePassword = rePassword;
     }
 
-    public String getEmail() {
+    public @NotBlank(message = "Email is required") @Email(message = "Invalid email format") String getEmail() {
         return email;
     }
 
@@ -88,11 +81,13 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
+    public @NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER,
+            message = "Invalid phone number format") String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(@NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER,
+            message = "Invalid phone number format") String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

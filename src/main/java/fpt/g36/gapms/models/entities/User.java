@@ -2,8 +2,6 @@ package fpt.g36.gapms.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-
 import java.time.LocalDateTime;
 
 @Entity
