@@ -116,6 +116,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
     @Override
     public Page<User> getAccounts(Pageable pageable) {
         return userRepository.findAll(pageable);
