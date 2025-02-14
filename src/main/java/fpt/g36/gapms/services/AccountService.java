@@ -11,15 +11,15 @@ public interface AccountService {
 
     User getUserById(long userId);
 
+    User createAccount(User user, String password);
+
     Page<User> searchAccounts(String keyword, Pageable pageable);
 
     List<User> searchAccountsWithoutPaging(String keyword);
 
     List<User> getAllAccountExcept();
 
-    User createAccount(User user, String password);
-
     boolean existsByEmail(String email);
-  
+
     boolean existsByPhoneNumber(String phoneNumber);
 }

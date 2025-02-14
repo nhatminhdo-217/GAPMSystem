@@ -12,6 +12,7 @@ import fpt.g36.gapms.services.impls.AccountServiceImpl;
 import fpt.g36.gapms.services.impls.RoleServiceImpl;
 import fpt.g36.gapms.utils.PasswordGenerator;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 import java.util.*;
 import static fpt.g36.gapms.utils.PasswordGenerator.generateRandomPassword;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,8 +47,7 @@ public class AccountController {
             UserService userService,
             RoleServiceImpl roleService,
             RoleRepository roleRepository,
-            MailService emailService
-    ) {
+            MailService emailService) {
         this.accountService = accountService;
         this.userService = userService;
         this.roleService = roleService;
@@ -58,17 +62,26 @@ public class AccountController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String role,
-            Model model) {
-
+            Model model,
+            Principal principal) {
+        List<Role> roles = roleRepository.findAll();
+        String emailOrPhone = principal.getName();
+        Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        //
+        model.addAttribute("user", optionalUser.get());
+        model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+        //
+        model.addAttribute("roles", roles);
+        model.addAttribute("users", new User());
         Pageable pageable = PageRequest.of(page, size);
         List<User> allUsers;
-
         allUsers = accountService.getAllAccountExcept();
 
         if (search != null && !search.isEmpty()) {
             allUsers = accountService.searchAccountsWithoutPaging(search); // Lấy tất cả user tìm kiếm
         } else {
             allUsers = accountService.getAllAccountExcept(); // Lấy toàn bộ user trừ tài khoản admin đang login
+
         }
 
         // Debug để kiểm tra Role
@@ -116,16 +129,16 @@ public class AccountController {
 
     @PostMapping("/account_update/{id}")
     public String updateAccount(@PathVariable Long id,
-                                @ModelAttribute("user") UserDTO userDTO,
-                                RedirectAttributes redirectAttributes) {
+
+            @ModelAttribute("user") UserDTO userDTO,
+            RedirectAttributes redirectAttributes) {
+
         userService.updateUser(id, userDTO);
 
         // Thêm thông báo thành công vào RedirectAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
         return "redirect:/admin/account_detail/" + id;
     }
-
-}
 
     @PostMapping("/create_account")
     public String createAccount(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {

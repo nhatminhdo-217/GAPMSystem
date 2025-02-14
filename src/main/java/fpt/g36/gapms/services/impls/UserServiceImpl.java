@@ -27,7 +27,8 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     private MailServiceImpl mailService;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
+            RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(UserDTO userDTO) {
-        //Set role to user
+        // Set role to user
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Error: Role USER is not found."));
 
@@ -100,6 +101,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         return "User updated successfully";
+    }
+
+    @Override
+    @Transactional
+    public void updateUserStatus(Long id, boolean active) {
+        User user = getUserById(id);
+        user.setActive(active);
+        userRepository.save(user);
     }
 
     @Override

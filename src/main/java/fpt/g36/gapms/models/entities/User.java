@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -96,7 +97,6 @@ public class User {
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
-
 
     public String getAvatar() {
         return avatar;
