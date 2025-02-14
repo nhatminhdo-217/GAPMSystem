@@ -3,6 +3,8 @@ package fpt.g36.gapms.services;
 import fpt.g36.gapms.models.dto.UpdateProfileDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
@@ -21,6 +23,8 @@ public interface UserService {
 
     String updateUser(Long userId, UserDTO userDTO);
 
+    Page<User> getAccounts(Pageable pageable);
+  
     String updatePersonalUser(Long userId, UpdateProfileDTO userDTO);
   
     void updateUserStatus(Long id, boolean active);

@@ -6,11 +6,17 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
+import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
-import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -103,10 +109,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void updateUserStatus(Long id, boolean active) {
-        User user = getUserById(id);
-        user.setActive(active);
+    public String updateUser(Long userId, UserDTO userDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(userDTO.getRole());
+        user.setActive(userDTO.isActive());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+        return "User updated successfully";
+    }
+
+    @Override
+    public Page<User> getAccounts(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }
