@@ -32,6 +32,32 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <style>
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        .table td {
+            text-align: center;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
     <link rel="stylesheet" href="/assert/css/style/Admin/searchstyle.css">
 </head>
 
@@ -67,10 +93,86 @@
 
             <div class="row">
 
-                <button class="col-2 m-3 btn btn-custom">
-                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create
-                        Account</a>
+<!--                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal">-->
+<!--                    <a th:href="@{/admin/create_account}" style="color: white; text-decoration: none;">Create Account</a>-->
+<!--                </button>-->
+
+                <input type="hidden" id="successMessage" th:value="${message}">
+
+                <!-- Toast Notification -->
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+                    <div id="toastContainer" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body" id="toastBody">
+                                <!-- Message will be inserted dynamically -->
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal" style="color: white;">
+                    Tạo Tài Khoản
                 </button>
+
+                <!--Create Account Modal-->
+                <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="createAccountModalLabel">Create Account</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="createAccountForm" th:action="@{'/admin/create_account'}" th:object="${users}" method="post">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label"> Họ Và Tên</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                        <!-- Hiển thị lỗi email nếu có -->
+                                        <div th:if="${emailError}" class="text-danger" th:text="${emailError}"></div>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                                        <!-- Hiển thị lỗi phone number nếu có -->
+                                        <div th:if="${phoneError}" class="text-danger" th:text="${phoneError}"></div>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="role" class="form-label">Vai Trò</label>
+                                            <select class="form-select" id="role" name="role" th:field="*{role.id}" required>
+                                            <option value="" disabled th:text="'Select a role'"></option>
+                                            <option th:each="r : ${roles}"
+                                                    th:value="${r.id}"
+                                                    th:text="${r.name}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">Trạng Thái</label>
+                                        <input type="text" class="form-control" id="status" value="Active" disabled>
+                                        <input type="hidden" name="active" value="true">
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-success w-100">Tạo</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-1"></div>
 
@@ -86,8 +188,8 @@
                             <i class="bi bi-search text-white fs-5"></i>
                         </button>
                     </div>
-                </form>
 
+                </form>
 
                 <div class="col-1"></div>
 
@@ -99,42 +201,57 @@
                     </select>
                 </div>
 
-
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="user : ${account.content}">
-                        <td th:text="${user.username}"></td>
-                        <td th:text="${user.email}"></td>
-                        <td th:text="${user.phoneNumber}"></td>
-                        <td th:text="${user.role.name}"></td>
-                        <td class="text-center">
-                        <span th:text="${user.isActive} ? 'Active' : 'Inactive'"
-                              th:classappend="${user.isActive} ? 'badge bg-success' : 'badge bg-danger'"></span>
-                        </td>
-                        <td>
-                            <a th:href="@{/admin/account_detail/{id}(id=${user.id})}"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ Và Tên</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Vai Trò</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user, users : ${account.content}">
+                            <td th:text="${users.count}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.phoneNumber}"></td>
+                            <td th:text="${user.role.name}"></td>
 
-                <!-- Pagination Controls -->
+                            <td class="text-center align-middle">
+                                <div class="d-flex justify-content-center">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox"
+                                               class="form-check-input toggle-switch"
+                                               th:checked="${user.active}"
+                                               th:attr="data-url=@{/admin/{id}/toggle-status(id=${user.id})}"
+                                               onchange="toggleStatus(this)">
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <a th:href="@{/admin/account_detail/{id}(id=${user.id})}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <a th:href="@{/admin/account_view/{id}(id=${user.id})}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Detail">
+                                    <i class="bi bi-eye"></i> Detail
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                <!-- Phân trang -->
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         <!-- Nút Previous -->
@@ -189,6 +306,98 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
+
+<script>
+    function searchAccount() {
+        // Lấy giá trị nhập vào từ ô tìm kiếm
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let tableRows = document.querySelectorAll("tbody tr");
+
+        tableRows.forEach(row => {
+            let usernameCell = row.querySelector("td:first-child");
+            if (usernameCell) {
+                let username = usernameCell.textContent.toLowerCase();
+                if (username.includes(input)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    function filterAccounts() {
+        // Lấy giá trị nhập từ ô tìm kiếm
+        let searchInput = document.getElementById("searchInput").value.toLowerCase();
+        let roleFilter = document.getElementById("roleFilter").value.toLowerCase();
+        let tableRows = document.querySelectorAll("tbody tr");
+
+        tableRows.forEach(row => {
+            let usernameCell = row.querySelector("td:first-child"); // Lấy cột username
+            let roleCell = row.querySelector("td:nth-child(4)"); // Lấy cột Role
+
+            if (usernameCell && roleCell) {
+                let username = usernameCell.textContent.toLowerCase();
+                let role = roleCell.textContent.toLowerCase();
+
+                let matchesUsername = username.includes(searchInput);
+                let matchesRole = (roleFilter === "" || role === roleFilter);
+
+                if (matchesUsername && matchesRole) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var createAccountModal = new bootstrap.Modal(document.getElementById("createAccountModal"));
+
+        // Function to open the modal
+        function openCreateAccountModal() {
+            createAccountModal.show();
+        }
+
+        // Attach the function to the button click event
+        var openModalButton = document.getElementById("openModalButton");
+        if (openModalButton) {
+            openModalButton.addEventListener("click", openCreateAccountModal);
+        }
+
+        // Check if success message exists
+        var successMessage = document.getElementById("successMessage")?.value; // Get message from hidden input
+        if (successMessage) {
+            showToast(successMessage);
+        }
+
+        // Function to display toast notification
+        function showToast(message) {
+            var toastContainer = document.getElementById("toastContainer");
+            var toastBody = document.getElementById("toastBody");
+
+            if (toastBody) {
+                toastBody.textContent = message;
+            }
+
+            var toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+        }
+    });
+</script>
+
+<script>
+    function toggleStatus(element) {
+        let url = element.getAttribute("data-url");
+        window.location.href = url;
+    }
+</script>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

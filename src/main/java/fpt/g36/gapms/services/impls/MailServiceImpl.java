@@ -38,4 +38,19 @@ public class MailServiceImpl implements MailService {
         message.setText("Your reset password token: " + token);
         mailSender.send(message);
     }
+
+    @Override
+    @Async
+    public void sendPasswordEmail(String email, String password) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Your New Account Password");
+        message.setText("Dear You,\n\n"
+                + "Your account has been successfully created. "
+                + "Here is your temporary password: " + password + "\n\n"
+                + "For security reasons, please change your password after your first login.\n\n"
+                + "Thank you!");
+
+        mailSender.send(message);
+    }
 }
