@@ -4,6 +4,7 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String phoneNumberOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByEmailOrPhoneNumber(phoneNumberOrEmail, phoneNumberOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Tài khoản không tồn tại"));
+
+        // ✅ Kiểm tra nếu tài khoản bị khóa (status = false)
+        if (!user.isActive()) {
+
+                throw new DisabledException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+
+        }
         return new org.springframework.security.core.userdetails.User(
                 user.getPhoneNumber(),
                 user.getPassword(),

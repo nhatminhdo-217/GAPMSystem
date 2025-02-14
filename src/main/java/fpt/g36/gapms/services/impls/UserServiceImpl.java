@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.models.dto.UpdateProfileDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -72,6 +74,38 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public String updateUser(Long userId, UserDTO userDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setRole(userDTO.getRole());
+        user.setActive(userDTO.isActive());
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return "User updated successfully";
+    }
+
+    public String updatePersonalUser(Long userId, UpdateProfileDTO userDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Gán trực tiếp giá trị từ DTO vào User
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setAvatar(userDTO.getAvatar());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+        return "User updated successfully";
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

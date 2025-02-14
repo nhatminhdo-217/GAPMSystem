@@ -22,8 +22,9 @@
     <div class="login-box-body">
       <p class="text-center mb-4">Đăng nhập để bắt đầu phiên làm việc</p>
 
-      <div th:if="${loginError}" class="alert alert-danger text-center" role="alert">
-        <i class="fa fa-exclamation-circle"></i> Sai thông tin đăng nhập, hãy thử lại
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <i class="fa fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
       <form action="/login" method="POST">
