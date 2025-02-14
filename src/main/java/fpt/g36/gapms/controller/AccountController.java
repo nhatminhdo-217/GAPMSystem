@@ -23,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 import java.util.*;
 import static fpt.g36.gapms.utils.PasswordGenerator.generateRandomPassword;
 
@@ -59,9 +61,16 @@ public class AccountController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String role,
-            Model model) {
+            Model model,
+            Principal principal) {
 
         List<Role> roles = roleRepository.findAll();
+        String emailOrPhone = principal.getName();
+        Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        //
+        model.addAttribute("user", optionalUser.get());
+        model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+        //
         model.addAttribute("roles", roles);
         model.addAttribute("users", new User());
 
