@@ -19,8 +19,6 @@ public interface AccountService {
 
     List<User> getAllAccountExcept();
 
-    User createAccount(User user, String password);
-
     boolean existsByEmail(String email);
 
     boolean existsByPhoneNumber(String phoneNumber);

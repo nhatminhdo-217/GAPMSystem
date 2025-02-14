@@ -104,19 +104,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+    public void updateUserStatus(Long id, boolean active) {
+        User user = getUserById(id);
+        user.setActive(active);
+        userRepository.save(user);
     }
 
     @Override
-    public String updateUser(Long userId, UserDTO userDTO) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setRole(userDTO.getRole());
-        user.setActive(userDTO.isActive());
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
 
@@ -93,12 +93,9 @@
             <!-- Form tìm kiếm -->
 
             <div class="row">
-
-                <button class="col-2 m-3 btn btn-custom">
-                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create
-                        Account</a>
+                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal" style="color: white;">
+                    Tạo Tài Khoản
                 </button>
-
                 <div class="col-1"></div>
 
                 <form id="searchForm" action="/admin/list_account" method="get"
@@ -114,10 +111,15 @@
                         </button>
                     </div>
                 </form>
-<!--                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal">-->
-<!--                    <a th:href="@{/admin/create_account}" style="color: white; text-decoration: none;">Create Account</a>-->
-<!--                </button>-->
+                <div class="col-1"></div>
 
+                <div class="col-2 m-3">
+                    <select id="roleFilter" name="role" class="form-select shadow-sm rounded-pill">
+                        <option value="">All Roles</option>
+                        <option value="Admin" th:selected="${role == 'Admin'}">Admin</option>
+                        <option value="User" th:selected="${role == 'User'}">User</option>
+                    </select>
+                </div>
                 <input type="hidden" id="successMessage" th:value="${message}">
 
                 <!-- Toast Notification -->
@@ -131,12 +133,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal" style="color: white;">
-                    Tạo Tài Khoản
-                </button>
 
                 <!--Create Account Modal-->
                 <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true" >
@@ -186,90 +182,13 @@
                                         <input type="text" class="form-control" id="status" value="Active" disabled>
                                         <input type="hidden" name="active" value="true">
                                     </div>
-
-
                                     <button type="submit" class="btn btn-success w-100">Tạo</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-1"></div>
-
-                <form id="searchForm" action="/admin/list_account" method="get"
-                      class="col-5 m-3 d-flex align-items-center gap-2">
-                    <input type="hidden" id="hiddenRole" name="role" th:value="${role}">
-                    <div class="input-group shadow-sm rounded-pill border">
-                        <input type="text" id="searchInput" name="search"
-                               class="form-control border-0 bg-white rounded-start-pill px-3"
-                               placeholder="Search by username, email, phone number"
-                               th:value="${search}"/>
-                        <button type="submit" class="btn btn-primary rounded-pill px-3">
-                            <i class="bi bi-search text-white fs-5"></i>
-                        </button>
-                    </div>
-
-                </form>
-                <div class="col-1"></div>
-
-                <div class="col-2 m-3">
-                    <select id="roleFilter" name="role" class="form-select shadow-sm rounded-pill">
-                        <option value="">All Roles</option>
-                        <option value="Admin" th:selected="${role == 'Admin'}">Admin</option>
-                        <option value="User" th:selected="${role == 'User'}">User</option>
-                    </select>
-                </div>
-
-
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="user : ${account.content}">
-                        <td th:text="${user.username}"></td>
-                        <td th:text="${user.email}"></td>
-                        <td th:text="${user.phoneNumber}"></td>
-                        <td th:text="${user.role.name}"></td>
-                        <td class="text-center">
-                        <span th:text="${user.isActive} ? 'Active' : 'Inactive'"
-                              th:classappend="${user.isActive} ? 'badge bg-success' : 'badge bg-danger'"></span>
-                        </td>
-                        <td>
-                            <a th:href="@{/admin/account_detail/{id}(id=${user.id})}"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!-- Pagination Controls -->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <!-- Nút Previous -->
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="${currentPage > 0} ? @{/admin/list_account(page=${currentPage - 1}, size=${size}, search=${search}, role=${role})} : '#'"
-                    <select id="roleFilter" class="form-select shadow-sm rounded-pill" onchange="filterAccounts()">
-                        <option value="">All Roles</option>
-                        <option value="Admin" th:selected="${role == 'Admin'}">Admin</option>
-                        <option value="User" th:selected="${role == 'User'}">User</option>
-                    </select>
-                </div>
-
             </div>
 
             <div class="table-responsive">
@@ -331,19 +250,6 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-
-                        <!-- Các số trang -->
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link"
-                               th:href="@{/admin/list_account(page=${i}, size=${size}, search=${search}, role=${role})}"
-                               th:text="${i + 1}"></a>
-                        </li>
-
-                        <!-- Nút Next -->
-                        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="${currentPage + 1 < totalPages} ? @{/admin/list_account(page=${currentPage + 1}, size=${size}, search=${search}, role=${role})} : '#'"
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link"
@@ -362,25 +268,20 @@
                 </nav>
             </div>
         </div>
-
         <!-- main content end -->
-
         <!-- Footer Start -->
         <div th:replace="~{shared/footer.html :: footer}"></div>
         <!-- Footer End -->
     </div>
+    </div>
+
     <!-- Content End -->
-
-    <script>
-        document.getElementById("roleFilter").addEventListener("change", function () {
-            document.getElementById("hiddenRole").value = this.value;
-            document.getElementById("searchForm").submit();
-        });
-    </script>
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-</div>
+
+
+
+
 
 <script>
     function searchAccount() {
@@ -472,6 +373,13 @@
         let url = element.getAttribute("data-url");
         window.location.href = url;
     }
+</script>
+
+<script>
+    document.getElementById("roleFilter").addEventListener("change", function () {
+        document.getElementById("hiddenRole").value = this.value;
+        document.getElementById("searchForm").submit();
+    });
 </script>
 
 <!-- JavaScript Libraries -->
