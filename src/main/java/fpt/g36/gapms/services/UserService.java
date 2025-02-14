@@ -2,6 +2,8 @@ package fpt.g36.gapms.services;
 
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
@@ -19,4 +21,6 @@ public interface UserService {
     void updatePassword(User user, String newPassword);
 
     String updateUser(Long userId, UserDTO userDTO);
+
+    Page<User> getAccounts(Pageable pageable);
 }

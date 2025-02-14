@@ -7,6 +7,8 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,4 +85,8 @@ public class UserServiceImpl implements UserService {
         return "User updated successfully";
     }
 
+    @Override
+    public Page<User> getAccounts(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 }

@@ -32,32 +32,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
-    <style>
-
-        .table th {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-        }
-
-        .table td {
-            text-align: center;
-        }
-
-        .btn-custom {
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            background-color: #0056b3;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="/assert/css/style/Admin/searchstyle.css">
 </head>
 
 <body>
@@ -93,33 +68,37 @@
             <div class="row">
 
                 <button class="col-2 m-3 btn btn-custom">
-                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create Account</a>
+                    <a th:href="@{/admin/account_detail}" style="color: white; text-decoration: none;">Create
+                        Account</a>
                 </button>
 
                 <div class="col-1"></div>
 
-                <form id="searchForm" class="col-5 m-3 d-flex align-items-center gap-2">
+                <form id="searchForm" action="/admin/list_account" method="get"
+                      class="col-5 m-3 d-flex align-items-center gap-2">
+                    <input type="hidden" id="hiddenRole" name="role" th:value="${role}">
                     <div class="input-group shadow-sm rounded-pill border">
-        <span class="input-group-text bg-white border-0">
-            <i class="bi bi-search text-primary"></i>
-        </span>
-                        <input type="text" id="searchInput" class="form-control border-0 bg-white rounded-end-pill"
-                               placeholder="Search by username" onkeyup="searchAccount()" />
-
+                        <input type="text" id="searchInput" name="search"
+                               class="form-control border-0 bg-white rounded-start-pill px-3"
+                               placeholder="Search by username, email, phone number"
+                               th:value="${search}"/>
+                        <button type="submit" class="btn btn-primary rounded-pill px-3">
+                            <i class="bi bi-search text-white fs-5"></i>
+                        </button>
                     </div>
-
                 </form>
+
 
                 <div class="col-1"></div>
 
                 <div class="col-2 m-3">
-                    <select id="roleFilter" class="form-select shadow-sm rounded-pill" onchange="filterAccounts()">
+                    <select id="roleFilter" name="role" class="form-select shadow-sm rounded-pill">
                         <option value="">All Roles</option>
-                        <option value="Admin">Admin</option>
-                        <option value="User">User</option>
-                        <option value="Seller">Seller</option>
+                        <option value="Admin" th:selected="${role == 'Admin'}">Admin</option>
+                        <option value="User" th:selected="${role == 'User'}">User</option>
                     </select>
                 </div>
+
 
             </div>
 
@@ -155,33 +134,39 @@
                     </tbody>
                 </table>
 
-                <!-- Phân trang -->
+                <!-- Pagination Controls -->
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
+                        <!-- Nút Previous -->
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="${currentPage > 0} ? @{/admin/list_account(page=${currentPage - 1}, size=${size}, search=${search})} : '#'"
+                               th:href="${currentPage > 0} ? @{/admin/list_account(page=${currentPage - 1}, size=${size}, search=${search}, role=${role})} : '#'"
                                aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
 
+                        <!-- Các số trang -->
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/admin/list_account(page=${i}, size=${size}, search=${search})}"
+                               th:href="@{/admin/list_account(page=${i}, size=${size}, search=${search}, role=${role})}"
                                th:text="${i + 1}"></a>
                         </li>
 
+                        <!-- Nút Next -->
                         <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="${currentPage + 1 < totalPages} ? @{/admin/list_account(page=${currentPage + 1}, size=${size}, search=${search})} : '#'"
+                               th:href="${currentPage + 1 < totalPages} ? @{/admin/list_account(page=${currentPage + 1}, size=${size}, search=${search}, role=${role})} : '#'"
                                aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
+
+
+                <!-- End Pagination -->
 
             </div>
         </div>
@@ -194,59 +179,16 @@
     </div>
     <!-- Content End -->
 
+    <script>
+        document.getElementById("roleFilter").addEventListener("change", function () {
+            document.getElementById("hiddenRole").value = this.value;
+            document.getElementById("searchForm").submit();
+        });
+    </script>
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-
-<script>
-    function searchAccount() {
-        // Lấy giá trị nhập vào từ ô tìm kiếm
-        let input = document.getElementById("searchInput").value.toLowerCase();
-        let tableRows = document.querySelectorAll("tbody tr");
-
-        tableRows.forEach(row => {
-            let usernameCell = row.querySelector("td:first-child");
-            if (usernameCell) {
-                let username = usernameCell.textContent.toLowerCase();
-                if (username.includes(input)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            }
-        });
-    }
-</script>
-
-<script>
-    function filterAccounts() {
-        // Lấy giá trị nhập từ ô tìm kiếm
-        let searchInput = document.getElementById("searchInput").value.toLowerCase();
-        let roleFilter = document.getElementById("roleFilter").value.toLowerCase();
-        let tableRows = document.querySelectorAll("tbody tr");
-
-        tableRows.forEach(row => {
-            let usernameCell = row.querySelector("td:first-child"); // Lấy cột username
-            let roleCell = row.querySelector("td:nth-child(4)"); // Lấy cột Role
-
-            if (usernameCell && roleCell) {
-                let username = usernameCell.textContent.toLowerCase();
-                let role = roleCell.textContent.toLowerCase();
-
-                let matchesUsername = username.includes(searchInput);
-                let matchesRole = (roleFilter === "" || role === roleFilter);
-
-                if (matchesUsername && matchesRole) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            }
-        });
-    }
-</script>
-
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
