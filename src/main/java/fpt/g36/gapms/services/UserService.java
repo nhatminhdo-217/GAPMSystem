@@ -22,8 +22,6 @@ public interface UserService {
     void updatePassword(User user, String newPassword);
 
     String updateUser(Long userId, UserDTO userDTO);
-
-    Page<User> getAccounts(Pageable pageable);
   
     String updatePersonalUser(Long userId, UpdateProfileDTO userDTO);
 

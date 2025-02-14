@@ -117,16 +117,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    @Override
-    public String updateUser(Long userId, UserDTO userDTO) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setRole(userDTO.getRole());
-        user.setActive(userDTO.isActive());
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-        return "User updated successfully";
-    }
+//    @Override
+//    public String updateUser(Long userId, UserDTO userDTO) {
+//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        user.setRole(userDTO.getRole());
+//        user.setActive(userDTO.isActive());
+//        user.setUpdatedAt(LocalDateTime.now());
+//        userRepository.save(user);
+//        return "User updated successfully";
+//    }
 
     @Override
     public Page<User> getAccounts(Pageable pageable) {
