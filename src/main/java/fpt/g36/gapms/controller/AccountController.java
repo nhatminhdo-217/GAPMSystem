@@ -46,8 +46,7 @@ public class AccountController {
             UserService userService,
             RoleServiceImpl roleService,
             RoleRepository roleRepository,
-            MailService emailService
-    ) {
+            MailService emailService) {
         this.accountService = accountService;
         this.userService = userService;
         this.roleService = roleService;
@@ -107,7 +106,6 @@ public class AccountController {
         model.addAttribute("size", size);
         model.addAttribute("search", search);
         model.addAttribute("role", role);
-
         return "home-page/account_management";
     }
 
@@ -131,15 +129,14 @@ public class AccountController {
 
     @PostMapping("/account_update/{id}")
     public String updateAccount(@PathVariable Long id,
-                                @ModelAttribute("user") UserDTO userDTO,
-                                RedirectAttributes redirectAttributes) {
+            @ModelAttribute("user") UserDTO userDTO,
+            RedirectAttributes redirectAttributes) {
         userService.updateUser(id, userDTO);
 
         // Thêm thông báo thành công vào RedirectAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
         return "redirect:/admin/account_detail/" + id;
     }
-
 
     @PostMapping("/create_account")
     public String createAccount(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {

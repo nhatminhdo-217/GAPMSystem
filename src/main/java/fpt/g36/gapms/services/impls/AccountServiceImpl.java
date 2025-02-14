@@ -20,6 +20,7 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
     @Autowired
     private UserServiceImpl userServiceImpl;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -38,8 +39,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Page<User> searchAccounts(String keyword, Pageable pageable) {
         if (keyword != null && !keyword.isEmpty()) {
-            return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(
-                    keyword, keyword, keyword, pageable);
+            return userRepository
+                    .findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(
+                            keyword, keyword, keyword, pageable);
         }
         return userRepository.findAll(pageable);
     }
@@ -50,7 +52,8 @@ public class AccountServiceImpl implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName(); // Email của người dùng đang đăng nhập
 
-        // Tìm kiếm tài khoản mà không hiển thị tài khoản có email trùng với người dùng hiện tại
+        // Tìm kiếm tài khoản mà không hiển thị tài khoản có email trùng với người dùng
+        // hiện tại
         return userRepository.findByKeywordExcludingCurrentUserEmail(keyword, currentEmail);
     }
 
@@ -59,6 +62,7 @@ public class AccountServiceImpl implements AccountService {
         String currentAdminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findAllExceptCurrentUser(currentAdminEmail);
     }
+
     @Override
     public User createAccount(User user, String password) {
         // Mã hoá mật khẩu

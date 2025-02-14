@@ -3,7 +3,6 @@ package fpt.g36.gapms.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -98,7 +97,6 @@ public class User {
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
-
 
     public String getAvatar() {
         return avatar;

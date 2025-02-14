@@ -17,20 +17,19 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Import(PasswordConfig.class)
 public class SecurityConfig {
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code").permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**",
+                                "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
+                        .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-
                         .requestMatchers("/test/user/**").hasRole("USER")
                         .requestMatchers("/admin/{id}/toggle-status").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")
                         .loginProcessingUrl("/login")
@@ -75,9 +74,10 @@ public class SecurityConfig {
 
                             // ✅ Kiểm tra cả lỗi chính và lỗi gốc
                             String exceptionMessage = (exception.getMessage() != null) ? exception.getMessage() : "";
-                            String causeMessage = (exception.getCause() != null && exception.getCause().getMessage() != null)
-                                    ? exception.getCause().getMessage()
-                                    : "";
+                            String causeMessage = (exception.getCause() != null
+                                    && exception.getCause().getMessage() != null)
+                                            ? exception.getCause().getMessage()
+                                            : "";
 
                             if (causeMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa") ||
                                     exceptionMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa")) {
@@ -97,18 +97,15 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID", "remember")
-                        .permitAll()
-                )
+                        .permitAll())
                 .rememberMe(rememberMe -> rememberMe
-                        .key("mySecretKey")  // Key để mã hóa token
+                        .key("mySecretKey") // Key để mã hóa token
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
-                        .alwaysRemember(false)
-                );
+                        .alwaysRemember(false));
 
         return http.build();
     }
-
 
     @Bean
     public CustomOAuth2UserService customOAuth2UserService() {

@@ -30,4 +30,5 @@ public interface UserService {
     User getUserById(Long id);
 
     Page<User> getAccounts(Pageable pageable);
+
 }

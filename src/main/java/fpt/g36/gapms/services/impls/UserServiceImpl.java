@@ -12,8 +12,11 @@ import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -24,7 +27,8 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     private MailServiceImpl mailService;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
+            RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(UserDTO userDTO) {
-        //Set role to user
+        // Set role to user
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Error: Role USER is not found."));
 
@@ -106,10 +110,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void updateUserStatus(Long id, boolean active) {
-        User user = getUserById(id);
-        user.setActive(active);
+    public String updateUser(Long userId, UserDTO userDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(userDTO.getRole());
+        user.setActive(userDTO.isActive());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
     }
 
