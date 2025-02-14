@@ -32,6 +32,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+  
     <link rel="stylesheet" href="/assert/css/style/Admin/searchstyle.css">
 
     <style>
@@ -97,7 +98,7 @@
                     Tạo Tài Khoản
                 </button>
                 <div class="col-1"></div>
-
+              
                 <form id="searchForm" action="/admin/list_account" method="get"
                       class="col-5 m-3 d-flex align-items-center gap-2">
                     <input type="hidden" id="hiddenRole" name="role" th:value="${role}">
@@ -111,8 +112,8 @@
                         </button>
                     </div>
                 </form>
+              
                 <div class="col-1"></div>
-
                 <div class="col-2 m-3">
                     <select id="roleFilter" name="role" class="form-select shadow-sm rounded-pill">
                         <option value="">All Roles</option>
@@ -250,6 +251,7 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
+
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link"
@@ -274,6 +276,7 @@
         <!-- Footer End -->
     </div>
     </div>
+
 
     <!-- Content End -->
     <!-- Back to Top -->

@@ -6,13 +6,13 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
+import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -115,6 +115,17 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public String updateUser(Long userId, UserDTO userDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(userDTO.getRole());
+        user.setActive(userDTO.isActive());
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return "User updated successfully";
     }
 
     @Override

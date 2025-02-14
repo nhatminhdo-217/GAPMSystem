@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.services.AccountService;
+import org.springframework.data.domain.PageImpl;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.AccountServiceImpl;
@@ -52,6 +53,7 @@ public class AccountController {
         this.roleService = roleService;
         this.roleRepository = roleRepository;
         this.emailService = emailService;
+
     }
 
     @GetMapping("/list_account")
@@ -62,7 +64,6 @@ public class AccountController {
             @RequestParam(required = false) String role,
             Model model,
             Principal principal) {
-
         List<Role> roles = roleRepository.findAll();
         String emailOrPhone = principal.getName();
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
@@ -72,16 +73,15 @@ public class AccountController {
         //
         model.addAttribute("roles", roles);
         model.addAttribute("users", new User());
-
         Pageable pageable = PageRequest.of(page, size);
         List<User> allUsers;
-
         allUsers = accountService.getAllAccountExcept();
 
         if (search != null && !search.isEmpty()) {
             allUsers = accountService.searchAccountsWithoutPaging(search); // Lấy tất cả user tìm kiếm
         } else {
             allUsers = accountService.getAllAccountExcept(); // Lấy toàn bộ user trừ tài khoản admin đang login
+
         }
 
         // Debug để kiểm tra Role
@@ -129,8 +129,10 @@ public class AccountController {
 
     @PostMapping("/account_update/{id}")
     public String updateAccount(@PathVariable Long id,
+
             @ModelAttribute("user") UserDTO userDTO,
             RedirectAttributes redirectAttributes) {
+
         userService.updateUser(id, userDTO);
 
         // Thêm thông báo thành công vào RedirectAttributes

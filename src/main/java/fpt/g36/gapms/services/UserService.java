@@ -23,6 +23,8 @@ public interface UserService {
 
     String updateUser(Long userId, UserDTO userDTO);
 
+    Page<User> getAccounts(Pageable pageable);
+  
     String updatePersonalUser(Long userId, UpdateProfileDTO userDTO);
 
     void updateUserStatus(Long id, boolean active);
