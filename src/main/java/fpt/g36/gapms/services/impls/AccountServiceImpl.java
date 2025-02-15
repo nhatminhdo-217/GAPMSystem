@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
-        Role role = roleRepository.findById((long) createAccountDTO.getRole())
+        Role role = roleRepository.findById( createAccountDTO.getRole().getId())
                 .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ"));
         user.setRole(role);
 

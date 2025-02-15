@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.dto;
 
+import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.utils.Regex;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -20,12 +21,12 @@ public class CreateAccountDTO {
             message = "Định dạng số điện thoại không hợp lệ")
     private String phoneNumber;
 
-    private int role;
+    private Role role;
 
     public CreateAccountDTO() {
     }
 
-    public CreateAccountDTO(String username, String email, String phoneNumber, int role) {
+    public CreateAccountDTO(String username, String email, String phoneNumber, Role role) {
         this.username = username;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -55,11 +56,11 @@ public class CreateAccountDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
