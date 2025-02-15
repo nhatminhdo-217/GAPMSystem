@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,61 +20,89 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**", "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code").permitAll() // Cho phép truy cập trang login
-                        .requestMatchers("/profile").authenticated()
 
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**",
+                                "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
+                        .permitAll() // Cho phép truy cập trang login
+                        .requestMatchers("/profile").authenticated()
                         .requestMatchers("/test/user/**").hasRole("USER")
                         .requestMatchers("/admin/{id}/toggle-status").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")
                         .loginProcessingUrl("/login")
+
                         .usernameParameter("phoneNumberOrEmail")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler())
                         .failureHandler((request, response, exception) -> {
                             System.out.println("Error: " + exception.getMessage());
                             HttpSession session = request.getSession();
-                            session.setAttribute("phoneNumberOrEmail", request.getParameter("phoneNumberOrEmail"));
 
-                            // ✅ Xử lý lỗi hợp lý
-                            String redirectUrl;
+                            // ✅ Xử lý lỗi đúng thứ tự
+                            String errorMessage;
                             if (exception instanceof DisabledException) {
-                                redirectUrl = "/login_form?error=disabled"; // Tài khoản bị khóa
+                                errorMessage = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
+                            } else if (exception instanceof BadCredentialsException) {
+                                errorMessage = "Sai tài khoản hoặc mật khẩu.";
                             } else {
-                                redirectUrl = "/login_form?error=true"; // Sai tài khoản hoặc mật khẩu
+                                errorMessage = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
                             }
-                            response.sendRedirect(redirectUrl);
-                        })
-                        .permitAll()
+
+                            System.out.println("⚠️ Đăng nhập thất bại: " + errorMessage);
+                            session.setAttribute("error", errorMessage);
+                            session.setAttribute("phoneNumberOrEmail", request.getParameter("phoneNumberOrEmail"));
+                            response.sendRedirect("/login-error");
+                        }).permitAll()
+
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(customAuthenticationSuccessHandler())
                         .failureHandler((request, response, exception) -> {
-                            // ✅ Xử lý lỗi khi đăng nhập bằng Google
-                            if (exception instanceof DisabledException) {
-                                response.sendRedirect("/login_form?error=disabled"); // Tài khoản bị khóa
-                            } else {
-                                response.sendRedirect("/login_form?error=true"); // Lỗi OAuth2 hoặc sai tài khoản
+                            HttpSession session = request.getSession();
+
+                            // ✅ Log toàn bộ lỗi để kiểm tra nội dung thực sự
+                            System.out.println("⚠️ OAuth2 Exception Class: " + exception.getClass().getName());
+                            System.out.println("⚠️ OAuth2 Exception Message: " + exception.getMessage());
+                            if (exception.getCause() != null) {
+                                System.out.println("⚠️ OAuth2 Exception Cause: " + exception.getCause().getMessage());
                             }
+
+                            // ✅ Lỗi mặc định
+                            String errorMessage = "Đăng nhập bằng Google thất bại.";
+
+                            // ✅ Kiểm tra cả lỗi chính và lỗi gốc
+                            String exceptionMessage = (exception.getMessage() != null) ? exception.getMessage() : "";
+                            String causeMessage = (exception.getCause() != null
+                                    && exception.getCause().getMessage() != null)
+                                            ? exception.getCause().getMessage()
+                                            : "";
+
+                            if (causeMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa") ||
+                                    exceptionMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa")) {
+                                errorMessage = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
+                            }
+
+                            System.out.println("⚠️ OAuth2 Đăng nhập thất bại: " + errorMessage);
+
+                            session.setAttribute("error", errorMessage);
+                            response.sendRedirect("/login-error");
                         })
+                        .successHandler(customAuthenticationSuccessHandler()) // Xử lý khi đăng nhập thành công
                 )
+
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login_form") // Sau khi logout, quay về trang login
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID", "remember")
-                        .permitAll()
-                )
+                        .permitAll())
                 .rememberMe(rememberMe -> rememberMe
-                        .key("mySecretKey")  // Key để mã hóa token
+                        .key("mySecretKey") // Key để mã hóa token
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
-                        .alwaysRemember(false)
-                );
+                        .alwaysRemember(false));
 
         return http.build();
     }
@@ -86,7 +115,9 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
+
             String redirectUrl = request.getContextPath() + "/home_page";
+
             response.sendRedirect(redirectUrl);
         };
     }
