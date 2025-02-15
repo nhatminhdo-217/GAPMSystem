@@ -121,7 +121,7 @@ public class ProfileController {
             }
         }
 
-        userService.updateUser(currentUser);
+//        userService.updateUser(currentUser);
 
         //
         model.addAttribute("user", currentUser);

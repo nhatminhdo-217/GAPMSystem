@@ -1,5 +1,6 @@
 package fpt.g36.gapms.controller;
 
+import fpt.g36.gapms.models.dto.CreateAccountDTO;
 import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
@@ -10,6 +11,7 @@ import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.AccountServiceImpl;
 import fpt.g36.gapms.services.impls.RoleServiceImpl;
 import fpt.g36.gapms.utils.PasswordGenerator;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.*;
-import static fpt.g36.gapms.utils.PasswordGenerator.generateRandomPassword;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,7 +44,7 @@ public class AccountController {
             RoleServiceImpl roleService,
             RoleRepository roleRepository,
             MailService emailService
-    ) {
+            ) {
         this.accountService = accountService;
         this.userService = userService;
         this.roleService = roleService;
@@ -110,24 +112,50 @@ public class AccountController {
         return "redirect:/admin/account_detail/" + id;
     }
 
+    @GetMapping("/account_create")
+    public String showCreateAccountForm(Model model) {
+        model.addAttribute("userDTO", new CreateAccountDTO());
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "home-page/account_create";
+    }
 
-    @PostMapping("/create_account")
-    public String createAccount(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
-        if (accountService.existsByEmail(user.getEmail())) {
-            redirectAttributes.addFlashAttribute("emailError", "Email đã tồn tại!");
-            return "redirect:/admin/list_account";
+    @PostMapping("/account_create")
+    public String createAccount(@Valid @ModelAttribute("userDTO") CreateAccountDTO createAccountDTO,
+                                BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "home-page/account_create";
         }
 
-        if (accountService.existsByPhoneNumber(user.getPhoneNumber())) {
-            redirectAttributes.addFlashAttribute("phoneError", "Số điện thoại đã tồn tại!");
-            return "redirect:/admin/list_account";
-        }
+        boolean hasDuplicateError = false;
 
+        if (accountService.existsByEmail(createAccountDTO.getEmail())) {
+            result.rejectValue("email", "error.email", "Email này đã được sử dụng!");
+            hasDuplicateError = true;
+        }
+        if (accountService.existsByPhoneNumber(createAccountDTO.getPhoneNumber())) {
+            result.rejectValue("phoneNumber", "error.phoneNumber", "Số điện thoại này đã được sử dụng!");
+            hasDuplicateError = true;
+        }
+        if (hasDuplicateError) {
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "home-page/account_create";
+        }
         String randomPassword = PasswordGenerator.generateRandomPassword(8);
-        accountService.createAccount(user, randomPassword);
-        emailService.sendPasswordEmail(user.getEmail(), randomPassword);
-        redirectAttributes.addFlashAttribute("message", "Tạo tài khoản thành công!");
-        return "redirect:/admin/list_account";
+        try {
+            User newUser = accountService.createAccount(createAccountDTO, randomPassword);
+            if (newUser != null) {
+                emailService.sendPasswordEmail(createAccountDTO.getEmail(), randomPassword);
+                model.addAttribute("message", "Tạo tài khoản mới thành công!");
+            } else {
+                model.addAttribute("error", "Lỗi khi lưu tài khoản vào database!");
+            }
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "home-page/account_create";
+        } catch (Exception e) {
+            model.addAttribute("error", "Lỗi khi tạo tài khoản: " + e.getMessage());
+            return "home-page/account_create";
+        }
     }
 
     @GetMapping("/{id}/toggle-status")
@@ -138,22 +166,19 @@ public class AccountController {
             redirectAttributes.addFlashAttribute("error", "User not found!");
             return "redirect:/admin/list_account";
         }
-
-        boolean newStatus = !user.isActive(); // Đảo trạng thái active/inactive
+        boolean newStatus = !user.isActive();
         userService.updateUserStatus(id, newStatus);
-
         redirectAttributes.addFlashAttribute("message", "Trạng thái tài khoản đã thay đổi!");
-        return "redirect:/admin/list_account"; // Quay lại trang danh sách
+        return "redirect:/admin/list_account";
     }
 
     @GetMapping("/account_view/{id}")
     public String accountView(@PathVariable Long id, Model model) {
         User user = accountService.getUserById(id);
         List<Role> roles = roleRepository.findAll();
-
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
 
-        return "home-page/view_account_detail"; // Trả về file riêng
+        return "home-page/view_account_detail";
     }
 }

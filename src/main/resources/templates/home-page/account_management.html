@@ -112,66 +112,9 @@
 
 
 
-                <button class="col-2 m-3 btn btn-custom" data-bs-toggle="modal" data-bs-target="#createAccountModal" style="color: white;">
+                <a th:href="@{/admin/account_create}" class="col-2 m-3 btn btn-custom" style="color: white;">
                     Tạo Tài Khoản
-                </button>
-
-                <!--                 Create Account Modal-->
-                <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true" >
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="createAccountModalLabel">Create Account</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="createAccountForm" th:action="@{'/admin/create_account'}" th:object="${user}" method="post">
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label"> Họ Và Tên</label>
-                                        <input type="text" class="form-control" id="username" name="username" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
-                                        <!-- Hiển thị lỗi email nếu có -->
-                                        <div th:if="${emailError}" class="text-danger" th:text="${emailError}"></div>
-                                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="phoneNumber" class="form-label">Số Điện Thoại</label>
-                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
-                                        <!-- Hiển thị lỗi phone number nếu có -->
-                                        <div th:if="${phoneError}" class="text-danger" th:text="${phoneError}"></div>
-                                        <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
-
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="role" class="form-label">Vai Trò</label>
-                                            <select class="form-select" id="role" name="role" th:field="*{role.id}" required>
-                                            <option value="" disabled th:text="'Select a role'"></option>
-                                            <option th:each="r : ${roles}"
-                                                    th:value="${r.id}"
-                                                    th:text="${r.name}"></option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="status" class="form-label">Trạng Thái</label>
-                                        <input type="text" class="form-control" id="status" value="Active" disabled>
-                                        <input type="hidden" name="active" value="true">
-                                    </div>
-
-
-                                    <button type="submit" class="btn btn-success w-100">Tạo</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </a>
 
                 <div class="col-1"></div>
 
@@ -237,11 +180,11 @@
                                    class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
-                                <a th:href="@{/admin/account_view/{id}(id=${user.id})}"
-                                   class="btn btn-sm btn-outline-primary"
-                                   title="Detail">
-                                    <i class="bi bi-eye"></i> Detail
-                                </a>
+<!--                                <a th:href="@{/admin/account_view/{id}(id=${user.id})}"-->
+<!--                                   class="btn btn-sm btn-outline-primary"-->
+<!--                                   title="Detail">-->
+<!--                                    <i class="bi bi-eye"></i> Detail-->
+<!--                                </a>-->
                             </td>
                         </tr>
                         </tbody>
@@ -344,19 +287,13 @@
     document.addEventListener("DOMContentLoaded", function () {
         var createAccountModal = new bootstrap.Modal(document.getElementById("createAccountModal"));
 
-        // Function to open the modal
-        function openCreateAccountModal() {
+        // Mở modal nếu có lỗi validation
+        if (document.getElementById("emailError") || document.getElementById("phoneError")) {
             createAccountModal.show();
         }
 
-        // Attach the function to the button click event
-        var openModalButton = document.getElementById("openModalButton");
-        if (openModalButton) {
-            openModalButton.addEventListener("click", openCreateAccountModal);
-        }
-
-        // Check if success message exists
-        var successMessage = document.getElementById("successMessage")?.value; // Get message from hidden input
+    // Check if success message exists
+        var successMessage = document.getElementById("successMessage")?.value;
         if (successMessage) {
             showToast(successMessage);
         }
@@ -374,6 +311,40 @@
             toast.show();
         }
     });
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     var createAccountModal = new bootstrap.Modal(document.getElementById("createAccountModal"));
+    //
+    //     // Function to open the modal
+    //     function openCreateAccountModal() {
+    //         createAccountModal.show();
+    //     }
+    //
+    //     // Attach the function to the button click event
+    //     var openModalButton = document.getElementById("openModalButton");
+    //     if (openModalButton) {
+    //         openModalButton.addEventListener("click", openCreateAccountModal);
+    //     }
+    //
+    //     // Check if success message exists
+    //     var successMessage = document.getElementById("successMessage")?.value; // Get message from hidden input
+    //     if (successMessage) {
+    //         showToast(successMessage);
+    //     }
+    //
+    //     // Function to display toast notification
+    //     function showToast(message) {
+    //         var toastContainer = document.getElementById("toastContainer");
+    //         var toastBody = document.getElementById("toastBody");
+    //
+    //         if (toastBody) {
+    //             toastBody.textContent = message;
+    //         }
+    //
+    //         var toast = new bootstrap.Toast(toastContainer);
+    //         toast.show();
+    //     }
+    // });
 </script>
 
 <script>
