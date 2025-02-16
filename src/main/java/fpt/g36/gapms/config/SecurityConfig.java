@@ -44,7 +44,7 @@ public class SecurityConfig {
                             if (exception instanceof DisabledException) {
                                 errorMessage = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
                             } else if (exception instanceof BadCredentialsException) {
-                                errorMessage = "Sai tài khoản hoặc mật khẩu.";
+                                errorMessage = "Sai thông tin đăng nhập.";
                             } else {
                                 errorMessage = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
                             }
