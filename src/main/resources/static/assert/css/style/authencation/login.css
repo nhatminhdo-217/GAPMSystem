@@ -23,11 +23,37 @@ body {
 }
 
 /* Hiệu ứng input */
-.form-control {
+/*.form-control {
     border-radius: 25px;
     padding: 10px 20px;
     border: 1px solid #ddd;
+}*/
+
+.input-group {
+    border-radius: 25px;
+    overflow: hidden;
+    border: 1px solid #ddd;
 }
+
+.input-group .form-control {
+    border: none;
+    border-radius: 25px 0 0 25px;
+    padding: 10px 20px;
+}
+
+.input-group-text {
+    background: white;
+    border: none;
+    border-radius: 25px 0 0 25px;
+    padding: 10px 15px;
+}
+
+.input-group .btn {
+    border-radius: 0 25px 25px 0;
+    border: none;
+    background: white;
+}
+
 
 .form-control:focus {
     border-color: #007bff;
