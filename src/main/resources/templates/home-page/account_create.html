@@ -58,8 +58,8 @@
 
           <form th:action="@{/admin/account_create}" th:object="${userDTO}" method="post">
 
-            <div th:if="${message}" class="alert alert-success">
-              <span th:text="${message}"></span>
+            <div th:if="${successMessage}" class="alert alert-success">
+              <span th:text="${successMessage}"></span>
             </div>
 
             <div th:if="${error}" class="alert alert-danger">

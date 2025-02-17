@@ -6,6 +6,7 @@ import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.services.AccountService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.PageImpl;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
@@ -43,19 +44,20 @@ public class AccountController {
     private final RoleRepository roleRepository;
     private AccountServiceImpl accountServiceImpl;
     private final MailService emailService;
+    private final UserUtils userUtils;
 
     public AccountController(
             AccountService accountService,
             UserService userService,
             RoleServiceImpl roleService,
             RoleRepository roleRepository,
-            MailService emailService) {
+            MailService emailService, UserUtils userUtils) {
         this.accountService = accountService;
         this.userService = userService;
         this.roleService = roleService;
         this.roleRepository = roleRepository;
         this.emailService = emailService;
-
+        this.userUtils = userUtils;
     }
 
     @GetMapping("/list_account")
@@ -143,9 +145,18 @@ public class AccountController {
     }
 
     @GetMapping("/account_create")
-    public String showCreateAccountForm(Model model) {
+    public String showCreateAccountForm(Model model, @RequestParam(value = "success", required = false) boolean success) {
+
+        userUtils.getOptionalUser(model);
+
         model.addAttribute("userDTO", new CreateAccountDTO());
         model.addAttribute("roles", roleService.getAllRoles());
+
+        // Kiểm tra xem có thông báo tạo tài khoản thành công không
+        if (success) {
+            model.addAttribute("successMessage", "Tạo tài khoản thành công!");
+        }
+
         return "home-page/account_create";
     }
 
@@ -153,6 +164,7 @@ public class AccountController {
     public String createAccount(@Valid @ModelAttribute("userDTO") CreateAccountDTO createAccountDTO,
                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
+            userUtils.getOptionalUser(model);
             model.addAttribute("roles", roleService.getAllRoles());
             return "home-page/account_create";
         }
@@ -168,6 +180,7 @@ public class AccountController {
             hasDuplicateError = true;
         }
         if (hasDuplicateError) {
+            userUtils.getOptionalUser(model);
             model.addAttribute("roles", roleService.getAllRoles());
             return "home-page/account_create";
         }
@@ -176,12 +189,14 @@ public class AccountController {
             User newUser = accountService.createAccount(createAccountDTO, randomPassword);
             if (newUser != null) {
                 emailService.sendPasswordEmail(createAccountDTO.getEmail(), randomPassword);
-                model.addAttribute("message", "Tạo tài khoản mới thành công!");
+                model.addAttribute("roles", roleService.getAllRoles());
+                return "redirect:/admin/account_create?success=true";
             } else {
                 model.addAttribute("error", "Lỗi khi lưu tài khoản vào database!");
+                model.addAttribute("roles", roleService.getAllRoles());
+                return "home-page/account_create";
             }
-            model.addAttribute("roles", roleService.getAllRoles());
-            return "home-page/account_create";
+
         } catch (Exception e) {
             model.addAttribute("error", "Lỗi khi tạo tài khoản: " + e.getMessage());
             return "home-page/account_create";
