@@ -29,7 +29,8 @@ public class UserDTO {
     private String rePassword;
 
     @NotBlank(message = "Email không được để trống")
-    @Email(message = "Định dạng email không hợp lệ")
+    @Pattern(regexp = Regex.EMAIL,
+            message = "Vui lòng nhập đúng định dạng Email (example@gmail.com)")
     private String email;
 
     @NotBlank(message = "Số điện thoại không được để trống")
@@ -52,7 +53,7 @@ public class UserDTO {
         this.username = username;
     }
 
-    public @NotBlank(message = "Password is required") @Size(min = 6, message = "Password must be at least 8 characters") @Pattern(regexp = Regex.PASSWORD, message = "Password must contain at least 1 number, 1 special character and 1 uppercase character") String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -60,15 +61,15 @@ public class UserDTO {
         this.password = password;
     }
 
-    public @NotBlank(message = "Re-password is required") String getRePassword() {
+    public String getRePassword() {
         return rePassword;
     }
 
-    public void setRePassword(@NotBlank(message = "Re-password is required") String rePassword) {
+    public void setRePassword(String rePassword) {
         this.rePassword = rePassword;
     }
 
-    public @NotBlank(message = "Email is required") @Email(message = "Invalid email format") String getEmail() {
+    public  String getEmail() {
         return email;
     }
 
@@ -76,12 +77,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public @NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER, message = "Invalid phone number format") String getPhoneNumber() {
+    public  String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(
-            @NotBlank(message = "Phone number is required") @Pattern(regexp = Regex.PHONENUMBER, message = "Invalid phone number format") String phoneNumber) {
+    public void setPhoneNumber (String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

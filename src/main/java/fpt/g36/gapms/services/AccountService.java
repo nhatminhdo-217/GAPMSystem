@@ -1,5 +1,7 @@
 package fpt.g36.gapms.services;
 
+import fpt.g36.gapms.models.dto.CreateAccountDTO;
+import fpt.g36.gapms.models.dto.UserDTO;
 import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +13,7 @@ public interface AccountService {
 
     User getUserById(long userId);
 
-    User createAccount(User user, String password);
-
+    User createAccount(CreateAccountDTO createAccountDTO, String password);
     Page<User> searchAccounts(String keyword, Pageable pageable);
 
     List<User> searchAccountsWithoutPaging(String keyword);

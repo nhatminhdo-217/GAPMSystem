@@ -35,7 +35,8 @@ public class User {
 
     private String avatar;
 
-    private boolean isActive;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
