@@ -1,12 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
     <title>Thông tin cá nhân</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        /* CSS cho Modal */
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -18,207 +45,129 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
         }
-
         .modal-content {
-            background-color: #fefefe;
+            background-color: #fff;
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 55%;
             transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 8px;
             width: 80%;
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
 
-
-        .close {
-            color: #aaa;
-            font-size: 30px;
-            font-weight: bold;
-            float: right;
-            cursor: pointer;
         }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-        }
-
-        .modal-header {
-            background-color: #f1f1f1;
-            padding: 10px 20px;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .modal-body {
-            padding: 15px 20px;
-        }
-
-        .modal-footer {
-            text-align: right;
-            padding: 10px 20px;
-        }
-
-        .profile-info p {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-        }
-
-        .profile-info .btn {
-            margin-top: 15px;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .alert {
-            margin: 0;
-            padding: 10px 15px;
-            display: inline-block;
-            width: auto;
-            max-width: 100%;
+        .d-flex .btn-custom {
+            flex: 1;
             text-align: center;
         }
     </style>
 </head>
-<body>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Thông tin cá nhân</h1>
-    <div class="card">
-        <div class="card-body text-center profile-info">
-            <!-- Hiển thị avatar-->
-            <div class="mb-4">
-                <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img">
-            </div>
-            <!-- Hiển thị thông tin còn lại-->
-            <p><strong>Tên người dùng:</strong> <span th:text="${user.username}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-            <p><strong>Số điện thoại:</strong> <span th:text="${user.phoneNumber}"></span></p>
-            <!-- Button-->
-            <button id="changePasswordBtn" class="btn btn-warning">Thay đổi mật khẩu</button>
-            <button id="editProfileBtn" class="btn btn-primary">Chỉnh sửa thông tin cá nhân</button>
-        </div>
 
-        <!-- Thông báo-->
-        <div th:if="${error != null}" class="alert alert-danger">
-            <p th:text="${error}"></p>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <div class="content">
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Thông tin cá nhân</h1>
+            <div class="card text-center p-4">
+                <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img mb-3">
+                <p><strong>Tên người dùng:</strong> <span th:text="${user.username}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                <p><strong>Số điện thoại:</strong> <span th:text="${user.phoneNumber}"></span></p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button id="changePasswordBtn" class="btn btn-custom">Thay đổi mật khẩu</button>
+                    <button id="editProfileBtn" class="btn btn-custom">Chỉnh sửa thông tin cá nhân</button>
+                </div>
+
+                <!-- Thông báo -->
+                <div th:if="${error != null}" class="alert alert-danger mt-3">
+                    <p th:text="${error}"></p>
+                </div>
+                <div th:if="${success != null}" class="alert alert-success mt-3">
+                    <p th:text="${success}"></p>
+                </div>
+                <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}" class="alert alert-danger mt-3">
+                    <th:block th:each="error : ${validationErrors}">
+                        <p th:text="${error.defaultMessage}"></p>
+                    </th:block>
+                </div>
+            </div>
         </div>
-        <div th:if="${success != null}" class="alert alert-success">
-            <p th:text="${success}"></p>
-        </div>
-        <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}" class="alert alert-danger">
-            <th:block th:each="error : ${validationErrors}">
-                <p th:text="${error.defaultMessage}"></p>
-            </th:block>
-        </div>
+        <div th:replace="~{shared/footer.html :: footer}"></div>
     </div>
-    <a href="/home_page" class="btn btn-primary mt-3">Quay lại trang chủ</a>
 </div>
 
 <!-- Modal đổi mật khẩu -->
 <div id="changePasswordModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <div class="modal-header">
-            <h3>Thay đổi mật khẩu</h3>
-        </div>
-        <div class="modal-body">
-            <form th:action="@{/profile/changePassword}" method="post">
-                <div class="mb-3">
-                    <label for="oldPassword">Mật khẩu cũ:</label>
-                    <input type="password" id="oldPassword" name="oldPassword" required class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="newPassword">Mật khẩu mới:</label>
-                    <input type="password" id="newPassword" name="newPassword" required class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="confirmPassword">Xác nhận mật khẩu mới:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required class="form-control">
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Đổi mật khẩu</button>
-                </div>
-            </form>
-        </div>
+        <h3>Thay đổi mật khẩu</h3>
+        <form th:action="@{/profile/changePassword}" method="post">
+            <label>Mật khẩu cũ:</label>
+            <input type="password" name="oldPassword" required class="form-control mb-2">
+            <label>Mật khẩu mới:</label>
+            <input type="password" name="newPassword" required class="form-control mb-2">
+            <label>Xác nhận mật khẩu mới:</label>
+            <input type="password" name="confirmPassword" required class="form-control mb-2">
+            <button type="submit" class="btn btn-success">Đổi mật khẩu</button>
+        </form>
     </div>
 </div>
 
-<!-- Modal đổi thông tin cá nhân -->
+<!-- Modal chỉnh sửa thông tin -->
 <div id="editProfileModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <div class="modal-header">
-            <h3>Thay đổi thông tin cá nhân</h3>
-        </div>
-        <div class="modal-body">
-            <form th:action="@{/profile/updateProfile}" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required class="form-control"
-                           th:value="${user.username}">
-                </div>
-                <div class="mb-3">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required class="form-control" th:value="${user.email}">
-                </div>
-                <div class="mb-3">
-                    <label for="phoneNumber">Số điện thoại:</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" required class="form-control"
-                           th:value="${user.phoneNumber}">
-                </div>
-                <div class="mb-3">
-                    <label for="image">Hình nền đại diện:</label>
-                    <input type="file" id="image" name="avatarFile" class="form-control">
-                </div>
-                <input type="hidden" name="avatar" th:value="${user.avatar}">
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Cập nhật</button>
-                </div>
-            </form>
-        </div>
+        <h3>Chỉnh sửa thông tin cá nhân</h3>
+        <form th:action="@{/profile/updateProfile}" method="post" enctype="multipart/form-data">
+            <label>Username:</label>
+            <input type="text" name="username" th:value="${user.username}" required class="form-control mb-2">
+            <label>Email:</label>
+            <input type="email" name="email" th:value="${user.email}" required class="form-control mb-2">
+            <label>Số điện thoại:</label>
+            <input type="text" name="phoneNumber" th:value="${user.phoneNumber}" required class="form-control mb-2">
+            <label>Hình đại diện:</label>
+            <input type="file" name="avatarFile" class="form-control mb-2">
+            <button type="submit" class="btn btn-success">Cập nhật</button>
+        </form>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    var changePasswordModal = document.getElementById("changePasswordModal");
-    var editProfileModal = document.getElementById("editProfileModal");
-    var changePasswordBtn = document.getElementById("changePasswordBtn");
-    var editProfileBtn = document.getElementById("editProfileBtn");
-    var closeBtns = document.getElementsByClassName("close");
-
-    changePasswordBtn.onclick = function () {
-        changePasswordModal.style.display = "block";
+    document.getElementById("changePasswordBtn").onclick = function () {
+        document.getElementById("changePasswordModal").style.display = "block";
     }
-
-    editProfileBtn.onclick = function () {
-        editProfileModal.style.display = "block";
+    document.getElementById("editProfileBtn").onclick = function () {
+        document.getElementById("editProfileModal").style.display = "block";
     }
-
-    Array.from(closeBtns).forEach(function (btn) {
+    document.querySelectorAll(".close").forEach(btn => {
         btn.onclick = function () {
-            changePasswordModal.style.display = "none";
-            editProfileModal.style.display = "none";
+            document.getElementById("changePasswordModal").style.display = "none";
+            document.getElementById("editProfileModal").style.display = "none";
         }
     });
-
     window.onclick = function (event) {
-        if (event.target == changePasswordModal) {
-            changePasswordModal.style.display = "none";
+        if (event.target == document.getElementById("changePasswordModal")) {
+            document.getElementById("changePasswordModal").style.display = "none";
         }
-        if (event.target == editProfileModal) {
-            editProfileModal.style.display = "none";
+        if (event.target == document.getElementById("editProfileModal")) {
+            document.getElementById("editProfileModal").style.display = "none";
         }
     }
 </script>
+
+<script>
+    // Tự động ẩn thông báo sau 5 giây
+    setTimeout(function () {
+        document.querySelectorAll(".alert").forEach(alert => {
+            alert.style.display = "none";
+        });
+    }, 3000);
+</script>
+
 
 </body>
 </html>

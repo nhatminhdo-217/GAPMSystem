@@ -45,7 +45,7 @@ public class RegisterController {
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
-  
+
     @Autowired
     public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
         this.passwordEncoder = passwordEncoder;
@@ -81,6 +81,7 @@ public class RegisterController {
             admin.setPassword(passwordEncoder.encode("Admin@123"));
             admin.setEmail("admin@example.com");
             admin.setPhoneNumber("+84123456789");
+            admin.setActive(true);
             admin.setRole(adminRole);
             admin.setVerified(true); // Thêm trạng thái verified nếu cần
 
@@ -105,14 +106,21 @@ public class RegisterController {
 
     @GetMapping("/login-error")
     public String loginError(HttpSession session, Model model) {
-        model.addAttribute("loginError", true);
+        // ✅ Lấy thông báo lỗi từ session
+        Object errorMessage = session.getAttribute("error");
+        model.addAttribute("error", errorMessage);
 
-        // Lấy dữ liệu từ Session
+        // ✅ Lấy dữ liệu nhập lại
         Object phoneNumberOrEmail = session.getAttribute("phoneNumberOrEmail");
         model.addAttribute("phoneNumberOrEmail", phoneNumberOrEmail);
 
+        // ✅ Xóa lỗi khỏi session sau khi hiển thị để tránh hiển thị lại sau khi load trang
+        session.removeAttribute("error");
+        session.removeAttribute("phoneNumberOrEmail");
+
         return "authencation/login";
     }
+
 
 
     @GetMapping("/home_page")
@@ -129,9 +137,7 @@ public class RegisterController {
 
             // Nếu tìm thấy user, thêm vào model
             if (optionalUser.isPresent()) {
-                model.addAttribute("username", optionalUser.get().getUsername());
-                model.addAttribute("email", optionalUser.get().getEmail());
-                model.addAttribute("role", optionalUser.get().getRole().getName());
+                model.addAttribute("user", optionalUser.get());
                 model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
                 System.out.println(optionalUser.get());
             }

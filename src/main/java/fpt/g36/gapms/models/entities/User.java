@@ -2,9 +2,11 @@ package fpt.g36.gapms.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,8 +35,10 @@ public class User {
 
     private String avatar;
 
-    private boolean isActive;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -94,7 +98,6 @@ public class User {
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
-
 
     public String getAvatar() {
         return avatar;
