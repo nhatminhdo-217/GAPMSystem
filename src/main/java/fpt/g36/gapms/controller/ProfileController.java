@@ -61,6 +61,7 @@ public class ProfileController {
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
             model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             return "profile";
         }
 
@@ -68,6 +69,7 @@ public class ProfileController {
         if (!userService.checkPassword(oldPassword, currentUser.getPassword())) {
             model.addAttribute("error", "Mật khẩu cũ không đúng.");
             model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             return "profile";
         }
 

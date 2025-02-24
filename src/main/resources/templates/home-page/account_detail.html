@@ -63,7 +63,7 @@
                     <h4 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i> Edit Account</h4>
 
                     <!-- Form cập nhật thông tin người dùng -->
-                    <form th:action="@{'/admin/account_update/' + ${user.id}}" th:object="${user}" method="post">
+                    <form th:action="@{'/admin/account_update/' + ${user_detail.id}}" th:object="${user_detail}" method="post">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">User Name</label>
@@ -85,14 +85,14 @@
                                 <select class="form-select shadow-sm" th:field="*{role.id}">
                                     <option value="" disabled selected>Select a role</option>
                                     <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"
-                                            th:selected="${user.role.id == r.id}"></option>
+                                            th:selected="${user_detail.role.id == r.id}"></option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Status</label>
                                 <select class="form-select shadow-sm" th:field="*{active}">
-                                    <option value="true" th:selected="${user.active}">Active</option>
-                                    <option value="false" th:selected="${!user.active}">Inactive</option>
+                                    <option value="true" th:selected="${user_detail.active}">Active</option>
+                                    <option value="false" th:selected="${!user_detail.active}">Inactive</option>
                                 </select>
                             </div>
                         </div>

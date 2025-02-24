@@ -65,7 +65,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             newUser.setUsername(name);
             newUser.setAvatar(finalPictureSave);
             newUser.setRole(role);
-            newUser.setActive(true);  // ✅ Chỉ tài khoản mới được tạo có trạng thái xác minh
+            newUser.setVerified(true);
+            newUser.setActive(true);
 
             user = userRepository.save(newUser);
         }
