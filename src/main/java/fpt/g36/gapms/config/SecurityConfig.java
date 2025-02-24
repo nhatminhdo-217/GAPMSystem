@@ -26,8 +26,7 @@ public class SecurityConfig {
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
 
-                        .requestMatchers("/test/user/**").hasRole("USER")
-                        .requestMatchers("/admin/{id}/toggle-status").permitAll()
+                        .requestMatchers("/admin/{id}/toggle-status").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
