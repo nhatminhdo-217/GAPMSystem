@@ -81,6 +81,7 @@ public class RegisterController {
             admin.setPassword(passwordEncoder.encode("Admin@123"));
             admin.setEmail("admin@example.com");
             admin.setPhoneNumber("+84123456789");
+            admin.setAvatar("default-avatar.png");
             admin.setActive(true);
             admin.setRole(adminRole);
             admin.setVerified(true); // Thêm trạng thái verified nếu cần

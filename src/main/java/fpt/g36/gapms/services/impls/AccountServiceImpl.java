@@ -93,11 +93,13 @@ public class AccountServiceImpl implements AccountService {
         String encodedPassword = passwordEncoder.encode(password);
 
         user.setUsername(createAccountDTO.getUsername());
+        System.err.println("DEBUG_Service: " + user.getUsername());
         user.setEmail(createAccountDTO.getEmail());
         user.setPhoneNumber(createAccountDTO.getPhoneNumber());
+        user.setAvatar("default_avatar.png");
         user.setPassword(encodedPassword);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        user.setVerified(true);
+        user.setActive(true);
 
         Role role = roleRepository.findById( createAccountDTO.getRole().getId())
                 .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ"));

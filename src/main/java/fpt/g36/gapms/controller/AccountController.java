@@ -115,21 +115,26 @@ public class AccountController {
 
     @GetMapping("/account_detail/{id}")
     public String accountDetail(@PathVariable Long id, Model model) {
-        User user = accountService.getUserById(id);
+        User user_detail = accountService.getUserById(id);
         List<Role> roles = roleRepository.findAll();
 
-        model.addAttribute("user", user);
+        model.addAttribute("user_detail", user_detail);
         model.addAttribute("roles", roles);
 
+        userUtils.getOptionalUser(model);
+
         return "home-page/account_detail";
     }
 
-    @GetMapping("/account_showUpdate/{id}")
-    public String showUpdateForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        User user = accountService.getUserById(id);
-        model.addAttribute("user", user);
-        return "home-page/account_detail";
-    }
+//    @GetMapping("/account_showUpdate/{id}")
+//    public String showUpdateForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+//        User user = accountService.getUserById(id);
+//        model.addAttribute("user", user);
+//
+//        userUtils.getOptionalUser(model);
+//
+//        return "home-page/account_detail";
+//    }
 
     @PostMapping("/account_update/{id}")
     public String updateAccount(@PathVariable Long id,

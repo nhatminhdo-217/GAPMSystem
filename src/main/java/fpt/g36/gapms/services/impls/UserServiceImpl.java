@@ -49,8 +49,6 @@ public class UserServiceImpl implements UserService {
         user.setAvatar("default-avatar.png");
         user.setVerified(false);
         user.setActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
     }
@@ -83,7 +81,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
-        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         return "User updated successfully";
     }
@@ -97,7 +94,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setAvatar(userDTO.getAvatar());
-        user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
         return "User updated successfully";
