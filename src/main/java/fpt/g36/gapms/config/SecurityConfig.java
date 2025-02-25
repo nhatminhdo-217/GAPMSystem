@@ -20,20 +20,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**",
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-                        .requestMatchers("/test/user/**").hasRole("USER")
-                        .requestMatchers("/admin/{id}/toggle-status").permitAll()
+
+                        .requestMatchers("/admin/{id}/toggle-status").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")
                         .loginProcessingUrl("/login")
-
                         .usernameParameter("phoneNumberOrEmail")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler())

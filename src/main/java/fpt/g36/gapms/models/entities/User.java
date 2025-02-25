@@ -6,24 +6,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "user")
+public class User extends BaseEntity{
 
-    @Column(unique = true)
+    @Column(name = "name", nullable = false, length = 100)
     private String username;
 
+    @Column(name = "password", length = 128)
     private String password;
 
-    @Column(unique = true)
+    @Column(name = "email", nullable = false, length = 255)
     private String email;
 
-    @Column(unique = true)
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,21 +28,25 @@ public class User {
     @Column(name = "is_verified", columnDefinition = "boolean default false")
     private boolean isVerified;
 
+    @Column(name = "avatar", nullable = false, length = 255)
     private String avatar;
 
-    private boolean isActive;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    public Long getId() {
-        return id;
+    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive) {
+        super(id, createAt, updateAt);
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.isVerified = isVerified;
+        this.avatar = avatar;
+        this.isActive = isActive;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User() {
     }
 
     public String getUsername() {
@@ -112,21 +111,5 @@ public class User {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
