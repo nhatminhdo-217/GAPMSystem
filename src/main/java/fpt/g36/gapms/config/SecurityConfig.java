@@ -26,7 +26,6 @@ public class SecurityConfig {
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-
                         .requestMatchers("/request-for-quotation/**").hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
