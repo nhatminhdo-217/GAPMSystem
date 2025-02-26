@@ -129,6 +129,13 @@
 
     <!-- Sales Chart End -->
 
+    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+        <div>
+            <p>
+                Nothing
+            </p>
+        </div>
+    </div>
 
 
     <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('not isAuthenticated()')}">
