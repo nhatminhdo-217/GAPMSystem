@@ -20,4 +20,6 @@ public class Regex {
     public static final String PHONENUMBER = "^(\\+84|0)\\d{9,10}$";
 
     public static final String EMAIL = "^[a-zA-Z0-9._%+-]+@gmail\\.com$";
+
+    public static final String TAXNUMBER = "^\\d{10}(-\\d{3})?$";
 }

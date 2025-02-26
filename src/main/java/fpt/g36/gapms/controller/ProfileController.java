@@ -1,7 +1,10 @@
 package fpt.g36.gapms.controller;
 
+import fpt.g36.gapms.models.dto.CompanyDTO;
 import fpt.g36.gapms.models.dto.UpdateProfileDTO;
+import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.services.CompanyService;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.UserService;
 import jakarta.validation.Valid;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
@@ -22,10 +26,12 @@ public class ProfileController {
 
     private final UserService userService;
     private final ImageService imageService;
+    private final CompanyService companyService;
 
-    public ProfileController(UserService userService, ImageService imageService) {
+    public ProfileController(UserService userService, ImageService imageService, CompanyService companyService) {
         this.userService = userService;
         this.imageService = imageService;
+        this.companyService = companyService;
     }
 
     @GetMapping
@@ -34,9 +40,17 @@ public class ProfileController {
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
 
         if (optionalUser.isPresent()) {
+            //User
             model.addAttribute("user", optionalUser.get());
             model.addAttribute("username", optionalUser.get().getUsername());
             model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+            //Company
+            Optional<Company> optionalCompany = companyService.findByUserId(optionalUser.get().getId());
+            if (optionalCompany.isPresent()) {
+                model.addAttribute("company", optionalCompany.get());
+            } else {
+                model.addAttribute("company", null);
+            }
             return "profile";
         } else {
             // Nếu không tìm thấy người dùng, có thể xử lý chuyển hướng hoặc thông báo lỗi
@@ -56,11 +70,13 @@ public class ProfileController {
 
         // Lấy thông tin của người dùng
         User currentUser = optionalUser.get();
+        Optional<Company> optionalCompany = companyService.findByUserId(currentUser.getId());
 
         // Kiểm tra mật khẩu cũ và xác nhận mật khẩu mới
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
             model.addAttribute("user", currentUser);
+            model.addAttribute("company", optionalCompany.get());
             model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             return "profile";
         }
@@ -69,6 +85,7 @@ public class ProfileController {
         if (!userService.checkPassword(oldPassword, currentUser.getPassword())) {
             model.addAttribute("error", "Mật khẩu cũ không đúng.");
             model.addAttribute("user", currentUser);
+            model.addAttribute("company", optionalCompany.get());
             model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             return "profile";
         }
@@ -82,6 +99,7 @@ public class ProfileController {
 
         model.addAttribute("user", currentUser);
         model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+        model.addAttribute("company", optionalCompany.get());
         model.addAttribute("success", "Mật khẩu đã được thay đổi thành công.");
 
         return "/profile";
@@ -102,11 +120,13 @@ public class ProfileController {
         }
 
         User currentUser = optionalUser.get();
+        Optional<Company> optionalCompany = companyService.findByUserId(currentUser.getId());
 
         // Nếu có lỗi validation, hiển thị chi tiết lỗi
         if (result.hasErrors()) {
             model.addAttribute("user", currentUser);
             model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", optionalCompany.get());
             model.addAttribute("validationErrors", result.getAllErrors());
             return "profile";
         }
@@ -118,6 +138,7 @@ public class ProfileController {
             if (userByEmail.isPresent() && !userByEmail.get().getId().equals(currentUser.getId())) {
                 model.addAttribute("user", currentUser);
                 model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+                model.addAttribute("company", optionalCompany.get());
                 model.addAttribute("error", "Email đã được sử dụng bởi tài khoản khác.");
                 return "profile";
             }
@@ -130,6 +151,7 @@ public class ProfileController {
             if (userByPhone.isPresent() && !userByPhone.get().getId().equals(currentUser.getId())) {
                 model.addAttribute("user", currentUser);
                 model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+                model.addAttribute("company", optionalCompany.get());
                 model.addAttribute("error", "Số điện thoại đã được sử dụng bởi tài khoản khác.");
                 return "profile";
             }
@@ -174,9 +196,101 @@ public class ProfileController {
 
         model.addAttribute("user", updatedUser);
         model.addAttribute("avatar", "/uploads/" + updatedUser.getAvatar());
+        model.addAttribute("company", optionalCompany.get());
         model.addAttribute("success", "Thay đổi thông tin cá nhân thành công!");
 
         return "profile";
     }
 
+    @PostMapping("/addCompany")
+    public String addCompany(@Valid @ModelAttribute("company") CompanyDTO companyDTO,
+                             BindingResult result,
+                             Principal principal,
+                             Model model) {
+        String emailOrPhone = principal.getName();
+        Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("errorCompany", "Tài khoản không tồn tại.");
+            return "profile";
+        }
+
+        User currentUser = optionalUser.get();
+
+        if (result.hasErrors()) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("validationErrorsCompany", result.getAllErrors());
+            return "profile";
+        }
+
+        try {
+            Company company = companyService.addCompany(currentUser.getId(), companyDTO);
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", company);
+            model.addAttribute("successCompany", "Thêm thông tin công ty thành công!");
+        } catch (RuntimeException e) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("errorCompany", "Runtime Error: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("errorCompany", "Unexpected Error: " + e.getMessage());
+        }
+        return "profile";
+    }
+
+    @PostMapping("/updateCompany")
+    public String updateCompany(@Valid @ModelAttribute("company") CompanyDTO companyDTO,
+                                BindingResult result,
+                                Principal principal,
+                                Model model) {
+        String emailOrPhone = principal.getName();
+        Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("errorCompany", "Tài khoản không tồn tại.");
+            return "profile";
+        }
+
+        User currentUser = optionalUser.get();
+        Optional<Company> optionalCompany = companyService.findByUserId(currentUser.getId());
+
+        if (optionalCompany.isEmpty()) {
+            model.addAttribute("errorCompany", "Không tìm thấy công ty để cập nhật.");
+            return "profile";
+        }
+
+        Company currentCompany = optionalCompany.get();
+
+        // Kiểm tra lỗi validation trước khi cập nhật
+        if (result.hasErrors()) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", currentCompany); // Trả về thông tin công ty cũ
+            model.addAttribute("validationErrorsCompany", result.getAllErrors());
+            return "profile";
+        }
+
+        try {
+            Company updatedCompany = companyService.updateCompany(currentUser.getId(), companyDTO);
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", updatedCompany);
+            model.addAttribute("successCompany", "Cập nhật thông tin công ty thành công!");
+        } catch (RuntimeException e) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", currentCompany);
+            model.addAttribute("errorCompany", "Runtime Error: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("user", currentUser);
+            model.addAttribute("avatar", "/uploads/" + currentUser.getAvatar());
+            model.addAttribute("company", currentCompany);
+            model.addAttribute("errorCompany", "Unexpected Error: " + e.getMessage());
+        }
+        return "profile";
+    }
 }
