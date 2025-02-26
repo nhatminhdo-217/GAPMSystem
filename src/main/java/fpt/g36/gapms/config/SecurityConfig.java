@@ -28,6 +28,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/admin/{id}/toggle-status").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")

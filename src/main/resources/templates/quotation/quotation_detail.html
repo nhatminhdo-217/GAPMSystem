@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Chi tiết báo giá</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <!-- Favicon -->
+  <link href="img/favicon.ico" rel="icon">
+
+  <!-- Google Web Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icon Font Stylesheet -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Libraries Stylesheet -->
+  <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Template Stylesheet -->
+  <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+  <link href="/assert/css/style/quotation/quotation_detail.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+  <!-- Spinner Start -->
+  <div id="spinner"
+       class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <!-- Spinner End -->
+
+  <!-- Sidebar Start -->
+  <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+  <!-- Sidebar End -->
+
+  <!-- Content Start -->
+  <div class="content">
+
+    <!-- Navbar Start -->
+    <div th:replace="~{shared/navbar.html :: navbar}"></div>
+    <!-- Navbar End -->
+
+    <div class="container-fluid row mb-3">
+      <!-- Main Content -->
+      <div>
+        <h3>Quotation Detail</h3>
+
+        <!-- Form Quotation -->
+        <form th:action="@{'/quotation/detail/' + ${quotation_detail.getQuotationId()}}" th:object="${quotation_detail}" method="post">
+
+          <!-- Thông tin khách hàng, công ty, MST -->
+          <div class="form-group row">
+            <div class="col-md-4">
+              <label for="customerName">Customer Name</label>
+              <input type="text" th:field="*{userName}" class="form-control" id="customerName" disabled>
+            </div>
+            <div class="col-md-4">
+              <label for="company">Company</label>
+              <input type="text" th:field="*{companyName}" class="form-control" id="company" disabled>
+            </div>
+            <div class="col-md-4">
+              <label for="taxNumber">Tax Number</label>
+              <input type="text" th:field="*{taxNumber}" class="form-control" id="taxNumber" disabled>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Phần Product -->
+          <h5 class="mb-3">Product</h5>
+          <div class="bg-primary">
+            <a href="#demo" class="text-light m-3 product-name" th:text="*{productName}" data-bs-toggle="collapse"></a>
+          </div>
+          <div id="demo" class="collapse show">
+            <table class="table table-bordered text-center">
+              <!-- Hiển thị danh sách sản phẩm -->
+              <thead>
+              <tr>
+                <th>Thương hiệu</th>
+                <th>Loại</th>
+                <th>Có màu</th>
+                <th>Giá</th>
+                <th>Ghi chú</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="product : ${quotation_detail.products}">
+                <td th:text="${product.brandName}"></td>
+                <td th:text="${product.categoryName}"></td>
+                <td th:text="${product.hasColor} ? 'Có' : 'Không'"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.noteColor}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex flex-column justify-content-start mt-3">
+            <div class="mb-3">
+              <p class="expected-date-header">Expected Date</p>
+              <span th:text="${#dates.format(quotation_detail.expectedDate, 'dd-MM-yyyy')}"></span>
+            </div>
+            <div class="mb-3">
+              <p class="actual-date-header">Actual Date</p>
+              <span th:text="${#dates.format(quotation_detail.actualDate, 'dd-MM-yyyy')}"></span>
+            </div>
+            <div class="mb-3">
+                <p class="reason-header">Reason for Solution</p>
+                <span th:text="${quotation_detail.reason}"></span>
+            </div>
+          </div>
+          <!-- Nút Submit và Edit -->
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/quotation/list" class="btn btn-primary">Back</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div th:replace="~{shared/footer.html :: footer}"></div>
+    <!-- Footer End -->
+  </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/assert/js/main.js"></script>
+</body>
+</html>
