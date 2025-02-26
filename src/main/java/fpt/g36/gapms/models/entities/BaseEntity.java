@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +17,11 @@ public abstract class BaseEntity {
     private Long id;
 
     @Column(name = "create_at", updatable = false)
+    @CreationTimestamp
     private LocalDateTime createAt;
 
     @Column(name = "update_at")
+    @UpdateTimestamp
     private LocalDateTime updateAt;
 
     @PrePersist

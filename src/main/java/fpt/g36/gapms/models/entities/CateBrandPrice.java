@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,11 +17,13 @@ public class CateBrandPrice {
     @MapsId("cateId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cate_id", nullable = false)
+    @JsonBackReference
     private Category cate;
 
     @MapsId("brandId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "brand_id", nullable = false)
+    @JsonBackReference
     private Brand brand;
 
     @NotNull

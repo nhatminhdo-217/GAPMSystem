@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,10 @@ public class Rfq extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SendEnum isApproved;
 
+    @Column(name = "is_sent")
+    @Enumerated(EnumType.STRING)
+    private BaseEnum isSent;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_by", nullable = false)
@@ -35,24 +40,25 @@ public class Rfq extends BaseEntity {
     @OneToMany(mappedBy = "rfq")
     private Set<Quotation> quotations = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "rfq")
+    @OneToMany(mappedBy = "rfq", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "rfq")
-    private Set<Solution> solutions = new LinkedHashSet<>();
+    @OneToOne(mappedBy = "rfq", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Solution solution;
 
     public Rfq() {
     }
 
-    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, User createBy, User approvedBy, Set<Quotation> quotations, Set<RfqDetail> rfqDetails, Set<Solution> solutions) {
+    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Set<Quotation> quotations, Set<RfqDetail> rfqDetails, Solution solutions) {
         super(id, createAt, updateAt);
         this.expectDeliveryDate = expectDeliveryDate;
         this.isApproved = isApproved;
+        this.isSent = isSent;
         this.createBy = createBy;
         this.approvedBy = approvedBy;
         this.quotations = quotations;
         this.rfqDetails = rfqDetails;
-        this.solutions = solutions;
+        this.solution = solutions;
     }
 
     public LocalDate getExpectDeliveryDate() {
@@ -103,11 +109,19 @@ public class Rfq extends BaseEntity {
         this.rfqDetails = rfqDetails;
     }
 
-    public Set<Solution> getSolutions() {
-        return solutions;
+    public Solution getSolutions() {
+        return solution;
     }
 
-    public void setSolutions(Set<Solution> solutions) {
-        this.solutions = solutions;
+    public void setSolutions(Solution solutions) {
+        this.solution = solutions;
+    }
+
+    public BaseEnum getIsSent() {
+        return isSent;
+    }
+
+    public void setIsSent(BaseEnum isSent) {
+        this.isSent = isSent;
     }
 }
