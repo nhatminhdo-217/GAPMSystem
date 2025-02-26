@@ -41,19 +41,10 @@
             </a>
 
         </div>
-        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''USER'')')}">
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}">
             <a href="index.html" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Dashboard USER</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                        class="fa fa-laptop me-2"></i>Elements</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="#c6" class="dropdown-item">Buttons</a>
-                    <a href="#c3" class="dropdown-item">Typography</a>
-                    <a href="#footer" class="dropdown-item">Other Elements</a>
-                </div>
-            </div>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+                    class="fa fa-tachometer-alt me-2"></i>Khách Hàng</a>
+            <a th:href="@{/request-for-quotation/view-list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>yêu cầu báo giá</a>
             <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
             <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
             <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
@@ -62,7 +53,7 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <a href="index.html" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Dashboard ADMIN</a>
+                    class="fa fa-tachometer-alt me-2"></i>Quản trị viên</a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                         class="fa fa-laptop me-2"></i>Elements</a>
@@ -78,6 +69,15 @@
             <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
             <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
 
+        </div>
+
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+            <a href="index.html" class="nav-item nav-link active">
+                <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="/quotation/quotation_detail" class="nav-item nav-link">
+                <i class="fa-solid fa-user"></i>Quotation</a>
+            <a href="widget.html" class="nav-item nav-link">
+                <i class="fa fa-th me-2"></i>Production Order</a>
         </div>
     </nav>
 </div>

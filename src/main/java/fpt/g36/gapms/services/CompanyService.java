@@ -11,4 +11,6 @@ public interface CompanyService {
     Company addCompany(Long userId, CompanyDTO companyDTO);
 
     Company updateCompany(Long userId, CompanyDTO companyDTO);
+  
+    Company getCompanyByUserId(Long userId);
 }
