@@ -6,6 +6,9 @@ import fpt.g36.gapms.services.RfqService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,5 +35,17 @@ public class RfqServiceImpl implements RfqService {
     @Override
     public Rfq getRfqById(Long rfqId) {
         return rfqRepository.findById(rfqId).orElseThrow(() -> new RuntimeException("Rfq not found"));
+    }
+
+    @Override
+    public Rfq editRfq(Long rfqId, LocalDate newDate) {
+        Rfq rfq = rfqRepository.findById(rfqId).orElse(null);
+        if (rfq != null) {
+            rfq.setExpectDeliveryDate(newDate);
+
+            rfq.setUpdateAt(LocalDateTime.now());
+            return rfqRepository.save(rfq);
+        }
+        return null;
     }
 }

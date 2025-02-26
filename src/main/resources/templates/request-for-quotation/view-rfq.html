@@ -7,7 +7,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -139,6 +140,105 @@
             transform: translate(-50%, -50%); /* Dịch chuyển ngược lại nửa chiều rộng và cao để căn giữa */
             width: 300px; /* Đặt chiều rộng cố định hoặc tùy chỉnh */
         }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .popup-header h5 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .popup-body {
+            padding: 10px 0;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* Màu xanh khi focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        .popup-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Hiệu ứng fadeIn */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
     </style>
 </head>
 
@@ -309,6 +409,23 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Popup -->
+                        <div id="editPopup" class="custom-popup">
+                            <div class="popup-header">
+                                <h5>Chỉnh sửa ngày giao hàng</h5>
+                                <button type="button" class="close-btn" onclick="hidePopup()">&times;</button>
+                            </div>
+                            <div class="popup-body">
+                                <div class="form-group">
+                                    <label for="editDeliveryDate">Chọn ngày mới:</label>
+                                    <input type="date" class="form-control" id="editDeliveryDate" name="editDeliveryDate" min="" required>
+                                </div>
+                            </div>
+                            <div class="popup-footer">
+                                <button class="btn btn-primary" onclick="saveEditedDate()">Lưu</button>
+                                <button class="btn btn-secondary" onclick="hidePopup()">Hủy</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-4">
@@ -333,7 +450,6 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-
 
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -366,15 +482,7 @@
 
 <!-- Bootstrap Modal -->
 
-<!-- Popup -->
-<div id="editPopup" class="custom-popup">
-    <div class="form-group">
-        <label for="editDeliveryDate">Chọn ngày mới:</label>
-        <input type="date" class="form-control" id="editDeliveryDate" name="editDeliveryDate">
-    </div>
-    <button class="btn btn-primary mt-2" onclick="saveEditedDate()">Lưu</button>
-    <button class="btn btn-secondary mt-2" onclick="hidePopup()">Hủy</button>
-</div>
+
 
 
 <!-- JavaScript Libraries -->
@@ -496,9 +604,11 @@
             confirmButtonText: 'OK'
         });
     }
+</script>
+<script th:inline="javascript">
 
-//shop popup
 
+//shop popup>
     function showPopup(rfqId) {
         const inputField = document.getElementById("desiredDeliveryDate_" + rfqId);
         if (!inputField) {
@@ -525,34 +635,68 @@
         const rfqId = popup.dataset.rfqId;
 
         if (!newDate) {
-            alert("Vui lòng chọn ngày!");
+            Swal.fire({
+                position: "top-end",
+                icon: "warning",
+                title: "Vui lòng chọn ngày!",
+                showConfirmButton: false,
+                timer: 2000
+            });
             return;
         }
 
         const inputField = document.getElementById("desiredDeliveryDate_" + rfqId);
         inputField.value = newDate;
 
+        const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+        const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
         fetch('/request-for-quotation/edit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken // Thêm CSRF token vào header
             },
             body: 'rfqId=' + encodeURIComponent(rfqId) + '&desiredDeliveryDate=' + encodeURIComponent(newDate)
         })
             .then(response => {
                 if (response.ok) {
-                    alert("Ngày giao hàng đã được cập nhật!");
-                    hidePopup();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Ngày giao hàng đã được cập nhật!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        hidePopup(); // Đóng popup sau khi thông báo hoàn tất
+                    });
                 } else {
-                    alert("Có lỗi xảy ra khi cập nhật!");
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "Có lỗi xảy ra khi cập nhật!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             })
             .catch(error => {
                 console.error("Lỗi:", error);
-                alert("Lỗi kết nối!");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Lỗi kết nối!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             });
     }
+
+const today = new Date().toISOString().split("T")[0];
+// Gán giá trị min cho input
+document.getElementById("editDeliveryDate").setAttribute("min", today);
 </script>
+
+
 </body>
 
 </html>

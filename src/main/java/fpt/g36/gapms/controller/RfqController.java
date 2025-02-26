@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -178,12 +179,15 @@ public class RfqController {
     }
 
 
-    @GetMapping("/edit")
+    @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<String> editRfq(@RequestParam("rfqId") Long rfqId,
-                                          @RequestParam("desiredDeliveryDate") String newDate) {
+                                          @RequestParam("desiredDeliveryDate") LocalDate newDate) {
         try {
-            // viết đây
+            System.out.println(rfqId);
+            System.out.println(newDate);
+            Rfq rfq =  rfqService.editRfq(rfqId, newDate);
+            System.out.println(rfq);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa thất bại");
@@ -191,22 +195,3 @@ public class RfqController {
     }
 }
 
-/*@PostMapping("/updateDeliveryDate")
-    @ResponseBody // Trả về JSON thay vì render view
-    public String updateDeliveryDate(@RequestParam("rfqId") Long rfqId,
-                                     @RequestParam("desiredDeliveryDate") String newDate) {
-        try {
-            // Tìm RFQ theo ID
-            RFQ rfq = rfqRepository.findById(rfqId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy RFQ với ID: " + rfqId));
-
-            // Cập nhật ngày giao hàng
-            rfq.setDesiredDeliveryDate(newDate);
-            rfqRepository.save(rfq); // Lưu vào database
-
-            return "success"; // Trả về chuỗi "success" để JavaScript xử lý
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "error"; // Trả về "error" nếu có lỗi
-        }
-    }*/
