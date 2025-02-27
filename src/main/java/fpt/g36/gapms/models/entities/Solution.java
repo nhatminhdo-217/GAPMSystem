@@ -32,8 +32,8 @@ public class Solution extends BaseEntity {
     private User createBy;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "rfq_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "rfq_id", nullable = false, unique = true)
     private Rfq rfq;
 
     public Solution() {

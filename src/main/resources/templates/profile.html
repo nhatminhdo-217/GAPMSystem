@@ -11,9 +11,50 @@
     <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
+        .toast {
+            opacity: 0.9;
+        }
+
+        .success-toast {
+            background-color: #d4edda; /* Màu nền xanh nhẹ cho thành công */
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .success-toast .toast-body {
+            color: #155724;
+        }
+
+        .error-toast {
+            background-color: #f8d7da; /* Màu nền đỏ nhẹ cho lỗi */
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        /* Đảm bảo danh sách lỗi validation không bị ảnh hưởng bởi kiểu khác */
+        .error-toast ul li {
+            margin-bottom: 5px;
+        }
+
         .profile-img {
             width: 150px;
             height: 150px;
@@ -22,6 +63,7 @@
             display: block;
             margin: 0 auto;
         }
+
         .btn-custom {
             min-width: 180px;
             height: 45px;
@@ -34,6 +76,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -45,6 +88,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
         }
+
         .modal-content {
             background-color: #fff;
             position: absolute;
@@ -58,6 +102,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
         }
+
         .d-flex .btn-custom {
             flex: 1;
             text-align: center;
@@ -66,13 +111,29 @@
 </head>
 
 <body>
+<div th:if="${successCompany != null}" id="hiddenSuccess" style="display: none;" th:text="${successCompany}"></div>
+<div th:if="${errorCompany != null}" id="hiddenError" style="display: none;" th:text="${errorCompany}"></div>
+<div th:if="${validationErrorsCompany != null and #lists.size(validationErrorsCompany) > 0}"
+     id="hiddenValidationErrors"
+     style="display: none;"
+     th:utext="${#strings.arrayJoin(validationErrorsCompany, ', ')}"></div>
+
+<div th:if="${success != null}" id="hiddenProfileSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error != null}" id="hiddenProfileError" style="display: none;" th:text="${error}"></div>
+<div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
+     id="hiddenProfileValidationErrors"
+     style="display: none;"
+     th:utext="${#strings.arrayJoin(validationErrors, ', ')}"></div>
+
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
     <div class="content">
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
+
+        <!-- Thông tin cá nhân -->
         <div class="container mt-5">
             <h1 class="text-center mb-4">Thông tin cá nhân</h1>
-            <div class="card text-center p-4">
+            <div class="card text-center p-4 shadow-sm">
                 <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img mb-3">
                 <p><strong>Tên người dùng:</strong> <span th:text="${user.username}"></span></p>
                 <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
@@ -81,24 +142,74 @@
                     <button id="changePasswordBtn" class="btn btn-custom">Thay đổi mật khẩu</button>
                     <button id="editProfileBtn" class="btn btn-custom">Chỉnh sửa thông tin cá nhân</button>
                 </div>
-
-                <!-- Thông báo -->
-                <div th:if="${error != null}" class="alert alert-danger mt-3">
+                <div th:if="${user.phoneNumber == null or user.phoneNumber == ''}"
+                     class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                    <p>Vui lòng cập nhật số điện thoại của bạn.</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <!-- Thông báo lỗi -->
+                <div th:if="${error != null}" class="alert alert-danger mt-3 fade show" role="alert">
                     <p th:text="${error}"></p>
                 </div>
-                <div th:if="${success != null}" class="alert alert-success mt-3">
+
+                <!-- Thông báo thành công -->
+                <div th:if="${success != null}" class="alert alert-success mt-3 fade show" role="alert">
                     <p th:text="${success}"></p>
                 </div>
-                <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}" class="alert alert-danger mt-3">
+
+                <!-- Thông báo lỗi validation -->
+                <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
+                     class="alert alert-danger mt-3 fade show" role="alert">
                     <th:block th:each="error : ${validationErrors}">
                         <p th:text="${error.defaultMessage}"></p>
                     </th:block>
                 </div>
             </div>
         </div>
+
+        <!-- Thông tin công ty -->
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Thông tin công ty</h1>
+            <div class="card text-center p-4 shadow-sm">
+                <!-- Nếu chưa có công ty, hiển thị cảnh báo -->
+                <div th:if="${company == null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p>Bạn chưa có thông tin công ty. Vui lòng thêm thông tin công ty.</p>
+                    <button id="addCompanyBtn" class="btn btn-primary">Thêm thông tin công ty</button>
+                </div>
+
+                <!-- Nếu có công ty nhưng thiếu dữ liệu -->
+                <div th:if="${company != null}">
+                    <p><strong>Tên công ty:</strong> <span th:text="${company.name ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span>
+                    </p>
+                    <p><strong>Số điện thoại công ty:</strong> <span
+                            th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Địa chỉ:</strong> <span th:text="${company.address ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span>
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <button id="editCompanyBtn" class="btn btn-custom">Thay đổi thông tin công ty</button>
+                    </div>
+                    <div th:if="${errorCompany != null}" class="alert alert-danger mt-3">
+                        <p th:text="${errorCompany}"></p>
+                    </div>
+                    <div th:if="${successCompany != null}" class="alert alert-success mt-3">
+                        <p th:text="${successCompany}"></p>
+                    </div>
+                    <div th:if="${validationErrorsCompany != null and #lists.size(validationErrorsCompany) > 0}"
+                         class="alert alert-danger mt-3">
+                        <th:block th:each="error : ${validationErrorsCompany}">
+                            <p th:text="${error.defaultMessage}"></p>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div th:replace="~{shared/footer.html :: footer}"></div>
     </div>
 </div>
+
 
 <!-- Modal đổi mật khẩu -->
 <div id="changePasswordModal" class="modal">
@@ -136,38 +247,289 @@
     </div>
 </div>
 
-<script>
-    document.getElementById("changePasswordBtn").onclick = function () {
-        document.getElementById("changePasswordModal").style.display = "block";
-    }
-    document.getElementById("editProfileBtn").onclick = function () {
-        document.getElementById("editProfileModal").style.display = "block";
-    }
-    document.querySelectorAll(".close").forEach(btn => {
-        btn.onclick = function () {
-            document.getElementById("changePasswordModal").style.display = "none";
-            document.getElementById("editProfileModal").style.display = "none";
-        }
-    });
-    window.onclick = function (event) {
-        if (event.target == document.getElementById("changePasswordModal")) {
-            document.getElementById("changePasswordModal").style.display = "none";
-        }
-        if (event.target == document.getElementById("editProfileModal")) {
-            document.getElementById("editProfileModal").style.display = "none";
-        }
-    }
-</script>
+<!-- Modal thêm công ty -->
+<div id="addCompanyModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Thêm thông tin công ty</h3>
+        <form th:action="@{/profile/addCompany}" method="post">
+            <label>Tên công ty:</label>
+            <input type="text" name="name" required class="form-control mb-2">
+            <label>Email công ty:</label>
+            <input type="email" name="email" required class="form-control mb-2">
+            <label>Số điện thoại:</label>
+            <input type="text" name="phoneNumber" required class="form-control mb-2">
+            <label>Địa chỉ:</label>
+            <input type="text" name="address" required class="form-control mb-2">
+            <label>Mã số thuế:</label>
+            <input type="text" name="taxNumber" required class="form-control mb-2">
+            <button type="submit" class="btn btn-success">Lưu thông tin</button>
+        </form>
+    </div>
+</div>
+
+<div id="editCompanyModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <h3>Chỉnh sửa thông tin công ty</h3>
+        <form th:action="@{/profile/updateCompany}" method="post" th:object="${company}">
+            <label>Tên công ty:</label>
+            <input type="text" th:field="*{name}" required class="form-control mb-2">
+            <label>Email công ty:</label>
+            <input type="email" th:field="*{email}" required class="form-control mb-2">
+            <label>Số điện thoại:</label>
+            <input type="text" th:field="*{phoneNumber}" required class="form-control mb-2">
+            <label>Địa chỉ:</label>
+            <input type="text" th:field="*{address}" required class="form-control mb-2">
+            <label>Mã số thuế:</label>
+            <input type="text" th:field="*{taxNumber}" required class="form-control mb-2">
+            <button type="submit" class="btn btn-success">Lưu thông tin mới</button>
+        </form>
+    </div>
+</div>
+
+<!-- Toast thông báo thành công -->
+<div id="successToast" class="toast success-toast"
+     style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+    <div class="toast-header">
+        <strong class="me-auto">Thành công</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p id="successMessage"></p>
+    </div>
+</div>
+
+<!-- Toast thông báo lỗi -->
+<div id="errorToast" class="toast error-toast"
+     style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
+    <div class="toast-header">
+        <strong class="me-auto">Lỗi</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p id="errorMessage"></p>
+    </div>
+</div>
+
+<!-- Toast thông báo lỗi validation -->
+<div id="validationErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+    <div class="toast-header">
+        <strong class="me-auto">Lỗi Validation</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <ul id="validationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
+    </div>
+</div>
+
+<!-- Toast thông báo thành công cho profile -->
+<div id="profileSuccessToast" class="toast success-toast"
+     style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
+    <div class="toast-header">
+        <strong class="me-auto">Thành công</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p id="profileSuccessMessage"></p>
+    </div>
+</div>
+
+<!-- Toast thông báo lỗi cho profile -->
+<div id="profileErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
+    <div class="toast-header">
+        <strong class="me-auto">Lỗi</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p id="profileErrorMessage"></p>
+    </div>
+</div>
+
+<!-- Toast thông báo lỗi validation cho profile -->
+<div id="profileValidationErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+    <div class="toast-header">
+        <strong class="me-auto">Lỗi Validation</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <ul id="profileValidationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
+    </div>
+</div>
 
 <script>
-    // Tự động ẩn thông báo sau 5 giây
-    setTimeout(function () {
-        document.querySelectorAll(".alert").forEach(alert => {
-            alert.style.display = "none";
+    document.addEventListener("DOMContentLoaded", function () {
+        var editCompanyBtn = document.getElementById("editCompanyBtn");
+        if (editCompanyBtn) {
+            console.log("editCompanyBtn found");
+            editCompanyBtn.onclick = function () {
+                console.log("Edit Company button clicked");
+                var modal = document.getElementById("editCompanyModal");
+                if (modal) {
+                    console.log("Modal found, setting display to block");
+                    modal.style.display = "block";
+                } else {
+                    console.log("editCompanyModal not found in DOM");
+                }
+            };
+        } else {
+            console.log("editCompanyBtn not found on page load");
+        }
+
+        // Các sự kiện khác (changePasswordBtn, editProfileBtn, addCompanyBtn)
+        var changePasswordBtn = document.getElementById("changePasswordBtn");
+        if (changePasswordBtn) {
+            changePasswordBtn.onclick = function () {
+                document.getElementById("changePasswordModal").style.display = "block";
+            };
+        }
+
+        var editProfileBtn = document.getElementById("editProfileBtn");
+        if (editProfileBtn) {
+            editProfileBtn.onclick = function () {
+                document.getElementById("editProfileModal").style.display = "block";
+            };
+        }
+
+        var addCompanyBtn = document.getElementById("addCompanyBtn");
+        if (addCompanyBtn) {
+            addCompanyBtn.onclick = function () {
+                document.getElementById("addCompanyModal").style.display = "block";
+            };
+        }
+
+        // Đóng modal
+        document.querySelectorAll(".close").forEach(btn => {
+            btn.onclick = function () {
+                document.getElementById("changePasswordModal").style.display = "none";
+                document.getElementById("editProfileModal").style.display = "none";
+                document.getElementById("addCompanyModal").style.display = "none";
+                document.getElementById("editCompanyModal").style.display = "none";
+            };
         });
-    }, 3000);
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById("changePasswordModal")) {
+                document.getElementById("changePasswordModal").style.display = "none";
+            }
+            if (event.target == document.getElementById("editProfileModal")) {
+                document.getElementById("editProfileModal").style.display = "none";
+            }
+            if (event.target == document.getElementById("addCompanyModal")) {
+                document.getElementById("addCompanyModal").style.display = "none";
+            }
+            if (event.target == document.getElementById("editCompanyModal")) {
+                document.getElementById("editCompanyModal").style.display = "none";
+            }
+        };
+
+        // Hiển thị toast thành công
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent) {
+            const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent;
+            successToast.show();
+            setTimeout(() => {
+                successToast.hide();
+            }, 3000);
+        }
+
+        // Hiển thị toast lỗi
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent) {
+            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent;
+            errorToast.show();
+            setTimeout(() => {
+                errorToast.hide();
+            }, 3000);
+        }
+
+        // Hiển thị toast lỗi validate
+        const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
+        if (hiddenValidationErrors?.textContent) {
+            console.log('Validation errors found:', hiddenValidationErrors.textContent);
+            try {
+                const validationErrors = hiddenValidationErrors.textContent.split(', ').map(errorStr => {
+                    const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
+                    return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
+                }).filter(error => error.defaultMessage); // Loại bỏ lỗi không hợp lệ
+
+                if (validationErrors.length) {
+                    const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
+                    document.getElementById('validationErrorMessages').innerHTML = validationErrors
+                        .map(error => `<li>${error.defaultMessage}</li>`)
+                        .join('');
+                    toast.show();
+                    setTimeout(() => toast.hide(), 5000);
+                } else {
+                    console.log('No valid validation errors to display');
+                }
+            } catch (e) {
+                console.error('Error parsing validation errors:', e, hiddenValidationErrors.textContent);
+            }
+        } else {
+            console.log('No validation errors found in hiddenValidationErrors');
+        }
+
+        // Toast cho success, error, và validationErrors của updateProfile
+        const profileSuccess = document.getElementById('hiddenProfileSuccess');
+        if (profileSuccess?.textContent) {
+            const toast = new bootstrap.Toast(document.getElementById('profileSuccessToast'));
+            document.getElementById('profileSuccessMessage').textContent = profileSuccess.textContent;
+            toast.show();
+            setTimeout(() => toast.hide(), 3000);
+        }
+
+        const profileError = document.getElementById('hiddenProfileError');
+        if (profileError?.textContent) {
+            const toast = new bootstrap.Toast(document.getElementById('profileErrorToast'));
+            document.getElementById('profileErrorMessage').textContent = profileError.textContent;
+            toast.show();
+            setTimeout(() => toast.hide(), 3000);
+        }
+
+        const profileValidationErrors = document.getElementById('hiddenProfileValidationErrors');
+        if (profileValidationErrors?.textContent) {
+            const errorStrings = profileValidationErrors.textContent.split(', ');
+            const validationErrors = errorStrings.map(errorStr => {
+                const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
+                return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
+            }).filter(error => error.defaultMessage);
+
+            if (validationErrors.length) {
+                const toast = new bootstrap.Toast(document.getElementById('profileValidationErrorToast'));
+                document.getElementById('profileValidationErrorMessages').innerHTML = validationErrors
+                    .map(error => `<li>${error.defaultMessage}</li>`)
+                    .join('');
+                toast.show();
+                setTimeout(() => toast.hide(), 5000);
+            }
+        }
+
+        const alerts = document.querySelectorAll('.alert');
+
+        alerts.forEach(alert => {
+            // Tự động ẩn sau 5 giây (5000ms)
+            setTimeout(() => {
+                // Tạo đối tượng Bootstrap Alert và gọi phương thức close
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 3000);
+        });
+    });
+
 </script>
 
-
+<!-- JavaScript Libraries -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<script src="/assert/lib/chart/chart.min.js"></script>
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
 </body>
 </html>
+
+

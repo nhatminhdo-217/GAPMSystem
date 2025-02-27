@@ -42,14 +42,14 @@ public class Company extends BaseEntity {
     public Company() {
     }
 
-    public Company(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, String email, String phoneNumber, String address, String taxNumber, Set<User> users) {
+    public Company(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, Set<User> users, String taxNumber, String address, String phoneNumber, String email) {
         super(id, createAt, updateAt);
         this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.taxNumber = taxNumber;
         this.users = users;
+        this.taxNumber = taxNumber;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
     public String getName() {
