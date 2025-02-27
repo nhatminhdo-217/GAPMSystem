@@ -59,10 +59,14 @@ public class RfqController {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
-                Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
+                Optional<Company> company = companyService.findByUserId(optionalUser.get().getId());
                 List<Rfq> rfqs = rfqService.getAllRfqsByUserId(optionalUser.get().getId());
                 model.addAttribute("rfqs", rfqs);
-                model.addAttribute("check-company", company);
+                if (company.isPresent()) {
+                    model.addAttribute("check-company", company.get());
+                } else {
+                    model.addAttribute("check-company", null);
+                }
             }
         }
 
@@ -79,8 +83,14 @@ public class RfqController {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
-                Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
-                model.addAttribute("company", company);
+                Optional<Company> company = companyService.findByUserId(optionalUser.get().getId());
+                System.err.println("Find company" + company);
+                if (company.isPresent()) {
+                    model.addAttribute("company", company.get());
+                    System.err.println("Find company name" + company.get().getName());
+                } else {
+                    model.addAttribute("company", null);
+                }
             }
         }
         RfqFormDTO rfqForm = new RfqFormDTO();
@@ -172,7 +182,7 @@ public class RfqController {
 
     @GetMapping("/delete/{id}")
     public String deleteRfq(@PathVariable("id") Long rfqId, Model model, RedirectAttributes redirectAttributes) {
-         rfqService.deleteRfqById(rfqId);
+        rfqService.deleteRfqById(rfqId);
         redirectAttributes.addFlashAttribute("deleteSuccessMessage", "Đã báo hủy lô hàng!");
         return "redirect:/request-for-quotation/view-list"; // Trả về fragment
     }
