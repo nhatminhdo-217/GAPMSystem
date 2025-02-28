@@ -26,6 +26,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<String> getAllCategoryNames() {
+        return categoryRepository.findAllCategoryNames();
+    }
+    @Override
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
     }

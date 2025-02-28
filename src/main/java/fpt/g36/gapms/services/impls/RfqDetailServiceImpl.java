@@ -2,15 +2,18 @@ package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.models.dto.RfqDetailDTO;
 import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.models.entities.RfqDetail;
 import fpt.g36.gapms.repositories.RfqDetailRepository;
 import fpt.g36.gapms.services.*;
 import jakarta.transaction.Transactional;
+import fpt.g36.gapms.services.RfqDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.List;
 
 
 @Service
@@ -38,6 +41,7 @@ public class RfqDetailServiceImpl implements RfqDetailService {
     public void deleteRfqDetailById(Long id) {
         rfqDetailRepository.deleteById(id);
     }
+
 
     @Override
     public RfqDetail getRfqDetailById(Long rfqDetailId) {

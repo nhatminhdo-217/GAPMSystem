@@ -246,7 +246,7 @@ public class RfqController {
 
     @GetMapping("/delete/{id}")
     public String deleteRfq(@PathVariable("id") Long rfqId, Model model, RedirectAttributes redirectAttributes) {
-         rfqService.deleteRfqById(rfqId);
+        rfqService.deleteRfqById(rfqId);
         redirectAttributes.addFlashAttribute("deleteSuccessMessage", "Đã báo hủy lô hàng!");
         return "redirect:/request-for-quotation/view-list"; // Trả về fragment
     }

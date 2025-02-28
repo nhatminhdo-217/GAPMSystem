@@ -12,4 +12,5 @@ public interface CategoryService {
     Category getCategoryById(Long id);
 
 
+    List<String> getAllCategoryNames();
 }

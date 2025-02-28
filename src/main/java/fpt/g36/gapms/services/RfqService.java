@@ -10,6 +10,7 @@ import java.util.List;
 public interface RfqService {
 
     Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable);
+    List<Rfq> getAllRfqsByUserId(Long userId);
 
     Rfq saveRfq(Rfq rfq);
 
@@ -21,4 +22,5 @@ public interface RfqService {
 
 
 
+    List<Rfq> getAllApprovedRfqs();
 }

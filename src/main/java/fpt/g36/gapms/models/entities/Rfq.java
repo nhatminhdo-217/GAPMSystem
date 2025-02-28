@@ -45,7 +45,7 @@ public class Rfq extends BaseEntity {
     @OneToMany(mappedBy = "rfq", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RfqDetail> rfqDetails = new ArrayList<>();
 
-    @OneToOne(mappedBy = "rfq", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "rfq", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Solution solution;
 
     public Rfq() {
