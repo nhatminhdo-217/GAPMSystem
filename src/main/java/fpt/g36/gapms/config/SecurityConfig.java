@@ -20,14 +20,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**",
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-
-                        .requestMatchers("/admin/{id}/toggle-status").hasRole("ADMIN")
+                        .requestMatchers("/request-for-quotation/**").hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
+                        .requestMatchers("/technical/**").hasRole("TECHNICAL")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")

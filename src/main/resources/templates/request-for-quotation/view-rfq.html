@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .parent-row {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .toggle-btn {
+            font-size: 16px;
+        }
+
+        .toggle-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .text-start strong {
+            font-weight: bold;
+            color: #333;
+            display: block; /* Đảm bảo title hiển thị trên cùng */
+            text-align: center; /* Căn giữa tiêu đề theo chiều ngang */
+        }
+
+        .text-start span {
+            font-weight: normal;
+            color: #666;
+            display: block; /* Đảm bảo data hiển thị dưới title */
+            text-align: center; /* Căn giữa dữ liệu theo chiều ngang */
+            margin-top: 5px;
+        }
+
+        .d-flex.align-items-start .me-3 span {
+            font-size: 16px;
+            color: #000;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th, .table td {
+            vertical-align: middle; /* Căn giữa theo chiều dọc */
+            text-align: center; /* Căn giữa theo chiều ngang */
+            padding: 10px;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+
+        .text-success:hover {
+            color: #28a745 !important;
+        }
+
+        .text-danger:hover {
+            color: #dc3545 !important;
+        }
+
+        .d-flex.gap-2 a {
+            text-decoration: none;
+        }
+
+        /* Thêm style cho phần thông tin chính để căn giữa cả title và data */
+        .flex-grow-1.ms-3.d-flex.flex-wrap.justify-content-between {
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: center; /* Căn giữa theo chiều ngang nếu cần, nhưng giữ flex-wrap để các phần tử không chồng lên nhau */
+        }
+
+        .text-start.me-3 {
+            flex: 0 1 auto; /* Đảm bảo mỗi phần tử có thể co giãn nhưng giữ chiều rộng tương đối */
+            text-align: center; /* Căn giữa toàn bộ nội dung trong div */
+            width: 16%; /* Phân chia đều cho 6 cột (khoảng 16.67% mỗi cột, nhưng điều chỉnh nếu cần) */
+        }
+
+        @media (max-width: 768px) {
+            .text-start.me-3 {
+                width: 100%; /* Cột chiếm toàn bộ chiều rộng trên mobile */
+                margin-bottom: 10px;
+                text-align: center;
+            }
+        }
+        .custom-popup {
+            position: fixed; /* Dùng fixed để giữ popup cố định trên màn hình */
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none; /* Ẩn mặc định */
+            top: 50%; /* Đặt ở giữa theo chiều dọc */
+            left: 50%; /* Đặt ở giữa theo chiều ngang */
+            transform: translate(-50%, -50%); /* Dịch chuyển ngược lại nửa chiều rộng và cao để căn giữa */
+            width: 300px; /* Đặt chiều rộng cố định hoặc tùy chỉnh */
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .popup-header h5 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .popup-body {
+            padding: 10px 0;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* Màu xanh khi focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        .popup-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Hiệu ứng fadeIn */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Yêu cầu báo giá</h6>
+                    <a th:if="${#vars['check-company'] != null}" th:href="@{/request-for-quotation/rfq-form}"
+                       class="btn btn-primary">Tạo yêu cầu báo giá mới</a>
+                    <a th:unless="${#vars['check-company'] != null}" href="#" class="btn btn-primary"
+                       onclick="showNotification(); return false;">Tạo yêu cầu báo giá mới</a>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12 d-flex align-items-start" th:each="rfq, iterStat : ${rfqs}">
+                        <div class="me-3" style="margin-top: 10px;">
+                            <span class="fw-bold" style="font-size: 16px;" th:text="${iterStat.count}"></span>
+                        </div>
+                        <div class="card flex-grow-1 mb-3"
+                             style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
+                            <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
+                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
+                                        th:data-target="'#details-' + ${iterStat.count}"
+                                        style="padding: 0; color: #dc3545; text-decoration: none;">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
+                                     style="width: 80%;">
+                                    <div class="text-start me-3">
+                                        <strong>Mã lô</strong><br>
+                                        <span th:text="${rfq.getId()}"></span>
+                                    </div>
+                                    <div class="text-start me-3">
+                                        <strong>Số lượng trong lô</strong><br>
+                                        <span th:id="'product-count-' + ${rfq.getId()}" th:text="${rfq.getRfqDetails().size()}"></span>
+                                    </div>
+                                    <div class="text-start me-3">
+                                        <strong>Ngày tạo đơn</strong><br>
+                                        <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>
+                                    </div>
+                                    <div class="text-start me-3">
+                                        <strong>Nhân viên phụ trách</strong><br>
+                                        <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>
+                                    </div>
+                                    <div class="text-start me-3">
+                                        <strong>Trạng thái đơn hàng</strong><br>
+                                        <span th:switch="${rfq.getIsSent()}">
+                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
+                                          style="color: green;"></span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
+                                             style="color: #ffc107;"></span>
+                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
+                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
+                                              </span>
+                                    </div>
+                                </div>
+                                <!--<div class="ms-3">
+                                    <i class="fas fa-edit"></i>
+                                </div>-->
+                                <div class="dropdown ms-3">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                            th:id="'dropdownMenuButton' + ${iterStat.count}" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" th:attr="aria-labelledby='dropdownMenuButton' + ${iterStat.count}">
+                                        <li>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:id="'viewDetailsLink_' + ${rfq.id}"
+                                               th:onclick="'showPopup(\'' + ${rfq.id} + '\')'">
+                                                Sửa ngày nhận hàng mong muốn
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:onclick="showEditApprovalAlert()">
+                                                Sửa ngày nhận hàng mong muốn
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                    th:href="'/request-for-quotation/edit-rfq-form?rfqId=' + ${rfq.id}"
+                                               class="dropdown-item text-success"
+                                               title="Edit">
+                                                Sửa thông tin đơn hàng
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:onclick="showEditApprovalAlert()">
+                                                Sửa thông tin đơn hàng
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-danger"
+                                               href="#"
+                                               th:onclick="|confirmDeleteSwal('${rfq.id}')|">
+                                                Hủy yêu cầu báo giá
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-danger"
+                                               href="#"
+                                               th:onclick="showApprovalAlert()">
+                                                Hủy yêu cầu báo giá
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="collapse" th:id="'details-' + ${iterStat.count}">
+                                <div class="card-body p-4" style="background-color: #fff; border-radius: 0 0 8px 8px;">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr class="text-dark">
+                                            <th>Số thứ tự</th>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Màu</th>
+                                            <th>Số lượng đặt</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="detail, detailIter : ${rfq.rfqDetails}" th:data-id="${detail.getId()}">
+                                            <td th:text="${detailIter.count}"></td>
+                                            <td th:text="${detail.getId()}"></td>
+                                            <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
+                                            <td th:text="${detail.getNoteColor()}"></td>
+                                            <td th:text="${detail.getQuantity()}"></td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="#" class="text-danger" title="Delete"
+                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED }and ${#lists.size(rfq.rfqDetails) > 1}"
+                                                       th:onclick="'deleteDetail(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">
+                                                        <i class="fas fa-trash-alt fa-lg"></i>
+                                                    </a>
+                                                    <a href="#" class="text-danger" title="Delete"
+                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED} and ${#lists.size(rfq.rfqDetails) == 1}"
+                                                       th:onclick="showApprovalAlertCountLessThan1()">
+                                                        <i class="fas fa-trash-alt fa-lg"></i>
+                                                    </a>
+                                                    <a href="#" class="text-danger" title="Delete"
+                                                       th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                       th:onclick="showApprovalAlert()">
+                                                        <i class="fas fa-trash-alt fa-lg"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- Đoạn ngày mong muốn nhận hàng được di chuyển xuống đây -->
+                                    <div class="d-flex justify-content-between align-items-start mt-3">
+                                        <!-- Ngày mong muốn nhận hàng (bên trái) -->
+                                        <div>
+                                            <strong>Ngày mong muốn nhận hàng: </strong>
+                                            <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${rfq.getExpectDeliveryDate()}"></span>
+                                        </div>
+
+                                        <!-- Các thông tin khác (bên phải) -->
+                                        <div class="text-end">
+                                            <p th:if="${rfq.solutions != null}" ><strong>Lý do: </strong> <span th:text="${rfq.solutions.reason}"></span></p>
+                                            <p th:if="${rfq.solutions != null}"><strong>Chi tiết: </strong><span th:text="${rfq.solutions.description}"></span></p>
+                                            <p th:if="${rfq.solutions != null}"><strong>Ngày có thể giao hàng dự kiến: </strong>
+                                                <span th:text="${rfq.solutions.actualDeliveryDate}"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popup -->
+                        <div id="editPopup" class="custom-popup">
+                            <div class="popup-header">
+                                <h5>Chỉnh sửa ngày giao hàng</h5>
+                                <button type="button" class="close-btn" onclick="hidePopup()">&times;</button>
+                            </div>
+                            <div class="popup-body">
+                                <div class="form-group">
+                                    <label for="editDeliveryDate">Chọn ngày mới:</label>
+                                    <input type="date" class="form-control" id="editDeliveryDate" name="editDeliveryDate" min="" required>
+                                </div>
+                            </div>
+                            <div class="popup-footer">
+                                <button class="btn btn-primary" onclick="saveEditedDate()">Lưu</button>
+                                <button class="btn btn-secondary" onclick="hidePopup()">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Phân trang -->
+                <nav aria-label="Page navigation" th:if="${totalItems > 0}">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+                        </li>
+                        <!-- Các trang -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+                        </li>
+                        <!-- Nút Next -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Thông tin phân trang -->
+                <p class="text-center" th:if="${totalItems > 0}">
+                    Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+                    (Tổng cộng <span th:text="${totalItems}"></span> RFQ)
+                </p>
+            </div>
+        </div>
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+<div th:if="${saveSuccessMessage}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Tạo thành công yêu cầu báo giá mới",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${deleteSuccessMessage}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Đã hủy yêu cầu báo giá",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${editRfqDetailSuccessMessage}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Cập nhật thành công yêu cầu báo giá",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- Bootstrap Modal -->
+
+
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Xử lý sự kiện click vào nút toggle
+        $('.toggle-btn').click(function () {
+            var target = $(this).data('target');
+            var icon = $(this).find('i');
+
+            // Toggle trạng thái collapse
+            $(target).collapse('toggle');
+
+            // Thay đổi icon (plus -> minus, và ngược lại)
+            if ($(target).hasClass('show')) {
+                icon.removeClass('fa-plus').addClass('fa-minus');
+            } else {
+                icon.removeClass('fa-minus').addClass('fa-plus');
+            }
+        });
+    });
+
+    function showNotification() {
+        Swal.fire({
+            title: 'Bạn chưa có thông tin công ty',
+            text: 'Chọn nút "đến trang profile" để nhập thông tin công ty',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đến trang Profile',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng nhấn "Đến trang Profile", chuyển hướng đến trang profile
+                window.location.href = '/profile'; // Thay bằng đường dẫn thực tế đến trang profile
+            }
+        });
+    }
+</script>
+<script th:inline="javascript">
+    function deleteDetail(detailId, rfqId) {
+        // Bước 1: Kiểm tra số lượng RfqDetail trong Rfq
+        fetch('/request-for-quotation/check-delete/' + rfqId + '/' + detailId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi kiểm tra xóa.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.canDelete) {
+                    // Nếu có thể xóa (số lượng RfqDetail > 1), hiển thị hộp thoại xác nhận
+                    Swal.fire({
+                        title: "Bạn có muốn xóa sản phẩm này không ?",
+                        text: "Hành động này không thể hoàn tác!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Có, xóa ngay!",
+                        cancelButtonText: "Không"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Gửi request xóa nếu người dùng xác nhận
+                            fetch('/request-for-quotation/rfq-detail/delete/' + detailId, {
+                                method: 'GET', // Giữ nguyên GET nếu server yêu cầu, hoặc thay bằng DELETE nếu phù hợp
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        // Xóa dòng khỏi bảng
+                                        document.querySelector(`tr[data-id='${detailId}']`).remove();
+
+                                        // Cập nhật số lượng sản phẩm
+                                        const productCountElement = document.getElementById(`product-count-${rfqId}`);
+                                        let currentCount = parseInt(productCountElement.textContent);
+                                        productCountElement.textContent = currentCount - 1;
+
+                                        Swal.fire('Xoá thành công!', 'Đơn hàng đã bị lóa khỏi lô', 'success');
+                                    } else {
+                                        response.text().then(text => {
+                                            Swal.fire('Lỗi!', 'Xóa thất bại: ' + text, 'error');
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+                                });
+                        }
+                    });
+                } else {
+                    // Nếu không thể xóa (chỉ còn 1 đơn), hiển thị thông báo
+                    Swal.fire('Không thể xóa!', 'Lô hàng phải có ít nhất 1 đơn.', 'warning');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking delete:', error);
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra khi kiểm tra xóa đơn trong lô: ' + error.message, 'error');
+            });
+    }
+</script>
+
+<script>
+    function confirmDeleteSwal(rfqId) {
+        Swal.fire({
+            title: "Bạn có chắc muốn hủy báo giá ?",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Có, hủy ngay!",
+            cancelButtonText: "Không"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/request-for-quotation/delete/" + rfqId;  // Điều hướng đến API hủy đơn
+            }
+        });
+    }
+    function showApprovalAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Không thể hủy báo giá !',
+            text: 'Báo giá này đã được duyệt.',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showApprovalAlertCountLessThan1() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Không thể hủy đơn !',
+            text: 'Trong lô phải có ít nhất 1 sản phẩm',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showEditApprovalAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Không thể chỉnh sửa!',
+            text: 'Đơn đã được duyệt, không thể sửa.',
+            confirmButtonText: 'OK'
+        });
+    }
+</script>
+<script th:inline="javascript">
+
+
+//shop popup>
+    function showPopup(rfqId) {
+        const inputField = document.getElementById("desiredDeliveryDate_" + rfqId);
+        if (!inputField) {
+            console.error("Không tìm thấy phần tử với ID 'desiredDeliveryDate_" + rfqId + "'");
+            return;
+        }
+        const popup = document.getElementById("editPopup");
+        popup.style.display = "block"; // Chỉ cần hiển thị, không cần set top/left
+
+        const currentDate = inputField.textContent; // Lấy nội dung text của span
+        document.getElementById("editDeliveryDate").value = currentDate;
+
+        // Lưu rfqId để dùng khi lưu
+        popup.dataset.rfqId = rfqId; // Lưu rfqId vào dataset của popup
+    }
+
+    function hidePopup() {
+        document.getElementById("editPopup").style.display = "none";
+    }
+
+    function saveEditedDate() {
+        const newDate = document.getElementById("editDeliveryDate").value;
+        const popup = document.getElementById("editPopup");
+        const rfqId = popup.dataset.rfqId;
+
+        if (!newDate) {
+            Swal.fire({
+                position: "top-end",
+                icon: "warning",
+                title: "Vui lòng chọn ngày!",
+                showConfirmButton: false,
+                timer: 2000
+            });
+            return;
+        }
+
+        const spanField = document.getElementById("desiredDeliveryDate_" + rfqId);
+
+
+        const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+        const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+        fetch('/request-for-quotation/edit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken // Thêm CSRF token vào header
+            },
+            body: 'rfqId=' + encodeURIComponent(rfqId) + '&desiredDeliveryDate=' + encodeURIComponent(newDate)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text(); // Lấy giá trị ngày mới từ server
+                } else {
+                    throw new Error("Lỗi server");
+                }
+            })
+            .then(updatedDate => {
+                spanField.textContent = updatedDate; // Cập nhật giao diện với giá trị mới từ server
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Ngày giao hàng đã được cập nhật!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    hidePopup();
+                });
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: error.message === "Lỗi server" ? "Có lỗi xảy ra khi cập nhật!" : "Lỗi kết nối!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+    }
+
+const today = new Date().toISOString().split("T")[0];
+// Gán giá trị min cho input
+document.getElementById("editDeliveryDate").setAttribute("min", today);
+</script>
+
+
+</body>
+
+</html>
