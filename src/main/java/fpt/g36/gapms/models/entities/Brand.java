@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,7 +20,7 @@ public class Brand extends BaseEntity {
     private String name;
 
     @Lob
-    @Column(name = "description")
+    @Column(name = "description", length = 255)
     private String description;
 
     @NotNull
@@ -28,6 +29,7 @@ public class Brand extends BaseEntity {
     private Product production;
 
     @OneToMany(mappedBy = "brand")
+    @JsonManagedReference
     private Set<CateBrandPrice> cateBrandPrices = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "brand")

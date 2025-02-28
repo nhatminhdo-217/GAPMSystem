@@ -39,7 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
 
-        Role role = roleService.getRole("USER").orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleService.getRole("CUSTOMER").orElseThrow(() -> new RuntimeException("CUSTOMER not found"));
 
         // ✅ Kiểm tra tài khoản trong database
         User user = userRepository.findByEmail(email).orElse(null);

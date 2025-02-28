@@ -33,11 +33,6 @@ public class Company extends BaseEntity {
     @Column(name = "tax_number", nullable = false, length = 15)
     private String taxNumber;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @ManyToMany
     @JoinTable(name = "company_user",
             joinColumns = @JoinColumn(name = "company_id"),
@@ -47,15 +42,14 @@ public class Company extends BaseEntity {
     public Company() {
     }
 
-    public Company(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, String email, String phoneNumber, String address, String taxNumber, User user, Set<User> users) {
+    public Company(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, Set<User> users, String taxNumber, String address, String phoneNumber, String email) {
         super(id, createAt, updateAt);
         this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.taxNumber = taxNumber;
-        this.user = user;
         this.users = users;
+        this.taxNumber = taxNumber;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
     public String getName() {
@@ -96,14 +90,6 @@ public class Company extends BaseEntity {
 
     public void setTaxNumber(String taxNumber) {
         this.taxNumber = taxNumber;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Set<User> getUsers() {

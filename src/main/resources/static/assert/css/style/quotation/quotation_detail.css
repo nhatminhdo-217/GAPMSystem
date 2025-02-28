@@ -1,0 +1,22 @@
+.product-name {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.expected-date-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+}
+
+.actual-date-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+}
+
+.reason-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+}

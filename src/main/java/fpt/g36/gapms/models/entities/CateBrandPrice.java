@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,30 +17,31 @@ public class CateBrandPrice {
     @MapsId("cateId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cate_id", nullable = false)
+    @JsonBackReference
     private Category cate;
 
     @MapsId("brandId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "brand_id", nullable = false)
+    @JsonBackReference
     private Brand brand;
 
     @NotNull
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @NotNull
-    @Column(name = "has_color", nullable = false)
-    private Boolean hasColor = false;
+//    @NotNull
+//    @Column(name = "has_color", nullable = false)
+//    private Boolean hasColor = false;
 
     public CateBrandPrice() {
     }
 
-    public CateBrandPrice(CateBrandPriceId id, Category cate, Brand brand, BigDecimal price, Boolean hasColor) {
+    public CateBrandPrice(CateBrandPriceId id, Category cate, Brand brand, BigDecimal price) {
         this.id = id;
         this.cate = cate;
         this.brand = brand;
         this.price = price;
-        this.hasColor = hasColor;
     }
 
     public CateBrandPriceId getId() {
@@ -74,11 +76,8 @@ public class CateBrandPrice {
         this.price = price;
     }
 
-    public Boolean getHasColor() {
-        return hasColor;
-    }
-
-    public void setHasColor(Boolean hasColor) {
-        this.hasColor = hasColor;
+    @Transient
+    public Boolean isColor(){
+        return (id != null) ? id.getIsColor() : null;
     }
 }
