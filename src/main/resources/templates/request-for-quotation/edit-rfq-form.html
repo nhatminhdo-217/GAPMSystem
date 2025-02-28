@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
+    <title>Chỉnh sửa RFQ - Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
-    <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -48,7 +47,7 @@
         }
 
         .form-select, .form-control {
-            border: 2px solid #dc3545; /* Viền đỏ như nút xóa trong hình */
+            border: 2px solid #dc3545;
             border-radius: 5px;
             padding: 8px;
             font-size: 14px;
@@ -70,7 +69,7 @@
         }
 
         .add-row-btn {
-            background-color: #ffc107; /* Màu vàng như trong hình */
+            background-color: #ffc107;
             border: none;
             color: #fff;
             padding: 10px 20px;
@@ -85,13 +84,14 @@
         }
 
         .remove-row-btn {
-            background-color: #dc3545; /* Màu đỏ như trong hình */
+            background-color: #dc3545;
             border: none;
             color: #fff;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
+             /* Ẩn mặc định, chỉ hiển thị khi có nhiều hơn 1 dòng */
         }
 
         .remove-row-btn:hover {
@@ -100,7 +100,7 @@
         }
 
         .btn-success {
-            background-color: #28a745; /* Màu xanh lá như trong hình */
+            background-color: #28a745;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
@@ -113,12 +113,10 @@
         }
     </style>
 </head>
-
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-    <div id="spinner"
-         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -138,63 +136,52 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4" style="background-color: #fff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <div class="text-center mb-4" th:object="${company}">
-                    <h4 class="mb-2" th:text="*{name}"></h4>
-                    <p class="mb-1" th:text="*{address}"></p>
-                    <p class="mb-1" th:text="'Mã số thuế: ' + *{taxNumber}"></p>
-                    <p class="mb-1" th:text="'Số điện thoại: ' + *{phoneNumber}"></p>
-                    <p class="mb-1" th:text="'Email: ' + *{email}"></p>
-                    <h6 class="mb-0">RFQ (Request for Quotation)</h6>
+                <div class="text-center mb-4" >
+
+                    <h6 class="mb-0">Chỉnh sửa RFQ (Request for Quotation)</h6>
                 </div>
                 <div class="form-container p-3">
-                    <form id="lotForm" method="post" action="/request-for-quotation/save" th:object="${rfqForm}" >
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <form id="editRfqForm" th:action="@{/request-for-quotation/update-rfq}" th:method="post" th:object="${rfq}">
+                        <input type="hidden" th:field="*{id}">
                         <div id="productRows">
-                            <!-- Dòng đầu tiên -->
-                            <div class="form-row" id="row-1">
-                                <div class="form-group" style="flex: 0 0 80px; text-align: center;">
-                                    <label class="label">Số thứ tự</label>
-                                    <span class="form-control text-center" style="border: 2px solid #dc3545; border-radius: 5px; padding: 8px; font-size: 14px; background-color: #fff;">1</span>
-                                </div>
+                            <div th:each="detail, iterStat : ${rfq.rfqDetails}" class="form-row" th:id="'row-' + ${iterStat.count}">
+                                <input type="hidden" th:name="'rfqDetails[' + (${iterStat.count}-1) + '].id'" th:value="${detail.id}">
                                 <div class="form-group">
-                                    <label class="label" for="product-1">Sản phẩm</label>
-                                    <select class="form-select" id="product-1" th:field="*{rfqDetails[0].product.id}" onchange="loadBrands(1)" required>
+                                    <label class="label" th:for="'product-' + ${iterStat.count}">Sản phẩm</label>
+                                    <select class="form-select" th:field="*{rfqDetails[__${iterStat.count - 1}__].product.id}" th:onchange="'loadBrands(' + ${iterStat.count} + ')'" required>
                                         <option value="">Chọn sản phẩm</option>
-                                        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                                        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}" th:selected="${product.id} == ${detail.product.id}"></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="label" for="brand-1">Thương hiệu</label>
-                                    <select class="form-select" id="brand-1" th:field="*{rfqDetails[0].brand.id}" onchange="loadCategories(1)" required>
+                                    <label class="label" th:for="'brand-' + ${iterStat.count}">Thương hiệu</label>
+                                    <select class="form-select" th:field="*{rfqDetails[__${iterStat.count - 1}__].brand.id}" th:onchange="'loadCategories(' + ${iterStat.count} + ')'" required>
                                         <option value="">Chọn thương hiệu</option>
+                                        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brand.id} == ${detail.brand.id}"></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="label" for="category-1">Danh mục</label>
-                                    <select class="form-select" id="category-1" th:field="*{rfqDetails[0].cate.id}" required>
+                                    <label class="label" th:for="'category-' + ${iterStat.count}">Danh mục</label>
+                                    <select class="form-select" th:field="*{rfqDetails[__${iterStat.count - 1}__].cate.id}" required>
                                         <option value="">Chọn danh mục</option>
+                                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id} == ${detail.cate.id}"></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="label" for="color-1">Màu</label>
-                                    <input type="text" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu" minlength="1" maxlength="20" required>
+                                    <label class="label" th:for="'color-' + ${iterStat.count}">Màu</label>
+                                    <input type="text" class="form-control" th:field="*{rfqDetails[__${iterStat.count - 1}__].noteColor}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="label" for="quantity-1">Số lượng</label>
-                                    <input type="number" class="form-control" id="quantity-1" th:field="*{rfqDetails[0].quantity}" placeholder="Nhập số lượng" min="1" max="1000" required>
+                                    <label class="label" th:for="'quantity-' + ${iterStat.count}">Số lượng</label>
+                                    <input type="number" class="form-control" th:field="*{rfqDetails[__${iterStat.count - 1}__].quantity}" min="1" max="1000" required>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="remove-row-btn" style="display: none;" onclick="removeRow(1)"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" class="remove-row-btn" th:onclick="'removeRow(' + ${iterStat.count} + ')'"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
                         </div>
                         <button type="button" class="add-row-btn" id="addRowBtn"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
-                        <!-- Ô nhập ngày giao hàng mong muốn đặt ở dưới cùng, trước nút Lưu lô hàng -->
-                        <div class="form-group mt-3">
-                            <label class="label" for="desiredDeliveryDate">Ngày giao hàng mong muốn</label>
-                            <input type="date" class="form-control" id="desiredDeliveryDate" name="desiredDeliveryDate" th:field="*{desiredDeliveryDate}" min="" required>
-                        </div>
-                        <button type="submit" class="btn-success mt-3">Lưu lô hàng</button>
+                        <button type="submit" class="btn-success mt-3">Lưu thay đổi</button>
                     </form>
                 </div>
             </div>
@@ -223,17 +210,21 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-
-<script>
-    let rowCount = 1;
+<script th:inline="javascript">
+    let rowCount = /*[[${#lists.size(rfq.rfqDetails)}]]*/ 0;
 
     console.log('Nút + được click');
     $('#addRowBtn').click(function() {
         rowCount++;
+        if (rowCount > 100) { // Giới hạn tối đa, tùy chỉnh theo nhu cầu
+            alert('Đã đạt giới hạn số dòng tối đa.');
+            return;
+        }
         $.ajax({
-            url: '/request-for-quotation/get-product-row?rowNumber=' + rowCount,
+            url: '/request-for-quotation/get-product-row-edit?rowNumber=' + rowCount,
             type: 'GET',
             success: function(response) {
+                console.log("Response from AJAX:", response); // Debug response
                 $('#productRows').append(response);
                 if (rowCount > 1) {
                     $('.remove-row-btn').show();
@@ -241,41 +232,66 @@
             },
             error: function(xhr, status, error) {
                 console.error('Lỗi khi tải dòng mới:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText); // Xem chi tiết lỗi từ server
+                rowCount--; // Giảm rowCount nếu thất bại
             }
         });
     });
 
-    function removeRow(rowId) {
-        $(`#row-${rowId}`).remove();
+    $(document).on('click', '.remove-row-btn', function() {
+        const rowNumber = $(this).data('row-number');
+        removeRow(rowNumber);
+    });
+
+    function removeRow(rowNumber) {
+        $('#row-' + rowNumber).remove();
         rowCount--;
-        if (rowCount === 1) {
+        if (rowCount <= 1) {
             $('.remove-row-btn').hide();
         }
+        // Cập nhật lại số thứ tự và name của các dòng còn lại
         updateRowNumbers();
     }
 
     function updateRowNumbers() {
-        $('#productRows .form-row').each(function(index) {
-            const newIndex = index + 1;
-            $(this).attr('id', `row-${newIndex}`);
-            $(this).find('.form-group:first span').text(newIndex);
-            $(this).find('input, select').each(function() {
-                const oldId = $(this).attr('id');
-                if (oldId) {
-                    const newId = oldId.replace(/\d+$/, newIndex);
-                    $(this).attr('id', newId);
-                }
-                const oldName = $(this).attr('name');
+        let rows = $('#productRows .form-row');
+        rows.each(function(index) {
+            let newIndex = index + 1;
+            $(this).attr('id', 'row-' + newIndex);
+            $(this).find('span.form-control').text(newIndex);
+            $(this).find('select, input').each(function() {
+                let oldName = $(this).attr('name');
                 if (oldName) {
-                    const newName = oldName.replace(/\[\d+\]/, `[${index}]`); // Bắt đầu từ 0
+                    let newName = oldName.replace(/\[\d+\]/, '[' + (newIndex - 1) + ']');
                     $(this).attr('name', newName);
                 }
+                let oldId = $(this).attr('id');
+                if (oldId) {
+                    let newId = oldId.replace(/\d+$/, newIndex);
+                    $(this).attr('id', newId);
+                }
+                let oldFor = $(this).prev('label').attr('for');
+                if (oldFor) {
+                    let newFor = oldFor.replace(/\d+$/, newIndex);
+                    $(this).prev('label').attr('for', newFor);
+                }
             });
-            $(this).find('.remove-row-btn').attr('onclick', `removeRow(${newIndex})`);
+            $(this).find('.remove-row-btn').attr('data-row-number', newIndex); // Cập nhật data-row-number
         });
-        rowCount = $('#productRows .form-row').length;
+        rowCount = rows.length;
     }
+
     // Hàm AJAX để tải thương hiệu dựa trên sản phẩm
+    $(document).on('change', '.form-select[data-row-number]', function() {
+        const rowNumber = $(this).data('row-number');
+        if ($(this).attr('id').startsWith('product-')) {
+            loadBrands(rowNumber);
+        } else if ($(this).attr('id').startsWith('brand-')) {
+            loadCategories(rowNumber);
+        }
+    });
+
     function loadBrands(rowNumber) {
         const productId = $('#product-' + rowNumber).val();
         if (productId) {
@@ -289,8 +305,7 @@
                     response.forEach(function(brand) {
                         brandSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
                     });
-                    // Reset danh mục khi thay đổi thương hiệu
-                    loadCategories(rowNumber);
+                    loadCategories(rowNumber); // Reset danh mục khi thay đổi thương hiệu
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải thương hiệu:', error);
@@ -302,6 +317,7 @@
         }
     }
 
+    // Hàm AJAX để tải danh mục dựa trên thương hiệu
     function loadCategories(rowNumber) {
         const brandId = $('#brand-' + rowNumber).val();
         if (brandId) {
@@ -318,23 +334,12 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải danh mục:', error);
-                    console.log(xhr.responseText); // Xem chi tiết lỗi từ server
                 }
             });
         } else {
             $('#category-' + rowNumber).empty().append('<option value="">Chọn danh mục</option>');
         }
     }
-
-    // Ẩn nút xóa của dòng đầu tiên ban đầu
-    $('.remove-row-btn').hide();
-</script>
-
-<script>
-    // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
-    const today = new Date().toISOString().split("T")[0];
-    // Gán giá trị min cho input
-    document.getElementById("desiredDeliveryDate").setAttribute("min", today);
 </script>
 </body>
 </html>

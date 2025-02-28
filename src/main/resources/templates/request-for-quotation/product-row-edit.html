@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="productRowEdit" class="form-row" th:with="rowNumber=${param.rowNumber != null ? T(java.lang.Integer).parseInt(param.rowNumber) : 1}">
+    <div class="row align-items-center g-2"> <!-- Thêm g-2 để tạo khoảng cách đều giữa các cột -->
+
+        <div class="col-2"> <!-- Cột cho Sản phẩm -->
+            <div class="form-group">
+                <label class="label" th:for="'product-' + ${rowNumber}">Sản phẩm</label>
+                <select class="form-select w-100" th:id="'product-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].product.id'" th:attr="data-row-number=${rowNumber}" required>
+                    <option value="">Chọn sản phẩm</option>
+                    <option th:each="product : ${products}" th:if="${products != null and !#lists.isEmpty(products)}" th:value="${product.id}" th:text="${product.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2"> <!-- Cột cho Thương hiệu -->
+            <div class="form-group">
+                <label class="label" th:for="'brand-' + ${rowNumber}">Thương hiệu</label>
+                <select class="form-select w-100" th:id="'brand-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].brand.id'" th:attr="data-row-number=${rowNumber}" required>
+                    <option value="">Chọn thương hiệu</option>
+                    <option th:each="brand : ${brands}" th:if="${brands != null and !#lists.isEmpty(brands)}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2"> <!-- Cột cho Danh mục -->
+            <div class="form-group">
+                <label class="label" th:for="'category-' + ${rowNumber}">Danh mục</label>
+                <select class="form-select w-100" th:id="'category-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].cate.id'" th:attr="data-row-number=${rowNumber}" required>
+                    <option value="">Chọn danh mục</option>
+                    <option th:each="category : ${categories}" th:if="${categories != null and !#lists.isEmpty(categories)}" th:value="${category.id}" th:text="${category.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2"> <!-- Cột cho Màu -->
+            <div class="form-group">
+                <label class="label" th:for="'color-' + ${rowNumber}">Màu</label>
+                <input type="text" class="form-control w-100" th:id="'color-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].noteColor'" placeholder="Nhập màu" required>
+            </div>
+        </div>
+        <div class="col-2"> <!-- Cột cho Số lượng -->
+            <div class="form-group">
+                <label class="label" th:for="'quantity-' + ${rowNumber}">Số lượng</label>
+                <input type="number" class="form-control w-100" th:id="'quantity-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].quantity'" placeholder="Nhập số lượng" min="1" max="1000" required>
+            </div>
+        </div>
+        <div class="col-2"> <!-- Cột nhỏ cho nút Xóa, căn giữa hoàn toàn -->
+            <div class="form-group">
+                <button type="button" class="remove-row-btn" th:attr="data-row-number=${rowNumber}" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

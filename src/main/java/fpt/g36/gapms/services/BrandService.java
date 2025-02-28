@@ -10,4 +10,6 @@ public interface BrandService {
     List<Brand> getBrandsByProductId(Long productId);
 
     List<String> getAllBrandNames();
+    Brand getBrandById( Long id);
+
 }

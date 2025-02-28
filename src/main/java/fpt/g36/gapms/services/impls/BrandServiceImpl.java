@@ -28,4 +28,8 @@ public class BrandServiceImpl implements BrandService {
     public List<String> getAllBrandNames() {
         return brandRepository.findAllBrandNames();
     }
+    @Override
+    public Brand getBrandById(Long id) {
+        return brandRepository.findById(id).orElseThrow(() -> new RuntimeException("Brand not found"));
+    }
 }

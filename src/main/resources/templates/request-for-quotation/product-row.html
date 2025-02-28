@@ -28,7 +28,7 @@
   </div>
   <div class="form-group">
     <label class="label" th:for="'quantity-' + ${rowNumber}">Số lượng</label>
-    <input type="number" class="form-control" th:id="'quantity-' + ${rowNumber}" th:name="${'rfqDetails[' + (rowNumber-1) + '].quantity'}" placeholder="Nhập số lượng" min="1" required>
+    <input type="number" class="form-control" th:id="'quantity-' + ${rowNumber}" th:name="${'rfqDetails[' + (rowNumber-1) + '].quantity'}" placeholder="Nhập số lượng" min="1" max="1000" required>
   </div>
   <div class="form-group">
     <button type="button" class="remove-row-btn" th:onclick="'removeRow(' + ${rowNumber} + ')'"><i class="fas fa-trash-alt"></i></button>
