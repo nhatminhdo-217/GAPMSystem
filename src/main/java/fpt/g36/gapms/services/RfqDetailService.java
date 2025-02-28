@@ -12,4 +12,5 @@ public interface RfqDetailService {
 
     void deleteRfqDetailById(Long id);
 
+    RfqDetail getRfqDetailById(Long id);
 }

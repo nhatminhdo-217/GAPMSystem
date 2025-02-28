@@ -46,12 +46,16 @@ public class ProfileController {
             model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
             //Company
             Optional<Company> optionalCompany = companyService.findByUserId(optionalUser.get().getId());
+
             if (optionalCompany.isPresent()) {
                 model.addAttribute("company", optionalCompany.get());
+                System.err.println("Find company" + optionalCompany.get());
+                return "profile";
             } else {
                 model.addAttribute("company", null);
+                System.err.println("Find company" + null);
+                return "profile";
             }
-            return "profile";
         } else {
             // Nếu không tìm thấy người dùng, có thể xử lý chuyển hướng hoặc thông báo lỗi
             return "redirect:/error";

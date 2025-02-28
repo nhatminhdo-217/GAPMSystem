@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết RFQ</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+        .container-fluid {
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: pointer; /* Thêm con trỏ tay để chỉ ra card có thể nhấp */
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            background-color: #ffffff;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+        .detail-info, .product-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn-primary, .btn-secondary {
+            margin: 0 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+
+        /* Style cho modal (popup) */
+        .modal {
+            display: none;
+        }
+
+        .modal.fade.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+
+        /* Style cho toast (giữ nguyên từ profile.html) */
+        .toast {
+            opacity: 0.9;
+        }
+
+        .success-toast {
+            background-color: #d4edda; /* Màu nền xanh nhẹ cho thành công */
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .success-toast .toast-body {
+            color: #155724;
+        }
+
+        .error-toast {
+            background-color: #f8d7da; /* Màu nền đỏ nhẹ cho lỗi */
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        /* Đảm bảo danh sách lỗi validation không bị ảnh hưởng bởi kiểu khác */
+        .error-toast ul li {
+            margin-bottom: 5px;
+        }
+
+        #toastSuccess, #toastError, #validationErrorToast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        #validationErrorToast {
+            bottom: 80px; /* Đặt vị trí thấp hơn toast success/error, giống profile.html */
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+<!-- Thêm các div ẩn để truyền dữ liệu từ Thymeleaf, giống profile.html -->
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+<div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
+     id="hiddenValidationErrors"
+     style="display: none;"
+     th:utext="${#strings.arrayJoin(validationErrors, ', ')}"></div>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-rfq-id="${rfq.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết RFQ</h2>
+
+                            <!-- Phần thông tin RFQ -->
+                            <div class="rfq-info">
+                                <h3 class="section-title">Thông tin RFQ</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Số lượng sản phẩm:</strong> <span th:text="${rfq.rfqDetails.size()}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo đơn:</strong> <span th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Nhân viên phụ trách:</strong> <span th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái đơn hàng:</strong> <span th:text="'Đã được duyệt'" style="color: #28a745;"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày mong muốn nhận hàng:</strong> <span th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phần danh sách sản phẩm (RfqDetail) -->
+                            <div class="product-details">
+                                <h3 class="section-title">Danh sách sản phẩm</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>Số thứ tự</th>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Màu</th>
+                                        <th>Số lượng đặt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="detail, iterStat : ${rfq.rfqDetails}">
+                                        <td th:text="${iterStat.count}"></td>
+                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                        <td th:text="${detail.noteColor}"></td>
+                                        <td th:text="${detail.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Phần giải pháp (Solution) và nút chức năng -->
+                            <div class="detail-info mt-4" th:if="${rfq.solutions != null}">
+                                <h3 class="section-title">Thông tin giải pháp</h3>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Lý do:</strong> <span th:text="${rfq.solutions.reason}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Chi tiết:</strong> <span th:text="${rfq.solutions.description}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày có thể giao hàng dự kiến:</strong>
+                                        <span th:text="${#temporals.format(rfq.solutions.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                </div>
+                                <div class="btn-container">
+                                    <a th:href="@{/technical/submit-solution/{id}(id=${rfq.id})}" class="btn btn-primary">Submit Solution</a>
+                                    <a th:href="@{/technical/update-solution/{id}(id=${rfq.id})}" class="btn btn-secondary">Update Solution</a>
+                                </div>
+                            </div>
+                            <div class="detail-info mt-4" th:unless="${rfq.solutions != null}">
+                                <h3 class="section-title">Thông tin giải pháp</h3>
+                                <p>Chưa có giải pháp cho RFQ này.</p>
+                                <div class="btn-container">
+                                    <button class="btn btn-custom" id="createSolutionBtn" data-bs-toggle="modal" data-bs-target="#createSolutionModal">Tạo Solution</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Modal để tạo Solution -->
+    <div class="modal fade" id="createSolutionModal" tabindex="-1" aria-labelledby="createSolutionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSolutionModalLabel">Tạo giải pháp cho RFQ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="solutionForm" th:action="@{/technical/submit-solution/{id}(id=${rfq.id})}" method="post">
+                        <input type="hidden" name="rfqId" th:value="${rfq.id}">
+                        <div class="form-group">
+                            <label for="reason">Lý do:</label>
+                            <input type="text" id="reason" name="reason" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Chi tiết:</label>
+                            <textarea id="description" name="description" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="actualDeliveryDate">Ngày có thể giao hàng dự kiến:</label>
+                            <input type="date" id="actualDeliveryDate" name="actualDeliveryDate" class="form-control" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="solutionForm" class="btn btn-primary">Lưu Solution</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast cho thông báo thành công -->
+    <div id="toastSuccess" class="toast success-toast"
+         style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="toast-header">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="successMessage"></p>
+        </div>
+    </div>
+
+    <!-- Toast cho thông báo lỗi -->
+    <div id="toastError" class="toast error-toast"
+         style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <!-- Toast cho thông báo lỗi validation -->
+    <div id="validationErrorToast" class="toast error-toast"
+         style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi Validation</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <ul id="validationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Ẩn spinner khi trang tải xong
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle và modal
+        $('.card').on('click', function (event) {
+            // Kiểm tra xem nhấp vào nút toggle, modal, hoặc các phần tử trong modal hay không
+            if (!$(event.target).closest('.toggle-btn, .modal, .btn').length) {
+                var rfqId = $(this).data('rfq-id'); // Lấy rfqId từ thuộc tính data-rfq-id
+                window.location.href = '/technical/rfq-details/' + rfqId;
+            }
+        });
+
+        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
+        $('.toggle-btn').click(function (event) {
+            event.stopPropagation(); // Ngăn sự kiện click lan ra card
+            var target = $(this).data('target');
+            var icon = $(this).find('i');
+            $(target).collapse('toggle');
+            if ($(target).hasClass('show')) {
+                icon.removeClass('fa-plus').addClass('fa-minus');
+            } else {
+                icon.removeClass('fa-minus').addClass('fa-plus');
+            }
+        });
+
+        // Xử lý nút "Back to Top"
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+
+        // Xử lý mở modal (giữ nguyên)
+        $('#createSolutionBtn').click(function () {
+            $('#createSolutionModal').modal('show'); // Sử dụng Bootstrap modal
+        });
+
+        // Đóng modal khi nhấp vào nút close hoặc ngoài modal (giữ nguyên)
+        $('.close, .btn[data-bs-dismiss="modal"]').click(function () {
+            $('#createSolutionModal').modal('hide');
+        });
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('createSolutionModal')) {
+                $('#createSolutionModal').modal('hide');
+            }
+        };
+
+        // Hiển thị toast cho thông báo
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
+            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
+            successToast.show();
+            setTimeout(() => successToast.hide(), 3000);
+        }
+
+        // Hiển thị toast lỗi
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+
+        // Hiển thị toast lỗi validate
+        const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
+        if (hiddenValidationErrors && hiddenValidationErrors.textContent.trim()) {
+            console.log('Validation errors found:', hiddenValidationErrors.textContent.trim());
+            try {
+                const validationErrors = hiddenValidationErrors.textContent.trim().split(', ').map(errorStr => {
+                    const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
+                    return match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.';
+                }).filter(error => error && error.trim());
+
+                if (validationErrors.length) {
+                    const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
+                    document.getElementById('validationErrorMessages').innerHTML = validationErrors
+                        .map(error => `<li>${error.trim()}</li>`)
+                        .join('');
+                    toast.show();
+                    setTimeout(() => toast.hide(), 5000);
+                } else {
+                    console.log('No valid validation errors to display');
+                }
+            } catch (e) {
+                console.error('Error parsing validation errors:', e, hiddenValidationErrors.textContent);
+            }
+        } else {
+            console.log('No validation errors found in hiddenValidationErrors');
+        }
+    });
+</script>
+</body>
+</html>
