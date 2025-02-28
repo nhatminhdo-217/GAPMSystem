@@ -13,4 +13,6 @@ public interface RfqService {
     void deleteRfqById(Long rfqId);
 
     Rfq  getRfqById(Long rfqId);;
+
+    List<Rfq> getAllApprovedRfqs();
 }

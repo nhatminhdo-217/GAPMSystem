@@ -172,7 +172,8 @@
             <h1 class="text-center mb-4">Thông tin công ty</h1>
             <div class="card text-center p-4 shadow-sm">
                 <!-- Nếu chưa có công ty, hiển thị cảnh báo -->
-                <div th:if="${company == null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div th:if="${company == null}" class="alert alert-danger alert-dismissible fade show persistent-alert"
+                     role="alert">
                     <p>Bạn chưa có thông tin công ty. Vui lòng thêm thông tin công ty.</p>
                     <button id="addCompanyBtn" class="btn btn-primary">Thêm thông tin công ty</button>
                 </div>
@@ -247,47 +248,50 @@
     </div>
 </div>
 
-<!-- Modal thêm công ty -->
-<div id="addCompanyModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Thêm thông tin công ty</h3>
-        <form th:action="@{/profile/addCompany}" method="post">
-            <label>Tên công ty:</label>
-            <input type="text" name="name" required class="form-control mb-2">
-            <label>Email công ty:</label>
-            <input type="email" name="email" required class="form-control mb-2">
-            <label>Số điện thoại:</label>
-            <input type="text" name="phoneNumber" required class="form-control mb-2">
-            <label>Địa chỉ:</label>
-            <input type="text" name="address" required class="form-control mb-2">
-            <label>Mã số thuế:</label>
-            <input type="text" name="taxNumber" required class="form-control mb-2">
-            <button type="submit" class="btn btn-success">Lưu thông tin</button>
-        </form>
+<div th:if="${company == null}">
+    <!-- Modal thêm công ty -->
+    <div id="addCompanyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Thêm thông tin công ty</h3>
+            <form th:action="@{/profile/addCompany}" method="post">
+                <label>Tên công ty:</label>
+                <input type="text" name="name" required class="form-control mb-2">
+                <label>Email công ty:</label>
+                <input type="email" name="email" required class="form-control mb-2">
+                <label>Số điện thoại:</label>
+                <input type="text" name="phoneNumber" required class="form-control mb-2">
+                <label>Địa chỉ:</label>
+                <input type="text" name="address" required class="form-control mb-2">
+                <label>Mã số thuế:</label>
+                <input type="text" name="taxNumber" required class="form-control mb-2">
+                <button type="submit" class="btn btn-success">Lưu thông tin</button>
+            </form>
+        </div>
     </div>
 </div>
 
-<div id="editCompanyModal" class="modal">
-    <div class="modal-content">
-        <span class="close">×</span>
-        <h3>Chỉnh sửa thông tin công ty</h3>
-        <form th:action="@{/profile/updateCompany}" method="post" th:object="${company}">
-            <label>Tên công ty:</label>
-            <input type="text" th:field="*{name}" required class="form-control mb-2">
-            <label>Email công ty:</label>
-            <input type="email" th:field="*{email}" required class="form-control mb-2">
-            <label>Số điện thoại:</label>
-            <input type="text" th:field="*{phoneNumber}" required class="form-control mb-2">
-            <label>Địa chỉ:</label>
-            <input type="text" th:field="*{address}" required class="form-control mb-2">
-            <label>Mã số thuế:</label>
-            <input type="text" th:field="*{taxNumber}" required class="form-control mb-2">
-            <button type="submit" class="btn btn-success">Lưu thông tin mới</button>
-        </form>
+<div th:if="${company != null}">
+    <div id="editCompanyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h3>Chỉnh sửa thông tin công ty</h3>
+            <form th:action="@{/profile/updateCompany}" method="post" th:object="${company}">
+                <label>Tên công ty:</label>
+                <input type="text" th:field="*{name}" required class="form-control mb-2">
+                <label>Email công ty:</label>
+                <input type="email" th:field="*{email}" required class="form-control mb-2">
+                <label>Số điện thoại:</label>
+                <input type="text" th:field="*{phoneNumber}" required class="form-control mb-2">
+                <label>Địa chỉ:</label>
+                <input type="text" th:field="*{address}" required class="form-control mb-2">
+                <label>Mã số thuế:</label>
+                <input type="text" th:field="*{taxNumber}" required class="form-control mb-2">
+                <button type="submit" class="btn btn-success">Lưu thông tin mới</button>
+            </form>
+        </div>
     </div>
 </div>
-
 <!-- Toast thông báo thành công -->
 <div id="successToast" class="toast success-toast"
      style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
@@ -510,16 +514,26 @@
             }
         }
 
-        const alerts = document.querySelectorAll('.alert');
-
+        const alerts = document.querySelectorAll('.alert:not(.persistent-alert)'); // Chỉ lấy các alert không có lớp persistent-alert
         alerts.forEach(alert => {
-            // Tự động ẩn sau 5 giây (5000ms)
             setTimeout(() => {
-                // Tạo đối tượng Bootstrap Alert và gọi phương thức close
                 const bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }, 3000);
         });
+
+        // Giữ nguyên các phần khác của script
+        var editCompanyBtn = document.getElementById("editCompanyBtn");
+        if (editCompanyBtn) {
+            editCompanyBtn.onclick = function () {
+                var modal = document.getElementById("editCompanyModal");
+                if (modal) {
+                    modal.style.display = "block";
+                } else {
+                    console.log("editCompanyModal not found in DOM");
+                }
+            };
+        }
     });
 
 </script>
