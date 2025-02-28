@@ -26,4 +26,9 @@ public class RfqDetailServiceImpl implements RfqDetailService {
         rfqDetailRepository.deleteById(id);
     }
 
+    @Override
+    public RfqDetail getRfqDetailById(Long id) {
+        return rfqDetailRepository.findById(id).orElseThrow(() -> new RuntimeException("Rfq details not found"));
+    }
+
 }

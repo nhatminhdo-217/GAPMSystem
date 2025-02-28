@@ -43,7 +43,7 @@ public class Rfq extends BaseEntity {
     @OneToMany(mappedBy = "rfq", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
-    @OneToOne(mappedBy = "rfq", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "rfq", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Solution solution;
 
     public Rfq() {
