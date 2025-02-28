@@ -78,7 +78,6 @@
 
         .d-flex.align-items-start .me-3 span {
             font-size: 16px;
-            font-weight: bold;
             color: #000;
         }
 
@@ -296,7 +295,7 @@
                                         <span th:text="${rfq.getId()}"></span>
                                     </div>
                                     <div class="text-start me-3">
-                                        <strong>Số lượng sản phẩm</strong><br>
+                                        <strong>Số lượng trong lô</strong><br>
                                         <span th:id="'product-count-' + ${rfq.getId()}" th:text="${rfq.getRfqDetails().size()}"></span>
                                     </div>
                                     <div class="text-start me-3">
@@ -305,7 +304,7 @@
                                     </div>
                                     <div class="text-start me-3">
                                         <strong>Nhân viên phụ trách</strong><br>
-                                        <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'null'}"></span>
+                                        <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>
                                     </div>
                                     <div class="text-start me-3">
                                         <strong>Trạng thái đơn hàng</strong><br>
@@ -328,25 +327,51 @@
                                             aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                    <ul class="dropdown-menu"
-                                        th:attr="aria-labelledby='dropdownMenuButton' + ${iterStat.count}">
-                                        <li><a class="dropdown-item" href="#" th:id="'viewDetailsLink_' + ${rfq.id}"
-                                               th:onclick="'showPopup(\'' + ${rfq.id} + '\')'">Sửa ngày nhận hàng mong muốn</a></li>
+                                    <ul class="dropdown-menu" th:attr="aria-labelledby='dropdownMenuButton' + ${iterStat.count}">
                                         <li>
-                                            <a class="dropdown-item" href="#"
-                                               th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
-                                               th:onclick="|confirmDeleteSwal('${rfq.id}')|">
-                                            Hủy đơn
-                                        </a>
-
-                                            <a class="dropdown-item" href="#"
-                                               th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
-                                               th:onclick="showApprovalAlert()">
-                                                Hủy đơn
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:id="'viewDetailsLink_' + ${rfq.id}"
+                                               th:onclick="'showPopup(\'' + ${rfq.id} + '\')'">
+                                                Sửa ngày nhận hàng mong muốn
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:onclick="showEditApprovalAlert()">
+                                                Sửa ngày nhận hàng mong muốn
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                    th:href="'/request-for-quotation/edit-rfq-form?rfqId=' + ${rfq.id}"
+                                               class="dropdown-item text-success"
+                                               title="Edit">
+                                                Sửa thông tin đơn hàng
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-success"
+                                               href="#"
+                                               th:onclick="showEditApprovalAlert()">
+                                                Sửa thông tin đơn hàng
                                             </a>
                                         </li>
 
-
+                                        <li>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-danger"
+                                               href="#"
+                                               th:onclick="|confirmDeleteSwal('${rfq.id}')|">
+                                                Hủy yêu cầu báo giá
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="dropdown-item text-danger"
+                                               href="#"
+                                               th:onclick="showApprovalAlert()">
+                                                Hủy yêu cầu báo giá
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -370,12 +395,16 @@
                                             <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
                                             <td th:text="${detail.getNoteColor()}"></td>
                                             <td th:text="${detail.getQuantity()}"></td>
-                                            <td>
-                                                <div class="d-flex gap-2">
-                                                    <a href="#" class="text-success" title="Edit"><i class="fas fa-edit fa-lg"></i></a>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
                                                     <a href="#" class="text-danger" title="Delete"
-                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED }and ${#lists.size(rfq.rfqDetails) > 1}"
                                                        th:onclick="'deleteDetail(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">
+                                                        <i class="fas fa-trash-alt fa-lg"></i>
+                                                    </a>
+                                                    <a href="#" class="text-danger" title="Delete"
+                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED} and ${#lists.size(rfq.rfqDetails) == 1}"
+                                                       th:onclick="showApprovalAlertCountLessThan1()">
                                                         <i class="fas fa-trash-alt fa-lg"></i>
                                                     </a>
                                                     <a href="#" class="text-danger" title="Delete"
@@ -393,7 +422,7 @@
                                         <!-- Ngày mong muốn nhận hàng (bên trái) -->
                                         <div>
                                             <strong>Ngày mong muốn nhận hàng: </strong>
-                                            <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd-MM-yyyy')}"></span>
+                                            <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${rfq.getExpectDeliveryDate()}"></span>
                                         </div>
 
                                         <!-- Các thông tin khác (bên phải) -->
@@ -409,6 +438,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- Popup -->
                         <div id="editPopup" class="custom-popup">
                             <div class="popup-header">
@@ -428,24 +458,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center justify-content-between mt-4">
-                    <div>
-                        <input type="text" class="form-control" placeholder="Search...">
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="filtersDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            Filters
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="filtersDropdown">
-                            <li><a class="dropdown-item" href="#">Trạng thái: Đã duyệt</a></li>
-                            <li><a class="dropdown-item" href="#">Trạng thái: Chờ duyệt</a></li>
-                            <li><a class="dropdown-item" href="#">Trạng thái: Đã hủy</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <!-- Phân trang -->
+                <nav aria-label="Page navigation" th:if="${totalItems > 0}">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+                        </li>
+                        <!-- Các trang -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+                        </li>
+                        <!-- Nút Next -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/request-for-quotation/view-list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Thông tin phân trang -->
+                <p class="text-center" th:if="${totalItems > 0}">
+                    Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+                    (Tổng cộng <span th:text="${totalItems}"></span> RFQ)
+                </p>
             </div>
         </div>
+        <div th:replace="~{shared/footer.html :: footer}"></div>
     </div>
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -480,6 +518,19 @@
     </script>
 </div>
 
+<div th:if="${editRfqDetailSuccessMessage}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Cập nhật thành công yêu cầu báo giá",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
 <!-- Bootstrap Modal -->
 
 
@@ -538,51 +589,79 @@
 </script>
 <script th:inline="javascript">
     function deleteDetail(detailId, rfqId) {
-        Swal.fire({
-            title: "Bạn có muốn xóa sản phẩm này không?",
-            text: "Hành động này không thể hoàn tác!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Có, xóa ngay!",
-            cancelButtonText: "Không"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch('/request-for-quotation/rfq-detail/delete/' + detailId, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Xóa dòng khỏi bảng
-                            document.querySelector(`tr[data-id='${detailId}']`).remove();
-
-                            // Cập nhật số lượng sản phẩm
-                            const productCountElement = document.getElementById(`product-count-${rfqId}`);
-                            let currentCount = parseInt(productCountElement.textContent);
-                            productCountElement.textContent = currentCount - 1;
-                        } else {
-                            response.text().then(text => {
-                                Swal.fire('Lỗi!', 'Xóa thất bại: ' + text, 'error');
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
-                    });
+        // Bước 1: Kiểm tra số lượng RfqDetail trong Rfq
+        fetch('/request-for-quotation/check-delete/' + rfqId + '/' + detailId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
-        });
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi kiểm tra xóa.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.canDelete) {
+                    // Nếu có thể xóa (số lượng RfqDetail > 1), hiển thị hộp thoại xác nhận
+                    Swal.fire({
+                        title: "Bạn có muốn xóa sản phẩm này không ?",
+                        text: "Hành động này không thể hoàn tác!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Có, xóa ngay!",
+                        cancelButtonText: "Không"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Gửi request xóa nếu người dùng xác nhận
+                            fetch('/request-for-quotation/rfq-detail/delete/' + detailId, {
+                                method: 'GET', // Giữ nguyên GET nếu server yêu cầu, hoặc thay bằng DELETE nếu phù hợp
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        // Xóa dòng khỏi bảng
+                                        document.querySelector(`tr[data-id='${detailId}']`).remove();
+
+                                        // Cập nhật số lượng sản phẩm
+                                        const productCountElement = document.getElementById(`product-count-${rfqId}`);
+                                        let currentCount = parseInt(productCountElement.textContent);
+                                        productCountElement.textContent = currentCount - 1;
+
+                                        Swal.fire('Xoá thành công!', 'Đơn hàng đã bị lóa khỏi lô', 'success');
+                                    } else {
+                                        response.text().then(text => {
+                                            Swal.fire('Lỗi!', 'Xóa thất bại: ' + text, 'error');
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+                                });
+                        }
+                    });
+                } else {
+                    // Nếu không thể xóa (chỉ còn 1 đơn), hiển thị thông báo
+                    Swal.fire('Không thể xóa!', 'Lô hàng phải có ít nhất 1 đơn.', 'warning');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking delete:', error);
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra khi kiểm tra xóa đơn trong lô: ' + error.message, 'error');
+            });
     }
 </script>
 
 <script>
     function confirmDeleteSwal(rfqId) {
         Swal.fire({
-            title: "Bạn có chắc muốn hủy đơn?",
+            title: "Bạn có chắc muốn hủy báo giá ?",
             text: "Hành động này không thể hoàn tác!",
             icon: "",
             showCancelButton: true,
@@ -599,8 +678,26 @@
     function showApprovalAlert() {
         Swal.fire({
             icon: 'warning',
-            title: 'Không thể hủy đơn!',
-            text: 'Đơn đã được duyệt, không thể hủy.',
+            title: 'Không thể hủy báo giá !',
+            text: 'Báo giá này đã được duyệt.',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showApprovalAlertCountLessThan1() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Không thể hủy đơn !',
+            text: 'Trong lô phải có ít nhất 1 sản phẩm',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showEditApprovalAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Không thể chỉnh sửa!',
+            text: 'Đơn đã được duyệt, không thể sửa.',
             confirmButtonText: 'OK'
         });
     }
@@ -618,7 +715,7 @@
         const popup = document.getElementById("editPopup");
         popup.style.display = "block"; // Chỉ cần hiển thị, không cần set top/left
 
-        const currentDate = inputField.value;
+        const currentDate = inputField.textContent; // Lấy nội dung text của span
         document.getElementById("editDeliveryDate").value = currentDate;
 
         // Lưu rfqId để dùng khi lưu
@@ -645,8 +742,8 @@
             return;
         }
 
-        const inputField = document.getElementById("desiredDeliveryDate_" + rfqId);
-        inputField.value = newDate;
+        const spanField = document.getElementById("desiredDeliveryDate_" + rfqId);
+
 
         const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
         const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
@@ -660,31 +757,29 @@
         })
             .then(response => {
                 if (response.ok) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Ngày giao hàng đã được cập nhật!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        hidePopup(); // Đóng popup sau khi thông báo hoàn tất
-                    });
+                    return response.text(); // Lấy giá trị ngày mới từ server
                 } else {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "error",
-                        title: "Có lỗi xảy ra khi cập nhật!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    throw new Error("Lỗi server");
                 }
+            })
+            .then(updatedDate => {
+                spanField.textContent = updatedDate; // Cập nhật giao diện với giá trị mới từ server
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Ngày giao hàng đã được cập nhật!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    hidePopup();
+                });
             })
             .catch(error => {
                 console.error("Lỗi:", error);
                 Swal.fire({
                     position: "top-end",
                     icon: "error",
-                    title: "Lỗi kết nối!",
+                    title: error.message === "Lỗi server" ? "Có lỗi xảy ra khi cập nhật!" : "Lỗi kết nối!",
                     showConfirmButton: false,
                     timer: 1500
                 });

@@ -4,6 +4,8 @@ import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.repositories.RfqRepository;
 import fpt.g36.gapms.services.RfqService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,8 +20,8 @@ public class RfqServiceImpl implements RfqService {
 
 
     @Override
-    public List<Rfq> getAllRfqsByUserId(Long userId) {
-        return rfqRepository.getRfqByUserId(userId);
+    public Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable) {
+        return rfqRepository.getRfqByUserId(userId, pageable);
     }
 
     @Override
