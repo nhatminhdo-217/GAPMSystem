@@ -23,4 +23,13 @@ public class BrandServiceImpl implements BrandService {
     public List<Brand> getBrandsByProductId(Long productId) {
         return brandRepository.findByProductId(productId);
     }
+
+    @Override
+    public List<String> getAllBrandNames() {
+        return brandRepository.findAllBrandNames();
+    }
+    @Override
+    public Brand getBrandById(Long id) {
+        return brandRepository.findById(id).orElseThrow(() -> new RuntimeException("Brand not found"));
+    }
 }

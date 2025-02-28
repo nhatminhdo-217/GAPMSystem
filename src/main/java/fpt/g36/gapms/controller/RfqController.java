@@ -1,13 +1,18 @@
 package fpt.g36.gapms.controller;
 
 
+import ch.qos.logback.classic.Logger;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.RfqFormDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.services.BrandService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,12 +20,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -45,6 +51,7 @@ public class RfqController {
 
     @Autowired
     private RfqDetailService rfqDetailService;
+    private Logger log;
 
 
     public RfqController(UserUtils userUtils) {
@@ -52,21 +59,24 @@ public class RfqController {
     }
 
     @GetMapping("/view-list")
-    public String getViewList(Model model) {
+    public String getViewList(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "5") int size) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
-                Optional<Company> company = companyService.findByUserId(optionalUser.get().getId());
-                List<Rfq> rfqs = rfqService.getAllRfqsByUserId(optionalUser.get().getId());
-                model.addAttribute("rfqs", rfqs);
-                if (company.isPresent()) {
-                    model.addAttribute("check-company", company.get());
-                } else {
-                    model.addAttribute("check-company", null);
-                }
+                Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Rfq> rfqs = rfqService.getAllRfqsByUserId(optionalUser.get().getId(), pageable);
+                model.addAttribute("rfqs", rfqs.getContent());
+                model.addAttribute("currentPage", rfqs.getNumber()); // Trang hiện tại
+                model.addAttribute("totalPages", rfqs.getTotalPages());
+                System.err.println("totalPages"+ rfqs.getTotalPages());// Tổng số trang
+                model.addAttribute("totalItems", rfqs.getTotalElements()); // Tổng số bản ghi
+                model.addAttribute("pageSize", size); // Số bản ghi mỗi trang
+                model.addAttribute("check-company", company);
             }
         }
 
@@ -83,14 +93,8 @@ public class RfqController {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
-                Optional<Company> company = companyService.findByUserId(optionalUser.get().getId());
-                System.err.println("Find company" + company);
-                if (company.isPresent()) {
-                    model.addAttribute("company", company.get());
-                    System.err.println("Find company name" + company.get().getName());
-                } else {
-                    model.addAttribute("company", null);
-                }
+                Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
+                model.addAttribute("company", company);
             }
         }
         RfqFormDTO rfqForm = new RfqFormDTO();
@@ -118,7 +122,7 @@ public class RfqController {
         rfq.setIsApproved(SendEnum.NOT_SENT);
         Rfq savedRfq = rfqService.saveRfq(rfq);
 
-        System.err.println(rfq);
+
         List<RfqDetail> rfqDetails = rfqForm.getRfqDetails();
         List<RfqDetail> validDetails = rfqDetails.stream()
                 .filter(detail -> detail.getProduct() != null && detail.getBrand() != null &&
@@ -167,6 +171,44 @@ public class RfqController {
         return "request-for-quotation/product-row"; // Trả về fragment
     }
 
+    @GetMapping("/get-product-row-edit")
+    public String getProductRowEdit(@RequestParam(required = false) String rowNumber, Model model) {
+        try {
+            int parsedRowNumber = rowNumber != null ? Integer.parseInt(rowNumber) : 1; // Mặc định là 1 nếu null
+            model.addAttribute("rowNumber", parsedRowNumber);
+
+            List<Product> products = productService.getAllProducts();
+            List<Brand> brands = brandService.getAllBrands();
+            List<Category> categories = categoryService.getAllCategories();
+
+            System.out.println("Row number: " + parsedRowNumber);
+            System.out.println("Products size: " + (products != null ? products.size() : "null"));
+            System.out.println("Brands size: " + (brands != null ? brands.size() : "null"));
+            System.out.println("Categories size: " + (categories != null ? categories.size() : "null"));
+
+            if (products == null || products.isEmpty()) {
+                throw new RuntimeException("No products found in database.");
+            }
+            if (brands == null || brands.isEmpty()) {
+                throw new RuntimeException("No brands found in database.");
+            }
+            if (categories == null || categories.isEmpty()) {
+                throw new RuntimeException("No categories found in database.");
+            }
+
+            model.addAttribute("products", products);
+            model.addAttribute("brands", brands);
+            model.addAttribute("categories", categories);
+            return "request-for-quotation/product-row-edit";
+        } catch (NumberFormatException e) {
+            System.out.println(("Invalid rowNumber format: " + rowNumber));
+            throw new RuntimeException("Invalid row number format: " + rowNumber, e);
+        } catch (Exception e) {
+            System.out.println("Error in getProductRowEdit: " + e.getMessage());
+            throw new RuntimeException("Failed to load product row: " + e.getMessage(), e);
+        }
+    }
+
 
     @GetMapping("/rfq-detail/delete/{id}")
     @ResponseBody
@@ -180,6 +222,28 @@ public class RfqController {
         }
     }
 
+    @GetMapping("/check-delete/{rfqId}/{detailId}")
+    @ResponseBody
+    public Map<String, Boolean> checkDeleteRfqDetail(@PathVariable Long rfqId, @PathVariable Long detailId) {
+        Map<String, Boolean> response = new HashMap<>();
+        try {
+            Rfq rfq = rfqService.getRfqById(rfqId);
+            if (rfq == null) {
+                response.put("canDelete", false);
+                return response;
+            }
+
+            // Kiểm tra số lượng RfqDetail trong Rfq (sử dụng stream để đếm các phần tử không null)
+            long rfqDetailsCount = rfq.getRfqDetails().stream().filter(Objects::nonNull).count();
+            response.put("canDelete", rfqDetailsCount > 1);
+            return response;
+        } catch (Exception e) {
+            log.error("Error checking delete for RFQ detail: " + e.getMessage(), e);
+            response.put("canDelete", false);
+            return response;
+        }
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteRfq(@PathVariable("id") Long rfqId, Model model, RedirectAttributes redirectAttributes) {
         rfqService.deleteRfqById(rfqId);
@@ -188,35 +252,55 @@ public class RfqController {
     }
 
 
-    @GetMapping("/edit")
+    //update ngày mong muốn giao hàng thôi
+    @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<String> editRfq(@RequestParam("rfqId") Long rfqId,
-                                          @RequestParam("desiredDeliveryDate") String newDate) {
+                                          @RequestParam("desiredDeliveryDate") LocalDate newDate) {
         try {
-            // viết đây
-            return ResponseEntity.ok("Xóa thành công");
+            System.out.println(rfqId);
+            System.out.println(newDate);
+            Rfq rfq =  rfqService.editRfq(rfqId, newDate);
+            System.out.println(rfq);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            String formattedDate = newDate.format(formatter);
+            return ResponseEntity.ok(String.valueOf(newDate));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa thất bại");
         }
     }
+
+    @GetMapping("/edit-rfq-form")
+    public String showEditRfqForm(@RequestParam Long rfqId, Model model) {
+        userUtils.getOptionalUser(model);
+        Rfq rfq = rfqService.getRfqById(rfqId);
+        if (rfq == null || rfq.getId() == null) {
+            System.err.println("rfq null đấy");
+        }
+
+        model.addAttribute("rfq", rfq);
+        model.addAttribute("products", productService.getAllProducts());
+        System.err.println(("Products size: " + ( productService.getAllProducts() != null ? productService.getAllProducts().size() : "null")));
+        model.addAttribute("brands", brandService.getAllBrands());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "request-for-quotation/edit-rfq-form";
+    }
+
+    @PostMapping("/update-rfq")
+    public String updateRfq(@ModelAttribute Rfq rfq, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        System.out.println(("RFQ ID: " + rfq.getId()));
+        System.out.println("RFQ Details size: " + (rfq.getRfqDetails() != null ? rfq.getRfqDetails().size() : 0));
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("products", productService.getAllProducts());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "request-for-quotation/edit-rfq-form";
+        }
+
+        rfqDetailService.editRfqDetail(rfq);
+        redirectAttributes.addFlashAttribute("editRfqDetailSuccessMessage", "Cập nhật thành công yêu cầu báo giá");
+        return "redirect:/request-for-quotation/view-list";
+    }
 }
 
-/*@PostMapping("/updateDeliveryDate")
-    @ResponseBody // Trả về JSON thay vì render view
-    public String updateDeliveryDate(@RequestParam("rfqId") Long rfqId,
-                                     @RequestParam("desiredDeliveryDate") String newDate) {
-        try {
-            // Tìm RFQ theo ID
-            RFQ rfq = rfqRepository.findById(rfqId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy RFQ với ID: " + rfqId));
-
-            // Cập nhật ngày giao hàng
-            rfq.setDesiredDeliveryDate(newDate);
-            rfqRepository.save(rfq); // Lưu vào database
-
-            return "success"; // Trả về chuỗi "success" để JavaScript xử lý
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "error"; // Trả về "error" nếu có lỗi
-        }
-    }*/

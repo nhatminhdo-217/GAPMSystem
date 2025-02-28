@@ -10,7 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,7 +43,7 @@ public class Rfq extends BaseEntity {
     private Set<Quotation> quotations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "rfq", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
+    private List<RfqDetail> rfqDetails = new ArrayList<>();
 
     @OneToOne(mappedBy = "rfq", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Solution solution;
@@ -49,7 +51,7 @@ public class Rfq extends BaseEntity {
     public Rfq() {
     }
 
-    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Set<Quotation> quotations, Set<RfqDetail> rfqDetails, Solution solutions) {
+    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Set<Quotation> quotations, List<RfqDetail> rfqDetails, Solution solutions) {
         super(id, createAt, updateAt);
         this.expectDeliveryDate = expectDeliveryDate;
         this.isApproved = isApproved;
@@ -101,11 +103,11 @@ public class Rfq extends BaseEntity {
         this.quotations = quotations;
     }
 
-    public Set<RfqDetail> getRfqDetails() {
+    public List<RfqDetail> getRfqDetails() {
         return rfqDetails;
     }
 
-    public void setRfqDetails(Set<RfqDetail> rfqDetails) {
+    public void setRfqDetails(List<RfqDetail> rfqDetails) {
         this.rfqDetails = rfqDetails;
     }
 

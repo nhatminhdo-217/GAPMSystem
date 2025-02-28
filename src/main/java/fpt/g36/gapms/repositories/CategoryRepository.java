@@ -13,4 +13,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT DISTINCT c FROM Category c JOIN c.cateBrandPrices cbp WHERE cbp.brand.id = :brandId AND cbp.cate.id = c.id")
     List<Category> findByCateBrandPrices_Brand_Id(@Param("brandId") Long brandId);
+
+    @Query("SELECT DISTINCT c.name FROM Category c")
+    List<String> findAllCategoryNames();
 }

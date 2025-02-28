@@ -11,4 +11,7 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
     @Query("select b from Brand b where b.production.id = :productId")
     List<Brand> findByProductId(Long productId);
+
+    @Query("SELECT DISTINCT b.name FROM Brand b")
+    List<String> findAllBrandNames();
 }

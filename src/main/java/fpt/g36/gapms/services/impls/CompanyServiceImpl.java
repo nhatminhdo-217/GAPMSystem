@@ -2,6 +2,7 @@ package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.models.dto.CompanyDTO;
 import fpt.g36.gapms.models.entities.Company;
+import fpt.g36.gapms.models.entities.CompanyUser;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.CompanyRepository;
 import fpt.g36.gapms.repositories.UserRepository;
@@ -94,8 +95,8 @@ public class CompanyServiceImpl implements CompanyService {
         return updatedCompany;
     }
 
-//    @Override
-//    public Company getCompanyByUserId(Long userId) {
-//        return companyRepository.getCompanyByUserId(userId);
-//    }
+    @Override
+    public Company getCompanyByUserId(Long userId) {
+       return companyRepository.getCompanyByUserId(userId);
+    }
 }
