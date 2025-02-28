@@ -25,7 +25,7 @@ public class RfqServiceImpl implements RfqService {
     @Override
     public Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable) {
         return rfqRepository.getRfqByUserId(userId, pageable);
-        }
+    }
         @Override
     public List<Rfq> getAllRfqsByUserId(Long userId) {
         return rfqRepository.getRfqByUserId(userId);
