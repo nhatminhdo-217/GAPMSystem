@@ -1,13 +1,15 @@
 package fpt.g36.gapms.repositories;
 
-import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoProjection;
 import fpt.g36.gapms.models.entities.Quotation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,4 +31,6 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "JOIN solution s ON r.id = s.rfq_id " +
             "WHERE q.id = :quotationId", nativeQuery = true)
     List<QuotationInfoProjection> findQuotationDetail(@Param("quotationId") long id);
+
+    Page<Quotation> findQuotationsByCreateAt(Pageable pageable);
 }

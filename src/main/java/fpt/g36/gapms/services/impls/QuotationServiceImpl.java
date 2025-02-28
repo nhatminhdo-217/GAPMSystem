@@ -3,11 +3,19 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.models.dto.quotation.QuotationDetailDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoProjection;
+import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.Quotation;
+import fpt.g36.gapms.models.entities.Rfq;
+import fpt.g36.gapms.models.entities.RfqDetail;
 import fpt.g36.gapms.repositories.QuotationRepository;
 import fpt.g36.gapms.services.QuotationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,5 +59,42 @@ public class QuotationServiceImpl implements QuotationService {
 
         quotationInfoDTO.setProducts(products);
         return quotationInfoDTO;
+    }
+
+    @Override
+    public Page<QuotationListDTO> getQuotationSortedByCreateAt(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Quotation> quotationPage = quotationRepository.findQuotationsByCreateAt(pageable);
+
+    return quotationPage.map(this::mapToQuotationListDTO);
+    }
+
+    private QuotationListDTO mapToQuotationListDTO(Quotation quotation) {
+
+        QuotationListDTO listQuotation = new QuotationListDTO();
+
+        listQuotation.setQuotationId(quotation.getId());
+
+        Rfq rfq = quotation.getRfq();
+        Set<RfqDetail> rfqDetail = rfq.getRfqDetails();
+        if (rfq != null) {
+            listQuotation.setUserName(rfq.getCreateBy().getUsername());
+        }
+
+        List<QuotationDetailDTO> detailDTO = rfqDetail.stream()
+                .map(rfqDetail1 -> {
+                    QuotationDetailDTO detail = new QuotationDetailDTO();
+                    detail.setProductName(rfqDetail1.getProduct().getName());
+                    detail.setBrandName(rfqDetail1.getProduct().);
+                    detail.setCategoryName(rfqDetail1.getProduct().getCategory().getName());
+                    detail.setHasColor(rfqDetail1.getProduct().isHasColor());
+                    detail.setPrice(quotation.getPrice());
+                    detail.setNoteColor(quotation.getNoteColor());
+                    return detail;
+                })
+                .collect(Collectors.toList());
+
+        return null;
     }
 }
