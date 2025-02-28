@@ -111,7 +111,7 @@
                         <td th:text="${product.productName}"></td>
                         <td th:text="${product.brandName}"></td>
                         <td th:text="${product.categoryName}"></td>
-                        <td th:text="${product.hasColor} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
+                        <td th:text="${product.color} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
                         <td th:text="${product.noteColor}"></td>
                     </tr>
                     </tbody>

@@ -60,7 +60,7 @@ public class QuotationServiceImpl implements QuotationService {
                     QuotationDetailDTO product = new QuotationDetailDTO();
                     product.setBrandName(p.getBrandName());
                     product.setCategoryName(p.getCategoryName());
-                    product.setHasColor(p.isHasColor());
+                    product.setColor(p.getIsColor());
                     product.setPrice(p.getPrice());
                     product.setNoteColor(p.getNoteColor());
                     return product;
@@ -84,7 +84,7 @@ public class QuotationServiceImpl implements QuotationService {
             String productName = (String) row[2];
             String brandName = (String) row[3];
             String categoryName = (String) row[4];
-            boolean hasColor = (boolean) row[5];
+            Boolean isColor = (Boolean) row[5];
             BigDecimal price = (BigDecimal) row[6];
             String noteColor = (String) row[7];
 
@@ -100,7 +100,7 @@ public class QuotationServiceImpl implements QuotationService {
             productDetail.setProductName(productName);
             productDetail.setBrandName(brandName);
             productDetail.setCategoryName(categoryName);
-            productDetail.setHasColor(hasColor);
+            productDetail.setColor(isColor);
             productDetail.setPrice(price);
             productDetail.setNoteColor(noteColor);
             quotationMap.get(quotationId).getProducts().add(productDetail);

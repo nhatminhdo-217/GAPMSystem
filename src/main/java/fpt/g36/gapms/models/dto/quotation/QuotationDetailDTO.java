@@ -6,18 +6,18 @@ public class QuotationDetailDTO {
     private String productName;
     private String brandName;
     private String categoryName;
-    private boolean hasColor;
+    private Boolean isColor;
     private BigDecimal price;
     private String noteColor;
 
     public QuotationDetailDTO() {
     }
 
-    public QuotationDetailDTO(String productName, String brandName, String categoryName, boolean hasColor, BigDecimal price, String noteColor) {
+    public QuotationDetailDTO(String productName, String brandName, String categoryName, Boolean isColor, BigDecimal price, String noteColor) {
         this.productName = productName;
         this.brandName = brandName;
         this.categoryName = categoryName;
-        this.hasColor = hasColor;
+        this.isColor = isColor;
         this.price = price;
         this.noteColor = noteColor;
     }
@@ -46,12 +46,12 @@ public class QuotationDetailDTO {
         this.categoryName = categoryName;
     }
 
-    public boolean isHasColor() {
-        return hasColor;
+    public Boolean getColor() {
+        return isColor;
     }
 
-    public void setHasColor(boolean hasColor) {
-        this.hasColor = hasColor;
+    public void setColor(Boolean color) {
+        isColor = color;
     }
 
     public BigDecimal getPrice() {
