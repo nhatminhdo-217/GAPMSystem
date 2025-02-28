@@ -24,4 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
         System.out.println("Categories for brandId " + brandId + ": " + categories.size());
         return categories;
     }
+
+    @Override
+    public List<String> getAllCategoryNames() {
+        return categoryRepository.findAllCategoryNames();
+    }
 }

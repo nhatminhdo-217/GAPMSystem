@@ -7,24 +7,34 @@ import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
 import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.RfqDetail;
-import fpt.g36.gapms.repositories.QuotationRepository;
+import fpt.g36.gapms.repositories.*;
+import fpt.g36.gapms.services.CateBrandPriceService;
 import fpt.g36.gapms.services.QuotationService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class QuotationServiceImpl implements QuotationService {
 
     private final QuotationRepository quotationRepository;
+    private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CateBrandPriceService cateBrandPriceService;
 
-    public QuotationServiceImpl(QuotationRepository quotationRepository) {
+    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService) {
         this.quotationRepository = quotationRepository;
+        this.brandRepository = brandRepository;
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.cateBrandPriceService = cateBrandPriceService;
     }
 
     @Override
@@ -62,39 +72,41 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public Page<QuotationListDTO> getQuotationSortedByCreateAt(int page, int size) {
+    public Page<QuotationListDTO> getAllQuotations(String search, String product, String brand, String category, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Object[]> rawResults = quotationRepository.findAllWithFilters(search, product, brand, category, pageable);
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Quotation> quotationPage = quotationRepository.findQuotationsByCreateAt(pageable);
 
-    return quotationPage.map(this::mapToQuotationListDTO);
-    }
+        Map<Long, QuotationListDTO> quotationMap = new HashMap<>();
+        for (Object[] row : rawResults.getContent()) {
+            Long quotationId = (Long) row[0];
+            String userName = (String) row[1];
+            String productName = (String) row[2];
+            String brandName = (String) row[3];
+            String categoryName = (String) row[4];
+            boolean hasColor = (boolean) row[5];
+            BigDecimal price = (BigDecimal) row[6];
+            String noteColor = (String) row[7];
 
-    private QuotationListDTO mapToQuotationListDTO(Quotation quotation) {
+            quotationMap.computeIfAbsent(quotationId, id -> {
+                QuotationListDTO dto = new QuotationListDTO();
+                dto.setQuotationId(quotationId);
+                dto.setUserName(userName);
+                dto.setProducts(new ArrayList<>());
+                return dto;
+            });
 
-        QuotationListDTO listQuotation = new QuotationListDTO();
-
-        listQuotation.setQuotationId(quotation.getId());
-
-        Rfq rfq = quotation.getRfq();
-        Set<RfqDetail> rfqDetail = rfq.getRfqDetails();
-        if (rfq != null) {
-            listQuotation.setUserName(rfq.getCreateBy().getUsername());
+            QuotationDetailDTO productDetail = new QuotationDetailDTO();
+            productDetail.setProductName(productName);
+            productDetail.setBrandName(brandName);
+            productDetail.setCategoryName(categoryName);
+            productDetail.setHasColor(hasColor);
+            productDetail.setPrice(price);
+            productDetail.setNoteColor(noteColor);
+            quotationMap.get(quotationId).getProducts().add(productDetail);
         }
 
-        List<QuotationDetailDTO> detailDTO = rfqDetail.stream()
-                .map(rfqDetail1 -> {
-                    QuotationDetailDTO detail = new QuotationDetailDTO();
-                    detail.setProductName(rfqDetail1.getProduct().getName());
-                    detail.setBrandName(rfqDetail1.getProduct().);
-                    detail.setCategoryName(rfqDetail1.getProduct().getCategory().getName());
-                    detail.setHasColor(rfqDetail1.getProduct().isHasColor());
-                    detail.setPrice(quotation.getPrice());
-                    detail.setNoteColor(quotation.getNoteColor());
-                    return detail;
-                })
-                .collect(Collectors.toList());
-
-        return null;
+        List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
+        return new PageImpl<>(content, pageable, rawResults.getTotalElements());
     }
 }

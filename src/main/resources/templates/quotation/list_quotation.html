@@ -27,17 +27,17 @@
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
     <!-- Custom Stylesheet -->
-    <link href="/assert/css/style/quotation/" rel="stylesheet">
+    <link href="/assert/css/style/quotation/list_quotation.css" rel="stylesheet">
 </head>
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-    <div id="spinner"
-         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
+<!--    <div id="spinner"-->
+<!--         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">-->
+<!--        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">-->
+<!--            <span class="sr-only">Loading...</span>-->
+<!--        </div>-->
+<!--    </div>-->
     <!-- Spinner End -->
 
     <!-- Sidebar Start -->
@@ -51,79 +51,110 @@
         <!-- Navbar End -->
 
         <!-- Content Start -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <div id="contentHeader">
-                <h3 class="mb-4">Danh sách báo giá</h3>
-            </div>
-            <div id="filter-search">
-                <div id="filter" class="row">
-                    <div class="col">
-                        <!-- Các filter trong nhóm exclusive: chỉ được chọn 1 trong số Sản phẩm, Thương hiệu, Danh mục -->
-                        <!-- Filter Sản phẩm -->
-                        <div class="dropdown d-inline-block me-2 exclusive-filter" id="filterSanPhamContainer">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterSanPham" data-bs-toggle="dropdown" aria-expanded="false" data-default="Filter Sản phẩm">
-                                Filter Sản phẩm
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterSanPham">
-                                <li><a class="dropdown-item" href="#" data-value="">Chọn...</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="product1">Sản phẩm 1</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="product2">Sản phẩm 2</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="product3">Sản phẩm 3</a></li>
-                            </ul>
-                        </div>
-                        <!-- Filter Thương hiệu -->
-                        <div class="dropdown d-inline-block me-2 exclusive-filter" id="filterThuongHieuContainer">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterThuongHieu" data-bs-toggle="dropdown" aria-expanded="false" data-default="Filter Thương hiệu">
-                                Filter Thương hiệu
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterThuongHieu">
-                                <li><a class="dropdown-item" href="#" data-value="">Chọn...</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="brand1">Thương hiệu 1</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="brand2">Thương hiệu 2</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="brand3">Thương hiệu 3</a></li>
-                            </ul>
-                        </div>
-                        <!-- Filter Danh mục -->
-                        <div class="dropdown d-inline-block me-2 exclusive-filter" id="filterDanhMucContainer">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDanhMuc" data-bs-toggle="dropdown" aria-expanded="false" data-default="Filter Danh mục">
-                                Filter Danh mục
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterDanhMuc">
-                                <li><a class="dropdown-item" href="#" data-value="">Chọn...</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="cat1">Danh mục 1</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="cat2">Danh mục 2</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="cat3">Danh mục 3</a></li>
-                            </ul>
-                        </div>
-                    </div>
+        <div class="container mt-4">
+            <!-- Filter Form -->
+            <form class="row mb-4" th:action="@{/quotation/list}" method="get">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm kiếm..." th:value="${search}">
                 </div>
-                <div id="search">
-                    <form id="searchQuotation" action="/quotation/list" method="get">
-                        <input type="text" class="form-control" name="keyword" th:value="" placeholder="Tìm kiếm...">
-                        <button type="submit" class="btn btn-primary rounded-pill px-3">
-                            <i class="bi bi-search text-white fs-5"></i>
-                        </button>
-                    </form>
+                <div class="col-md-3">
+                    <select name="product" class="form-select">
+                        <option value="">Tất cả sản phẩm</option>
+                        <option th:each="prod : ${products}"
+                                th:value="${prod}"
+                                th:text="${prod}"
+                                th:selected="${prod == selectedProduct}"></option>
+                    </select>
                 </div>
-            </div>
-            <div id="quotationForm" class="table-responsive">
-                <table class="table table-bordered table-hover" >
+                <div class="col-md-3">
+                    <select name="brand" class="form-select">
+                        <option value="">Tất cả thương hiệu</option>
+                        <option th:each="br : ${brands}"
+                                th:value="${br}"
+                                th:text="${br}"
+                                th:selected="${br == selectedBrand}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select">
+                        <option value="">Tất cả danh mục</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat}"
+                                th:text="${cat}"
+                                th:selected="${cat == selectedCategory}"></option>
+                    </select>
+                </div>
+                <div class="col-md-12 mt-3 text-end">
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                </div>
+            </form>
+
+            <!-- Danh sách báo giá -->
+            <div th:each="quotation : ${quotations.content}">
+                <h5 class="text-primary">
+                    <span th:text="${quotation.userName}"></span> -
+                    Mã báo giá: <span th:text="${quotation.quotationId}"></span>
+                </h5>
+                <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Người tạo</th>
-                        <th scope="col">Sản phẩm</th>
-                        <th scope="col">Nhãn hiệu</th>
-                        <th scope="col">Danh mục</th>
-                        <th scope="col">Giá theo màu</th>
-                        <th scope="col">Ghi chú</th>
-                        <th scope="col">Chi tiết</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Thương hiệu</th>
+                        <th>Loại</th>
+                        <th>Giá theo màu (VND)</th>
+                        <th>Ghi chú</th>
+                    </tr>
                     </thead>
                     <tbody>
-
+                    <tr th:each="product : ${quotation.products}">
+                        <td th:text="${product.productName}"></td>
+                        <td th:text="${product.brandName}"></td>
+                        <td th:text="${product.categoryName}"></td>
+                        <td th:text="${product.hasColor} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
+                        <td th:text="${product.noteColor}"></td>
+                    </tr>
                     </tbody>
                 </table>
+                <hr>
             </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${!quotations.hasPrevious()} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/quotations(
+                       search=${search},
+                       product=${selectedProduct},
+                       brand=${selectedBrand},
+                       category=${selectedCategory},
+                       page=${quotations.number - 1}
+                   )}">Previous</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, quotations.totalPages - 1)}"
+                        th:classappend="${i == quotations.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/quotations(
+                       search=${search},
+                       product=${selectedProduct},
+                       brand=${selectedBrand},
+                       category=${selectedCategory},
+                       page=${i}
+                   )}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!quotations.hasNext()} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/quotations(
+                       search=${search},
+                       product=${selectedProduct},
+                       brand=${selectedBrand},
+                       category=${selectedCategory},
+                       page=${quotations.number + 1}
+                   )}">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

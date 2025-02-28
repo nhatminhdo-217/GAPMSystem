@@ -30,19 +30,18 @@ public class CateBrandPrice {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @NotNull
-    @Column(name = "has_color", nullable = false)
-    private Boolean hasColor = false;
+//    @NotNull
+//    @Column(name = "has_color", nullable = false)
+//    private Boolean hasColor = false;
 
     public CateBrandPrice() {
     }
 
-    public CateBrandPrice(CateBrandPriceId id, Category cate, Brand brand, BigDecimal price, Boolean hasColor) {
+    public CateBrandPrice(CateBrandPriceId id, Category cate, Brand brand, BigDecimal price) {
         this.id = id;
         this.cate = cate;
         this.brand = brand;
         this.price = price;
-        this.hasColor = hasColor;
     }
 
     public CateBrandPriceId getId() {
@@ -77,11 +76,8 @@ public class CateBrandPrice {
         this.price = price;
     }
 
-    public Boolean getHasColor() {
-        return hasColor;
-    }
-
-    public void setHasColor(Boolean hasColor) {
-        this.hasColor = hasColor;
+    @Transient
+    public Boolean isColor(){
+        return (id != null) ? id.getIsColor() : null;
     }
 }

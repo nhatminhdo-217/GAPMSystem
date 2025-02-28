@@ -8,4 +8,6 @@ public interface CategoryService {
     List<Category> getAllCategories();
 
     List<Category> getCategoriesByBrandId(Long brandId);
+
+    List<String> getAllCategoryNames();
 }
