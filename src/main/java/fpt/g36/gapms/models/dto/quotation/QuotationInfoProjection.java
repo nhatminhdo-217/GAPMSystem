@@ -14,7 +14,7 @@ public interface QuotationInfoProjection {
     String getReason();
     String getBrandName();
     String getCategoryName();
-    boolean isHasColor();
+    Boolean getIsColor();
     BigDecimal getPrice();
     String getNoteColor();
 }
