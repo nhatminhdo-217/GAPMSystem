@@ -19,7 +19,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
     @Query(value = "SELECT q.id as quotationId, u.name as username, c.name as companyname, c.tax_number, " +
             "p.name as productname, b.name as brandname, cate.name as categoryname, " +
-            "cate.has_color, cbp.price, rd.note_color, r.expect_delivery_date as expectedDate, s.actual_delivery_date as actualDate, s.reason " +
+            "cbp.is_color as isColor, cbp.price, rd.note_color, r.expect_delivery_date as expectedDate, s.actual_delivery_date as actualDate, s.reason " +
             "FROM quotation q " +
             "JOIN rfq r ON q.rfq_id = r.id " +
             "JOIN rfq_detail rd ON r.id = rd.rfq_id " +
@@ -40,7 +40,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "p.name AS productName, " +
             "b.name AS brandName, " +
             "cate.name AS categoryName, " +
-            "cbp.is_color AS hasColor, " +  // Lấy has_color từ cate_brand_price
+            "cbp.is_color AS isColor, " +  // Lấy has_color từ cate_brand_price
             "cbp.price AS price, " +
             "rd.note_color AS noteColor " +
             "FROM quotation q " +
