@@ -75,7 +75,7 @@ public class SolutionServiceImpl implements SolutionService {
         System.err.println("Session flushed, solution committed to database.");
 
         entityManager.refresh(rfq);
-        System.err.println("RFQ refreshed: " + rfq + ", Solution: " + rfq.getSolutions());
+        System.err.println("RFQ refreshed: " + rfq + ", Solution: " + rfq.getSolution());
         return savedSolution;
     }
 }

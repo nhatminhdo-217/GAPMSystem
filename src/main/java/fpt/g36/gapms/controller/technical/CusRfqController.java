@@ -102,7 +102,7 @@ public class CusRfqController {
             System.err.println("Solution saved with ID: " + solution.getId() + ", RFQ ID: " + solution.getRfq().getId());
             // Tải lại RFQ từ database để lấy thông tin mới nhất (bao gồm Solution vừa lưu)
             Rfq updatedRfq = rfqService.getRfqById(id);
-            System.err.println("Updated RFQ: " + updatedRfq + ", Solution: " + updatedRfq.getSolutions()); // Sử dụng getSolution() nếu đúng getter
+            System.err.println("Updated RFQ: " + updatedRfq + ", Solution: " + updatedRfq.getSolution()); // Sử dụng getSolution() nếu đúng getter
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với RFQ mới
             model.addAttribute("success", "Tạo Solution thành công!");
         } catch (RuntimeException e) {

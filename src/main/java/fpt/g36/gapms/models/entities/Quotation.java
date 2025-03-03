@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -21,8 +22,11 @@ public class Quotation extends BaseEntity {
     @Column(name = "is_canceled")
     private Boolean isCanceled;
 
+    @Enumerated(EnumType.STRING)
+    private BaseEnum status;
+
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "rfq_id", nullable = false)
     private Rfq rfq;
 
@@ -31,6 +35,9 @@ public class Quotation extends BaseEntity {
 
     @OneToMany(mappedBy = "quotation")
     private Set<PurchaseOrderPrice> purchaseOrderPrices = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuotationDetail> quotationDetails = new ArrayList<>();
 
     public Quotation() {
     }
