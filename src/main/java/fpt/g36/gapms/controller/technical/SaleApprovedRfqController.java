@@ -105,24 +105,24 @@ public class SaleApprovedRfqController {
     @GetMapping("/update-solution/{id}")
     public String showUpdateSolutionForm(@PathVariable Long id, Model model) {
         Rfq rfq = rfqService.getRfqById(id);
-        if (rfq == null || rfq.getSolutions() == null) {
+        if (rfq == null || rfq.getSolution() == null) {
             return "redirect:/error";
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
-        model.addAttribute("solution", rfq.getSolutions());
+        model.addAttribute("solution", rfq.getSolution());
         return "/technical/rfq-details";
     }
 
     @GetMapping("/submit-solution-final/{id}")
     public String showSubmitSolutionForm(@PathVariable Long id, Model model) {
         Rfq rfq = rfqService.getRfqById(id);
-        if (rfq == null || rfq.getSolutions() == null) {
+        if (rfq == null || rfq.getSolution() == null) {
             return "redirect:/error";
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
-        model.addAttribute("solution", rfq.getSolutions());
+        model.addAttribute("solution", rfq.getSolution());
         return "/technical/rfq-details";
     }
 
@@ -131,7 +131,7 @@ public class SaleApprovedRfqController {
         userUtils.getOptionalUser(model);
 
         Rfq rfq = rfqService.getRfqById(id);
-        if (rfq == null || rfq.getSolutions() == null) {
+        if (rfq == null || rfq.getSolution() == null) {
             model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
             return "/technical/rfq-details";
         }
@@ -144,7 +144,7 @@ public class SaleApprovedRfqController {
         }
 
         try {
-            Solution updatedSolution = solutionService.updateSolution(rfq.getSolutions().getId(), solutionDTO);
+            Solution updatedSolution = solutionService.updateSolution(rfq.getSolution().getId(), solutionDTO);
             Rfq updatedRfq = rfqService.getRfqById(id);
             model.addAttribute("rfq", updatedRfq);
             model.addAttribute("success", "Cập nhật Solution thành công!");
@@ -162,7 +162,7 @@ public class SaleApprovedRfqController {
         userUtils.getOptionalUser(model);
 
         Rfq rfq = rfqService.getRfqById(id);
-        if (rfq == null || rfq.getSolutions() == null) {
+        if (rfq == null || rfq.getSolution() == null) {
             model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
             return "/technical/rfq-details";
         }
@@ -170,7 +170,7 @@ public class SaleApprovedRfqController {
         model.addAttribute("rfq", rfq);
 
         try {
-            solutionService.submitSolution(rfq.getSolutions().getId());
+            solutionService.submitSolution(rfq.getSolution().getId());
             // Lấy lại Rfq sau khi submit để đảm bảo dữ liệu mới nhất
             Rfq updatedRfq = rfqService.getRfqById(id);
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới

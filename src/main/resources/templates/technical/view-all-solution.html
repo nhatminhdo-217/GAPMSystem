@@ -343,12 +343,12 @@
                     <input type="text" class="form-control search-input" placeholder="Search...">
                 </div>
                 <div class="row g-3">
-                    <div class="col-12" th:if="${solutions == null or solutions.isEmpty()}">
+                    <div class="col-12" th:if="${solution == null or solution.isEmpty()}">
                         <div class="alert alert-info text-center">
                             <p>Không có giải pháp nào được tạo.</p>
                         </div>
                     </div>
-                    <div class="col-12" th:each="solution, iterStat : ${solutions}">
+                    <div class="col-12" th:each="solution, iterStat : ${solution}">
                         <div class="card-wrapper">
                             <div class="card" th:data-solution-id="${solution.id}">
                                 <div class="card-body parent-row">
