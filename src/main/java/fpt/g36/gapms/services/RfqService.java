@@ -20,7 +20,11 @@ public interface RfqService {
 
     Rfq editRfq(Long rfqId, LocalDate newDate);
 
-
-
     List<Rfq> getAllApprovedRfqs();
+
+    Rfq getRfqBySolutionId(Long solutionId);
+
+    List<Rfq> getAllRfq();
+
+    Rfq submitRfq(Long rfqId, Long userId);
 }

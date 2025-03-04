@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/technical")
-public class CusRfqController {
+public class SaleApprovedRfqController {
     @Autowired
     private final RfqService rfqService;
     @Autowired
@@ -32,13 +32,12 @@ public class CusRfqController {
     @Autowired
     private final SolutionService solutionService;
 
-    public CusRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
+    public SaleApprovedRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
         this.rfqService = rfqService;
         this.userUtils = userUtils;
         this.userService = userService;
         this.solutionService = solutionService;
     }
-
 
     @GetMapping("/view-all-rfq")
     public String getApprovedRfqsViewList(Model model) {
@@ -53,16 +52,12 @@ public class CusRfqController {
 
     @GetMapping("/rfq-details/{id}")
     public String showRfqDetails(@PathVariable Long id, Model model) {
-        //
         Rfq rfq = rfqService.getRfqById(id);
-        //
         if (rfq == null) {
             return "redirect:/error";
         }
-        //
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
-        //
         return "/technical/rfq-details";
     }
 
@@ -79,8 +74,6 @@ public class CusRfqController {
         }
 
         User currentUser = optionalUser.get();
-
-        // Kiểm tra và lấy RFQ
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null) {
             model.addAttribute("error", "RFQ không tồn tại.");
@@ -90,29 +83,101 @@ public class CusRfqController {
 
         model.addAttribute("rfq", rfq);
 
-        // Kiểm tra lỗi validation
         if (result.hasErrors()) {
             model.addAttribute("validationErrors", result.getAllErrors());
             return "/technical/rfq-details";
         }
 
         try {
-            // Gọi service để lưu Solution
             Solution solution = solutionService.addSolution(id, currentUser.getId(), solutionDTO);
-            System.err.println("Solution saved with ID: " + solution.getId() + ", RFQ ID: " + solution.getRfq().getId());
-            // Tải lại RFQ từ database để lấy thông tin mới nhất (bao gồm Solution vừa lưu)
             Rfq updatedRfq = rfqService.getRfqById(id);
-            System.err.println("Updated RFQ: " + updatedRfq + ", Solution: " + updatedRfq.getSolutions()); // Sử dụng getSolution() nếu đúng getter
-            model.addAttribute("rfq", updatedRfq); // Cập nhật model với RFQ mới
+            model.addAttribute("rfq", updatedRfq);
             model.addAttribute("success", "Tạo Solution thành công!");
         } catch (RuntimeException e) {
-            System.err.println("Runtime Error: " + e.getMessage());
-            model.addAttribute("error", "Runtime Error: " + e.getMessage());
+            model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
-            System.err.println("Unexpected Error: " + e.getMessage());
             model.addAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
+        return "/technical/rfq-details";
+    }
+
+    @GetMapping("/update-solution/{id}")
+    public String showUpdateSolutionForm(@PathVariable Long id, Model model) {
+        Rfq rfq = rfqService.getRfqById(id);
+        if (rfq == null || rfq.getSolutions() == null) {
+            return "redirect:/error";
+        }
+        userUtils.getOptionalUser(model);
+        model.addAttribute("rfq", rfq);
+        model.addAttribute("solution", rfq.getSolutions());
+        return "/technical/rfq-details";
+    }
+
+    @GetMapping("/submit-solution-final/{id}")
+    public String showSubmitSolutionForm(@PathVariable Long id, Model model) {
+        Rfq rfq = rfqService.getRfqById(id);
+        if (rfq == null || rfq.getSolutions() == null) {
+            return "redirect:/error";
+        }
+        userUtils.getOptionalUser(model);
+        model.addAttribute("rfq", rfq);
+        model.addAttribute("solution", rfq.getSolutions());
+        return "/technical/rfq-details";
+    }
+
+    @PostMapping("/update-solution/{id}")
+    public String updateSolution(@PathVariable Long id, @Valid @ModelAttribute("solution") SolutionDTO solutionDTO, BindingResult result, Model model) {
+        userUtils.getOptionalUser(model);
+
+        Rfq rfq = rfqService.getRfqById(id);
+        if (rfq == null || rfq.getSolutions() == null) {
+            model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            return "/technical/rfq-details";
+        }
+
+        model.addAttribute("rfq", rfq);
+
+        if (result.hasErrors()) {
+            model.addAttribute("validationErrors", result.getAllErrors());
+            return "/technical/rfq-details";
+        }
+
+        try {
+            Solution updatedSolution = solutionService.updateSolution(rfq.getSolutions().getId(), solutionDTO);
+            Rfq updatedRfq = rfqService.getRfqById(id);
+            model.addAttribute("rfq", updatedRfq);
+            model.addAttribute("success", "Cập nhật Solution thành công!");
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("error", "Unexpected Error: " + e.getMessage());
+        }
+
+        return "/technical/rfq-details";
+    }
+
+    @PostMapping("/submit-solution-final/{id}")
+    public String submitSolutionFinal(@PathVariable Long id, Model model) {
+        userUtils.getOptionalUser(model);
+
+        Rfq rfq = rfqService.getRfqById(id);
+        if (rfq == null || rfq.getSolutions() == null) {
+            model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            return "/technical/rfq-details";
+        }
+
+        model.addAttribute("rfq", rfq);
+
+        try {
+            solutionService.submitSolution(rfq.getSolutions().getId());
+            // Lấy lại Rfq sau khi submit để đảm bảo dữ liệu mới nhất
+            Rfq updatedRfq = rfqService.getRfqById(id);
+            model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
+            model.addAttribute("success", "Solution đã được gửi thành công!");
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
         return "/technical/rfq-details";
     }
 }
