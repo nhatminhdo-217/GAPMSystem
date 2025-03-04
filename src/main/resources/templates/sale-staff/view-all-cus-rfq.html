@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ đã duyệt</title>
+
+    <title>Chỉ may Dũng Đông - Danh sách RFQ </title>
+
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -308,7 +310,7 @@
                     </div>
                     <div class="col-12" th:each="rfq, iterStat : ${rfqs}">
                         <div class="card-wrapper">
-                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/technical/rfq-details/' + ${rfq.id}\'">
+                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id}\'">
                                 <div class="card-body parent-row">
                                     <span class="index-in-card" th:text="${iterStat.count}"></span>
                                     <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"

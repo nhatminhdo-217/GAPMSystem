@@ -92,4 +92,12 @@ public class Quotation extends BaseEntity {
     public void setPurchaseOrderPrices(Set<PurchaseOrderPrice> purchaseOrderPrices) {
         this.purchaseOrderPrices = purchaseOrderPrices;
     }
+
+    public BaseEnum getIsAccepted() {
+        return isAccepted;
+    }
+
+    public void setIsAccepted(BaseEnum isAccepted) {
+        this.isAccepted = isAccepted;
+    }
 }
