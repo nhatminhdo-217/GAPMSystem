@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết RFQ</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        /* Giữ nguyên các style cũ và thêm style cho nút và toast */
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .toast {
+            opacity: 0.9;
+        }
+
+        .success-toast {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .success-toast .toast-body {
+            color: #155724;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastSuccess, #toastError {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+    </style>
+</head>
+<body>
+<!-- Hidden data -->
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-rfq-id="${rfq.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết RFQ</h2>
+
+                            <!-- RFQ Info -->
+                            <div class="rfq-info">
+                                <h3 class="section-title">Thông tin RFQ</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Số lượng sản phẩm:</strong> <span
+                                            th:text="${rfq.rfqDetails.size()}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo đơn:</strong> <span
+                                            th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Nhân viên phụ trách:</strong> <span
+                                            th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái gửi:</strong>
+                                        <span th:text="${rfq.isApproved != null ? (rfq.isApproved.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày mong muốn nhận hàng:</strong> <span
+                                            th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="product-details">
+                                <h3 class="section-title">Danh sách sản phẩm</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>Số thứ tự</th>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Màu</th>
+                                        <th>Số lượng đặt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="detail, iterStat : ${rfq.rfqDetails}">
+                                        <td th:text="${iterStat.count}"></td>
+                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                        <td th:text="${detail.noteColor}"></td>
+                                        <td th:text="${detail.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Nút gửi RFQ -->
+                            <div class="btn-container"
+                                 th:if="${rfq.isApproved != null and rfq.isApproved.name() == 'NOT_SENT'}">
+                                <button class="btn btn-custom" id="submitRfqBtn" data-bs-toggle="modal"
+                                        data-bs-target="#submitRfqModal">Gửi RFQ
+                                </button>
+                            </div>
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4" th:if="${rfq.solutions != null}">
+                                <h3 class="section-title">Thông tin giải pháp</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Lý do:</strong> <span th:text="${rfq.solutions.reason}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Chi tiết:</strong> <span
+                                                th:text="${rfq.solutions.description}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày có thể giao hàng dự kiến:</strong>
+                                            <span th:text="${#temporals.format(rfq.solutions.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:text="${rfq.solutions.isSent != null ? (rfq.solutions.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${rfq.solutions.createBy != null ? rfq.solutions.createBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(rfq.solutions.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Modal để gửi RFQ -->
+    <div class="modal fade" id="submitRfqModal" tabindex="-1" aria-labelledby="submitRfqModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitRfqModalLabel">Gửi RFQ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitRfqForm" th:action="@{/sale-staff/submit-rfq/{id}(id=${rfq.id})}" method="post">
+                        <input type="hidden" name="rfqId" th:value="${rfq.id}">
+                        <p>Bạn có chắc chắn muốn gửi RFQ này không?</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="submitRfqForm" class="btn btn-primary">Gửi RFQ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastSuccess" class="toast success-toast" style="display: none;">
+        <div class="toast-header">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="successMessage"></p>
+        </div>
+    </div>
+
+    <div id="toastError" class="toast error-toast" style="display: none;">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hide spinner
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Loại bỏ sự kiện click trên card để không chuyển hướng
+        $('.card').off('click');
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+
+        // Open modal
+        $('#submitRfqBtn').click(function () {
+            $('#submitRfqModal').modal('show');
+        });
+
+        // Close modal
+        $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
+            $('#submitRfqModal').modal('hide');
+        });
+
+        // Toast notifications
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
+            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
+            successToast.show();
+            setTimeout(() => successToast.hide(), 3000);
+        }
+
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+    });
+</script>
+</body>
+</html>

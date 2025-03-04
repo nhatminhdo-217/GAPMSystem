@@ -1,5 +1,7 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.enums.SendEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,16 +38,21 @@ public class Solution extends BaseEntity {
     @JoinColumn(name = "rfq_id", nullable = false, unique = true)
     private Rfq rfq;
 
+    @Column(name = "is_sent")
+    @Enumerated(EnumType.STRING)
+    private SendEnum isSent;
+
     public Solution() {
     }
 
-    public Solution(Long id, LocalDateTime createAt, LocalDateTime updateAt, String reason, LocalDate actualDeliveryDate, String description, User createBy, Rfq rfq) {
+    public Solution(Long id, LocalDateTime createAt, LocalDateTime updateAt, String reason, LocalDate actualDeliveryDate, String description, User createBy, Rfq rfq, SendEnum isSent) {
         super(id, createAt, updateAt);
         this.reason = reason;
         this.actualDeliveryDate = actualDeliveryDate;
         this.description = description;
         this.createBy = createBy;
         this.rfq = rfq;
+        this.isSent = isSent;
     }
 
     public String getReason() {
@@ -86,5 +93,13 @@ public class Solution extends BaseEntity {
 
     public void setRfq(Rfq rfq) {
         this.rfq = rfq;
+    }
+
+    public SendEnum getIsSent() {
+        return isSent;
+    }
+
+    public void setIsSent(SendEnum isSent) {
+        this.isSent = isSent;
     }
 }

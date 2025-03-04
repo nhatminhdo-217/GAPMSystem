@@ -1,6 +1,5 @@
-package fpt.g36.gapms.controller.technical;
+package fpt.g36.gapms.controller.sale_staff;
 
-import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.Solution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.RfqService;
@@ -22,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/technical")
-public class SolutionController {
+@RequestMapping("/sale-staff")
+public class RfqSolutionController {
     @Autowired
     private final RfqService rfqService;
     @Autowired
@@ -33,27 +32,27 @@ public class SolutionController {
     @Autowired
     private final SolutionService solutionService;
 
-    public SolutionController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
+    public RfqSolutionController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
         this.rfqService = rfqService;
         this.userUtils = userUtils;
         this.userService = userService;
         this.solutionService = solutionService;
     }
 
-    @GetMapping("/view-all-solution")
+    @GetMapping("/view-all-rfq-solution")
     public String getSolutionViewList(Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String emailOrPhone = principal.getName();
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            List<Solution> solutions = solutionService.getSolutionsByCreabyID(optionalUser.get().getId());
+            List<Solution> solutions = solutionService.getAllSentedAndApproveByUserIDSolutions(optionalUser.get().getId());
             model.addAttribute("solutions", solutions);
         }
         userUtils.getOptionalUser(model);
-        return "technical/view-all-solution";
+        return "/sale-staff/view-all-rfq-solution";
     }
 
-    @GetMapping("/solution-details/{id}")
+    @GetMapping("/rfq-solution-details/{id}")
     public String getSolutionDetailsView(@PathVariable Long id, Model model) {
         Solution solution = solutionService.getSolutionById(id);
         if (solution == null) {
@@ -61,6 +60,6 @@ public class SolutionController {
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("solution", solution);
-        return "/technical/solution-details";
+        return "/sale-staff/rfq-solution-details";
     }
 }
