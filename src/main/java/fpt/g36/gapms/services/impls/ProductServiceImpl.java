@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found"));
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElse(null); // Trả về null nếu không tìm thấy
     }
 }

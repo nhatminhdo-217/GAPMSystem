@@ -1,9 +1,11 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Bag;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,10 @@ public class Quotation extends BaseEntity {
     @ColumnDefault("0")
     @Column(name = "is_canceled")
     private Boolean isCanceled;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_accepted")
+    private BaseEnum isAccepted;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

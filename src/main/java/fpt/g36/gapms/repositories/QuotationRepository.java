@@ -2,6 +2,7 @@ package fpt.g36.gapms.repositories;
 
 import fpt.g36.gapms.models.dto.quotation.QuotationDetailDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoProjection;
+import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerProjection;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
 import fpt.g36.gapms.models.entities.Quotation;
 import org.springframework.data.domain.Page;
@@ -81,4 +82,41 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             @Param("category") String category,
             Pageable pageable
     );
+
+
+   /// for customer
+    @Query(value = "SELECT \n" +
+            "    q.id AS quotationId,\n" +
+            "    r.id as rfqId,\n" +
+            "q.is_canceled as isCanceled,"+
+            "q.is_accepted as isAccepted,"+
+            "    rd.quantity as quantity,\n" +
+            "    u.name AS username, \n" +
+            "    c.name AS companyname, \n" +
+            "    c.tax_number, \n" +
+            "    p.name AS productname, \n" +
+            "    b.name AS brandname, \n" +
+            "    cate.name AS categoryname, \n" +
+            "    cbp.is_color AS isColor, \n" +
+            "    cbp.price, \n" +
+            "    rd.note_color, \n" +
+            "    r.expect_delivery_date AS expectedDate, \n" +
+            "    s.actual_delivery_date AS actualDate, \n" +
+            "    s.reason \n" +
+            "FROM quotation q\n" +
+            "JOIN rfq r ON q.rfq_id = r.id\n" +
+            "JOIN rfq_detail rd ON r.id = rd.rfq_id\n" +
+            "JOIN product p ON rd.product_id = p.id\n" +
+            "JOIN brand b ON rd.brand_id = b.id\n" +
+            "JOIN category cate ON rd.cate_id = cate.id\n" +
+            "JOIN cate_brand_price cbp ON cbp.cate_id = cate.id\n" +
+            "JOIN user u ON r.create_by = u.id\n" +
+            "JOIN company_user cu ON u.id = cu.user_id\n" +
+            "JOIN company c ON cu.company_id = c.id\n" +
+            "JOIN solution s ON r.id = s.rfq_id\n" +
+            "WHERE r.id = :rfqId", nativeQuery = true)
+    List<QuotationInforCustomerProjection> findQuotationCustomer(@Param("rfqId") long rfqId);
+
+
+    Quotation findByRfqId(long rfqId);
 }
