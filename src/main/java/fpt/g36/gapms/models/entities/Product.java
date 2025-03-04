@@ -1,5 +1,7 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,9 +25,11 @@ public class Product extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "production")
+    @JsonManagedReference
     private Set<Brand> brands = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
     public Product() {

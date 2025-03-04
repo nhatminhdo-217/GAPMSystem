@@ -1,9 +1,7 @@
 package fpt.g36.gapms.services.impls;
 
-import fpt.g36.gapms.models.dto.quotation.QuotationDetailDTO;
-import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
-import fpt.g36.gapms.models.dto.quotation.QuotationInfoProjection;
-import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.models.dto.quotation.*;
 import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.RfqDetail;
@@ -108,5 +106,65 @@ public class QuotationServiceImpl implements QuotationService {
 
         List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
         return new PageImpl<>(content, pageable, rawResults.getTotalElements());
+    }
+
+    @Override
+    public QuotationInforCustomerDTO getQuotationCustomer(long rfqId) {
+        List<QuotationInforCustomerProjection> quotationDetail = quotationRepository.findQuotationCustomer(rfqId);
+
+        if (quotationDetail.isEmpty()) {
+            throw new RuntimeException("Quotation not found");
+        }
+
+        QuotationInforCustomerDTO quotationInforCustomerDTO = new QuotationInforCustomerDTO();
+
+        quotationInforCustomerDTO.setQuotationId(quotationDetail.get(0).getQuotationId());
+        quotationInforCustomerDTO.setRfqId(quotationDetail.get(0).getRfqId());
+        quotationInforCustomerDTO.setCancel(quotationDetail.get(0).getIsCanceled());
+        quotationInforCustomerDTO.setAccepted(quotationDetail.get(0).getIsAccepted());
+        quotationInforCustomerDTO.setUserName(quotationDetail.get(0).getUserName());
+        quotationInforCustomerDTO.setCompanyName(quotationDetail.get(0).getCompanyName());
+        quotationInforCustomerDTO.setTaxNumber(quotationDetail.get(0).getTaxNumber());
+        quotationInforCustomerDTO.setProductName(quotationDetail.get(0).getProductName());
+        quotationInforCustomerDTO.setExpectedDate(quotationDetail.get(0).getExpectedDate());
+        quotationInforCustomerDTO.setActualDate(quotationDetail.get(0).getActualDate());
+        quotationInforCustomerDTO.setReason(quotationDetail.get(0).getReason());
+
+        List<QuotationCustomerDTO> products = quotationDetail.stream()
+                .map(p -> {
+                    QuotationCustomerDTO product = new QuotationCustomerDTO();
+                    product.setProductName(p.getProductName());
+                    product.setBrandName(p.getBrandName());
+                    product.setCategoryName(p.getCategoryName());
+                    product.setColor(p.getIsColor());
+                    product.setPrice(p.getPrice());
+                    product.setQuantity(p.getQuantity());
+                    product.setNoteColor(p.getNoteColor());
+                    return product;
+                })
+                .toList();
+
+        quotationInforCustomerDTO.setProducts(products);
+        return quotationInforCustomerDTO;
+    }
+
+    @Override
+    public void approvedQuotation(long rfqId) {
+          Quotation quotation = quotationRepository.findByRfqId(rfqId);
+        if (quotation == null) {
+            throw new RuntimeException("Quotation not found");
+        }
+          quotation.setIsAccepted(BaseEnum.APPROVED);
+          quotationRepository.save(quotation);
+    }
+
+    @Override
+    public void notApprovedQuotation(long rfqId) {
+        Quotation quotation = quotationRepository.findByRfqId(rfqId);
+        if (quotation == null) {
+            throw new RuntimeException("Quotation not found");
+        }
+        quotation.setIsAccepted(BaseEnum.CANCELED);
+        quotationRepository.save(quotation);
     }
 }
