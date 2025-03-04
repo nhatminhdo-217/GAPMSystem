@@ -43,6 +43,7 @@ public class CusRfqController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             List<Rfq> rfq = rfqService.getAllRfq();
+            System.err.println(rfq.size());
             model.addAttribute("rfqs", rfq);
         }
         userUtils.getOptionalUser(model);
