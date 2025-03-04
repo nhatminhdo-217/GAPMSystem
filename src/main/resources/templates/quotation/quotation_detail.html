@@ -98,7 +98,7 @@
               <tr th:each="product : ${quotation_detail.products}">
                 <td th:text="${product.brandName}"></td>
                 <td th:text="${product.categoryName}"></td>
-                <td th:text="${product.hasColor} ? 'Có' : 'Không'"></td>
+                <td th:text="${product.color} ? 'Có' : 'Không'"></td>
                 <td th:text="${product.price}"></td>
                 <td th:text="${product.noteColor}"></td>
               </tr>

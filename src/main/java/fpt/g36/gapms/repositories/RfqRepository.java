@@ -23,6 +23,9 @@ public interface RfqRepository extends JpaRepository<Rfq, Long> {
     @Query("select r from Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id  where r.createBy.id = :userId order by r.createAt desc")
     List<Rfq> getRfqByUserId(Long userId);
 
+    @Query("select r from Rfq r where r.id =:rfqId and r.createBy.id = :userId")
+    Optional<Rfq> getRfqByRfqIdAndUserId(Long rfqId, Long userId);
+
     @Query("SELECT r FROM Rfq r WHERE r.isSent = :isApproved")
     List<Rfq> getAllApprovedRfqs(@Param("isApproved") BaseEnum isApproved);
 

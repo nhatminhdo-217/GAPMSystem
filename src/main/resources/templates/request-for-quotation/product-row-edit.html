@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="productRowEdit" class="form-row" th:with="rowNumber=${param.rowNumber != null ? T(java.lang.Integer).parseInt(param.rowNumber) : 1}">
+<th:block th:fragment="productRowEdit" class="form-row" th:id="'row-' + ${rowNumber}" th:with="rowNumber=${param.rowNumber != null ? T(java.lang.Integer).parseInt(param.rowNumber) : 1}">
     <div class="row align-items-center g-2"> <!-- Thêm g-2 để tạo khoảng cách đều giữa các cột -->
 
         <div class="col-2"> <!-- Cột cho Sản phẩm -->
@@ -44,7 +44,7 @@
         </div>
         <div class="col-2"> <!-- Cột nhỏ cho nút Xóa, căn giữa hoàn toàn -->
             <div class="form-group">
-                <button type="button" class="remove-row-btn" th:attr="data-row-number=${rowNumber}" ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="remove-row-btn" th:attr="data-row-number=${rowNumber}"><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
     </div>

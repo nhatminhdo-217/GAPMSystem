@@ -2,24 +2,28 @@ package fpt.g36.gapms.models.dto.quotation;
 
 import java.math.BigDecimal;
 
-public class QuotationDetailDTO {
+public class QuotationCustomerDTO {
     private String productName;
     private String brandName;
     private String categoryName;
     private Boolean isColor;
     private BigDecimal price;
     private String noteColor;
+    private int quantity;
+    private String note;
 
-    public QuotationDetailDTO() {
+    public QuotationCustomerDTO() {
     }
 
-    public QuotationDetailDTO(String productName, String brandName, String categoryName, Boolean isColor, BigDecimal price, String noteColor) {
+    public QuotationCustomerDTO(String productName, String brandName, String categoryName, Boolean isColor, BigDecimal price, String noteColor, int quantity, String note) {
         this.productName = productName;
         this.brandName = brandName;
         this.categoryName = categoryName;
         this.isColor = isColor;
         this.price = price;
         this.noteColor = noteColor;
+        this.quantity = quantity;
+        this.note = note;
     }
 
     public String getProductName() {
@@ -68,5 +72,21 @@ public class QuotationDetailDTO {
 
     public void setNoteColor(String noteColor) {
         this.noteColor = noteColor;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

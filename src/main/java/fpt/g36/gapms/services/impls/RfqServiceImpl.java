@@ -55,8 +55,14 @@ public class RfqServiceImpl implements RfqService {
     @Transactional
     @Override
     public Rfq getRfqById(Long rfqId) {
-        return rfqRepository.findById(rfqId).orElseThrow(() -> new RuntimeException("Rfq not found"));
+        return rfqRepository.findById(rfqId).orElseThrow(() -> new RuntimeException("Không tìm thấy mã lô hàng"));
     }
+
+    @Override
+    public Rfq getRfqByIdAndUserId(Long rfqId, Long userId) {
+        return rfqRepository.getRfqByRfqIdAndUserId(rfqId, userId).orElseThrow(() -> new RuntimeException("Không tìm thấy mã lô hàng"));
+    }
+
 
     @Override
     public Rfq editRfq(Long rfqId, LocalDate newDate) {
