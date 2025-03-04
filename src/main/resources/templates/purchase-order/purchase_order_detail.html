@@ -56,7 +56,6 @@
         <!-- Navbar End -->
 
         <div class="container-fluid d-flex flex-column m-2">
-            <form action="#" method="post">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Đơn đặt hàng</a></li>
                     <li class="breadcrumb-item active">Chi tiết</li>
@@ -73,6 +72,7 @@
                         <p><b>Hợp đồng: </b> <a th:href="@{'/quotation/detail/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
                     </div>
                     <div class="col m-3">
+                        <p><b>Trạng thái: </b> <span th:text="${orderInfo.status}"></span> </p>
                         <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyy')}"></span> </p>
                         <p><b>Ngày thực giao: </b> <span th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyy')}"></span></p>
                         <p><b>Giải pháp: </b> <a th:href="@{'/quotation/detail/contract/' + ${orderInfo.solutionId}}">Ấn để xem</a></p>
@@ -117,11 +117,17 @@
                     <p><strong>Ngày thực giao: </strong> 11 - 02 - 2025</p>
                     <p><strong>Thành tiền (VND): </strong> 9,000,000</p>
                 </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <a href="#" class="btn">Back</a>
+                <div class="d-flex">
+                    <form th:if="${orderInfo.status.name() == 'DRAFT'}"
+                            th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                    <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="#">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <a th:href="@{/purchase-order/list}" class="btn">Back</a>
                 </div>
-            </form>
         </div>
 
         <!-- Footer Start -->

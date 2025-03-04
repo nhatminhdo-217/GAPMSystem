@@ -1,7 +1,9 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
+import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import org.springframework.stereotype.Service;
@@ -38,5 +40,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 (BigDecimal) item[5],
                 (BigDecimal) item[6]
         )).collect(Collectors.toList());
+    }
+
+    @Override
+    public PurchaseOrder updatePurchaseOrderStatus(Long id) {
+        PurchaseOrder po = purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Purchase order not found"));
+        po.setStatus(BaseEnum.NOT_APPROVED);
+        return purchaseOrderRepository.save(po);
     }
 }

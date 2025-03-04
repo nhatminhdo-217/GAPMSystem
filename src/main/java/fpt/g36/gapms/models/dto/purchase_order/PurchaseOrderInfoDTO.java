@@ -1,8 +1,12 @@
 package fpt.g36.gapms.models.dto.purchase_order;
 
+import fpt.g36.gapms.enums.BaseEnum;
+
 import java.time.LocalDate;
 
 public class PurchaseOrderInfoDTO {
+
+    private Long id;
 
     private String customerName;
 
@@ -20,10 +24,13 @@ public class PurchaseOrderInfoDTO {
 
     private Long solutionId;
 
+    private BaseEnum status;
+
     public PurchaseOrderInfoDTO() {
     }
 
-    public PurchaseOrderInfoDTO(String customerName, String companyName, String taxNumber, String companyAddress, String contractId, LocalDate expectedDeliveryDate, LocalDate actualDeliveryDate, Long solutionId) {
+    public PurchaseOrderInfoDTO(Long id, String customerName, String companyName, String taxNumber, String companyAddress, String contractId, LocalDate expectedDeliveryDate, LocalDate actualDeliveryDate, Long solutionId, BaseEnum status) {
+        this.id = id;
         this.customerName = customerName;
         this.companyName = companyName;
         this.taxNumber = taxNumber;
@@ -32,6 +39,15 @@ public class PurchaseOrderInfoDTO {
         this.expectedDeliveryDate = expectedDeliveryDate;
         this.actualDeliveryDate = actualDeliveryDate;
         this.solutionId = solutionId;
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCustomerName() {
@@ -96,5 +112,13 @@ public class PurchaseOrderInfoDTO {
 
     public void setSolutionId(Long solutionId) {
         this.solutionId = solutionId;
+    }
+
+    public BaseEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(BaseEnum status) {
+        this.status = status;
     }
 }

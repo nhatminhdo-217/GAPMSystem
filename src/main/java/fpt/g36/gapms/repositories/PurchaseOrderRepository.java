@@ -17,6 +17,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     @Query("""
        SELECT DISTINCT new fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO(
+          po.id,
           u.username as customerName,
           c.name as companyName,
           c.taxNumber,
@@ -24,7 +25,8 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
           con.id as contractId,
           r.expectDeliveryDate as expectedDate,
           s.actualDeliveryDate as actualDate,
-          s.id as solutionId
+          s.id as solutionId,
+          po.status
        )
        FROM PurchaseOrder po
          JOIN po.quotation q
