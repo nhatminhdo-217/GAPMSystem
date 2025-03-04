@@ -70,6 +70,9 @@ public class RfqController {
                 Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
                 Pageable pageable = PageRequest.of(page, size);
                 Page<Rfq> rfqs = rfqService.getAllRfqsByUserId(optionalUser.get().getId(), pageable);
+                rfqs.forEach(rfq -> {
+                    System.err.println("User rfq" + rfq.getIsSent());
+                });
                 model.addAttribute("rfqs", rfqs.getContent());
                 model.addAttribute("currentPage", rfqs.getNumber()); // Trang hiện tại
                 model.addAttribute("totalPages", rfqs.getTotalPages());

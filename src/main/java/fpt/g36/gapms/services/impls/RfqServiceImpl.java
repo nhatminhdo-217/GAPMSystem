@@ -1,9 +1,14 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.entities.Rfq;
+import fpt.g36.gapms.models.entities.Solution;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RfqRepository;
+import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.RfqService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +26,18 @@ public class RfqServiceImpl implements RfqService {
     @Autowired
     private RfqRepository rfqRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable) {
         return rfqRepository.getRfqByUserId(userId, pageable);
     }
-        @Override
+
+    @Override
     public List<Rfq> getAllRfqsByUserId(Long userId) {
         return rfqRepository.getRfqByUserId(userId);
     }
@@ -64,8 +75,44 @@ public class RfqServiceImpl implements RfqService {
         }
         return null;
     }
+
     @Override
     public List<Rfq> getAllApprovedRfqs() {
         return rfqRepository.getAllApprovedRfqs(BaseEnum.APPROVED);
+    }
+
+    @Override
+    public Rfq getRfqBySolutionId(Long solutionId) {
+        return rfqRepository.findBySolution_Id(solutionId);
+    }
+
+    @Override
+    public List<Rfq> getAllRfq() {
+        return rfqRepository.findAll();
+    }
+
+    @Override
+    public Rfq submitRfq(Long rfqId, Long userID) {
+        Rfq rfq = rfqRepository.findById(rfqId)
+                .orElseThrow(() -> new RuntimeException("Rfq not found with id: " + rfqId));
+
+        User user = userRepository.findById(userID).orElseThrow(()
+                -> new RuntimeException("User not found with id: " + userID));
+
+        // Kiểm tra nếu đã gửi thì không cần làm gì thêm
+        if (rfq.getIsApproved() == SendEnum.SENT) {
+            throw new RuntimeException("Rfq đã được gửi trước đó.");
+        }
+
+        // Cập nhật trạng thái thành SENT
+        rfq.setIsApproved(SendEnum.SENT);
+        rfq.setUpdateAt(LocalDateTime.now());
+        rfq.setApprovedBy(user);
+        rfq.setIsSent(BaseEnum.APPROVED);
+
+        Rfq submittedRfq = rfqRepository.save(rfq);
+        rfqRepository.flush();
+        entityManager.refresh(submittedRfq.getRfqDetails());
+        return submittedRfq;
     }
 }

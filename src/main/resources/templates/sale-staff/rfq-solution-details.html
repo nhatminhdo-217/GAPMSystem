@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Giải pháp</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            background-color: #ffffff;
+            cursor: default;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+
+        .rfq-info, .product-details, .detail-info {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: default;
+        }
+
+        /* CSS cho phần Solution Info */
+        .solution-info {
+            padding: 20px;
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            border: 1px solid #e2e7f0;
+        }
+
+        .solution-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .solution-info .col-md-4 {
+            flex: 1 1 300px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eef2f7;
+            cursor: default;
+        }
+
+        .solution-info strong {
+            display: block;
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .solution-info span {
+            font-size: 15px;
+            color: #212529;
+            word-wrap: break-word;
+        }
+
+        .solution-info .col-md-4:nth-child(odd) {
+            background-color: #fefefe;
+        }
+
+        .solution-info .col-md-4:nth-child(even) {
+            background-color: #f9fafd;
+        }
+
+        /* CSS cho phần RFQ Info */
+        .rfq-info {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .rfq-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .rfq-info .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+
+        .rfq-info strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .rfq-info span {
+            font-size: 15px;
+            color: #212529;
+        }
+
+        /* CSS cho phần Product Details */
+        .product-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* CSS cho Back to Top */
+        .back-to-top {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-solution-id="${solution.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết Giải pháp</h2>
+
+                            <!-- RFQ Info (thay bằng Solution Info liên quan đến RFQ) -->
+                            <div class="rfq-info">
+                                <h3 class="section-title">Thông tin RFQ liên quan</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã lô (RFQ):</strong> <span th:text="${solution.rfq.id}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Số lượng sản phẩm:</strong> <span
+                                            th:text="${solution.rfq.rfqDetails.size()}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo đơn:</strong> <span
+                                            th:text="${#temporals.format(solution.rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Nhân viên phụ trách:</strong> <span
+                                            th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái đơn hàng:</strong> <span th:text="'Đã được duyệt'"
+                                                                                    style="color: #28a745;"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày mong muốn nhận hàng:</strong> <span
+                                            th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="product-details">
+                                <h3 class="section-title">Danh sách sản phẩm</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>Số thứ tự</th>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Màu</th>
+                                        <th>Số lượng đặt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="detail, iterStat : ${solution.rfq.rfqDetails}">
+                                        <td th:text="${iterStat.count}"></td>
+                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                        <td th:text="${detail.noteColor}"></td>
+                                        <td th:text="${detail.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4">
+                                <h3 class="section-title">Thông tin Giải pháp</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Lý do:</strong> <span th:text="${solution.reason}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Chi tiết:</strong> <span th:text="${solution.description}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày có thể giao hàng dự kiến:</strong>
+                                            <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : (solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : solution.isSent)) : 'Chưa gửi'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hide spinner
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Loại bỏ sự kiện click trên card để không chuyển hướng
+        $('.card').off('click');
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

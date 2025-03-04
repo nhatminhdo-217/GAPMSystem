@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ đã duyệt</title>
+    <title>Chỉ may Dũng Đông - Danh sách giải pháp</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -113,6 +113,39 @@
             min-width: 0;
         }
 
+        /* Điều chỉnh các cột trong content-section để Mã RFQ và Trạng thái gửi được tối ưu */
+        .content-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            gap: 5px; /* Giảm khoảng cách giữa các cột để tiết kiệm không gian */
+        }
+
+        /* Giữ nguyên cột Mã RFQ như code cũ */
+        .text-start.me-3.rfq-id {
+            flex: 0 0 80px; /* Giữ nguyên kích thước cột Mã RFQ */
+            max-width: 80px; /* Giới hạn chiều rộng tối đa */
+            overflow: hidden; /* Ẩn nội dung vượt quá */
+            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        /* Thu gọn cột Trạng thái gửi */
+        .text-start.me-3.status-sent {
+            flex: 0 0 90px; /* Thu gọn cột Trạng thái gửi xuống 90px */
+            max-width: 90px; /* Giới hạn chiều rộng tối đa */
+            overflow: hidden; /* Ẩn nội dung vượt quá */
+            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        /* Các cột khác (Lý do, Người tạo, Ngày tạo giải pháp, Ngày cập nhật gần nhất) sẽ tự động mở rộng */
+        .text-start.me-3:not(.rfq-id):not(.status-sent) {
+            flex: 1; /* Các cột khác mở rộng linh hoạt */
+            min-width: 120px; /* Đảm bảo chiều rộng tối thiểu cho các cột khác */
+        }
+
         /* Style cho thanh search */
         .search-container {
             display: flex;
@@ -196,25 +229,25 @@
             border: 1px solid #e2e7f0;
             margin-top: 10px;
             display: flex;
-            flex-direction: column; /* Sắp xếp dọc */
-            gap: 8px; /* Khoảng cách giữa các mục */
+            flex-direction: column;
+            gap: 8px;
         }
         .solution-details p {
             margin: 0;
             font-size: 14px;
             color: #495057;
             display: flex;
-            justify-content: space-between; /* Căn đều giữa nhãn và giá trị */
+            justify-content: space-between;
         }
         .solution-details strong {
             color: #333;
             font-weight: 600;
-            flex: 0 0 50%; /* Nhãn chiếm 50% chiều rộng */
+            flex: 0 0 50%;
         }
         .solution-details span {
             color: #212529;
             text-align: right;
-            flex: 0 0 50%; /* Giá trị chiếm 50% chiều rộng */
+            flex: 0 0 50%;
         }
 
         /* Responsive design */
@@ -226,6 +259,15 @@
             .text-start.me-3 {
                 width: 100%;
                 margin-bottom: 8px;
+                text-align: left;
+            }
+            .text-start.me-3.rfq-id {
+                flex: 1; /* Trở lại linh hoạt trên mobile */
+                max-width: none;
+            }
+            .text-start.me-3.status-sent {
+                flex: 1; /* Trở lại linh hoạt trên mobile */
+                max-width: none;
             }
             .search-container {
                 flex-direction: column;
@@ -258,7 +300,7 @@
                 gap: 0;
             }
             .solution-details p {
-                flex-direction: column; /* Khi màn hình nhỏ, chuyển thành dọc hoàn toàn */
+                flex-direction: column;
                 text-align: left;
             }
             .solution-details strong, .solution-details span {
@@ -297,46 +339,51 @@
             <div class="bg-light text-center rounded p-4">
                 <!-- Search and title in the same row -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách RFQ đã duyệt</h6>
+                    <h6 class="mb-0">Danh sách giải pháp</h6>
                     <input type="text" class="form-control search-input" placeholder="Search...">
                 </div>
                 <div class="row g-3">
-                    <div class="col-12" th:if="${rfqs == null or rfqs.isEmpty()}">
+                    <div class="col-12" th:if="${solution == null or solution.isEmpty()}">
                         <div class="alert alert-info text-center">
-                            <p>Không có RFQ nào đã được duyệt.</p>
+                            <p>Không có giải pháp nào được tạo.</p>
                         </div>
                     </div>
-                    <div class="col-12" th:each="rfq, iterStat : ${rfqs}">
+                    <div class="col-12" th:each="solution, iterStat : ${solution}">
                         <div class="card-wrapper">
-                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/technical/rfq-details/' + ${rfq.id}\'">
+                            <div class="card" th:data-solution-id="${solution.id}">
                                 <div class="card-body parent-row">
                                     <span class="index-in-card" th:text="${iterStat.count}"></span>
                                     <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
                                          style="width: 100%;">
-                                        <div class="text-start me-3">
-                                            <strong>Mã lô</strong><br>
-                                            <span th:text="${rfq.getId()}"></span>
+                                        <div class="text-start me-3 rfq-id">
+                                            <strong>Mã RFQ</strong><br>
+                                            <span th:text="${solution.rfq.id}"></span>
                                         </div>
                                         <div class="text-start me-3">
-                                            <strong>Số lượng sản phẩm</strong><br>
-                                            <span th:text="${rfq.getRfqDetails().size()}"></span>
+                                            <strong>Lý do</strong><br>
+                                            <span th:text="${solution.reason}"></span>
                                         </div>
                                         <div class="text-start me-3">
-                                            <strong>Ngày tạo đơn</strong><br>
-                                            <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>
+                                            <strong>Người tạo</strong><br>
+                                            <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
                                         </div>
                                         <div class="text-start me-3">
-                                            <strong>Nhân viên phụ trách</strong><br>
-                                            <span th:text="${rfq.getApprovedBy() != null ? rfq.getApprovedBy().getUsername() : 'N/A'}"></span>
+                                            <strong>Ngày tạo giải pháp</strong><br>
+                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
                                         </div>
                                         <div class="text-start me-3">
-                                            <strong>Trạng thái đơn hàng</strong><br>
-                                            <span th:text="'Đã được duyệt'" style="color: #28a745;"></span>
+                                            <strong>Ngày cập nhật gần nhất</strong><br>
+                                            <span th:text="${#temporals.format(solution.updateAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                        <div class="text-start me-3 status-sent">
+                                            <strong>Trạng thái gửi</strong><br>
+                                            <span th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : (solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : solution.isSent)) : 'Chưa gửi'}"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="collapse" th:id="'details-' + ${iterStat.count}">
                                     <div class="card-body detail-table">
+                                        <!-- Thông tin chi tiết RFQ -->
                                         <table class="table table-bordered table-hover">
                                             <thead>
                                             <tr class="text-dark">
@@ -348,24 +395,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="detail, detailIter : ${rfq.rfqDetails}">
+                                            <tr th:each="detail, detailIter : ${solution.rfq.rfqDetails}">
                                                 <td th:text="${detailIter.count}"></td>
-                                                <td th:text="${detail.getId()}"></td>
-                                                <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
-                                                <td th:text="${detail.getNoteColor()}"></td>
-                                                <td th:text="${detail.getQuantity()}"></td>
+                                                <td th:text="${detail.id}"></td>
+                                                <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                                <td th:text="${detail.noteColor}"></td>
+                                                <td th:text="${detail.quantity}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
+                                        <!-- Thông tin giải pháp và RFQ -->
                                         <div class="solution-details">
                                             <p><strong>Ngày mong muốn nhận hàng:</strong>
-                                                <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd-MM-yyyy')}"></span>
+                                                <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
                                             </p>
-                                            <p th:if="${rfq.solution != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            <p><strong>Ngày có thể giao hàng dự kiến:</strong>
+                                                <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
                                             </p>
-                                            <p th:if="${rfq.solution != null}"><strong>Trạng thái gửi:</strong>
-                                                <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
+                                            <p><strong>Chi tiết giải pháp:</strong>
+                                                <span th:text="${solution.description}"></span>
+                                            </p>
+                                            <p><strong>Nhân viên phụ trách RFQ:</strong>
+                                                <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
                                             </p>
                                         </div>
                                     </div>
@@ -397,11 +448,11 @@
 <script src="/assert/js/main.js"></script>
 <script>
     $(document).ready(function () {
-        // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle
+        // Xử lý nhấp vào card để chuyển hướng sang solution-details
         $('.card').on('click', function (event) {
             if (!$(event.target).closest('.toggle-btn').length) {
-                var rfqId = $(this).data('rfq-id');
-                window.location.href = '/technical/rfq-details/' + rfqId;
+                var solutionId = $(this).data('solution-id');
+                window.location.href = '/sale-staff/rfq-solution-details/' + solutionId; // Chuyển hướng tới trang chi tiết giải pháp
             }
         });
 
@@ -416,6 +467,15 @@
             } else {
                 icon.removeClass('fa-minus').addClass('fa-plus');
             }
+        });
+
+        // Tìm kiếm theo client-side
+        $('.search-input').on('keyup', function () {
+            var searchValue = $(this).val().toLowerCase();
+            $('.card-wrapper').each(function () {
+                var cardText = $(this).text().toLowerCase();
+                $(this).toggle(cardText.indexOf(searchValue) > -1);
+            });
         });
     });
 </script>

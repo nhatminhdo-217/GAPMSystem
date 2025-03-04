@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ đã duyệt</title>
+
+    <title>Chỉ may Dũng Đông - Danh sách RFQ </title>
+
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -297,18 +299,18 @@
             <div class="bg-light text-center rounded p-4">
                 <!-- Search and title in the same row -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách RFQ đã duyệt</h6>
+                    <h6 class="mb-0">Danh sách RFQ</h6>
                     <input type="text" class="form-control search-input" placeholder="Search...">
                 </div>
                 <div class="row g-3">
                     <div class="col-12" th:if="${rfqs == null or rfqs.isEmpty()}">
                         <div class="alert alert-info text-center">
-                            <p>Không có RFQ nào đã được duyệt.</p>
+                            <p>Không có RFQ.</p>
                         </div>
                     </div>
                     <div class="col-12" th:each="rfq, iterStat : ${rfqs}">
                         <div class="card-wrapper">
-                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/technical/rfq-details/' + ${rfq.id}\'">
+                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id}\'">
                                 <div class="card-body parent-row">
                                     <span class="index-in-card" th:text="${iterStat.count}"></span>
                                     <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
@@ -331,7 +333,7 @@
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Trạng thái đơn hàng</strong><br>
-                                            <span th:text="'Đã được duyệt'" style="color: #28a745;"></span>
+                                            <span th:text="${rfq.getIsSent() != null ? (rfq.getIsSent().name() == 'APPROVE' ? 'Đã chấp nhận' : (rfq.getIsSent().name() == 'NOT_APPROVE' ? 'Chưa chấp nhận' : rfq.getIsSent())) : 'Chưa chấp nhận'}" style="color: #28a745;"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -401,7 +403,7 @@
         $('.card').on('click', function (event) {
             if (!$(event.target).closest('.toggle-btn').length) {
                 var rfqId = $(this).data('rfq-id');
-                window.location.href = '/technical/rfq-details/' + rfqId;
+                window.location.href = '/sale-staff/cus-rfq-details/' + rfqId;
             }
         });
 

@@ -13,6 +13,4 @@ public interface CategoryService {
 
 
     List<String> getAllCategoryNames();
-
-
 }
