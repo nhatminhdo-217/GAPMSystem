@@ -15,10 +15,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
-    <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">-->
     <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- SweetAlert2 (Cần để hiển thị thông báo lỗi) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Libraries Stylesheet -->
     <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
@@ -275,25 +279,47 @@
         });
         rowCount = $('#productRows .form-row').length;
     }
+
     // Hàm AJAX để tải thương hiệu dựa trên sản phẩm
     function loadBrands(rowNumber) {
         const productId = $('#product-' + rowNumber).val();
+        console.log("Loading brands for productId: " + productId); // Debug
         if (productId) {
             $.ajax({
                 url: '/request-for-quotation/brands?productId=' + productId,
                 type: 'GET',
+                dataType: 'json', // Xác định rõ response là JSON
                 success: function(response) {
+                    console.log("Brands response: ", response); // Debug response
                     const brandSelect = $('#brand-' + rowNumber);
                     brandSelect.empty();
                     brandSelect.append('<option value="">Chọn thương hiệu</option>');
-                    response.forEach(function(brand) {
-                        brandSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
-                    });
+                    if (response && Array.isArray(response) && response.length > 0) {
+                        response.forEach(function(brand) {
+                            brandSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
+                        });
+                    } else {
+                        console.warn("No brands found for productId: " + productId + ", Response: ", response);
+                    }
                     // Reset danh mục khi thay đổi thương hiệu
                     loadCategories(rowNumber);
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải thương hiệu:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText || 'No response text'); // Xem chi tiết lỗi từ server
+                    const brandSelect = $('#brand-' + rowNumber);
+                    brandSelect.empty();
+                    brandSelect.append('<option value="">Chọn thương hiệu</option>');
+                    // Reset danh mục khi có lỗi
+                    loadCategories(rowNumber);
+                    // Hiển thị thông báo lỗi cho người dùng
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Không thể tải danh sách thương hiệu. Vui lòng thử lại!',
+                        showConfirmButton: true
+                    });
                 }
             });
         } else {
@@ -308,17 +334,34 @@
             $.ajax({
                 url: '/request-for-quotation/categories?brandId=' + brandId,
                 type: 'GET',
+                dataType: 'json', // Xác định rõ response là JSON
                 success: function(response) {
+                    console.log("Categories response: ", response); // Debug response
                     const categorySelect = $('#category-' + rowNumber);
                     categorySelect.empty();
                     categorySelect.append('<option value="">Chọn danh mục</option>');
-                    response.forEach(function(category) {
-                        categorySelect.append('<option value="' + category.id + '">' + category.name + '</option>');
-                    });
+                    if (response && Array.isArray(response) && response.length > 0) {
+                        response.forEach(function(category) {
+                            categorySelect.append('<option value="' + category.id + '">' + category.name + '</option>');
+                        });
+                    } else {
+                        console.warn("No categories found for brandId: " + brandId + ", Response: ", response);
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải danh mục:', error);
-                    console.log(xhr.responseText); // Xem chi tiết lỗi từ server
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText || 'No response text'); // Xem chi tiết lỗi từ server
+                    const categorySelect = $('#category-' + rowNumber);
+                    categorySelect.empty();
+                    categorySelect.append('<option value="">Chọn danh mục</option>');
+                    // Hiển thị thông báo lỗi cho người dùng (tùy chọn)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Không thể tải danh sách danh mục. Vui lòng thử lại!',
+                        showConfirmButton: true
+                    });
                 }
             });
         } else {
@@ -328,9 +371,7 @@
 
     // Ẩn nút xóa của dòng đầu tiên ban đầu
     $('.remove-row-btn').hide();
-</script>
 
-<script>
     // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
     const today = new Date().toISOString().split("T")[0];
     // Gán giá trị min cho input

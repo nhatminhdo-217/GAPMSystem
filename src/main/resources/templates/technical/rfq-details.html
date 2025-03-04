@@ -27,24 +27,24 @@
             background-color: #f5f7fa;
             font-family: 'Heebo', sans-serif;
         }
+
         .container-fluid {
             padding: 20px;
         }
+
         .card {
             border: 1px solid #e9ecef;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             background-color: #ffffff;
             margin-bottom: 20px;
-            cursor: pointer; /* Thêm con trỏ tay để chỉ ra card có thể nhấp */
+            cursor: default;
         }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        }
+
         .card-body {
             padding: 20px;
         }
+
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -53,30 +53,42 @@
             border-bottom: 1px solid #e9ecef;
             padding-bottom: 10px;
         }
+
         .table {
             margin-bottom: 0;
         }
+
         .table th, .table td {
             vertical-align: middle;
             text-align: center;
             padding: 12px;
             font-size: 14px;
             background-color: #ffffff;
+            cursor: default;
         }
+
         .table-bordered th, .table-bordered td {
             border: 1px solid #e9ecef;
         }
-        .detail-info, .product-details {
+
+        .rfq-info, .product-details, .detail-info {
             margin-top: 20px;
-            padding: 15px;
+            padding: 20px;
             background-color: #ffffff;
             border: 1px solid #e9ecef;
             border-radius: 8px;
+            cursor: default;
         }
+
         .btn-container {
             margin-top: 20px;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
+
         .btn-primary, .btn-secondary {
             margin: 0 10px;
             padding: 8px 16px;
@@ -84,11 +96,11 @@
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
+
         .btn-primary:hover, .btn-secondary:hover {
             opacity: 0.9;
         }
 
-        /* Style cho modal (popup) */
         .modal {
             display: none;
         }
@@ -160,6 +172,7 @@
             justify-content: center;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .btn-custom:hover {
@@ -167,13 +180,12 @@
             opacity: 0.9;
         }
 
-        /* Style cho toast (giữ nguyên từ profile.html) */
         .toast {
             opacity: 0.9;
         }
 
         .success-toast {
-            background-color: #d4edda; /* Màu nền xanh nhẹ cho thành công */
+            background-color: #d4edda;
             border-color: #c3e6cb;
             opacity: 0.9;
         }
@@ -188,7 +200,7 @@
         }
 
         .error-toast {
-            background-color: #f8d7da; /* Màu nền đỏ nhẹ cho lỗi */
+            background-color: #f8d7da;
             border-color: #f5c6cb;
             opacity: 0.9;
         }
@@ -202,7 +214,6 @@
             color: #721c24;
         }
 
-        /* Đảm bảo danh sách lỗi validation không bị ảnh hưởng bởi kiểu khác */
         .error-toast ul li {
             margin-bottom: 5px;
         }
@@ -216,13 +227,93 @@
         }
 
         #validationErrorToast {
-            bottom: 80px; /* Đặt vị trí thấp hơn toast success/error, giống profile.html */
+            bottom: 80px;
             max-width: 400px;
+        }
+
+        /* CSS cho phần Solution Info */
+        .solution-info {
+            padding: 20px;
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            border: 1px solid #e2e7f0;
+        }
+
+        .solution-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .solution-info .col-md-4 {
+            flex: 1 1 300px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eef2f7;
+            cursor: default;
+        }
+
+        .solution-info strong {
+            display: block;
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .solution-info span {
+            font-size: 15px;
+            color: #212529;
+            word-wrap: break-word;
+        }
+
+        .solution-info .col-md-4:nth-child(odd) {
+            background-color: #fefefe;
+        }
+
+        .solution-info .col-md-4:nth-child(even) {
+            background-color: #f9fafd;
+        }
+
+        /* CSS cho phần RFQ Info */
+        .rfq-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .rfq-info .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+
+        .rfq-info strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .rfq-info span {
+            font-size: 15px;
+            color: #212529;
+        }
+
+        /* CSS cho phần Product Details */
+        .product-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* CSS cho Back to Top */
+        .back-to-top {
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<!-- Thêm các div ẩn để truyền dữ liệu từ Thymeleaf, giống profile.html -->
+<!-- Hidden data -->
 <div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
 <div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
 <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
@@ -258,7 +349,7 @@
                         <div class="card-body">
                             <h2 class="text-center mb-4">Chi tiết RFQ</h2>
 
-                            <!-- Phần thông tin RFQ -->
+                            <!-- RFQ Info -->
                             <div class="rfq-info">
                                 <h3 class="section-title">Thông tin RFQ</h3>
                                 <div class="row mb-3">
@@ -266,26 +357,31 @@
                                         <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Số lượng sản phẩm:</strong> <span th:text="${rfq.rfqDetails.size()}"></span>
+                                        <strong>Số lượng sản phẩm:</strong> <span
+                                            th:text="${rfq.rfqDetails.size()}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Ngày tạo đơn:</strong> <span th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                        <strong>Ngày tạo đơn:</strong> <span
+                                            th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <strong>Nhân viên phụ trách:</strong> <span th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
+                                        <strong>Nhân viên phụ trách:</strong> <span
+                                            th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Trạng thái đơn hàng:</strong> <span th:text="'Đã được duyệt'" style="color: #28a745;"></span>
+                                        <strong>Trạng thái đơn hàng:</strong> <span th:text="'Đã được duyệt'"
+                                                                                    style="color: #28a745;"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Ngày mong muốn nhận hàng:</strong> <span th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        <strong>Ngày mong muốn nhận hàng:</strong> <span
+                                            th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Phần danh sách sản phẩm (RfqDetail) -->
+                            <!-- Product Details -->
                             <div class="product-details">
                                 <h3 class="section-title">Danh sách sản phẩm</h3>
                                 <table class="table table-bordered">
@@ -310,31 +406,52 @@
                                 </table>
                             </div>
 
-                            <!-- Phần giải pháp (Solution) và nút chức năng -->
-                            <div class="detail-info mt-4" th:if="${rfq.solutions != null}">
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4" th:if="${rfq.solution != null}">
                                 <h3 class="section-title">Thông tin giải pháp</h3>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <strong>Lý do:</strong> <span th:text="${rfq.solutions.reason}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Chi tiết:</strong> <span th:text="${rfq.solutions.description}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Ngày có thể giao hàng dự kiến:</strong>
-                                        <span th:text="${#temporals.format(rfq.solutions.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Lý do:</strong> <span th:text="${rfq.solution.reason}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Chi tiết:</strong> <span
+                                                th:text="${rfq.solution.description}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày có thể giao hàng dự kiến:</strong>
+                                            <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${rfq.solution.createBy != null ? rfq.solution.createBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(rfq.solution.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="btn-container">
-                                    <a th:href="@{/technical/submit-solution/{id}(id=${rfq.id})}" class="btn btn-primary">Submit Solution</a>
-                                    <a th:href="@{/technical/update-solution/{id}(id=${rfq.id})}" class="btn btn-secondary">Update Solution</a>
+                                    <button class="btn btn-custom" id="updateSolutionBtn" data-bs-toggle="modal"
+                                            data-bs-target="#updateSolutionModal">Cập nhật Solution
+                                    </button>
+                                    <button class="btn btn-custom" id="submitSolutionBtn" data-bs-toggle="modal"
+                                            data-bs-target="#submitSolutionModal">Gửi Solution
+                                    </button>
                                 </div>
                             </div>
-                            <div class="detail-info mt-4" th:unless="${rfq.solutions != null}">
+                            <div class="detail-info mt-4" th:unless="${rfq.solution != null}">
                                 <h3 class="section-title">Thông tin giải pháp</h3>
                                 <p>Chưa có giải pháp cho RFQ này.</p>
                                 <div class="btn-container">
-                                    <button class="btn btn-custom" id="createSolutionBtn" data-bs-toggle="modal" data-bs-target="#createSolutionModal">Tạo Solution</button>
+                                    <button class="btn btn-custom" id="createSolutionBtn" data-bs-toggle="modal"
+                                            data-bs-target="#createSolutionModal">Tạo Solution
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -347,7 +464,8 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <!-- Modal để tạo Solution -->
-    <div class="modal fade" id="createSolutionModal" tabindex="-1" aria-labelledby="createSolutionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createSolutionModal" tabindex="-1" aria-labelledby="createSolutionModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -367,7 +485,8 @@
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDate">Ngày có thể giao hàng dự kiến:</label>
-                            <input type="date" id="actualDeliveryDate" name="actualDeliveryDate" class="form-control" required>
+                            <input type="date" id="actualDeliveryDate" name="actualDeliveryDate" class="form-control"
+                                   th:min="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required>
                         </div>
                     </form>
                 </div>
@@ -379,7 +498,90 @@
         </div>
     </div>
 
-    <!-- Toast cho thông báo thành công -->
+    <!-- Modal để cập nhật Solution -->
+    <div class="modal fade" id="updateSolutionModal" tabindex="-1" aria-labelledby="updateSolutionModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateSolutionModalLabel">Cập nhật giải pháp cho RFQ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateSolutionForm" th:action="@{/technical/update-solution/{id}(id=${rfq.id})}"
+                          method="post">
+                        <input type="hidden" name="rfqId" th:value="${rfq.id}">
+                        <div class="form-group">
+                            <label for="reasonUpdate">Lý do:</label>
+                            <input type="text" id="reasonUpdate" name="reason" class="form-control"
+                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descriptionUpdate">Chi tiết:</label>
+                            <textarea id="descriptionUpdate" name="description" class="form-control"
+                                      th:text="${rfq.solution != null ? rfq.solution.description : ''}"
+                                      required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="actualDeliveryDateUpdate">Ngày có thể giao hàng dự kiến:</label>
+                            <input type="date" id="actualDeliveryDateUpdate" name="actualDeliveryDate"
+                                   class="form-control"
+                                   th:value="${rfq.solution != null ? #temporals.format(rfq.solution.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
+                                   th:min="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="updateSolutionForm" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal để submit Solution -->
+    <div class="modal fade" id="submitSolutionModal" tabindex="-1" aria-labelledby="submitSolutionModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitSolutionModalLabel">Gửi giải pháp cho RFQ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitSolutionForm" th:action="@{/technical/submit-solution-final/{id}(id=${rfq.id})}"
+                          method="post">
+                        <input type="hidden" name="rfqId" th:value="${rfq.id}">
+                        <div class="form-group">
+                            <label for="reasonSubmit">Lý do:</label>
+                            <input type="text" id="reasonSubmit" name="reason" class="form-control"
+                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="descriptionSubmit">Chi tiết:</label>
+                            <textarea id="descriptionSubmit" name="description" class="form-control"
+                                      th:text="${rfq.solution != null ? rfq.solution.description : ''}" required
+                                      readonly></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="actualDeliveryDateSubmit">Ngày có thể giao hàng dự kiến:</label>
+                            <input type="date" id="actualDeliveryDateSubmit" name="actualDeliveryDate"
+                                   class="form-control"
+                                   th:value="${rfq.solution != null ? #temporals.format(rfq.solution.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
+                                   th:min="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required
+                                   readonly>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="submitSolutionForm" class="btn btn-primary">Gửi giải pháp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
     <div id="toastSuccess" class="toast success-toast"
          style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
         <div class="toast-header">
@@ -391,7 +593,6 @@
         </div>
     </div>
 
-    <!-- Toast cho thông báo lỗi -->
     <div id="toastError" class="toast error-toast"
          style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
         <div class="toast-header">
@@ -403,7 +604,6 @@
         </div>
     </div>
 
-    <!-- Toast cho thông báo lỗi validation -->
     <div id="validationErrorToast" class="toast error-toast"
          style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
         <div class="toast-header">
@@ -425,56 +625,66 @@
 <script src="/assert/js/main.js"></script>
 <script>
     $(document).ready(function () {
-        // Ẩn spinner khi trang tải xong
+        // Hide spinner
         $(window).on('load', function () {
             $('#spinner').removeClass('show');
         });
 
-        // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle và modal
-        $('.card').on('click', function (event) {
-            // Kiểm tra xem nhấp vào nút toggle, modal, hoặc các phần tử trong modal hay không
-            if (!$(event.target).closest('.toggle-btn, .modal, .btn').length) {
-                var rfqId = $(this).data('rfq-id'); // Lấy rfqId từ thuộc tính data-rfq-id
-                window.location.href = '/technical/rfq-details/' + rfqId;
-            }
-        });
+        // Loại bỏ sự kiện click trên card để không chuyển hướng
+        $('.card').off('click');
 
-        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
-        $('.toggle-btn').click(function (event) {
-            event.stopPropagation(); // Ngăn sự kiện click lan ra card
-            var target = $(this).data('target');
-            var icon = $(this).find('i');
-            $(target).collapse('toggle');
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
-            }
-        });
-
-        // Xử lý nút "Back to Top"
+        // Back to top
         $('.back-to-top').click(function () {
             $('html, body').animate({scrollTop: 0}, 1000);
             return false;
         });
 
-        // Xử lý mở modal (giữ nguyên)
+        // Open modals
         $('#createSolutionBtn').click(function () {
-            $('#createSolutionModal').modal('show'); // Sử dụng Bootstrap modal
+            $('#createSolutionModal').modal('show');
         });
 
-        // Đóng modal khi nhấp vào nút close hoặc ngoài modal (giữ nguyên)
-        $('.close, .btn[data-bs-dismiss="modal"]').click(function () {
+        $('#updateSolutionBtn').click(function () {
+            $('#updateSolutionModal').modal('show');
+        });
+        $('#submitSolutionBtn').click(function () {
+            $('#submitSolutionModal').modal('show');
+        });
+
+        // Close modals
+        $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
             $('#createSolutionModal').modal('hide');
+            $('#updateSolutionModal').modal('hide');
+            $('#submitSolutionModal').modal('hide');
         });
 
         window.onclick = function (event) {
             if (event.target == document.getElementById('createSolutionModal')) {
                 $('#createSolutionModal').modal('hide');
             }
+            if (event.target == document.getElementById('updateSolutionModal')) {
+                $('#updateSolutionModal').modal('hide');
+            }
+            if (event.target == document.getElementById('submitSolutionModal')) {
+                $('#submitSolutionModal').modal('hide');
+            }
         };
 
-        // Hiển thị toast cho thông báo
+        // Client-side date validation
+        const expectDeliveryDate = new Date($('[name="actualDeliveryDate"]').attr('min'));
+        $('#solutionForm, #updateSolutionForm').on('submit', function (e) {
+            const actualDeliveryDateInput = $(this).find('[name="actualDeliveryDate"]');
+            const selectedDate = new Date(actualDeliveryDateInput.val());
+            if (selectedDate < expectDeliveryDate) {
+                e.preventDefault();
+                const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+                document.getElementById('errorMessage').textContent = 'Ngày giao hàng dự kiến không thể trước ngày mong muốn nhận hàng (' + expectDeliveryDate.toISOString().split('T')[0] + ').';
+                errorToast.show();
+                setTimeout(() => errorToast.hide(), 3000);
+            }
+        });
+
+        // Toast notifications
         const hiddenSuccess = document.getElementById('hiddenSuccess');
         if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
             const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
@@ -483,7 +693,6 @@
             setTimeout(() => successToast.hide(), 3000);
         }
 
-        // Hiển thị toast lỗi
         const hiddenError = document.getElementById('hiddenError');
         if (hiddenError && hiddenError.textContent.trim()) {
             const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
@@ -492,10 +701,8 @@
             setTimeout(() => errorToast.hide(), 3000);
         }
 
-        // Hiển thị toast lỗi validate
         const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
         if (hiddenValidationErrors && hiddenValidationErrors.textContent.trim()) {
-            console.log('Validation errors found:', hiddenValidationErrors.textContent.trim());
             try {
                 const validationErrors = hiddenValidationErrors.textContent.trim().split(', ').map(errorStr => {
                     const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
@@ -509,14 +716,10 @@
                         .join('');
                     toast.show();
                     setTimeout(() => toast.hide(), 5000);
-                } else {
-                    console.log('No valid validation errors to display');
                 }
             } catch (e) {
-                console.error('Error parsing validation errors:', e, hiddenValidationErrors.textContent);
+                console.error('Error parsing validation errors:', e);
             }
-        } else {
-            console.log('No validation errors found in hiddenValidationErrors');
         }
     });
 </script>

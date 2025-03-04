@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Giải pháp</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+        .container-fluid {
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            background-color: #ffffff;
+            cursor: default;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+        .rfq-info, .product-details, .detail-info {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: default;
+        }
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-primary, .btn-secondary {
+            margin: 0 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+        .modal {
+            display: none;
+        }
+        .modal.fade.show {
+            display: block;
+        }
+        .modal-content {
+            background-color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .btn-custom:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+        .toast {
+            opacity: 0.9;
+        }
+        .success-toast {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        .success-toast .toast-body {
+            color: #155724;
+        }
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+        .error-toast ul li {
+            margin-bottom: 5px;
+        }
+        #toastSuccess, #toastError, #validationErrorToast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+        #validationErrorToast {
+            bottom: 80px;
+            max-width: 400px;
+        }
+
+        /* CSS cho phần Solution Info */
+        .solution-info {
+            padding: 20px;
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            border: 1px solid #e2e7f0;
+        }
+        .solution-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .solution-info .col-md-4 {
+            flex: 1 1 300px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eef2f7;
+            cursor: default;
+        }
+        .solution-info strong {
+            display: block;
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .solution-info span {
+            font-size: 15px;
+            color: #212529;
+            word-wrap: break-word;
+        }
+        .solution-info .col-md-4:nth-child(odd) {
+            background-color: #fefefe;
+        }
+        .solution-info .col-md-4:nth-child(even) {
+            background-color: #f9fafd;
+        }
+
+        /* CSS cho phần RFQ Info */
+        .rfq-info {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .rfq-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .rfq-info .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+        .rfq-info strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+        .rfq-info span {
+            font-size: 15px;
+            color: #212529;
+        }
+
+        /* CSS cho phần Product Details */
+        .product-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* CSS cho Back to Top */
+        .back-to-top {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<!-- Hidden data -->
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+<div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
+     id="hiddenValidationErrors"
+     style="display: none;"
+     th:utext="${#strings.arrayJoin(validationErrors, ', ')}"></div>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-solution-id="${solution.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết Giải pháp</h2>
+
+                            <!-- RFQ Info (thay bằng Solution Info liên quan đến RFQ) -->
+                            <div class="rfq-info">
+                                <h3 class="section-title">Thông tin RFQ liên quan</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã lô (RFQ):</strong> <span th:text="${solution.rfq.id}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Số lượng sản phẩm:</strong> <span th:text="${solution.rfq.rfqDetails.size()}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo đơn:</strong> <span th:text="${#temporals.format(solution.rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Nhân viên phụ trách RFQ:</strong> <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái đơn hàng:</strong> <span th:text="'Đã được duyệt'" style="color: #28a745;"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày mong muốn nhận hàng:</strong> <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Details (giữ nguyên như RFQ) -->
+                            <div class="product-details">
+                                <h3 class="section-title">Danh sách sản phẩm</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>Số thứ tự</th>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Màu</th>
+                                        <th>Số lượng đặt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="detail, iterStat : ${solution.rfq.rfqDetails}">
+                                        <td th:text="${iterStat.count}"></td>
+                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                        <td th:text="${detail.noteColor}"></td>
+                                        <td th:text="${detail.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4">
+                                <h3 class="section-title">Thông tin Giải pháp</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Lý do:</strong> <span th:text="${solution.reason}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Chi tiết:</strong> <span th:text="${solution.description}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày có thể giao hàng dự kiến:</strong>
+                                            <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : (solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : solution.isSent)) : 'Chưa gửi'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-container">
+                                    <button class="btn btn-custom" id="updateSolutionBtn" data-bs-toggle="modal" data-bs-target="#updateSolutionModal">Cập nhật Giải pháp</button>
+                                    <button class="btn btn-custom" id="submitSolutionBtn" data-bs-toggle="modal" data-bs-target="#submitSolutionModal">Gửi Giải pháp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Modal để cập nhật Solution -->
+    <div class="modal fade" id="updateSolutionModal" tabindex="-1" aria-labelledby="updateSolutionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateSolutionModalLabel">Cập nhật giải pháp</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateSolutionForm" th:action="@{/technical/update-solution/{id}(id=${solution.id})}" method="post">
+                        <input type="hidden" name="solutionId" th:value="${solution.id}">
+                        <div class="form-group">
+                            <label for="reasonUpdate">Lý do:</label>
+                            <input type="text" id="reasonUpdate" name="reason" class="form-control" th:value="${solution.reason}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descriptionUpdate">Chi tiết:</label>
+                            <textarea id="descriptionUpdate" name="description" class="form-control" th:text="${solution.description}" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="actualDeliveryDateUpdate">Ngày có thể giao hàng dự kiến:</label>
+                            <input type="date" id="actualDeliveryDateUpdate" name="actualDeliveryDate" class="form-control" th:value="${#temporals.format(solution.actualDeliveryDate, 'yyyy-MM-dd')}" th:min="${#temporals.format(solution.rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="updateSolutionForm" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal để submit Solution -->
+    <div class="modal fade" id="submitSolutionModal" tabindex="-1" aria-labelledby="submitSolutionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitSolutionModalLabel">Gửi giải pháp</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitSolutionForm" th:action="@{/technical/submit-solution-final/{id}(id=${solution.id})}" method="post">
+                        <input type="hidden" name="solutionId" th:value="${solution.id}">
+                        <div class="form-group">
+                            <label for="reasonSubmit">Lý do:</label>
+                            <input type="text" id="reasonSubmit" name="reason" class="form-control" th:value="${solution.reason}" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="descriptionSubmit">Chi tiết:</label>
+                            <textarea id="descriptionSubmit" name="description" class="form-control" th:text="${solution.description}" required readonly></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="actualDeliveryDateSubmit">Ngày có thể giao hàng dự kiến:</label>
+                            <input type="date" id="actualDeliveryDateSubmit" name="actualDeliveryDate" class="form-control" th:value="${#temporals.format(solution.actualDeliveryDate, 'yyyy-MM-dd')}" th:min="${#temporals.format(solution.rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required readonly>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="submitSolutionForm" class="btn btn-primary">Gửi giải pháp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastSuccess" class="toast success-toast" style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="toast-header">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="successMessage"></p>
+        </div>
+    </div>
+
+    <div id="toastError" class="toast error-toast" style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <div id="validationErrorToast" class="toast error-toast" style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi Validation</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <ul id="validationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hide spinner
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Loại bỏ sự kiện click trên card để không chuyển hướng
+        $('.card').off('click');
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+
+        // Open modals
+        $('#updateSolutionBtn').click(function () {
+            $('#updateSolutionModal').modal('show');
+        });
+
+        $('#submitSolutionBtn').click(function () {
+            $('#submitSolutionModal').modal('show');
+        });
+
+        // Close modals
+        $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
+            $('#updateSolutionModal').modal('hide');
+            $('#submitSolutionModal').modal('hide');
+        });
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('updateSolutionModal')) {
+                $('#updateSolutionModal').modal('hide');
+            }
+            if (event.target == document.getElementById('submitSolutionModal')) {
+                $('#submitSolutionModal').modal('hide');
+            }
+        };
+
+        // Client-side date validation
+        const expectDeliveryDate = new Date($('[name="actualDeliveryDate"]').attr('min'));
+        $('#updateSolutionForm').on('submit', function (e) {
+            const actualDeliveryDateInput = $(this).find('[name="actualDeliveryDate"]');
+            const selectedDate = new Date(actualDeliveryDateInput.val());
+            if (selectedDate < expectDeliveryDate) {
+                e.preventDefault();
+                const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+                document.getElementById('errorMessage').textContent = 'Ngày giao hàng dự kiến không thể trước ngày mong muốn nhận hàng (' + expectDeliveryDate.toISOString().split('T')[0] + ').';
+                errorToast.show();
+                setTimeout(() => errorToast.hide(), 3000);
+            }
+        });
+
+        // Toast notifications
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
+            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
+            successToast.show();
+            setTimeout(() => successToast.hide(), 3000);
+        }
+
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+
+        const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
+        if (hiddenValidationErrors && hiddenValidationErrors.textContent.trim()) {
+            try {
+                const validationErrors = hiddenValidationErrors.textContent.trim().split(', ').map(errorStr => {
+                    const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
+                    return match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.';
+                }).filter(error => error && error.trim());
+
+                if (validationErrors.length) {
+                    const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
+                    document.getElementById('validationErrorMessages').innerHTML = validationErrors
+                        .map(error => `<li>${error.trim()}</li>`)
+                        .join('');
+                    toast.show();
+                    setTimeout(() => toast.hide(), 5000);
+                }
+            } catch (e) {
+                console.error('Error parsing validation errors:', e);
+            }
+        }
+    });
+</script>
+</body>
+</html>

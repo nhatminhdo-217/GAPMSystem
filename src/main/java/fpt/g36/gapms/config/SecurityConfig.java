@@ -26,7 +26,7 @@ public class SecurityConfig {
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-                        .requestMatchers("/request-for-quotation/**").hasRole("CUSTOMER")
+                        .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**","/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**").hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .requestMatchers("/technical/**").hasRole("TECHNICAL")
@@ -102,7 +102,12 @@ public class SecurityConfig {
                         .key("mySecretKey") // Key để mã hóa token
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
-                        .alwaysRemember(false));
+                        .alwaysRemember(false))
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/error-403")
+                        // Chuyển hướng đến controller xử lý trang lỗi
+                )
+        ;
 
         return http.build();
     }

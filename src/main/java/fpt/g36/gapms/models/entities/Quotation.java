@@ -1,9 +1,11 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Bag;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
@@ -21,8 +23,12 @@ public class Quotation extends BaseEntity {
     @Column(name = "is_canceled")
     private Boolean isCanceled;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_accepted")
+    private BaseEnum isAccepted;
+
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "rfq_id", nullable = false)
     private Rfq rfq;
 
@@ -32,12 +38,16 @@ public class Quotation extends BaseEntity {
     @OneToMany(mappedBy = "quotation")
     private Set<PurchaseOrderPrice> purchaseOrderPrices = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuotationDetail> quotationDetails = new ArrayList<>();
+
     public Quotation() {
     }
 
-    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, Rfq rfq, Set<PurchaseOrder> purchaseOrders, Set<PurchaseOrderPrice> purchaseOrderPrices) {
+    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, Set<PurchaseOrder> purchaseOrders, Set<PurchaseOrderPrice> purchaseOrderPrices) {
         super(id, createAt, updateAt);
         this.isCanceled = isCanceled;
+        this.isAccepted = isAccepted;
         this.rfq = rfq;
         this.purchaseOrders = purchaseOrders;
         this.purchaseOrderPrices = purchaseOrderPrices;
@@ -49,6 +59,14 @@ public class Quotation extends BaseEntity {
 
     public void setCanceled(Boolean canceled) {
         isCanceled = canceled;
+    }
+
+    public BaseEnum getAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(BaseEnum accepted) {
+        isAccepted = accepted;
     }
 
     public Rfq getRfq() {
@@ -73,5 +91,13 @@ public class Quotation extends BaseEntity {
 
     public void setPurchaseOrderPrices(Set<PurchaseOrderPrice> purchaseOrderPrices) {
         this.purchaseOrderPrices = purchaseOrderPrices;
+    }
+
+    public BaseEnum getIsAccepted() {
+        return isAccepted;
+    }
+
+    public void setIsAccepted(BaseEnum isAccepted) {
+        this.isAccepted = isAccepted;
     }
 }

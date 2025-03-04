@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface RfqService {
 
@@ -17,10 +18,15 @@ public interface RfqService {
     void deleteRfqById(Long rfqId);
 
     Rfq  getRfqById(Long rfqId);
+    Rfq getRfqByIdAndUserId(Long rfqId, Long UserId);
 
     Rfq editRfq(Long rfqId, LocalDate newDate);
 
-
-
     List<Rfq> getAllApprovedRfqs();
+
+    Rfq getRfqBySolutionId(Long solutionId);
+
+    List<Rfq> getAllRfq();
+
+    Rfq submitRfq(Long rfqId, Long userId);
 }

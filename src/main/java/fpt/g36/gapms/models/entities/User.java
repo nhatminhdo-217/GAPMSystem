@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -34,7 +35,10 @@ public class User extends BaseEntity{
     @Column(name = "is_active", columnDefinition = "boolean default true")
     private boolean isActive = true;
 
-    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive) {
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CompanyUser> companyUsers;
+
+    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers) {
         super(id, createAt, updateAt);
         this.username = username;
         this.password = password;
@@ -44,6 +48,7 @@ public class User extends BaseEntity{
         this.isVerified = isVerified;
         this.avatar = avatar;
         this.isActive = isActive;
+        this.companyUsers = companyUsers;
     }
 
     public User() {
@@ -111,5 +116,13 @@ public class User extends BaseEntity{
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public List<CompanyUser> getCompanyUsers() {
+        return companyUsers;
+    }
+
+    public void setCompanyUsers(List<CompanyUser> companyUsers) {
+        this.companyUsers = companyUsers;
     }
 }

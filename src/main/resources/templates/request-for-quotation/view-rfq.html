@@ -318,9 +318,12 @@
                                               </span>
                                     </div>
                                 </div>
-                                <!--<div class="ms-3">
-                                    <i class="fas fa-edit"></i>
-                                </div>-->
+                                <a
+                                   class="btn btn-primary"
+                                   th:href="@{/quotation/quotation-customer/{rfqId}(rfqId=${rfq.id})}"
+                                   title="Xem báo giá">
+                                    Xem báo giá <i class="fas fa-eye"></i>
+                                </a>
                                 <div class="dropdown ms-3">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
                                             th:id="'dropdownMenuButton' + ${iterStat.count}" data-bs-toggle="dropdown"
@@ -425,14 +428,14 @@
                                             <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${rfq.getExpectDeliveryDate()}"></span>
                                         </div>
 
-                                        <!-- Các thông tin khác (bên phải) -->
+                                        <!-- Các thông tin khác (bên phải) --><!--
                                         <div class="text-end">
                                             <p th:if="${rfq.solutions != null}" ><strong>Lý do: </strong> <span th:text="${rfq.solutions.reason}"></span></p>
                                             <p th:if="${rfq.solutions != null}"><strong>Chi tiết: </strong><span th:text="${rfq.solutions.description}"></span></p>
                                             <p th:if="${rfq.solutions != null}"><strong>Ngày có thể giao hàng dự kiến: </strong>
                                                 <span th:text="${rfq.solutions.actualDeliveryDate}"></span>
                                             </p>
-                                        </div>
+                                        </div>-->
                                     </div>
 
                                 </div>

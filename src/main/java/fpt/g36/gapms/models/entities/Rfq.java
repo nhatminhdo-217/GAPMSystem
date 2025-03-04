@@ -39,8 +39,8 @@ public class Rfq extends BaseEntity {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    @OneToMany(mappedBy = "rfq")
-    private Set<Quotation> quotations = new LinkedHashSet<>();
+    @OneToOne(mappedBy = "rfq")
+    private Quotation quotation;
 
     @OneToMany(mappedBy = "rfq", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RfqDetail> rfqDetails = new ArrayList<>();
@@ -51,16 +51,16 @@ public class Rfq extends BaseEntity {
     public Rfq() {
     }
 
-    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Set<Quotation> quotations, List<RfqDetail> rfqDetails, Solution solutions) {
+    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Quotation quotation, List<RfqDetail> rfqDetails, Solution solution) {
         super(id, createAt, updateAt);
         this.expectDeliveryDate = expectDeliveryDate;
         this.isApproved = isApproved;
         this.isSent = isSent;
         this.createBy = createBy;
         this.approvedBy = approvedBy;
-        this.quotations = quotations;
+        this.quotation = quotation;
         this.rfqDetails = rfqDetails;
-        this.solution = solutions;
+        this.solution = solution;
     }
 
     public LocalDate getExpectDeliveryDate() {
@@ -79,6 +79,14 @@ public class Rfq extends BaseEntity {
         this.isApproved = isApproved;
     }
 
+    public BaseEnum getIsSent() {
+        return isSent;
+    }
+
+    public void setIsSent(BaseEnum isSent) {
+        this.isSent = isSent;
+    }
+
     public User getCreateBy() {
         return createBy;
     }
@@ -95,12 +103,12 @@ public class Rfq extends BaseEntity {
         this.approvedBy = approvedBy;
     }
 
-    public Set<Quotation> getQuotations() {
-        return quotations;
+    public Quotation getQuotation() {
+        return quotation;
     }
 
-    public void setQuotations(Set<Quotation> quotations) {
-        this.quotations = quotations;
+    public void setQuotation(Quotation quotation) {
+        this.quotation = quotation;
     }
 
     public List<RfqDetail> getRfqDetails() {
@@ -111,19 +119,11 @@ public class Rfq extends BaseEntity {
         this.rfqDetails = rfqDetails;
     }
 
-    public Solution getSolutions() {
+    public Solution getSolution() {
         return solution;
     }
 
-    public void setSolutions(Solution solutions) {
-        this.solution = solutions;
-    }
-
-    public BaseEnum getIsSent() {
-        return isSent;
-    }
-
-    public void setIsSent(BaseEnum isSent) {
-        this.isSent = isSent;
+    public void setSolution(Solution solution) {
+        this.solution = solution;
     }
 }

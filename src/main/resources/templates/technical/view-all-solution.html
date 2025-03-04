@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Danh sách giải pháp</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .parent-row {
+            background-color: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            color: #dc3545;
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .toggle-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .text-start strong {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .text-start span {
+            font-weight: 400;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            background-color: #ffffff;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+
+        .text-start.me-3 {
+            flex: 1;
+            text-align: center;
+            min-width: 0;
+        }
+
+        /* Điều chỉnh các cột trong content-section để Mã RFQ và Trạng thái gửi được tối ưu */
+        .content-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            gap: 5px; /* Giảm khoảng cách giữa các cột để tiết kiệm không gian */
+        }
+
+        /* Giữ nguyên cột Mã RFQ như code cũ */
+        .text-start.me-3.rfq-id {
+            flex: 0 0 80px; /* Giữ nguyên kích thước cột Mã RFQ */
+            max-width: 80px; /* Giới hạn chiều rộng tối đa */
+            overflow: hidden; /* Ẩn nội dung vượt quá */
+            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        /* Thu gọn cột Trạng thái gửi */
+        .text-start.me-3.status-sent {
+            flex: 0 0 90px; /* Thu gọn cột Trạng thái gửi xuống 90px */
+            max-width: 90px; /* Giới hạn chiều rộng tối đa */
+            overflow: hidden; /* Ẩn nội dung vượt quá */
+            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        /* Các cột khác (Lý do, Người tạo, Ngày tạo giải pháp, Ngày cập nhật gần nhất) sẽ tự động mở rộng */
+        .text-start.me-3:not(.rfq-id):not(.status-sent) {
+            flex: 1; /* Các cột khác mở rộng linh hoạt */
+            min-width: 120px; /* Đảm bảo chiều rộng tối thiểu cho các cột khác */
+        }
+
+        /* Style cho thanh search */
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input {
+            max-width: 200px;
+            margin-left: 15px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 6px 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+
+        /* Style cho số thứ tự trong card */
+        .index-in-card {
+            margin-right: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Container cho card và nút toggle */
+        .card-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 0;
+        }
+
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 12px 15px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .toggle-container {
+            padding: 5px;
+            min-width: 30px;
+        }
+
+        /* Style cho phần chi tiết (detail table) */
+        .detail-table {
+            background-color: #ffffff;
+            border-radius: 0 0 8px 8px;
+            padding: 0;
+        }
+
+        .card-body.detail-table {
+            background-color: #f9fafc;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* CSS cho phần thông tin giải pháp */
+        .solution-details {
+            background-color: #f8f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e7f0;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .solution-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #495057;
+            display: flex;
+            justify-content: space-between;
+        }
+        .solution-details strong {
+            color: #333;
+            font-weight: 600;
+            flex: 0 0 50%;
+        }
+        .solution-details span {
+            color: #212529;
+            text-align: right;
+            flex: 0 0 50%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content-section {
+                flex-direction: column;
+                width: 100%;
+            }
+            .text-start.me-3 {
+                width: 100%;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+            .text-start.me-3.rfq-id {
+                flex: 1; /* Trở lại linh hoạt trên mobile */
+                max-width: none;
+            }
+            .text-start.me-3.status-sent {
+                flex: 1; /* Trở lại linh hoạt trên mobile */
+                max-width: none;
+            }
+            .search-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .search-input {
+                max-width: 100%;
+                margin-top: 10px;
+                margin-left: 0;
+            }
+            .card-body {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+            .content-section {
+                flex-direction: column;
+            }
+            .index-in-card {
+                margin-bottom: 8px;
+                margin-right: 0;
+            }
+            .toggle-container {
+                margin-top: 8px;
+                margin-left: 0;
+            }
+            .card-wrapper {
+                flex-direction: column;
+                gap: 0;
+            }
+            .solution-details p {
+                flex-direction: column;
+                text-align: left;
+            }
+            .solution-details strong, .solution-details span {
+                flex: none;
+                width: 100%;
+            }
+            .solution-details span {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <!-- Search and title in the same row -->
+                <div class="search-container">
+                    <h6 class="mb-0">Danh sách giải pháp</h6>
+                    <input type="text" class="form-control search-input" placeholder="Search...">
+                </div>
+                <div class="row g-3">
+                    <div class="col-12" th:if="${solution == null or solution.isEmpty()}">
+                        <div class="alert alert-info text-center">
+                            <p>Không có giải pháp nào được tạo.</p>
+                        </div>
+                    </div>
+                    <div class="col-12" th:each="solution, iterStat : ${solution}">
+                        <div class="card-wrapper">
+                            <div class="card" th:data-solution-id="${solution.id}">
+                                <div class="card-body parent-row">
+                                    <span class="index-in-card" th:text="${iterStat.count}"></span>
+                                    <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
+                                         style="width: 100%;">
+                                        <div class="text-start me-3 rfq-id">
+                                            <strong>Mã RFQ</strong><br>
+                                            <span th:text="${solution.rfq.id}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Lý do</strong><br>
+                                            <span th:text="${solution.reason}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Người tạo</strong><br>
+                                            <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Ngày tạo giải pháp</strong><br>
+                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Ngày cập nhật gần nhất</strong><br>
+                                            <span th:text="${#temporals.format(solution.updateAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
+                                        <div class="text-start me-3 status-sent">
+                                            <strong>Trạng thái gửi</strong><br>
+                                            <span th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : (solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : solution.isSent)) : 'Chưa gửi'}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="collapse" th:id="'details-' + ${iterStat.count}">
+                                    <div class="card-body detail-table">
+                                        <!-- Thông tin chi tiết RFQ -->
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                            <tr class="text-dark">
+                                                <th>Số thứ tự</th>
+                                                <th>Mã đơn hàng</th>
+                                                <th>Sản phẩm</th>
+                                                <th>Màu</th>
+                                                <th>Số lượng đặt</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="detail, detailIter : ${solution.rfq.rfqDetails}">
+                                                <td th:text="${detailIter.count}"></td>
+                                                <td th:text="${detail.id}"></td>
+                                                <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
+                                                <td th:text="${detail.noteColor}"></td>
+                                                <td th:text="${detail.quantity}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- Thông tin giải pháp và RFQ -->
+                                        <div class="solution-details">
+                                            <p><strong>Ngày mong muốn nhận hàng:</strong>
+                                                <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            </p>
+                                            <p><strong>Ngày có thể giao hàng dự kiến:</strong>
+                                                <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            </p>
+                                            <p><strong>Chi tiết giải pháp:</strong>
+                                                <span th:text="${solution.description}"></span>
+                                            </p>
+                                            <p><strong>Nhân viên phụ trách RFQ:</strong>
+                                                <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="toggle-container">
+                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
+                                        th:data-target="'#details-' + ${iterStat.count}"
+                                        style="padding: 0; color: #dc3545; text-decoration: none;">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Xử lý nhấp vào card để chuyển hướng sang solution-details
+        $('.card').on('click', function (event) {
+            if (!$(event.target).closest('.toggle-btn').length) {
+                var solutionId = $(this).data('solution-id');
+                window.location.href = '/technical/solution-details/' + solutionId; // Chuyển hướng tới trang chi tiết giải pháp
+            }
+        });
+
+        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
+        $('.toggle-btn').click(function (event) {
+            event.stopPropagation();
+            var target = $(this).data('target');
+            var icon = $(this).find('i');
+            $(target).collapse('toggle');
+            if ($(target).hasClass('show')) {
+                icon.removeClass('fa-plus').addClass('fa-minus');
+            } else {
+                icon.removeClass('fa-minus').addClass('fa-plus');
+            }
+        });
+
+        // Tìm kiếm theo client-side
+        $('.search-input').on('keyup', function () {
+            var searchValue = $(this).val().toLowerCase();
+            $('.card-wrapper').each(function () {
+                var cardText = $(this).text().toLowerCase();
+                $(this).toggle(cardText.indexOf(searchValue) > -1);
+            });
+        });
+    });
+</script>
+</body>
+</html>

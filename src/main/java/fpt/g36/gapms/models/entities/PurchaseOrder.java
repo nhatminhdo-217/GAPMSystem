@@ -24,8 +24,8 @@ public class PurchaseOrder extends BaseEntity {
     @JoinColumn(name = "quotation_id", nullable = false)
     private Quotation quotation;
 
-    @OneToMany(mappedBy = "purchaseOrder")
-    private Set<Contract> contracts = new LinkedHashSet<>();
+    @OneToOne(mappedBy = "purchaseOrder")
+    private Contract contract;
 
     @OneToMany(mappedBy = "purchaseOrder")
     private Set<ProductionOrder> productionOrders = new LinkedHashSet<>();
@@ -33,11 +33,11 @@ public class PurchaseOrder extends BaseEntity {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, BaseEnum status, Quotation quotation, Set<Contract> contracts, Set<ProductionOrder> productionOrders) {
+    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, BaseEnum status, Quotation quotation, Contract contract, Set<ProductionOrder> productionOrders) {
         super(id, createAt, updateAt);
         this.status = status;
         this.quotation = quotation;
-        this.contracts = contracts;
+        this.contract = contract;
         this.productionOrders = productionOrders;
     }
 
@@ -57,12 +57,12 @@ public class PurchaseOrder extends BaseEntity {
         this.quotation = quotation;
     }
 
-    public Set<Contract> getContracts() {
-        return contracts;
+    public Contract getContract() {
+        return contract;
     }
 
-    public void setContracts(Set<Contract> contracts) {
-        this.contracts = contracts;
+    public void setContracts(Contract contract) {
+        this.contract = contract;
     }
 
     public Set<ProductionOrder> getProductionOrders() {

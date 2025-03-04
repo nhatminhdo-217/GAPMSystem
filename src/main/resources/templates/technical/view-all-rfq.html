@@ -36,7 +36,7 @@
             background-color: #ffffff;
             width: 100%;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer; /* Thêm con trỏ tay để chỉ ra card có thể nhấp */
+            cursor: pointer;
         }
 
         .card:hover {
@@ -108,7 +108,7 @@
         }
 
         .text-start.me-3 {
-            flex: 1; /* Chia đều không gian cho các cột */
+            flex: 1;
             text-align: center;
             min-width: 0;
         }
@@ -156,7 +156,7 @@
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 0; /* Loại bỏ khoảng cách để không có phần trống màu xám */
+            gap: 0;
         }
 
         .card-body {
@@ -165,7 +165,7 @@
             justify-content: flex-start;
             align-items: center;
             padding: 12px 15px;
-            width: 100%; /* Sử dụng toàn bộ chiều rộng để không còn phần trống */
+            width: 100%;
             border-radius: 8px;
         }
 
@@ -182,9 +182,39 @@
         }
 
         .card-body.detail-table {
-            background-color: #ffffff;
+            background-color: #f9fafc;
             padding: 15px;
             border-top: 1px solid #e9ecef;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* CSS cho phần thông tin giải pháp */
+        .solution-details {
+            background-color: #f8f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e7f0;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column; /* Sắp xếp dọc */
+            gap: 8px; /* Khoảng cách giữa các mục */
+        }
+        .solution-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #495057;
+            display: flex;
+            justify-content: space-between; /* Căn đều giữa nhãn và giá trị */
+        }
+        .solution-details strong {
+            color: #333;
+            font-weight: 600;
+            flex: 0 0 50%; /* Nhãn chiếm 50% chiều rộng */
+        }
+        .solution-details span {
+            color: #212529;
+            text-align: right;
+            flex: 0 0 50%; /* Giá trị chiếm 50% chiều rộng */
         }
 
         /* Responsive design */
@@ -226,6 +256,17 @@
             .card-wrapper {
                 flex-direction: column;
                 gap: 0;
+            }
+            .solution-details p {
+                flex-direction: column; /* Khi màn hình nhỏ, chuyển thành dọc hoàn toàn */
+                text-align: left;
+            }
+            .solution-details strong, .solution-details span {
+                flex: none;
+                width: 100%;
+            }
+            .solution-details span {
+                text-align: left;
             }
         }
     </style>
@@ -316,18 +357,16 @@
                                             </tr>
                                             </tbody>
                                         </table>
-                                        <div class="d-flex justify-content-between align-items-start mt-3" style="background-color: #ffffff; padding: 15px;">
-                                            <div>
-                                                <strong>Ngày mong muốn nhận hàng: </strong>
+                                        <div class="solution-details">
+                                            <p><strong>Ngày mong muốn nhận hàng:</strong>
                                                 <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd-MM-yyyy')}"></span>
-                                            </div>
-                                            <div class="text-end">
-                                                <p th:if="${rfq.solutions != null}"><strong>Lý do: </strong><span th:text="${rfq.solutions.reason}"></span></p>
-                                                <p th:if="${rfq.solutions != null}"><strong>Chi tiết: </strong><span th:text="${rfq.solutions.description}"></span></p>
-                                                <p th:if="${rfq.solutions != null}"><strong>Ngày có thể giao hàng dự kiến: </strong>
-                                                    <span th:text="${rfq.solutions.actualDeliveryDate}"></span>
-                                                </p>
-                                            </div>
+                                            </p>
+                                            <p th:if="${rfq.solution != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
+                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            </p>
+                                            <p th:if="${rfq.solution != null}"><strong>Trạng thái gửi:</strong>
+                                                <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -360,16 +399,15 @@
     $(document).ready(function () {
         // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle
         $('.card').on('click', function (event) {
-            // Kiểm tra xem nhấp vào nút toggle hay không
             if (!$(event.target).closest('.toggle-btn').length) {
-                var rfqId = $(this).data('rfq-id'); // Lấy rfqId từ thuộc tính data-rfq-id
+                var rfqId = $(this).data('rfq-id');
                 window.location.href = '/technical/rfq-details/' + rfqId;
             }
         });
 
         // Xử lý nhấp vào nút toggle để hiển thị chi tiết
         $('.toggle-btn').click(function (event) {
-            event.stopPropagation(); // Ngăn sự kiện click lan ra card
+            event.stopPropagation();
             var target = $(this).data('target');
             var icon = $(this).find('i');
             $(target).collapse('toggle');

@@ -19,12 +19,18 @@ public interface RfqRepository extends JpaRepository<Rfq, Long> {
 
     @Query("select r from Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id  where r.createBy.id = :userId order by CASE WHEN r.isSent = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED THEN 0 ELSE 1 END ,r.createAt desc")
     Page<Rfq> getRfqByUserId(Long userId, Pageable pageable);
+
     @Query("select r from Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id  where r.createBy.id = :userId order by r.createAt desc")
     List<Rfq> getRfqByUserId(Long userId);
+
+    @Query("select r from Rfq r where r.id =:rfqId and r.createBy.id = :userId")
+    Optional<Rfq> getRfqByRfqIdAndUserId(Long rfqId, Long userId);
 
     @Query("SELECT r FROM Rfq r WHERE r.isSent = :isApproved")
     List<Rfq> getAllApprovedRfqs(@Param("isApproved") BaseEnum isApproved);
 
     @EntityGraph(attributePaths = {"rfqDetails", "rfqDetails.product", "rfqDetails.cate", "rfqDetails.brand", "createBy", "approvedBy", "solution"})
     Optional<Rfq> findById(Long id);
+
+    Rfq findBySolution_Id(Long solutionId);
 }
