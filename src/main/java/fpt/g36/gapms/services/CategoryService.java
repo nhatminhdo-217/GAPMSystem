@@ -14,5 +14,5 @@ public interface CategoryService {
 
     List<String> getAllCategoryNames();
 
-    Category getCategoryById(Long id);
+
 }
