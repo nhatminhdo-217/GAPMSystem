@@ -21,7 +21,7 @@
         }
 
         .success-toast {
-            background-color: #d4edda; /* Màu nền xanh nhẹ cho thành công */
+            background-color: #d4edda;
             border-color: #c3e6cb;
             opacity: 0.9;
         }
@@ -36,7 +36,7 @@
         }
 
         .error-toast {
-            background-color: #f8d7da; /* Màu nền đỏ nhẹ cho lỗi */
+            background-color: #f8d7da;
             border-color: #f5c6cb;
             opacity: 0.9;
         }
@@ -50,7 +50,6 @@
             color: #721c24;
         }
 
-        /* Đảm bảo danh sách lỗi validation không bị ảnh hưởng bởi kiểu khác */
         .error-toast ul li {
             margin-bottom: 5px;
         }
@@ -100,12 +99,20 @@
             width: 80%;
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
         }
 
         .d-flex .btn-custom {
             flex: 1;
             text-align: center;
+        }
+
+        .text-danger {
+            font-size: 0.875em;
+        }
+
+        .btn-success:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -147,17 +154,12 @@
                     <p>Vui lòng cập nhật số điện thoại của bạn.</p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <!-- Thông báo lỗi -->
                 <div th:if="${error != null}" class="alert alert-danger mt-3 fade show" role="alert">
                     <p th:text="${error}"></p>
                 </div>
-
-                <!-- Thông báo thành công -->
                 <div th:if="${success != null}" class="alert alert-success mt-3 fade show" role="alert">
                     <p th:text="${success}"></p>
                 </div>
-
-                <!-- Thông báo lỗi validation -->
                 <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
                      class="alert alert-danger mt-3 fade show" role="alert">
                     <th:block th:each="error : ${validationErrors}">
@@ -171,23 +173,17 @@
         <div class="container mt-5">
             <h1 class="text-center mb-4">Thông tin công ty</h1>
             <div class="card text-center p-4 shadow-sm">
-                <!-- Nếu chưa có công ty, hiển thị cảnh báo -->
                 <div th:if="${company == null}" class="alert alert-danger alert-dismissible fade show persistent-alert"
                      role="alert">
                     <p>Bạn chưa có thông tin công ty. Vui lòng thêm thông tin công ty.</p>
                     <button id="addCompanyBtn" class="btn btn-primary">Thêm thông tin công ty</button>
                 </div>
-
-                <!-- Nếu có công ty nhưng thiếu dữ liệu -->
                 <div th:if="${company != null}">
                     <p><strong>Tên công ty:</strong> <span th:text="${company.name ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span>
-                    </p>
-                    <p><strong>Số điện thoại công ty:</strong> <span
-                            th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Số điện thoại công ty:</strong> <span th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
                     <p><strong>Địa chỉ:</strong> <span th:text="${company.address ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span>
-                    </p>
+                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span></p>
                     <div class="d-flex justify-content-center gap-3 mt-3">
                         <button id="editCompanyBtn" class="btn btn-custom">Thay đổi thông tin công ty</button>
                     </div>
@@ -211,20 +207,27 @@
     </div>
 </div>
 
-
 <!-- Modal đổi mật khẩu -->
 <div id="changePasswordModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close">×</span>
         <h3>Thay đổi mật khẩu</h3>
-        <form th:action="@{/profile/changePassword}" method="post">
-            <label>Mật khẩu cũ:</label>
-            <input type="password" name="oldPassword" required class="form-control mb-2">
-            <label>Mật khẩu mới:</label>
-            <input type="password" name="newPassword" required class="form-control mb-2">
-            <label>Xác nhận mật khẩu mới:</label>
-            <input type="password" name="confirmPassword" required class="form-control mb-2">
-            <button type="submit" class="btn btn-success">Đổi mật khẩu</button>
+        <form id="changePasswordForm" th:action="@{/profile/changePassword}" method="post" onsubmit="return validatePassword()">
+            <div class="form-group">
+                <label>Mật khẩu cũ:</label>
+                <input type="password" name="oldPassword" id="oldPassword" required class="form-control mb-2">
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu mới:</label>
+                <input type="password" name="newPassword" id="newPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <small id="newPasswordError" class="text-danger" style="display: none;"></small>
+            </div>
+            <div class="form-group">
+                <label>Xác nhận mật khẩu mới:</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <small id="confirmPasswordError" class="text-danger" style="display: none;"></small>
+            </div>
+            <button type="submit" id="submitPasswordBtn" class="btn btn-success" disabled>Đổi mật khẩu</button>
         </form>
     </div>
 </div>
@@ -232,7 +235,7 @@
 <!-- Modal chỉnh sửa thông tin -->
 <div id="editProfileModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close">×</span>
         <h3>Chỉnh sửa thông tin cá nhân</h3>
         <form th:action="@{/profile/updateProfile}" method="post" enctype="multipart/form-data">
             <label>Username:</label>
@@ -252,7 +255,7 @@
     <!-- Modal thêm công ty -->
     <div id="addCompanyModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h3>Thêm thông tin công ty</h3>
             <form th:action="@{/profile/addCompany}" method="post">
                 <label>Tên công ty:</label>
@@ -292,9 +295,9 @@
         </div>
     </div>
 </div>
-<!-- Toast thông báo thành công -->
-<div id="successToast" class="toast success-toast"
-     style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+
+<!-- Toast thông báo -->
+<div id="successToast" class="toast success-toast" style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Thành công</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -304,9 +307,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo lỗi -->
-<div id="errorToast" class="toast error-toast"
-     style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="errorToast" class="toast error-toast" style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -316,9 +317,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo lỗi validation -->
-<div id="validationErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+<div id="validationErrorToast" class="toast error-toast" style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi Validation</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -328,9 +327,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo thành công cho profile -->
-<div id="profileSuccessToast" class="toast success-toast"
-     style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="profileSuccessToast" class="toast success-toast" style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Thành công</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -340,9 +337,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo lỗi cho profile -->
-<div id="profileErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="profileErrorToast" class="toast error-toast" style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -352,9 +347,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo lỗi validation cho profile -->
-<div id="profileValidationErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+<div id="profileValidationErrorToast" class="toast error-toast" style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi Validation</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -368,22 +361,11 @@
     document.addEventListener("DOMContentLoaded", function () {
         var editCompanyBtn = document.getElementById("editCompanyBtn");
         if (editCompanyBtn) {
-            console.log("editCompanyBtn found");
             editCompanyBtn.onclick = function () {
-                console.log("Edit Company button clicked");
-                var modal = document.getElementById("editCompanyModal");
-                if (modal) {
-                    console.log("Modal found, setting display to block");
-                    modal.style.display = "block";
-                } else {
-                    console.log("editCompanyModal not found in DOM");
-                }
+                document.getElementById("editCompanyModal").style.display = "block";
             };
-        } else {
-            console.log("editCompanyBtn not found on page load");
         }
 
-        // Các sự kiện khác (changePasswordBtn, editProfileBtn, addCompanyBtn)
         var changePasswordBtn = document.getElementById("changePasswordBtn");
         if (changePasswordBtn) {
             changePasswordBtn.onclick = function () {
@@ -405,7 +387,6 @@
             };
         }
 
-        // Đóng modal
         document.querySelectorAll(".close").forEach(btn => {
             btn.onclick = function () {
                 document.getElementById("changePasswordModal").style.display = "none";
@@ -430,56 +411,39 @@
             }
         };
 
-        // Hiển thị toast thành công
         const hiddenSuccess = document.getElementById('hiddenSuccess');
         if (hiddenSuccess && hiddenSuccess.textContent) {
             const successToast = new bootstrap.Toast(document.getElementById('successToast'));
             document.getElementById('successMessage').textContent = hiddenSuccess.textContent;
             successToast.show();
-            setTimeout(() => {
-                successToast.hide();
-            }, 3000);
+            setTimeout(() => successToast.hide(), 3000);
         }
 
-        // Hiển thị toast lỗi
         const hiddenError = document.getElementById('hiddenError');
         if (hiddenError && hiddenError.textContent) {
             const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
             document.getElementById('errorMessage').textContent = hiddenError.textContent;
             errorToast.show();
-            setTimeout(() => {
-                errorToast.hide();
-            }, 3000);
+            setTimeout(() => errorToast.hide(), 3000);
         }
 
-        // Hiển thị toast lỗi validate
         const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
         if (hiddenValidationErrors?.textContent) {
-            console.log('Validation errors found:', hiddenValidationErrors.textContent);
-            try {
-                const validationErrors = hiddenValidationErrors.textContent.split(', ').map(errorStr => {
-                    const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
-                    return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
-                }).filter(error => error.defaultMessage); // Loại bỏ lỗi không hợp lệ
+            const validationErrors = hiddenValidationErrors.textContent.split(', ').map(errorStr => {
+                const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
+                return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
+            }).filter(error => error.defaultMessage);
 
-                if (validationErrors.length) {
-                    const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
-                    document.getElementById('validationErrorMessages').innerHTML = validationErrors
-                        .map(error => `<li>${error.defaultMessage}</li>`)
-                        .join('');
-                    toast.show();
-                    setTimeout(() => toast.hide(), 5000);
-                } else {
-                    console.log('No valid validation errors to display');
-                }
-            } catch (e) {
-                console.error('Error parsing validation errors:', e, hiddenValidationErrors.textContent);
+            if (validationErrors.length) {
+                const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
+                document.getElementById('validationErrorMessages').innerHTML = validationErrors
+                    .map(error => `<li>${error.defaultMessage}</li>`)
+                    .join('');
+                toast.show();
+                setTimeout(() => toast.hide(), 5000);
             }
-        } else {
-            console.log('No validation errors found in hiddenValidationErrors');
         }
 
-        // Toast cho success, error, và validationErrors của updateProfile
         const profileSuccess = document.getElementById('hiddenProfileSuccess');
         if (profileSuccess?.textContent) {
             const toast = new bootstrap.Toast(document.getElementById('profileSuccessToast'));
@@ -514,36 +478,79 @@
             }
         }
 
-        const alerts = document.querySelectorAll('.alert:not(.persistent-alert)'); // Chỉ lấy các alert không có lớp persistent-alert
+        const alerts = document.querySelectorAll('.alert:not(.persistent-alert)');
         alerts.forEach(alert => {
             setTimeout(() => {
                 const bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }, 3000);
         });
-
-        // Giữ nguyên các phần khác của script
-        var editCompanyBtn = document.getElementById("editCompanyBtn");
-        if (editCompanyBtn) {
-            editCompanyBtn.onclick = function () {
-                var modal = document.getElementById("editCompanyModal");
-                if (modal) {
-                    modal.style.display = "block";
-                } else {
-                    console.log("editCompanyModal not found in DOM");
-                }
-            };
-        }
     });
 
+    function validatePassword() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const newPasswordError = document.getElementById('newPasswordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        newPasswordError.style.display = 'none';
+        confirmPasswordError.style.display = 'none';
+
+        const passwordRegex = /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+
+        let isValid = true;
+
+        if (!passwordRegex.test(newPassword)) {
+            newPasswordError.textContent = 'Mật khẩu phải chứa ít nhất 1 chữ in hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt và không có khoảng trắng';
+            newPasswordError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (newPassword !== confirmPassword) {
+            confirmPasswordError.textContent = 'Mật khẩu xác nhận không khớp';
+            confirmPasswordError.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function checkPassword() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const newPasswordError = document.getElementById('newPasswordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const submitBtn = document.getElementById('submitPasswordBtn');
+
+        const passwordRegex = /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+
+        let isValid = true;
+
+        if (newPassword && !passwordRegex.test(newPassword)) {
+            newPasswordError.textContent = 'Mật khẩu phải chứa ít nhất 1 chữ in hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt và không có khoảng trắng';
+            newPasswordError.style.display = 'block';
+            isValid = false;
+        } else {
+            newPasswordError.style.display = 'none';
+        }
+
+        if (confirmPassword && newPassword !== confirmPassword) {
+            confirmPasswordError.textContent = 'Mật khẩu xác nhận không khớp';
+            confirmPasswordError.style.display = 'block';
+            isValid = false;
+        } else {
+            confirmPasswordError.style.display = 'none';
+        }
+
+        if (isValid && newPassword && confirmPassword) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
 </script>
 
-<!-- JavaScript Libraries -->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>-->
 <script src="/assert/lib/chart/chart.min.js"></script>
-<!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 </body>
 </html>
-
-
