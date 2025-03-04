@@ -407,32 +407,32 @@
                             </div>
 
                             <!-- Solution Info -->
-                            <div class="detail-info mt-4" th:if="${rfq.solutions != null}">
+                            <div class="detail-info mt-4" th:if="${rfq.solution != null}">
                                 <h3 class="section-title">Thông tin giải pháp</h3>
                                 <div class="solution-info">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <strong>Lý do:</strong> <span th:text="${rfq.solutions.reason}"></span>
+                                            <strong>Lý do:</strong> <span th:text="${rfq.solution.reason}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Chi tiết:</strong> <span
-                                                th:text="${rfq.solutions.description}"></span>
+                                                th:text="${rfq.solution.description}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Ngày có thể giao hàng dự kiến:</strong>
-                                            <span th:text="${#temporals.format(rfq.solutions.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Trạng thái gửi:</strong>
-                                            <span th:text="${rfq.solutions.isSent != null ? (rfq.solutions.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solutions.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solutions.isSent)) : 'Chưa gửi'}"></span>
+                                            <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Người tạo:</strong>
-                                            <span th:text="${rfq.solutions.createBy != null ? rfq.solutions.createBy.username : 'N/A'}"></span>
+                                            <span th:text="${rfq.solution.createBy != null ? rfq.solution.createBy.username : 'N/A'}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Ngày tạo:</strong>
-                                            <span th:text="${#temporals.format(rfq.solutions.createAt, 'yyyy-MM-dd')}"></span>
+                                            <span th:text="${#temporals.format(rfq.solution.createAt, 'yyyy-MM-dd')}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -445,7 +445,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="detail-info mt-4" th:unless="${rfq.solutions != null}">
+                            <div class="detail-info mt-4" th:unless="${rfq.solution != null}">
                                 <h3 class="section-title">Thông tin giải pháp</h3>
                                 <p>Chưa có giải pháp cho RFQ này.</p>
                                 <div class="btn-container">
@@ -514,19 +514,19 @@
                         <div class="form-group">
                             <label for="reasonUpdate">Lý do:</label>
                             <input type="text" id="reasonUpdate" name="reason" class="form-control"
-                                   th:value="${rfq.solutions != null ? rfq.solutions.reason : ''}" required>
+                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required>
                         </div>
                         <div class="form-group">
                             <label for="descriptionUpdate">Chi tiết:</label>
                             <textarea id="descriptionUpdate" name="description" class="form-control"
-                                      th:text="${rfq.solutions != null ? rfq.solutions.description : ''}"
+                                      th:text="${rfq.solution != null ? rfq.solution.description : ''}"
                                       required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDateUpdate">Ngày có thể giao hàng dự kiến:</label>
                             <input type="date" id="actualDeliveryDateUpdate" name="actualDeliveryDate"
                                    class="form-control"
-                                   th:value="${rfq.solutions != null ? #temporals.format(rfq.solutions.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
+                                   th:value="${rfq.solution != null ? #temporals.format(rfq.solution.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
                                    th:min="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required>
                         </div>
                     </form>
@@ -555,19 +555,19 @@
                         <div class="form-group">
                             <label for="reasonSubmit">Lý do:</label>
                             <input type="text" id="reasonSubmit" name="reason" class="form-control"
-                                   th:value="${rfq.solutions != null ? rfq.solutions.reason : ''}" required readonly>
+                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required readonly>
                         </div>
                         <div class="form-group">
                             <label for="descriptionSubmit">Chi tiết:</label>
                             <textarea id="descriptionSubmit" name="description" class="form-control"
-                                      th:text="${rfq.solutions != null ? rfq.solutions.description : ''}" required
+                                      th:text="${rfq.solution != null ? rfq.solution.description : ''}" required
                                       readonly></textarea>
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDateSubmit">Ngày có thể giao hàng dự kiến:</label>
                             <input type="date" id="actualDeliveryDateSubmit" name="actualDeliveryDate"
                                    class="form-control"
-                                   th:value="${rfq.solutions != null ? #temporals.format(rfq.solutions.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
+                                   th:value="${rfq.solution != null ? #temporals.format(rfq.solution.actualDeliveryDate, 'yyyy-MM-dd') : ''}"
                                    th:min="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}" required
                                    readonly>
                         </div>

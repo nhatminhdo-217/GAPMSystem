@@ -47,7 +47,7 @@ public class SolutionController {
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             List<Solution> solutions = solutionService.getSolutionsByCreabyID(optionalUser.get().getId());
-            model.addAttribute("solutions", solutions);
+            model.addAttribute("solution", solutions);
         }
         userUtils.getOptionalUser(model);
         return "technical/view-all-solution";
