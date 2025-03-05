@@ -46,4 +46,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByKeywordExcludingCurrentUserEmail
             (@Param("keyword") String keyword, @Param("currentEmail") String currentEmail);
 
+    @Query("SELECT u from Rfq r JOIN r.createBy u WHERE r.id = :rfqId")
+    Optional<User> findUsersByRfqId(long rfqId);
 }

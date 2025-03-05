@@ -128,4 +128,9 @@ public class UserServiceImpl implements UserService {
     public Page<User> getAccounts(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
+    @Override
+    public Optional<User> findUsersByRfqId(long rfqId) {
+        return userRepository.findUsersByRfqId(rfqId);
+    }
 }
