@@ -46,7 +46,7 @@ public class RfqSolutionController {
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             List<Solution> solutions = solutionService.getAllSentedAndApproveByUserIDSolutions(optionalUser.get().getId());
-            model.addAttribute("solutions", solutions);
+            model.addAttribute("solution", solutions);
         }
         userUtils.getOptionalUser(model);
         return "/sale-staff/view-all-rfq-solution";

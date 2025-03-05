@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ đã duyệt</title>
+
+    <title>Chỉ may Dũng Đông - Danh sách RFQ </title>
+
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -308,7 +310,7 @@
                     </div>
                     <div class="col-12" th:each="rfq, iterStat : ${rfqs}">
                         <div class="card-wrapper">
-                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/technical/rfq-details/' + ${rfq.id}\'">
+                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id}\'">
                                 <div class="card-body parent-row">
                                     <span class="index-in-card" th:text="${iterStat.count}"></span>
                                     <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
@@ -361,11 +363,11 @@
                                             <p><strong>Ngày mong muốn nhận hàng:</strong>
                                                 <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd-MM-yyyy')}"></span>
                                             </p>
-                                            <p th:if="${rfq.solutions != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(rfq.solutions.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            <p th:if="${rfq.solution != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
+                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
                                             </p>
-                                            <p th:if="${rfq.solutions != null}"><strong>Trạng thái gửi:</strong>
-                                                <span th:text="${rfq.solutions.isSent != null ? (rfq.solutions.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solutions.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solutions.isSent)) : 'Chưa gửi'}"></span>
+                                            <p th:if="${rfq.solution != null}"><strong>Trạng thái gửi:</strong>
+                                                <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
                                             </p>
                                         </div>
                                     </div>
