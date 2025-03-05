@@ -142,17 +142,17 @@
                                     <span th:text="${quotation.quotationId}"></span>
                                 </div>
                                 <div class="text-start me-3">
-                                    <strong>Số lượng sản phẩm</strong><br>
-                                    <span th:id="'product-count-' + ${quotation.quotationId}" th:text="${quotation.products.size()}"></span>
+                                    <strong>Tên khách hàng</strong><br>
+                                    <span th:text="${quotation.userName}"></span>
                                 </div>
-<!--                                <div class="text-start me-3">-->
-<!--                                    <strong>Ngày tạo đơn</strong><br>-->
-<!--                                    <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>-->
-<!--                                </div>-->
-<!--                                <div class="text-start me-3">-->
-<!--                                    <strong>Nhân viên phụ trách</strong><br>-->
-<!--                                    <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>-->
-<!--                                </div>-->
+                                <div class="text-start me-3">
+                                    <strong>Số lượng sản phẩm</strong><br>
+                                    <span th:text="${#lists.size(quotation.products)}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Ngày tạo đơn</strong><br>
+                                    <span th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></span>
+                                </div>
                                 <div class="text-start me-3">
                                     <strong>Trạng thái đơn hàng</strong><br>
                                     <span th:switch="${quotation.isAccepted}">
@@ -190,7 +190,7 @@
                                         <td th:text="${productIter.count}"></td>
                                         <td th:text="${product.productName} + ' - ' + ${product.brandName} + ' - ' + ${product.categoryName}"></td>
                                         <td th:text="${product.noteColor}"></td>
-                                        <td th:text="${product.color} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
+                                        <td th:text="${product.price}"></td>
 <!--                                        <td class="text-center">-->
 <!--                                            <div class="d-flex justify-content-center gap-2">-->
 <!--                                                <a href="#" class="text-danger" title="Delete"-->

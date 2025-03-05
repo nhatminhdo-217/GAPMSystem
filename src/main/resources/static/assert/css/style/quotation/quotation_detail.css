@@ -20,3 +20,18 @@
     font-weight: 600;
     color: black;
 }
+
+.text-green {
+    color: green;
+    font-weight: bold;
+}
+
+.text-yellow {
+    color: orange;
+    font-weight: bold;
+}
+
+.text-gray {
+    color: gray;
+    font-weight: bold;
+}

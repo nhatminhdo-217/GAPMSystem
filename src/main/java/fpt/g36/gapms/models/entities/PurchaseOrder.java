@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,15 +32,19 @@ public class PurchaseOrder extends BaseEntity {
     @OneToMany(mappedBy = "purchaseOrder")
     private Set<ProductionOrder> productionOrders = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "purchaseOrder")
+    private List<PurchaseOrderDetail> purchaseOrderDetails = new ArrayList<>();
+
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, BaseEnum status, Quotation quotation, Contract contract, Set<ProductionOrder> productionOrders) {
+    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, BaseEnum status, Quotation quotation, Contract contract, Set<ProductionOrder> productionOrders, List<PurchaseOrderDetail> purchaseOrderDetails) {
         super(id, createAt, updateAt);
         this.status = status;
         this.quotation = quotation;
         this.contract = contract;
         this.productionOrders = productionOrders;
+        this.purchaseOrderDetails = purchaseOrderDetails;
     }
 
     public BaseEnum getStatus() {
@@ -73,5 +79,11 @@ public class PurchaseOrder extends BaseEntity {
         this.productionOrders = productionOrders;
     }
 
+    public List<PurchaseOrderDetail> getPurchaseOrderDetails() {
+        return purchaseOrderDetails;
+    }
 
+    public void setPurchaseOrderDetails(List<PurchaseOrderDetail> purchaseOrderDetails) {
+        this.purchaseOrderDetails = purchaseOrderDetails;
+    }
 }
