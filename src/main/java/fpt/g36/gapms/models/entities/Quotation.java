@@ -32,8 +32,8 @@ public class Quotation extends BaseEntity {
     @JoinColumn(name = "rfq_id", nullable = false)
     private Rfq rfq;
 
-    @OneToMany(mappedBy = "quotation")
-    private Set<PurchaseOrder> purchaseOrders = new LinkedHashSet<>();
+    @OneToOne(mappedBy = "quotation")
+    private PurchaseOrder purchaseOrder;
 
     @OneToMany(mappedBy = "quotation")
     private Set<PurchaseOrderPrice> purchaseOrderPrices = new LinkedHashSet<>();
@@ -44,13 +44,14 @@ public class Quotation extends BaseEntity {
     public Quotation() {
     }
 
-    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, Set<PurchaseOrder> purchaseOrders, Set<PurchaseOrderPrice> purchaseOrderPrices) {
+    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, PurchaseOrder purchaseOrder, Set<PurchaseOrderPrice> purchaseOrderPrices, List<QuotationDetail> quotationDetails) {
         super(id, createAt, updateAt);
         this.isCanceled = isCanceled;
         this.isAccepted = isAccepted;
         this.rfq = rfq;
-        this.purchaseOrders = purchaseOrders;
+        this.purchaseOrder = purchaseOrder;
         this.purchaseOrderPrices = purchaseOrderPrices;
+        this.quotationDetails = quotationDetails;
     }
 
     public Boolean getCanceled() {
@@ -77,12 +78,12 @@ public class Quotation extends BaseEntity {
         this.rfq = rfq;
     }
 
-    public Set<PurchaseOrder> getPurchaseOrders() {
-        return purchaseOrders;
+    public PurchaseOrder getPurchaseOrder() {
+        return purchaseOrder;
     }
 
-    public void setPurchaseOrders(Set<PurchaseOrder> purchaseOrders) {
-        this.purchaseOrders = purchaseOrders;
+    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
+        this.purchaseOrder = purchaseOrder;
     }
 
     public Set<PurchaseOrderPrice> getPurchaseOrderPrices() {

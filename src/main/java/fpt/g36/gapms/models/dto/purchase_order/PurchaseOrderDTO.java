@@ -1,5 +1,10 @@
 package fpt.g36.gapms.models.dto.purchase_order;
 
+import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.models.entities.Contract;
+import fpt.g36.gapms.models.entities.Quotation;
+import fpt.g36.gapms.models.entities.User;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,36 +14,24 @@ public class PurchaseOrderDTO {
 
     private String customerName;
 
-    private String companyName;
+    private BaseEnum status;
 
-    private String taxNumber;
-
-    private String companyAddress;
-
-    private LocalDate expectedDeliveryDate;
-
-    private LocalDate actualDeliveryDate;
+    private Long quotationId;
 
     private String contractId;
 
-    private Long solutionId;
-
-    private List<PurchaseOrderItemsDTO> purchaseOrderItems;
+    private String approvedByUserName;
 
     public PurchaseOrderDTO() {
     }
 
-    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, String companyName, String taxNumber, String companyAddress, String contractId, LocalDate expectedDeliveryDate, LocalDate actualDeliveryDate, Long solutionId, List<PurchaseOrderItemsDTO> purchaseOrderItems) {
+    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, BaseEnum status, Long quotationId, String contractId, String approvedByUserName) {
         this.purchaseOrderId = purchaseOrderId;
         this.customerName = customerName;
-        this.companyName = companyName;
-        this.taxNumber = taxNumber;
-        this.companyAddress = companyAddress;
+        this.status = status;
+        this.quotationId = quotationId;
         this.contractId = contractId;
-        this.expectedDeliveryDate = expectedDeliveryDate;
-        this.actualDeliveryDate = actualDeliveryDate;
-        this.solutionId = solutionId;
-        this.purchaseOrderItems = purchaseOrderItems;
+        this.approvedByUserName = approvedByUserName;
     }
 
     public Long getPurchaseOrderId() {
@@ -57,28 +50,20 @@ public class PurchaseOrderDTO {
         this.customerName = customerName;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public BaseEnum getStatus() {
+        return status;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setStatus(BaseEnum status) {
+        this.status = status;
     }
 
-    public String getTaxNumber() {
-        return taxNumber;
+    public Long getQuotationId() {
+        return quotationId;
     }
 
-    public void setTaxNumber(String taxNumber) {
-        this.taxNumber = taxNumber;
-    }
-
-    public String getCompanyAddress() {
-        return companyAddress;
-    }
-
-    public void setCompanyAddress(String companyAddress) {
-        this.companyAddress = companyAddress;
+    public void setQuotationId(Long quotationId) {
+        this.quotationId = quotationId;
     }
 
     public String getContractId() {
@@ -89,35 +74,12 @@ public class PurchaseOrderDTO {
         this.contractId = contractId;
     }
 
-    public LocalDate getExpectedDeliveryDate() {
-        return expectedDeliveryDate;
+
+    public String getApprovedByUserName() {
+        return approvedByUserName;
     }
 
-    public void setExpectedDeliveryDate(LocalDate expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
-    }
-
-    public LocalDate getActualDeliveryDate() {
-        return actualDeliveryDate;
-    }
-
-    public void setActualDeliveryDate(LocalDate actualDeliveryDate) {
-        this.actualDeliveryDate = actualDeliveryDate;
-    }
-
-    public Long getSolutionId() {
-        return solutionId;
-    }
-
-    public void setSolutionId(Long solutionId) {
-        this.solutionId = solutionId;
-    }
-
-    public List<PurchaseOrderItemsDTO> getPurchaseOrderItems() {
-        return purchaseOrderItems;
-    }
-
-    public void setPurchaseOrderItems(List<PurchaseOrderItemsDTO> purchaseOrderItems) {
-        this.purchaseOrderItems = purchaseOrderItems;
+    public void setApprovedByUserName(String approvedByUserName) {
+        this.approvedByUserName = approvedByUserName;
     }
 }

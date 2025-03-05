@@ -22,12 +22,16 @@ public class PurchaseOrder extends BaseEntity {
     private BaseEnum status;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quotation_id", nullable = false)
     private Quotation quotation;
 
     @OneToOne(mappedBy = "purchaseOrder")
     private Contract contract;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
 
     @OneToMany(mappedBy = "purchaseOrder")
     private Set<ProductionOrder> productionOrders = new LinkedHashSet<>();
@@ -38,11 +42,12 @@ public class PurchaseOrder extends BaseEntity {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, BaseEnum status, Quotation quotation, Contract contract, Set<ProductionOrder> productionOrders, List<PurchaseOrderDetail> purchaseOrderDetails) {
-        super(id, createAt, updateAt);
+    public PurchaseOrder(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, BaseEnum status, Quotation quotation, Contract contract, User approvedBy, Set<ProductionOrder> productionOrders, List<PurchaseOrderDetail> purchaseOrderDetails) {
+        super(id, createdAt, updatedAt);
         this.status = status;
         this.quotation = quotation;
         this.contract = contract;
+        this.approvedBy = approvedBy;
         this.productionOrders = productionOrders;
         this.purchaseOrderDetails = purchaseOrderDetails;
     }
@@ -69,6 +74,14 @@ public class PurchaseOrder extends BaseEntity {
 
     public void setContracts(Contract contract) {
         this.contract = contract;
+    }
+
+    public User getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(User approvedBy) {
+        this.approvedBy = approvedBy;
     }
 
     public Set<ProductionOrder> getProductionOrders() {
