@@ -197,4 +197,9 @@ public class QuotationServiceImpl implements QuotationService {
 
         quotationRepository.save(quotation);
     }
+
+    @Override
+    public Long getQuotationIdByRfqId(long rfqId) {
+        return quotationRepository.findQuotationIdByRfqId(rfqId);
+    }
 }

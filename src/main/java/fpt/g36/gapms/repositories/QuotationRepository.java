@@ -120,4 +120,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
 
     Quotation findByRfqId(long rfqId);
+
+    @Query(value = "SELECT q.id FROM quotation q WHERE q.rfq_id = :rfqId", nativeQuery = true)
+    Long findQuotationIdByRfqId(long rfqId);
 }

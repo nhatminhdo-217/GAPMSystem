@@ -2,10 +2,7 @@ package fpt.g36.gapms.controller.technical;
 
 import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.services.QuotationService;
-import fpt.g36.gapms.services.RfqService;
-import fpt.g36.gapms.services.SolutionService;
-import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,8 @@ public class SaleApprovedRfqController {
     private final SolutionService solutionService;
     @Autowired
     private QuotationService quotationService;
+    @Autowired
+    private MailService mailService;
 
     public SaleApprovedRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
         this.rfqService = rfqService;
@@ -178,6 +177,10 @@ public class SaleApprovedRfqController {
             Rfq updatedRfq = rfqService.getRfqById(id);
 
             quotationService.createQuotationByRfqId(id);
+            Long quotationId = quotationService.getQuotationIdByRfqId(id);
+            Optional<User> customer = userService.findUsersByRfqId(id);
+
+            mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), quotationId);
 
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
             model.addAttribute("success", "Solution và Quotation đã được gửi thành công!");

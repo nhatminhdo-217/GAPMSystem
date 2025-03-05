@@ -18,4 +18,6 @@ public interface QuotationService {
     void notApprovedQuotation(long quotationId);
 
     void createQuotationByRfqId(long rfqId);
+
+    Long getQuotationIdByRfqId(long rfqId);
 }

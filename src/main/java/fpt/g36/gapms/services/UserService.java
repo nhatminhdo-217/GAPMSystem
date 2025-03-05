@@ -31,4 +31,5 @@ public interface UserService {
 
     Page<User> getAccounts(Pageable pageable);
 
+    Optional<User> findUsersByRfqId(long rfqId);
 }
