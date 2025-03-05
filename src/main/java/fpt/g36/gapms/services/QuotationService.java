@@ -1,10 +1,8 @@
 package fpt.g36.gapms.services;
 
-import fpt.g36.gapms.models.dto.quotation.QuotationCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
-import fpt.g36.gapms.models.entities.Quotation;
 import org.springframework.data.domain.Page;
 
 public interface QuotationService {
@@ -18,4 +16,6 @@ public interface QuotationService {
     void approvedQuotation(long quotationId);
 
     void notApprovedQuotation(long quotationId);
+
+    void createQuotationByRfqId(long rfqId);
 }

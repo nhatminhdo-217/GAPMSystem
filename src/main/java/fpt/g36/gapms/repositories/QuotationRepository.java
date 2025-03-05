@@ -38,6 +38,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
     @Query(value = "SELECT " +
             "q.id AS quotationId, " +
             "u.name AS userName, " +
+            "q.is_accepted AS isAccepted, " +
             "p.name AS productName, " +
             "b.name AS brandName, " +
             "cate.name AS categoryName, " +
