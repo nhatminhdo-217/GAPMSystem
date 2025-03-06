@@ -32,12 +32,12 @@
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-<!--    <div id="spinner"-->
-<!--         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">-->
-<!--        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">-->
-<!--            <span class="sr-only">Loading...</span>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <!-- Spinner End -->
 
     <!-- Sidebar Start -->
@@ -92,36 +92,7 @@
                     <button type="submit" class="btn btn-primary">Lọc</button>
                 </div>
             </form>
-
-            <!-- Danh sách báo giá -->
-<!--            <div th:each="quotation : ${quotations.content}">-->
-<!--                <h5 class="text-primary">-->
-<!--                    <span th:text="${quotation.userName}"></span> - -->
-<!--                    Mã báo giá: <span th:text="${quotation.quotationId}"></span>-->
-<!--                </h5>-->
-<!--                <table class="table table-bordered table-striped">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>Tên sản phẩm</th>-->
-<!--                        <th>Thương hiệu</th>-->
-<!--                        <th>Loại</th>-->
-<!--                        <th>Giá theo màu (VND)</th>-->
-<!--                        <th>Ghi chú</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <tr th:each="product : ${quotation.products}">-->
-<!--                        <td th:text="${product.productName}"></td>-->
-<!--                        <td th:text="${product.brandName}"></td>-->
-<!--                        <td th:text="${product.categoryName}"></td>-->
-<!--                        <td th:text="${product.color} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>-->
-<!--                        <td th:text="${product.noteColor}"></td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--                <hr>-->
-<!--            </div>-->
-
+          
             <div class="row g-3">
                 <div class="col-12 d-flex align-items-start" th:each="quotation, iterStat : ${quotations.content}">
                     <div class="me-3" style="margin-top: 10px;">
@@ -142,17 +113,17 @@
                                     <span th:text="${quotation.quotationId}"></span>
                                 </div>
                                 <div class="text-start me-3">
-                                    <strong>Số lượng sản phẩm</strong><br>
-                                    <span th:id="'product-count-' + ${quotation.quotationId}" th:text="${quotation.products.size()}"></span>
+                                    <strong>Tên khách hàng</strong><br>
+                                    <span th:text="${quotation.userName}"></span>
                                 </div>
-<!--                                <div class="text-start me-3">-->
-<!--                                    <strong>Ngày tạo đơn</strong><br>-->
-<!--                                    <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>-->
-<!--                                </div>-->
-<!--                                <div class="text-start me-3">-->
-<!--                                    <strong>Nhân viên phụ trách</strong><br>-->
-<!--                                    <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>-->
-<!--                                </div>-->
+                                <div class="text-start me-3">
+                                    <strong>Số lượng sản phẩm</strong><br>
+                                    <span th:text="${#lists.size(quotation.products)}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Ngày tạo đơn</strong><br>
+                                    <span th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></span>
+                                </div>
                                 <div class="text-start me-3">
                                     <strong>Trạng thái đơn hàng</strong><br>
                                     <span th:switch="${quotation.isAccepted}">
@@ -190,7 +161,7 @@
                                         <td th:text="${productIter.count}"></td>
                                         <td th:text="${product.productName} + ' - ' + ${product.brandName} + ' - ' + ${product.categoryName}"></td>
                                         <td th:text="${product.noteColor}"></td>
-                                        <td th:text="${product.color} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
+                                        <td th:text="${product.price}"></td>
 <!--                                        <td class="text-center">-->
 <!--                                            <div class="d-flex justify-content-center gap-2">-->
 <!--                                                <a href="#" class="text-danger" title="Delete"-->

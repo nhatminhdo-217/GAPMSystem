@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,19 +56,21 @@ public class QuotationServiceImpl implements QuotationService {
         quotationInfoDTO.setUserName(quotationDetail.get(0).getUserName());
         quotationInfoDTO.setCompanyName(quotationDetail.get(0).getCompanyName());
         quotationInfoDTO.setTaxNumber(quotationDetail.get(0).getTaxNumber());
-        quotationInfoDTO.setProductName(quotationDetail.get(0).getProductName());
+        quotationInfoDTO.setCompanyAddress(quotationDetail.get(0).getCompanyAddress());
+        quotationInfoDTO.setIsAccepted(quotationDetail.get(0).getIsAccepted().name());
+        quotationInfoDTO.setSolutionId(quotationDetail.get(0).getSolutionId());
         quotationInfoDTO.setExpectedDate(quotationDetail.get(0).getExpectedDate());
         quotationInfoDTO.setActualDate(quotationDetail.get(0).getActualDate());
-        quotationInfoDTO.setReason(quotationDetail.get(0).getReason());
 
         List<QuotationDetailDTO> products = quotationDetail.stream()
                 .map(p -> {
                     QuotationDetailDTO product = new QuotationDetailDTO();
+                    product.setProductName(p.getProductName());
                     product.setBrandName(p.getBrandName());
                     product.setCategoryName(p.getCategoryName());
-                    product.setColor(p.getIsColor());
                     product.setPrice(p.getPrice());
                     product.setNoteColor(p.getNoteColor());
+                    product.setQuantity(p.getQuantity());
                     return product;
                 })
                 .toList();
@@ -80,7 +84,6 @@ public class QuotationServiceImpl implements QuotationService {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Object[]> rawResults = quotationRepository.findAllWithFilters(search, product, brand, category, pageable);
 
-
         Map<Long, QuotationListDTO> quotationMap = new HashMap<>();
         for (Object[] row : rawResults.getContent()) {
             Long quotationId = (Long) row[0];
@@ -89,15 +92,18 @@ public class QuotationServiceImpl implements QuotationService {
             String productName = (String) row[3];
             String brandName = (String) row[4];
             String categoryName = (String) row[5];
-            Boolean isColor = (Boolean) row[6];
-            BigDecimal price = (BigDecimal) row[7];
-            String noteColor = (String) row[8];
+            BigDecimal price = (BigDecimal) row[6];
+            String noteColor = (String) row[7];
+            Timestamp timestamp = (Timestamp) row[8];
+            LocalDate createAt = timestamp.toLocalDateTime().toLocalDate();
+            Integer quantity = (Integer) row[9];
 
             quotationMap.computeIfAbsent(quotationId, id -> {
                 QuotationListDTO dto = new QuotationListDTO();
                 dto.setQuotationId(quotationId);
                 dto.setUserName(userName);
                 dto.setIsAccepted(isAccepted);
+                dto.setCreateAt(createAt);
                 dto.setProducts(new ArrayList<>());
                 return dto;
             });
@@ -106,9 +112,9 @@ public class QuotationServiceImpl implements QuotationService {
             productDetail.setProductName(productName);
             productDetail.setBrandName(brandName);
             productDetail.setCategoryName(categoryName);
-            productDetail.setColor(isColor);
             productDetail.setPrice(price);
             productDetail.setNoteColor(noteColor);
+            productDetail.setQuantity(quantity);
             quotationMap.get(quotationId).getProducts().add(productDetail);
         }
 

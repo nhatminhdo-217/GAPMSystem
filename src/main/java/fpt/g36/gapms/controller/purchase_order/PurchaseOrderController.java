@@ -1,5 +1,6 @@
 package fpt.g36.gapms.controller.purchase_order;
 
+import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
@@ -23,6 +24,18 @@ public class PurchaseOrderController {
     public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
+    }
+
+    @GetMapping("/list")
+    public String listPurchaseOrders(Model model) {
+
+        userUtils.getOptionalUser(model);
+
+        List<PurchaseOrderDTO> orders = purchaseOrderService.getAllPurchaseOrder();
+
+        model.addAttribute("orders", orders);
+
+        return "purchase-order/list_purchase_order";
     }
 
     @GetMapping("/detail/{id}")
