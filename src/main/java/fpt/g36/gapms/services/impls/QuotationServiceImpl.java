@@ -3,6 +3,7 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.quotation.*;
+import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.RfqDetail;
@@ -32,15 +33,23 @@ public class QuotationServiceImpl implements QuotationService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final CateBrandPriceService cateBrandPriceService;
+
+    private PurchaseOrderRepository purchaseOrderRepository;
+
     private final RfqService rfqService;
 
-    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, RfqService rfqService) {
+    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService) {
+
         this.quotationRepository = quotationRepository;
         this.brandRepository = brandRepository;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.cateBrandPriceService = cateBrandPriceService;
+
+        this.purchaseOrderRepository  = purchaseOrderRepository;
+
         this.rfqService = rfqService;
+
     }
 
     @Override
@@ -170,6 +179,12 @@ public class QuotationServiceImpl implements QuotationService {
         }
           quotation.setIsAccepted(BaseEnum.APPROVED);
           quotationRepository.save(quotation);
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setQuotation(quotation);
+        purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
+        purchaseOrderRepository.save(purchaseOrder);
+
     }
 
     @Override

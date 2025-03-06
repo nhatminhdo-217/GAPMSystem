@@ -202,7 +202,14 @@
         }
     });
 
-
 })(jQuery);
 
+function showTab(index) {
+    document.querySelectorAll('.vc_tta-panel').forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+    });
 
+    document.querySelectorAll('.tab-button').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+    });
+}
