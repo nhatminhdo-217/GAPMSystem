@@ -32,12 +32,12 @@
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-<!--    <div id="spinner"-->
-<!--         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">-->
-<!--        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">-->
-<!--            <span class="sr-only">Loading...</span>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <!-- Spinner End -->
 
     <!-- Sidebar Start -->
@@ -52,6 +52,9 @@
 
         <!-- Content Start -->
         <div class="container mt-4">
+
+            <div class="header"><h3>Danh sách báo giá</h3></div>
+
             <!-- Filter Form -->
             <form class="row mb-4" th:action="@{/quotation/list}" method="get">
                 <div class="col-md-3">
@@ -89,34 +92,103 @@
                     <button type="submit" class="btn btn-primary">Lọc</button>
                 </div>
             </form>
+          
+            <div class="row g-3">
+                <div class="col-12 d-flex align-items-start" th:each="quotation, iterStat : ${quotations.content}">
+                    <div class="me-3" style="margin-top: 10px;">
+                        <span class="fw-bold" style="font-size: 16px;" th:text="${iterStat.count}"></span>
+                    </div>
+                    <div class="card flex-grow-1 mb-3"
+                         style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
+                            <button class="btn btn-link toggle-btn" data-toggle="collapse"
+                                    th:data-target="'#details-' + ${iterStat.count}"
+                                    style="padding: 0; color: #dc3545; text-decoration: none;">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
+                                 style="width: 80%;">
+                                <div class="text-start me-3">
+                                    <strong>Mã báo giá</strong><br>
+                                    <span th:text="${quotation.quotationId}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Tên khách hàng</strong><br>
+                                    <span th:text="${quotation.userName}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Số lượng sản phẩm</strong><br>
+                                    <span th:text="${#lists.size(quotation.products)}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Ngày tạo đơn</strong><br>
+                                    <span th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Trạng thái đơn hàng</strong><br>
+                                    <span th:switch="${quotation.isAccepted}">
+                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
+                                               style="color: green;">
+                                         </span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
+                                                style="color: #ffc107;">
+                                          </span>
+                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
+                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <a th:href="@{'/quotation/detail/' + ${quotation.quotationId}}"
+                                   class="btn btn-primary" style="padding: 5px 10px;">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                        <div class="collapse" th:id="'details-' + ${iterStat.count}">
+                            <div class="card-body p-4" style="background-color: #fff; border-radius: 0 0 8px 8px;">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>Số thứ tự</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Màu</th>
+                                        <th>Giá theo màu (VND)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="product, productIter : ${quotation.products}">
+                                        <td th:text="${productIter.count}"></td>
+                                        <td th:text="${product.productName} + ' - ' + ${product.brandName} + ' - ' + ${product.categoryName}"></td>
+                                        <td th:text="${product.noteColor}"></td>
+                                        <td th:text="${product.price}"></td>
+<!--                                        <td class="text-center">-->
+<!--                                            <div class="d-flex justify-content-center gap-2">-->
+<!--                                                <a href="#" class="text-danger" title="Delete"-->
+<!--                                                   th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED }and ${#lists.size(rfq.rfqDetails) > 1}"-->
+<!--                                                   th:onclick="'deleteDetail(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">-->
+<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
+<!--                                                </a>-->
+<!--                                                <a href="#" class="text-danger" title="Delete"-->
+<!--                                                   th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED} and ${#lists.size(rfq.rfqDetails) == 1}"-->
+<!--                                                   th:onclick="showApprovalAlertCountLessThan1()">-->
+<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
+<!--                                                </a>-->
+<!--                                                <a href="#" class="text-danger" title="Delete"-->
+<!--                                                   th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"-->
+<!--                                                   th:onclick="showApprovalAlert()">-->
+<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                        </td>-->
+                                    </tr>
+                                    </tbody>
+                                </table>
 
-            <!-- Danh sách báo giá -->
-            <div th:each="quotation : ${quotations.content}">
-                <h5 class="text-primary">
-                    <span th:text="${quotation.userName}"></span> -
-                    Mã báo giá: <span th:text="${quotation.quotationId}"></span>
-                </h5>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>Tên sản phẩm</th>
-                        <th>Thương hiệu</th>
-                        <th>Loại</th>
-                        <th>Giá theo màu (VND)</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="product : ${quotation.products}">
-                        <td th:text="${product.productName}"></td>
-                        <td th:text="${product.brandName}"></td>
-                        <td th:text="${product.categoryName}"></td>
-                        <td th:text="${product.color} ? ${product.price} + ' - Màu' : ${product.price} + ' - Trắng'"></td>
-                        <td th:text="${product.noteColor}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Pagination -->
@@ -158,5 +230,20 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
 </body>
 </html>

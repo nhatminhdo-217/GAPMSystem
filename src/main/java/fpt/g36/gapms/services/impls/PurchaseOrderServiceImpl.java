@@ -1,6 +1,7 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
@@ -48,5 +49,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .orElseThrow(() -> new RuntimeException("Purchase order not found"));
         po.setStatus(BaseEnum.NOT_APPROVED);
         return purchaseOrderRepository.save(po);
+    }
+
+    @Override
+    public List<PurchaseOrderDTO> getAllPurchaseOrder() {
+
+        List<PurchaseOrder> orders = purchaseOrderRepository.findAll();
+
+        //Map PurchaseOrder to PurchaseOrderDTO
+        return orders.stream().map(order -> {
+            PurchaseOrderDTO dto = new PurchaseOrderDTO();
+            dto.setPurchaseOrderId(order.getId());
+            dto.setCustomerName(order.getQuotation().getRfq().getCreateBy().getUsername());
+            dto.setStatus(order.getStatus());
+            dto.setQuotationId(order.getQuotation().getId());
+            dto.setContractId(order.getContract() != null ? order.getContract().getId() : null);
+            dto.setApprovedByUserName(order.getApprovedBy().getUsername());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

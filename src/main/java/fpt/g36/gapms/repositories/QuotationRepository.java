@@ -18,9 +18,9 @@ import java.util.List;
 @Repository
 public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
-    @Query(value = "SELECT q.id as quotationId, u.name as username, c.name as companyname, c.tax_number, " +
-            "p.name as productname, b.name as brandname, cate.name as categoryname, " +
-            "cbp.is_color as isColor, cbp.price, rd.note_color, r.expect_delivery_date as expectedDate, s.actual_delivery_date as actualDate, s.reason " +
+    @Query(value = "SELECT q.id as quotationId, u.name as username, c.name as companyname, c.tax_number, c.address as companyaddress, " +
+            "q.is_accepted, s.id as solutionid ,p.name as productname, b.name as brandname, cate.name as categoryname, " +
+            "rd.quantity, cbp.price, rd.note_color, r.expect_delivery_date as expectedDate, s.actual_delivery_date as actualDate " +
             "FROM quotation q " +
             "JOIN rfq r ON q.rfq_id = r.id " +
             "JOIN rfq_detail rd ON r.id = rd.rfq_id " +
@@ -32,18 +32,20 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "JOIN company_user cu ON u.id = cu.user_id " +
             "JOIN company c ON cu.company_id = c.id " +
             "JOIN solution s ON r.id = s.rfq_id " +
-            "WHERE q.id = :quotationId", nativeQuery = true)
+            "WHERE q.id = :quotationId and cbp.is_color = 1", nativeQuery = true)
     List<QuotationInfoProjection> findQuotationDetail(@Param("quotationId") long id);
 
     @Query(value = "SELECT " +
             "q.id AS quotationId, " +
             "u.name AS userName, " +
+            "q.is_accepted AS isAccepted, " +
             "p.name AS productName, " +
             "b.name AS brandName, " +
             "cate.name AS categoryName, " +
-            "cbp.is_color AS isColor, " +  // Lấy has_color từ cate_brand_price
             "cbp.price AS price, " +
-            "rd.note_color AS noteColor " +
+            "rd.note_color AS noteColor, " +
+            "q.create_at AS createAt, " +
+            "rd.quantity " +
             "FROM quotation q " +
             "JOIN rfq r ON q.rfq_id = r.id " +
             "JOIN user u ON r.create_by = u.id " +
@@ -53,7 +55,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "JOIN category cate ON rd.cate_id = cate.id " +
             "JOIN cate_brand_price cbp " +
             "ON cbp.cate_id = rd.cate_id " +
-            "AND cbp.brand_id = rd.brand_id " + // Thêm điều kiện join cho has_color
+            "AND cbp.brand_id = rd.brand_id " +
             "WHERE " +
             "   (:search IS NULL OR :search = '' OR u.name LIKE %:search% OR p.name LIKE %:search% OR b.name LIKE %:search%) " +
             "   AND (:product IS NULL OR :product = '' OR p.name = :product) " +
@@ -119,4 +121,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
 
     Quotation findByRfqId(long rfqId);
+
+    @Query(value = "SELECT q.id FROM quotation q WHERE q.rfq_id = :rfqId", nativeQuery = true)
+    Long findQuotationIdByRfqId(long rfqId);
 }
