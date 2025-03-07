@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.dto.quotation;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -8,24 +9,26 @@ public class QuotationInfoDTO {
     private String userName;
     private String companyName;
     private String taxNumber;
-    private String productName;
-    private Date expectedDate;
-    private Date actualDate;
-    private String reason;
+    private String companyAddress;
+    private String isAccepted;
+    private LocalDate expectedDate;
+    private LocalDate actualDate;
+    private Long solutionId;
     private List<QuotationDetailDTO> products;
 
     public QuotationInfoDTO() {
     }
 
-    public QuotationInfoDTO(Long quotationId, String userName, String companyName, String taxNumber, String productName, Date expectedDate, Date actualDate, String reason, List<QuotationDetailDTO> products) {
+    public QuotationInfoDTO(Long quotationId, String userName, String companyName, String taxNumber, String companyAddress, String isAccepted, LocalDate expectedDate, LocalDate actualDate, Long solutionId, List<QuotationDetailDTO> products) {
         this.quotationId = quotationId;
         this.userName = userName;
         this.companyName = companyName;
         this.taxNumber = taxNumber;
-        this.productName = productName;
+        this.companyAddress = companyAddress;
+        this.isAccepted = isAccepted;
         this.expectedDate = expectedDate;
         this.actualDate = actualDate;
-        this.reason = reason;
+        this.solutionId = solutionId;
         this.products = products;
     }
 
@@ -61,36 +64,36 @@ public class QuotationInfoDTO {
         this.taxNumber = taxNumber;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getCompanyAddress() {
+        return companyAddress;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setCompanyAddress(String companyAddress) {
+        this.companyAddress = companyAddress;
     }
 
-    public Date getExpectedDate() {
+    public String getIsAccepted() {
+        return isAccepted;
+    }
+
+    public void setIsAccepted(String isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+
+    public LocalDate getExpectedDate() {
         return expectedDate;
     }
 
-    public void setExpectedDate(Date expectedDate) {
+    public void setExpectedDate(LocalDate expectedDate) {
         this.expectedDate = expectedDate;
     }
 
-    public Date getActualDate() {
+    public LocalDate getActualDate() {
         return actualDate;
     }
 
-    public void setActualDate(Date actualDate) {
+    public void setActualDate(LocalDate actualDate) {
         this.actualDate = actualDate;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     public List<QuotationDetailDTO> getProducts() {
@@ -99,5 +102,13 @@ public class QuotationInfoDTO {
 
     public void setProducts(List<QuotationDetailDTO> products) {
         this.products = products;
+    }
+
+    public Long getSolutionId() {
+        return solutionId;
+    }
+
+    public void setSolutionId(Long solutionId) {
+        this.solutionId = solutionId;
     }
 }

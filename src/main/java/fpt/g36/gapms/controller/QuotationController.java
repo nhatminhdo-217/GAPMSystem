@@ -3,16 +3,12 @@ package fpt.g36.gapms.controller;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
-import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.services.BrandService;
 import fpt.g36.gapms.services.CategoryService;
 import fpt.g36.gapms.services.ProductService;
 import fpt.g36.gapms.services.QuotationService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -76,12 +72,12 @@ public class QuotationController {
         return "quotation/quotation_detail";
     }
 
-//    @PostMapping("/detail/{id}")
-//    public String postQuotationDetail(@PathVariable("id") int id, Model model) {
-//
-//
-//        return "quotation/quotation_detail";
-//    }
+    @PostMapping("/detail/{id}")
+    public String postQuotationDetail(@PathVariable("id") int id, Model model) {
+
+
+        return "quotation/quotation_detail";
+    }
 
 
     @GetMapping("/quotation-customer/{rfq-id}")
