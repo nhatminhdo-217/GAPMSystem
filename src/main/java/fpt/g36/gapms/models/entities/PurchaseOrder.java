@@ -16,6 +16,10 @@ import java.util.Set;
 @Table(name = "purchase_order")
 public class PurchaseOrder extends BaseEntity {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer")
+    private User customer;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -33,8 +37,16 @@ public class PurchaseOrder extends BaseEntity {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    @OneToMany(mappedBy = "purchaseOrder")
-    private Set<ProductionOrder> productionOrders = new LinkedHashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manage_by")
+    private User manageBy;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "solution")
+    private Solution solution;
+
+    @OneToOne(mappedBy = "purchaseOrder")
+    private ProductionOrder productionOrder;
 
     @OneToMany(mappedBy = "purchaseOrder")
     private List<PurchaseOrderDetail> purchaseOrderDetails = new ArrayList<>();
@@ -42,13 +54,16 @@ public class PurchaseOrder extends BaseEntity {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, BaseEnum status, Quotation quotation, Contract contract, User approvedBy, Set<ProductionOrder> productionOrders, List<PurchaseOrderDetail> purchaseOrderDetails) {
-        super(id, createdAt, updatedAt);
+    public PurchaseOrder(Long id, LocalDateTime createAt, LocalDateTime updateAt, User customer, BaseEnum status, Quotation quotation, Contract contract, User approvedBy, User manageBy, Solution solution, ProductionOrder productionOrder, List<PurchaseOrderDetail> purchaseOrderDetails) {
+        super(id, createAt, updateAt);
+        this.customer = customer;
         this.status = status;
         this.quotation = quotation;
         this.contract = contract;
         this.approvedBy = approvedBy;
-        this.productionOrders = productionOrders;
+        this.manageBy = manageBy;
+        this.solution = solution;
+        this.productionOrder = productionOrder;
         this.purchaseOrderDetails = purchaseOrderDetails;
     }
 
@@ -84,12 +99,12 @@ public class PurchaseOrder extends BaseEntity {
         this.approvedBy = approvedBy;
     }
 
-    public Set<ProductionOrder> getProductionOrders() {
-        return productionOrders;
+    public ProductionOrder getProductionOrder() {
+        return productionOrder;
     }
 
-    public void setProductionOrders(Set<ProductionOrder> productionOrders) {
-        this.productionOrders = productionOrders;
+    public void setProductionOrder(ProductionOrder productionOrder) {
+        this.productionOrder = productionOrder;
     }
 
     public List<PurchaseOrderDetail> getPurchaseOrderDetails() {
@@ -98,5 +113,29 @@ public class PurchaseOrder extends BaseEntity {
 
     public void setPurchaseOrderDetails(List<PurchaseOrderDetail> purchaseOrderDetails) {
         this.purchaseOrderDetails = purchaseOrderDetails;
+    }
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
+
+    public User getManageBy() {
+        return manageBy;
+    }
+
+    public void setManageBy(User manageBy) {
+        this.manageBy = manageBy;
+    }
+
+    public Solution getSolution() {
+        return solution;
+    }
+
+    public void setSolution(Solution solution) {
+        this.solution = solution;
     }
 }

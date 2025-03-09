@@ -32,15 +32,20 @@ public class Product extends BaseEntity {
     @JsonIgnore
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "thread_id", nullable = false)
+    private Thread thread;
+
     public Product() {
     }
 
-    public Product(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, String description, Set<Brand> brands, Set<RfqDetail> rfqDetails) {
+    public Product(Long id, LocalDateTime createAt, LocalDateTime updateAt, String name, String description, Set<Brand> brands, Set<RfqDetail> rfqDetails, Thread thread) {
         super(id, createAt, updateAt);
         this.name = name;
         this.description = description;
         this.brands = brands;
         this.rfqDetails = rfqDetails;
+        this.thread = thread;
     }
 
     public String getName() {
@@ -73,5 +78,13 @@ public class Product extends BaseEntity {
 
     public void setRfqDetails(Set<RfqDetail> rfqDetails) {
         this.rfqDetails = rfqDetails;
+    }
+
+    public Thread getThread() {
+        return thread;
+    }
+
+    public void setThread(Thread thread) {
+        this.thread = thread;
     }
 }
