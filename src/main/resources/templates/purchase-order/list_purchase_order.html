@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Người duyệt</strong><br>
-                                    <span th:text="${order.approvedByUserName}"></span>
+                                    <span th:text="${order.approvedByUserName != null ? order.approvedByUserName : 'N/A'}"></span>
                                 </div>
                             </div>
                             <div>
