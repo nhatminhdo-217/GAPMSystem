@@ -302,10 +302,10 @@
                                         <strong>Ngày tạo đơn</strong><br>
                                         <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>
                                     </div>
-                                    <div class="text-start me-3">
+                                   <!-- <div class="text-start me-3">
                                         <strong>Nhân viên phụ trách</strong><br>
                                         <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>
-                                    </div>
+                                    </div>-->
                                     <div class="text-start me-3">
                                         <strong>Trạng thái đơn hàng</strong><br>
                                         <span th:switch="${rfq.getIsSent()}">
@@ -319,9 +319,16 @@
                                     </div>
                                 </div>
                                 <a
-                                   class="btn btn-primary"
+                                   class="btn btn-primary" th:if="${rfq.quotation != null}"
                                    th:href="@{/quotation/quotation-customer/{rfqId}(rfqId=${rfq.id})}"
                                    title="Xem báo giá">
+                                    Xem báo giá <i class="fas fa-eye"></i>
+                                </a>
+                                <a
+                                        class="btn btn-primary" th:if="${rfq.quotation == null}"
+                                        href="#"
+                                        th:onclick="showQuotationAlert()"
+                                        title="Xem báo giá">
                                     Xem báo giá <i class="fas fa-eye"></i>
                                 </a>
                                 <div class="dropdown ms-3">
@@ -692,6 +699,15 @@
             icon: 'warning',
             title: 'Không thể hủy đơn !',
             text: 'Trong lô phải có ít nhất 1 sản phẩm',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showQuotationAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Đơn báo giá chưa được duyêt!',
+            text: 'Vui lòng đợi duyệt báo giá, hệ thống sẽ thông báo về email quý khách sau khi đơn được duyệt',
             confirmButtonText: 'OK'
         });
     }
