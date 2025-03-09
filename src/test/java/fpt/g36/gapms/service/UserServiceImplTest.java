@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
@@ -43,7 +44,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findByEmailOrPhone_foundByEmail() {
+    void UserServiceImpl_findByEmailOrPhone_foundByEmail() {
         // Arrange
         Mockito.when(userRepository.findByEmailOrPhoneNumber("longaaccbb1605@gmail.com", "987654321")).thenReturn(Optional.of(user));
 
@@ -56,7 +57,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findByEmailOrPhone_foundByPhone() {
+    void UserServiceImpl_findByEmailOrPhone_foundByPhone() {
         // Arrange
         Mockito.when(userRepository.findByEmailOrPhoneNumber("test@example.com", "0969792482")).thenReturn(Optional.of(user));
 
@@ -69,7 +70,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findByEmailOrPhone_notFound() {
+    void UserServiceImpl_findByEmailOrPhone_notFound() {
 
         // Arrange
         Mockito.when(userRepository.findByEmailOrPhoneNumber("test@example.com", "987654321")).thenReturn(Optional.empty());
@@ -80,6 +81,7 @@ public class UserServiceImplTest {
         // Assert
         assertFalse(result.isPresent());
     }
+
 
     @AfterAll
     static void afterAll() {
