@@ -17,7 +17,7 @@ public class Regex {
      * (\\+84|0)         # start with +84 or 0
      * \\d{9,10}         # follow by 9 or 10 digits
      */
-    public static final String PHONENUMBER = "^(\\+84|0)\\d{9,10}$";
+    public static final String PHONENUMBER = "^(\\+84|0)\\d{8,9}$";
 
     public static final String EMAIL = "^[a-zA-Z0-9._%+-]+@gmail\\.com$";
 

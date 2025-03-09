@@ -1,20 +1,18 @@
 package fpt.g36.gapms.controller;
 
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
+import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
-import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.services.BrandService;
 import fpt.g36.gapms.services.CategoryService;
 import fpt.g36.gapms.services.ProductService;
 import fpt.g36.gapms.services.QuotationService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/quotation")
@@ -74,11 +72,47 @@ public class QuotationController {
         return "quotation/quotation_detail";
     }
 
-//    @PostMapping("/detail/{id}")
-//    public String postQuotationDetail(@PathVariable("id") int id, Model model) {
-//
-//
-//        return "quotation/quotation_detail";
-//    }
+    @PostMapping("/detail/{id}")
+    public String postQuotationDetail(@PathVariable("id") int id, Model model) {
+
+
+        return "quotation/quotation_detail";
+    }
+
+
+    @GetMapping("/quotation-customer/{rfq-id}")
+    public String getQuotationCustomer(@PathVariable("rfq-id") int rfqId,Model model) {
+
+        QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
+
+        userUtils.getOptionalUser(model);
+
+        model.addAttribute("quotation_customer", quotationCustomer);
+        return "quotation/quotation-customer";
+    }
+
+
+    @GetMapping("/quotation-customer-approved/{rfq-id}")
+    public String getQuotationCustomerApproved(@PathVariable("rfq-id") int rfqId,Model model, RedirectAttributes redirectAttributes) {
+
+        quotationService.approvedQuotation(rfqId);
+        QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
+
+        userUtils.getOptionalUser(model);
+        model.addAttribute("quotation_customer", quotationCustomer);
+        redirectAttributes.addFlashAttribute("approved", "Bạn đã chấp nhận đơn báo giá");
+        return "redirect:/quotation/quotation-customer/"+rfqId;
+    }
+    @GetMapping("/quotation-customer-cancel/{rfq-id}")
+    public String getQuotationCustomerCancel(@PathVariable("rfq-id") int rfqId, Model model, RedirectAttributes redirectAttributes) {
+
+        quotationService.notApprovedQuotation(rfqId);
+        QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
+
+        userUtils.getOptionalUser(model);
+        model.addAttribute("quotation_customer", quotationCustomer);
+        redirectAttributes.addFlashAttribute("cancel", "Bạn đã hủy đơn báo giá");
+        return "redirect:/quotation/quotation-customer/"+rfqId;
+    }
 
 }

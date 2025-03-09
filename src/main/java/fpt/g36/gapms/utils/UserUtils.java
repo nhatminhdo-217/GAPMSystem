@@ -30,4 +30,19 @@ public class UserUtils {
             }
         }
     }
+
+    public User getOptionalUserInfo(Model model) {
+        // Get the current user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+            if (optionalUser.isPresent()) {
+                model.addAttribute("user", optionalUser.get());
+                model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+                return optionalUser.get();
+            }
+        }
+        return null;
+    }
 }

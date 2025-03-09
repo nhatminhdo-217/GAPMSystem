@@ -1,6 +1,9 @@
 package fpt.g36.gapms.models.dto.quotation;
 
+import fpt.g36.gapms.enums.BaseEnum;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface QuotationInfoProjection {
@@ -8,13 +11,15 @@ public interface QuotationInfoProjection {
     String getUserName();
     String getCompanyName();
     String getTaxNumber();
+    String getCompanyAddress();
+    BaseEnum getIsAccepted();
+    Long getSolutionId();
     String getProductName();
-    Date getExpectedDate();
-    Date getActualDate();
-    String getReason();
+    LocalDate getExpectedDate();
+    LocalDate getActualDate();
     String getBrandName();
     String getCategoryName();
-    boolean isHasColor();
     BigDecimal getPrice();
     String getNoteColor();
+    Integer getQuantity();
 }

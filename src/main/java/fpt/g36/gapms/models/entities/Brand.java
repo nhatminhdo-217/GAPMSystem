@@ -1,5 +1,7 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +28,7 @@ public class Brand extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "production_id", nullable = false)
+    @JsonBackReference
     private Product production;
 
     @OneToMany(mappedBy = "brand")
@@ -33,6 +36,7 @@ public class Brand extends BaseEntity {
     private Set<CateBrandPrice> cateBrandPrices = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "brand")
+    @JsonIgnore
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
     public Brand() {

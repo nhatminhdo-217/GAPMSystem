@@ -16,6 +16,8 @@
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
@@ -197,6 +199,44 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 
+<!-- Thông báo lỗi -->
+<div th:if="${specificErrorMessage != null and !#lists.isEmpty(specificErrorMessage)}" th:remove="tag">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function () {
+            var errors = /*[[${specificErrorMessage}]]*/ null;
+            console.log("Danh sách lỗi từ server: ", errors || "Không có lỗi"); // Debug
+            if (errors && errors.length > 0) {
+                var errorList = errors.join("\n- ");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Có lỗi xảy ra:",
+                    html: "<ul style='list-style-type: none; padding-left: 0;'><li>- " + errorList.replace(/\n/g, "</li><li> ") + "</li></ul>",
+                    showConfirmButton: false,
+                    timer: 5000
+                });
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+<div th:if="${rfqNotFound != null}" th:remove="tag">
+    <script th:inline="javascript">
+        var errorr = /*[[${rfqNotFound}]]*/ null;
+        document.addEventListener("DOMContentLoaded", function () {
+            // Debug
+                Swal.fire({
+                    position: "top-end",
+                    icon: "errorr",
+                    title: "Có lỗi xảy ra:",
+                    showConfirmButton: false,
+                    timer: 5000
+                });
+        });
+
+    </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -207,7 +247,6 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script th:inline="javascript">
@@ -226,9 +265,8 @@
             success: function(response) {
                 console.log("Response from AJAX:", response); // Debug response
                 $('#productRows').append(response);
-                if (rowCount > 1) {
-                    $('.remove-row-btn').show();
-                }
+                updateRowNumbers(); // Đảm bảo cập nhật số thứ tự và data-row-number
+                updateRemoveButtons(); // Cập nhật trạng thái nút Xóa sau khi thêm dòng
             },
             error: function(xhr, status, error) {
                 console.error('Lỗi khi tải dòng mới:', error);
@@ -241,24 +279,32 @@
 
     $(document).on('click', '.remove-row-btn', function() {
         const rowNumber = $(this).data('row-number');
-        removeRow(rowNumber);
+        console.log("Click delete button with rowNumber: " + rowNumber); // Debug
+        if (rowNumber) { // Kiểm tra rowNumber có giá trị không
+            removeRow(rowNumber);
+        } else {
+            console.error("data-row-number is undefined for remove-row-btn");
+        }
     });
 
     function removeRow(rowNumber) {
-        $('#row-' + rowNumber).remove();
-        rowCount--;
-        if (rowCount <= 1) {
-            $('.remove-row-btn').hide();
+        console.log("Attempting to remove row-" + rowNumber); // Debug
+        if ($('#row-' + rowNumber).length) { // Kiểm tra phần tử có tồn tại không
+            $('#row-' + rowNumber).remove();
+            rowCount--;
+            updateRemoveButtons(); // Cập nhật trạng thái nút Xóa sau khi xóa dòng
+            updateRowNumbers(); // Cập nhật lại số thứ tự và data-row-number
+        } else {
+            console.error("Row not found: row-" + rowNumber);
         }
-        // Cập nhật lại số thứ tự và name của các dòng còn lại
-        updateRowNumbers();
     }
 
     function updateRowNumbers() {
         let rows = $('#productRows .form-row');
         rows.each(function(index) {
             let newIndex = index + 1;
-            $(this).attr('id', 'row-' + newIndex);
+            $(this).attr('id', 'row-' + newIndex); // Đảm bảo id được cập nhật đúng
+            console.log("Updating row ID to: row-" + newIndex); // Debug
             $(this).find('span.form-control').text(newIndex);
             $(this).find('select, input').each(function() {
                 let oldName = $(this).attr('name');
@@ -277,14 +323,26 @@
                     $(this).prev('label').attr('for', newFor);
                 }
             });
-            $(this).find('.remove-row-btn').attr('data-row-number', newIndex); // Cập nhật data-row-number
+            // Đảm bảo cập nhật data-row-number cho tất cả các phần tử liên quan
+            $(this).find('.remove-row-btn').attr('data-row-number', newIndex); // Cập nhật data-row-number cho nút Xóa
+            $(this).find('.form-select[data-row-number]').attr('data-row-number', newIndex); // Cập nhật data-row-number cho select
         });
         rowCount = rows.length;
+        updateRemoveButtons(); // Cập nhật trạng thái nút Xóa sau khi cập nhật số thứ tự
+    }
+
+    function updateRemoveButtons() {
+        if (rowCount <= 1) {
+            $('.remove-row-btn').hide(); // Ẩn tất cả nút Xóa nếu chỉ còn 1 dòng
+        } else {
+            $('.remove-row-btn').show(); // Hiển thị tất cả nút Xóa nếu có nhiều hơn 1 dòng
+        }
     }
 
     // Hàm AJAX để tải thương hiệu dựa trên sản phẩm
     $(document).on('change', '.form-select[data-row-number]', function() {
         const rowNumber = $(this).data('row-number');
+        console.log("Changed select with rowNumber: " + rowNumber + ", ID: " + $(this).attr('id')); // Debug
         if ($(this).attr('id').startsWith('product-')) {
             loadBrands(rowNumber);
         } else if ($(this).attr('id').startsWith('brand-')) {
@@ -340,6 +398,7 @@
             $('#category-' + rowNumber).empty().append('<option value="">Chọn danh mục</option>');
         }
     }
+
 </script>
 </body>
 </html>

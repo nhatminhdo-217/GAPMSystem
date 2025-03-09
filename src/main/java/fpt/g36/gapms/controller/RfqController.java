@@ -70,6 +70,9 @@ public class RfqController {
                 Company company = companyService.getCompanyByUserId(optionalUser.get().getId());
                 Pageable pageable = PageRequest.of(page, size);
                 Page<Rfq> rfqs = rfqService.getAllRfqsByUserId(optionalUser.get().getId(), pageable);
+                rfqs.forEach(rfq -> {
+                    System.err.println("User rfq" + rfq.getIsSent());
+                });
                 model.addAttribute("rfqs", rfqs.getContent());
                 model.addAttribute("currentPage", rfqs.getNumber()); // Trang hiện tại
                 model.addAttribute("totalPages", rfqs.getTotalPages());
@@ -145,8 +148,15 @@ public class RfqController {
 
     @GetMapping("/brands")
     @ResponseBody
-    public List<Brand> getBrandsByProductId(@RequestParam Long productId) {
-        return brandService.getBrandsByProductId(productId);
+    public ResponseEntity<List<Brand>> getBrandsByProductId(@RequestParam Long productId) {
+        try {
+            List<Brand> brands = brandService.getBrandsByProductId(productId);
+            System.out.println("Processing getBrandsByProductId for productId: " + productId + ", Found " + (brands != null ? brands.size() : 0) + " brands");
+            return ResponseEntity.ok(brands != null ? brands : new ArrayList<>()); // Trả về danh sách rỗng nếu null
+        } catch (Exception e) {
+            System.out.println("Error in getBrandsByProductId: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>()); // Trả về danh sách rỗng nếu lỗi
+        }
     }
 
     @GetMapping("/categories")
@@ -273,34 +283,94 @@ public class RfqController {
     @GetMapping("/edit-rfq-form")
     public String showEditRfqForm(@RequestParam Long rfqId, Model model) {
         userUtils.getOptionalUser(model);
-        Rfq rfq = rfqService.getRfqById(rfqId);
-        if (rfq == null || rfq.getId() == null) {
-            System.err.println("rfq null đấy");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
         }
+        try {
+            Long userId = optionalUser.get().getId();
+            Rfq rfq = rfqService.getRfqByIdAndUserId(rfqId, userId);
+            model.addAttribute("rfq", rfq);
 
-        model.addAttribute("rfq", rfq);
+        } catch (RuntimeException e) {
+
+            System.err.println("rfq null đấy: " + e.getMessage());
+            throw new RuntimeException("Mã lô không hợp lệ: ", e); // Ném exception để xử lý ở @ControllerAdvice // Trả về form rỗng với lỗi
+        }
         model.addAttribute("products", productService.getAllProducts());
-        System.err.println(("Products size: " + ( productService.getAllProducts() != null ? productService.getAllProducts().size() : "null")));
         model.addAttribute("brands", brandService.getAllBrands());
         model.addAttribute("categories", categoryService.getAllCategories());
+        System.err.println("Products size: " + (productService.getAllProducts() != null ? productService.getAllProducts().size() : "null"));
         return "request-for-quotation/edit-rfq-form";
     }
 
     @PostMapping("/update-rfq")
     public String updateRfq(@ModelAttribute Rfq rfq, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        System.out.println(("RFQ ID: " + rfq.getId()));
-        System.out.println("RFQ Details size: " + (rfq.getRfqDetails() != null ? rfq.getRfqDetails().size() : 0));
+        int index = 0;
+        List<String> errorMessages = new ArrayList<>();
+        for (RfqDetail detail : rfq.getRfqDetails()) {
+            Product product = detail.getProduct();
+            Brand brand = detail.getBrand();
+
+            if (product == null || product.getId() == null) {
+                bindingResult.rejectValue("rfqDetails[" + index + "].product", "error.rfqDetails", "Sản phẩm không được để trống");
+                System.err.println("Sản phẩm null tại index " + index);
+            } else {
+                Product fullProduct = productService.getProductById(product.getId());
+                if (fullProduct == null) {
+                    bindingResult.rejectValue("rfqDetails[" + index + "].product", "error.rfqDetails", "Sản phẩm không tồn tại");
+                } else {
+                    detail.setProduct(fullProduct);
+                }
+            }
+
+            if (brand == null || brand.getId() == null) {
+                bindingResult.rejectValue("rfqDetails[" + index + "].brand", "error.rfqDetails", "Thương hiệu không được để trống");
+                System.err.println("Thương hiệu null tại index " + index);
+            } else {
+                Brand fullBrand = brandService.getBrandById(brand.getId());
+                if (fullBrand == null) {
+                    bindingResult.rejectValue("rfqDetails[" + index + "].brand", "error.rfqDetails", "Thương hiệu không tồn tại");
+                } else {
+                    detail.setBrand(fullBrand);
+                }
+            }
+
+            if (detail.getProduct() != null && detail.getBrand() != null) {
+                if (!detail.getProduct().getBrands().contains(detail.getBrand())) {
+                    String errorMessage = "Thương hiệu " + detail.getBrand().getName() + " không thuộc sản phẩm " + detail.getProduct().getName();
+                    bindingResult.rejectValue("rfqDetails[" + index + "].brand", "error.rfqDetails", errorMessage);
+                    errorMessages.add(errorMessage);
+
+                    System.err.println("Đã thêm specificErrorMessage: " + errorMessage); // Log để kiểm tra
+                }
+            }
+            index++;
+            model.addAttribute("specificErrorMessage", errorMessages);
+        }
 
         if (bindingResult.hasErrors()) {
+            userUtils.getOptionalUser(model);
+            System.err.println("Có lỗi ở RFQ ID: " + rfq.getId());
             model.addAttribute("products", productService.getAllProducts());
             model.addAttribute("brands", brandService.getAllBrands());
             model.addAttribute("categories", categoryService.getAllCategories());
-            return "request-for-quotation/edit-rfq-form";
+            return "request-for-quotation/edit-rfq-form"; // Trả lại form
         }
 
         rfqDetailService.editRfqDetail(rfq);
         redirectAttributes.addFlashAttribute("editRfqDetailSuccessMessage", "Cập nhật thành công yêu cầu báo giá");
         return "redirect:/request-for-quotation/view-list";
     }
+
+
+    /*@GetMapping("/edit/brands")
+    public ResponseEntity<List<Brand>> getBrandsByProductIdEdit(@RequestParam("productId") Long productId) {
+        Product product = productService.getProductById(productId);
+        List<Brand> brands = new ArrayList<>(product.getBrands()); // Lấy danh sách Brand từ Product
+        return ResponseEntity.ok(brands);
+    }*/
 }
 
