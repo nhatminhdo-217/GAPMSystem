@@ -23,7 +23,6 @@ public class Thread extends BaseEntity{
     @Column(name = "convert_rate", precision = 10, scale = 4)
     private BigDecimal convert_rate;
 
-    @NotNull
     @OneToOne
     @JoinColumn(name = "process_id", nullable = false)
     private WindingProcess process;
