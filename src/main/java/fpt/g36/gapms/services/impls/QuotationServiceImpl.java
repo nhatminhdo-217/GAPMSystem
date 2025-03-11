@@ -33,10 +33,9 @@ public class QuotationServiceImpl implements QuotationService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final CateBrandPriceService cateBrandPriceService;
-
+    private final RfqService rfqService;
     private PurchaseOrderRepository purchaseOrderRepository;
 
-    private final RfqService rfqService;
 
     public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService) {
 
@@ -45,11 +44,8 @@ public class QuotationServiceImpl implements QuotationService {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.cateBrandPriceService = cateBrandPriceService;
-
-        this.purchaseOrderRepository  = purchaseOrderRepository;
-
         this.rfqService = rfqService;
-
+        this.purchaseOrderRepository  = purchaseOrderRepository;
     }
 
     @Override

@@ -35,22 +35,18 @@ public class Quotation extends BaseEntity {
     @OneToOne(mappedBy = "quotation")
     private PurchaseOrder purchaseOrder;
 
-    @OneToMany(mappedBy = "quotation")
-    private Set<PurchaseOrderPrice> purchaseOrderPrices = new LinkedHashSet<>();
-
     @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuotationDetail> quotationDetails = new ArrayList<>();
 
     public Quotation() {
     }
 
-    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, PurchaseOrder purchaseOrder, Set<PurchaseOrderPrice> purchaseOrderPrices, List<QuotationDetail> quotationDetails) {
+    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, PurchaseOrder purchaseOrder, List<QuotationDetail> quotationDetails) {
         super(id, createAt, updateAt);
         this.isCanceled = isCanceled;
         this.isAccepted = isAccepted;
         this.rfq = rfq;
         this.purchaseOrder = purchaseOrder;
-        this.purchaseOrderPrices = purchaseOrderPrices;
         this.quotationDetails = quotationDetails;
     }
 
@@ -84,14 +80,6 @@ public class Quotation extends BaseEntity {
 
     public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
         this.purchaseOrder = purchaseOrder;
-    }
-
-    public Set<PurchaseOrderPrice> getPurchaseOrderPrices() {
-        return purchaseOrderPrices;
-    }
-
-    public void setPurchaseOrderPrices(Set<PurchaseOrderPrice> purchaseOrderPrices) {
-        this.purchaseOrderPrices = purchaseOrderPrices;
     }
 
     public BaseEnum getIsAccepted() {
