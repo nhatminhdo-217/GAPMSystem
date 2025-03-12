@@ -103,7 +103,7 @@ public class AccountController {
         int end = Math.min(start + pageable.getPageSize(), allUsers.size());
         List<User> paginatedUsers = allUsers.subList(start, end);
         Page<User> users = new PageImpl<>(paginatedUsers, pageable, allUsers.size());
-
+        userUtils.getOptionalUser(model);
         model.addAttribute("account", users);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", users.getTotalPages() > 0 ? users.getTotalPages() : 1);
@@ -140,10 +140,10 @@ public class AccountController {
     public String updateAccount(@PathVariable Long id,
 
             @ModelAttribute("user") UserDTO userDTO,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes, Model model) {
 
         userService.updateUser(id, userDTO);
-
+        userUtils.getOptionalUser(model);
         // Thêm thông báo thành công vào RedirectAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
         return "redirect:/admin/account_detail/" + id;
@@ -178,10 +178,12 @@ public class AccountController {
 
         if (accountService.existsByEmail(createAccountDTO.getEmail())) {
             result.rejectValue("email", "error.email", "Email này đã được sử dụng!");
+            userUtils.getOptionalUser(model);
             hasDuplicateError = true;
         }
         if (accountService.existsByPhoneNumber(createAccountDTO.getPhoneNumber())) {
             result.rejectValue("phoneNumber", "error.phoneNumber", "Số điện thoại này đã được sử dụng!");
+            userUtils.getOptionalUser(model);
             hasDuplicateError = true;
         }
         if (hasDuplicateError) {
@@ -194,24 +196,28 @@ public class AccountController {
             User newUser = accountService.createAccount(createAccountDTO, randomPassword);
             if (newUser != null) {
                 emailService.sendPasswordEmail(createAccountDTO.getEmail(), randomPassword);
+                userUtils.getOptionalUser(model);
                 model.addAttribute("roles", roleService.getAllRoles());
                 return "redirect:/admin/account_create?success=true";
             } else {
                 model.addAttribute("error", "Lỗi khi lưu tài khoản vào database!");
                 model.addAttribute("roles", roleService.getAllRoles());
+                userUtils.getOptionalUser(model);
                 return "home-page/account_create";
             }
 
         } catch (Exception e) {
             model.addAttribute("error", "Lỗi khi tạo tài khoản: " + e.getMessage());
+            userUtils.getOptionalUser(model);
+            model.addAttribute("roles", roleService.getAllRoles());
             return "home-page/account_create";
         }
     }
 
     @GetMapping("/{id}/toggle-status")
-    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
         User user = userService.getUserById(id);
-
+        userUtils.getOptionalUser(model);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "User not found!");
             return "redirect:/admin/list_account";
@@ -228,7 +234,7 @@ public class AccountController {
         List<Role> roles = roleRepository.findAll();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
-
+        userUtils.getOptionalUser(model);
         return "home-page/view_account_detail";
     }
 }

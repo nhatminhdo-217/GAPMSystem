@@ -64,7 +64,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             dto.setStatus(order.getStatus());
             dto.setQuotationId(order.getQuotation().getId());
             dto.setContractId(order.getContract() != null ? order.getContract().getId() : null);
-            dto.setApprovedByUserName(order.getApprovedBy().getUsername());
+            dto.setApprovedByUserName(order.getApprovedBy() != null ? order.getApprovedBy().getUsername() : null);
             return dto;
         }).collect(Collectors.toList());
     }

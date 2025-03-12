@@ -3,14 +3,11 @@ package fpt.g36.gapms.models.entities;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "purchase_order_detail")
 public class PurchaseOrderDetail extends BaseEntity{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "purchase_order_id", nullable = false)
@@ -28,36 +25,27 @@ public class PurchaseOrderDetail extends BaseEntity{
     @JoinColumn(name = "category_id")
     private Category category;
 
+    private String note_color;
+
     private Integer quantity;
 
     private BigDecimal unitPrice;
 
-    @Transient
-    public BigDecimal getTotalAmount(){
-        return this.unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
+    private BigDecimal totalPrice;
 
     public PurchaseOrderDetail() {
     }
 
-    public PurchaseOrderDetail(Long id, PurchaseOrder purchaseOrder, Product product, Brand brand, Category category, Integer quantity, BigDecimal unitPrice) {
-        this.id = id;
+    public PurchaseOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, PurchaseOrder purchaseOrder, Product product, Brand brand, Category category, String note_color, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
+        super(id, createAt, updateAt);
         this.purchaseOrder = purchaseOrder;
         this.product = product;
         this.brand = brand;
         this.category = category;
+        this.note_color = note_color;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
+        this.totalPrice = totalPrice;
     }
 
     public PurchaseOrder getPurchaseOrder() {
@@ -92,6 +80,14 @@ public class PurchaseOrderDetail extends BaseEntity{
         this.category = category;
     }
 
+    public String getNote_color() {
+        return note_color;
+    }
+
+    public void setNote_color(String note_color) {
+        this.note_color = note_color;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -106,5 +102,13 @@ public class PurchaseOrderDetail extends BaseEntity{
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }
