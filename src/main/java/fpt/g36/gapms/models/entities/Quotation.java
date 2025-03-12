@@ -27,6 +27,10 @@ public class Quotation extends BaseEntity {
     @Column(name = "is_accepted")
     private BaseEnum isAccepted;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "rfq_id", nullable = false)
@@ -41,10 +45,11 @@ public class Quotation extends BaseEntity {
     public Quotation() {
     }
 
-    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, PurchaseOrder purchaseOrder, List<QuotationDetail> quotationDetails) {
+    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, User createdBy, Rfq rfq, PurchaseOrder purchaseOrder, List<QuotationDetail> quotationDetails) {
         super(id, createAt, updateAt);
         this.isCanceled = isCanceled;
         this.isAccepted = isAccepted;
+        this.createdBy = createdBy;
         this.rfq = rfq;
         this.purchaseOrder = purchaseOrder;
         this.quotationDetails = quotationDetails;
@@ -64,6 +69,14 @@ public class Quotation extends BaseEntity {
 
     public void setAccepted(BaseEnum accepted) {
         isAccepted = accepted;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Rfq getRfq() {

@@ -22,16 +22,22 @@ public class PurchaseOrderDTO {
 
     private String approvedByUserName;
 
+    private String createByUserName;
+
+    private LocalDate createAt;
+
     public PurchaseOrderDTO() {
     }
 
-    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, BaseEnum status, Long quotationId, String contractId, String approvedByUserName) {
+    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, BaseEnum status, Long quotationId, String contractId, String approvedByUserName, String createByUserName, LocalDate createAt) {
         this.purchaseOrderId = purchaseOrderId;
         this.customerName = customerName;
         this.status = status;
         this.quotationId = quotationId;
         this.contractId = contractId;
         this.approvedByUserName = approvedByUserName;
+        this.createByUserName = createByUserName;
+        this.createAt = createAt;
     }
 
     public Long getPurchaseOrderId() {
@@ -81,5 +87,21 @@ public class PurchaseOrderDTO {
 
     public void setApprovedByUserName(String approvedByUserName) {
         this.approvedByUserName = approvedByUserName;
+    }
+
+    public String getCreateByUserName() {
+        return createByUserName;
+    }
+
+    public void setCreateByUserName(String createByUserName) {
+        this.createByUserName = createByUserName;
+    }
+
+    public LocalDate getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
     }
 }

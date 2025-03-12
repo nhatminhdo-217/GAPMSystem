@@ -60,7 +60,12 @@
         <!-- main content start -->
         <div class="container mt-4">
 
-            <div class="header mt-3"><h3>Danh sách đơn hàng</h3></div>
+            <div class="header mt-3" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                <h3>Đơn hàng cần phê duyệt</h3>
+            </div>
+            <div class="header mt-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+                <h3>Danh sách đơn hàng</h3>
+            </div>
 
             <!-- Filter Form -->
 <!--            <form class="row mb-4" th:action="@{/quotation/list}" method="get">-->
@@ -101,7 +106,7 @@
 <!--            </form>-->
 
             <div class="row g-3">
-                <div class="col-12 d-flex align-items-center" th:each="order, orderIter : ${orders}">
+                <div class="col-12 d-flex align-items-center" th:each="order, orderIter : ${orders}" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
                     <div class="me-3">
                         <span class="fw-bold" style="font-size: 16px;" th:text="${orderIter.count}"></span>
                     </div>
@@ -128,7 +133,10 @@
                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
                                                style="color: green;">
                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
+                                                style="color: #ffc107;">
+                                          </span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"
                                                 style="color: #ffc107;">
                                           </span>
                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
@@ -142,6 +150,45 @@
                                 <div class="text-start me-3">
                                     <strong>Người duyệt</strong><br>
                                     <span th:text="${order.approvedByUserName}"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <a th:href="@{'/purchase-order/detail/' + ${order.purchaseOrderId}}"
+                                   class="btn btn-primary" style="padding: 5px 10px;">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex align-items-center" th:each="order, orderIter : ${orders}" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                    <div class="me-3">
+                        <span class="fw-bold" style="font-size: 16px;" th:text="${orderIter.count}"></span>
+                    </div>
+                    <div class="card flex-grow-1 mb-3"
+                         style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
+                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
+                                 style="width: 80%; text-align-last: center">
+                                <div class="text-start me-3">
+                                    <strong>Mã đơn hàng</strong><br>
+                                    <span th:text="${order.purchaseOrderId}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Mã báo giá</strong><br>
+                                    <span th:text="${order.quotationId}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Tên khách hàng</strong><br>
+                                    <span th:text="${order.customerName}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Người tạo đơn</strong><br>
+                                    <span th:text="${order.createByUserName}"></span>
+                                </div>
+                                <div class="text-start me-3">
+                                    <strong>Ngày tạo đơn</strong><br>
+                                    <span th:text="${#temporals.format(order.createAt, 'dd-MM-yyy')}"></span>
                                 </div>
                             </div>
                             <div>

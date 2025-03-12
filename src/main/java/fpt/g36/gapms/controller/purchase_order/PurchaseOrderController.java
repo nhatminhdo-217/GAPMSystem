@@ -4,6 +4,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.stereotype.Controller;
@@ -31,9 +32,11 @@ public class PurchaseOrderController {
 
         userUtils.getOptionalUser(model);
 
-        List<PurchaseOrderDTO> orders = purchaseOrderService.getAllPurchaseOrder();
+        User currUser = userUtils.getOptionalUserInfo(model);
 
-        model.addAttribute("orders", orders);
+        List<PurchaseOrderDTO> ordersByRole = purchaseOrderService.getAllPurchaseOrderByRole(currUser);
+
+        model.addAttribute("orders", ordersByRole);
 
         return "purchase-order/list_purchase_order";
     }

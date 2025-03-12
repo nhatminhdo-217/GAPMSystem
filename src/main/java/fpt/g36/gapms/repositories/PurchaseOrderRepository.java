@@ -1,9 +1,12 @@
 package fpt.g36.gapms.repositories;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -57,4 +60,6 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
             "JOIN cate_brand_price cbp ON c.id = cbp.cate_id " +
             "WHERE po.id = :id AND cbp.is_color = 1", nativeQuery = true)
     List<Object[]> getPurchaseOrderItemsDTOById(@Param("id") Long id);
+
+    List<PurchaseOrder> getAllByStatus(BaseEnum status, Pageable pageable);
 }
