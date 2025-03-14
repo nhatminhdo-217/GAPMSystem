@@ -3,8 +3,10 @@ package fpt.g36.gapms.controller.purchase_order;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
+import fpt.g36.gapms.models.entities.Contract;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.services.ContractService;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.stereotype.Controller;
@@ -21,10 +23,12 @@ public class PurchaseOrderController {
 
     private final UserUtils userUtils;
     private final PurchaseOrderService purchaseOrderService;
+    private final ContractService contractService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
+        this.contractService = contractService;
     }
 
     @GetMapping("/list")
@@ -63,5 +67,17 @@ public class PurchaseOrderController {
         PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id);
 
         return "redirect:/purchase-order/detail/" + po.getId();
+    }
+
+    @GetMapping("/detail/contract/{id}")
+    public String getContractPage(@PathVariable String id, Model model) {
+
+        userUtils.getOptionalUser(model);
+
+        Optional<Contract> contract = contractService.findById(id);
+
+        model.addAttribute("contract", contract.get());
+
+        return "purchase-order/contracts";
     }
 }

@@ -17,6 +17,8 @@ public class Contract extends TimestampEntity {
     @Column(name = "id", nullable = false, length = 15)
     private String id;
 
+    private String contractPath;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
