@@ -100,7 +100,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return purchaseOrder.map(PurchaseOrder::getStatus).orElse(null);
     }
 
-    public PurchaseOrderDTO convertToDTO(PurchaseOrder order) {
+    private PurchaseOrderDTO convertToDTO(PurchaseOrder order) {
         PurchaseOrderDTO dto = new PurchaseOrderDTO();
         dto.setPurchaseOrderId(order.getId());
         dto.setCustomerName(order.getQuotation().getRfq().getCreateBy().getUsername());

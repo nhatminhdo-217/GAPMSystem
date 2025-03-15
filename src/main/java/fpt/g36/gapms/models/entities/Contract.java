@@ -17,7 +17,9 @@ public class Contract extends TimestampEntity {
     @Column(name = "id", nullable = false, length = 15)
     private String id;
 
-    private String contractPath;
+    private String name;
+
+    private String path;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -33,15 +35,20 @@ public class Contract extends TimestampEntity {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "create_by")
+    private User createBy;
+
     public Contract() {
     }
 
-    public Contract(LocalDateTime createAt, LocalDateTime updateAt, String id, BaseEnum status, PurchaseOrder purchaseOrder, User approvedBy) {
+    public Contract(LocalDateTime createAt, LocalDateTime updateAt, String id, BaseEnum status, PurchaseOrder purchaseOrder, User approvedBy, User createBy) {
         super(createAt, updateAt);
         this.id = id;
         this.status = status;
         this.purchaseOrder = purchaseOrder;
         this.approvedBy = approvedBy;
+        this.createBy = createBy;
     }
 
     public String getId() {
@@ -74,5 +81,13 @@ public class Contract extends TimestampEntity {
 
     public void setApprovedBy(User approvedBy) {
         this.approvedBy = approvedBy;
+    }
+
+    public User getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(User createBy) {
+        this.createBy = createBy;
     }
 }

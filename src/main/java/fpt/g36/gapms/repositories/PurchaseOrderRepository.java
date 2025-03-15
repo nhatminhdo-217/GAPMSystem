@@ -33,7 +33,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
        )
        FROM PurchaseOrder po
          JOIN po.quotation q
-         JOIN po.contract con
+         LEFT JOIN po.contract con
          JOIN q.rfq r
          JOIN r.solution s
          JOIN r.createBy u

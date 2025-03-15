@@ -69,8 +69,16 @@
                         <p><b>Công ty: </b> <span th:text="${orderInfo.companyName}"></span></p>
                         <p><b>Mã thuế: </b> <span th:text="${orderInfo.taxNumber}"></span></p>
                         <p><b>Địa chỉ: </b> <span th:text="${orderInfo.companyAddress}"></span></p>
-                        <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
-                        <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: Đợi khách hàng</b></p>
+                        <div th:if="${currUser.role.name == 'SALE_STAFF'}">
+                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}"> Tải ảnh lên</a> </p>
+                        </div>
+                        <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> Hãy đợi nhân viên tải ảnh lên.</p>
+                        </div>
+
+
                     </div>
                     <div class="col m-3">
                         <p><b>Trạng thái: </b>
@@ -127,10 +135,10 @@
                 <hr>
 
                 <div class="d-flex flex-column mt-3">
-                    <p><strong>Ngày thực giao: </strong> 11 - 02 - 2025</p>
+                    <p><strong>Ngày thực giao: </strong> 11-02-2025</p>
                     <div class="d-flex">
                         <p style="margin-right: 10px"><strong>Tổng tiền: </strong></p>
-                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT')}"></span> VND
+                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT')}" style="margin-right: 3px"></span> VND
                     </div>
                 </div>
 
@@ -145,10 +153,12 @@
                           th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
-                    <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
-                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                        <button type="submit" class="btn btn-primary">Approve</button>
-                    </form>
+                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                        <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
+                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                    </div>
                     <a th:href="@{/purchase-order/list}" class="btn">Back</a>
                 </div>
         </div>
