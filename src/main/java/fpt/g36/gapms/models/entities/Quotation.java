@@ -50,11 +50,11 @@ public class Quotation extends BaseEntity {
         this.quotationDetails = quotationDetails;
     }
 
-    public Boolean getCanceled() {
+    public Boolean getIsCanceled() {
         return isCanceled;
     }
 
-    public void setCanceled(Boolean canceled) {
+    public void setIsCanceled(Boolean canceled) {
         isCanceled = canceled;
     }
 
@@ -88,5 +88,13 @@ public class Quotation extends BaseEntity {
 
     public void setIsAccepted(BaseEnum isAccepted) {
         this.isAccepted = isAccepted;
+    }
+
+    public List<QuotationDetail> getQuotationDetails() {
+        return quotationDetails;
+    }
+
+    public void setQuotationDetails(List<QuotationDetail> quotationDetails) {
+        this.quotationDetails = quotationDetails;
     }
 }
