@@ -40,7 +40,6 @@ public class SolutionServiceImpl implements SolutionService {
             throw new RuntimeException("Ngày giao hàng dự kiến không thể trước ngày mong muốn nhận hàng (" + rfq.getExpectDeliveryDate() + ").");
         }
 
-        // Tạo và ánh xạ từ DTO sang Entity
         Solution solution = new Solution();
         solution.setReason(solutionDTO.getReason());
         solution.setActualDeliveryDate(solutionDTO.getActualDeliveryDate());
