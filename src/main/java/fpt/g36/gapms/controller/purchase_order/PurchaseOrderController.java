@@ -1,7 +1,6 @@
 package fpt.g36.gapms.controller.purchase_order;
 
 import fpt.g36.gapms.models.dto.contract.ContractDTO;
-import fpt.g36.gapms.models.dto.contract.ContractUpdateDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
@@ -86,38 +85,52 @@ public class PurchaseOrderController {
 
         userUtils.getOptionalUser(model);
 
+        User currUser = userUtils.getOptionalUserInfo(model);
+
         Optional<Contract> contract = contractService.findById(id);
 
         model.addAttribute("contract", contract.get());
         model.addAttribute("purchaseOrderId", purchaseId);
+        model.addAttribute("currUser", currUser);
 
-        return "purchase-order/contracts";
+        return "contract/contracts";
     }
 
-    @GetMapping("/detail/contract/{id}/edit")
-    public String getEditContractPage(@PathVariable String id, Model model) {
+    @GetMapping("/detail/{purchaseId}/contract/{id}/edit")
+    public String getEditContractPage(
+            @PathVariable Long purchaseId,
+            @PathVariable String id, Model model) {
 
         userUtils.getOptionalUser(model);
 
         Optional<Contract> contract = contractService.findById(id);
         model.addAttribute("contract", contract.get());
+        model.addAttribute("purchaseOrderId", purchaseId);
 
-        return "purchase-order/edit_contract";
+        return "contract/edit_contract";
     }
 
-    @PostMapping("/detail/contract/{id}/edit")
+    @PostMapping("/detail/{purchaseId}/contract/{id}/edit")
     public String postEditContractPage(
+            @PathVariable Long purchaseId,
             @PathVariable String id,
             @Valid @ModelAttribute ContractDTO contractDTO,
             BindingResult bindingResult,
             @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             Model model) throws IOException {
 
-        Contract contract = contractService.updateContract(id, contractDTO, file);
-
-        redirectAttributes.addFlashAttribute("message", "Contract updated successfully");
-
-        return "redirect:/purchase-order/detail/contract/" + contract.getId();
+        if (bindingResult.hasErrors()){
+            userUtils.getOptionalUser(model);
+            return "contract/edit_contract";
+        }
+        try {
+            Contract contract = contractService.updateContract(id, contractDTO, file);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật hợp đồng thành công");
+            return "redirect:/purchase-order/detail/" + purchaseId + "/contract/" + contract.getId();
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("error", "Cập nhật hợp đồng thất bại");
+            return "redirect:/purchase-order/detail/" + purchaseId + "/contract/" + id + "/edit";
+        }
     }
 
     @GetMapping("/detail/{id}/contract/upload")
@@ -128,7 +141,7 @@ public class PurchaseOrderController {
         model.addAttribute("purchaseOrderId", id);
         model.addAttribute("contractDTO", new ContractDTO());
 
-        return "purchase-order/upload_contract";
+        return "contract/upload_contract";
     }
 
     @PostMapping("/detail/{id}/contract/upload")
@@ -141,15 +154,14 @@ public class PurchaseOrderController {
 
         if (bindingResult.hasErrors()){
             userUtils.getOptionalUser(model);
-            return "purchase-order/upload_contract";
+            return "contract/upload_contract";
         }
         try {
             Contract contract = contractService.createContract(id, contractDTO, file);
             redirectAttributes.addFlashAttribute("success", "Tạo hợp đồng thành công");
-            return "redirect:/purchase-order/detail/contract/" + contract.getId();
+            return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("error", "Tạo hợp đồng thất bại");
-            System.err.println(e.getMessage());
             return "redirect:/purchase-order/detail/" + id + "/contract/upload";
         }
     }

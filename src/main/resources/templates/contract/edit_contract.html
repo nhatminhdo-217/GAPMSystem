@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tạo hợp đồng</title>
+    <title>Sửa hợp đồng</title>
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -57,11 +57,12 @@
         <div class="container-fluid d-flex flex-column m-2">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
-                <li class="breadcrumb-item"><a th:href="@{/purchase-order/detail/1}">Chi tiết</a></li>
-                <li class="breadcrumb-item active">Hợp đồng</li>
+                <li class="breadcrumb-item"><a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId}}">Chi tiết</a></li>
+                <li class="breadcrumb-item"><a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${id}}">Hợp đồng</a></li>
+                <li class="breadcrumb-item active">Sửa</li>
             </ul>
             <div class="heading mt-3">
-                <h3>Tạo hợp đồng</h3>
+                <h3>Sửa hợp đồng</h3>
             </div>
             <div class="d-flex flex-column align-items-center mt-3">
                 <div class="container mt-3">
@@ -71,7 +72,7 @@
                                 <p th:text="${error}"></p>
                             </div>
 
-                            <form th:action="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}" method="post" enctype="multipart/form-data" th:object="${contractDTO}">
+                            <form th:action="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${id} + '/edit'}" method="post" enctype="multipart/form-data" th:object="${contract}">
                                 <div class="form-group mt-3">
                                     <label for="name">Tên Hợp Đồng:</label>
                                     <input type="text" class="form-control" id="name" th:field="*{name}" required>
