@@ -77,6 +77,10 @@
                 <a href="#" class="dropdown-item text-center">See all notifications</a>
             </div>
         </div>
+        <a th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}" href="/purchase-order/customer/list" class="nav-link" >
+            <i class="fas fa-shipping-fast me-lg-2"></i>
+            <span class="d-none d-lg-inline-flex">Đơn đặt hàng của bạn</span>
+        </a>
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/uploads/default-avatar.png'}" alt=""

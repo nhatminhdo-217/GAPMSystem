@@ -80,8 +80,8 @@ public class QuotationController {
     }
 
 
-    @GetMapping("/quotation-customer/{rfq-id}")
-    public String getQuotationCustomer(@PathVariable("rfq-id") int rfqId,Model model) {
+    @GetMapping("/quotation-customer/{rfqId}")
+    public String getQuotationCustomer(@PathVariable("rfqId") int rfqId,Model model) {
 
         QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
 
