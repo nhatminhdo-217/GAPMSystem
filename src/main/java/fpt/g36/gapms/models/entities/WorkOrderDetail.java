@@ -1,6 +1,8 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.WorkEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +19,10 @@ public class WorkOrderDetail extends BaseEntity{
 
     private LocalDateTime completeAt;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private WorkEnum workStatus;
+
     @OneToOne(mappedBy = "workOrderDetail")
     private DyeStage dyeStage;
 
@@ -26,10 +32,14 @@ public class WorkOrderDetail extends BaseEntity{
     @OneToOne(mappedBy = "workOrderDetail")
     private PackagingStage packagingStage;
 
+    @OneToOne
+    @JoinColumn(name = "production_order_detail_id")
+    private ProductionOrderDetail productionOrderDetail;
+
     public WorkOrderDetail() {
     }
 
-    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage) {
+    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, WorkEnum workStatus, ProductionOrderDetail productionOrderDetail) {
         super(id, createAt, updateAt);
         this.workOrder = workOrder;
         this.startAt = startAt;
@@ -37,6 +47,8 @@ public class WorkOrderDetail extends BaseEntity{
         this.dyeStage = dyeStage;
         this.windingStage = windingStage;
         this.packagingStage = packagingStage;
+        this.workStatus = workStatus;
+        this.productionOrderDetail = productionOrderDetail;
     }
 
     public WorkOrder getWorkOrder() {
@@ -85,5 +97,21 @@ public class WorkOrderDetail extends BaseEntity{
 
     public void setPackagingStage(PackagingStage packagingStage) {
         this.packagingStage = packagingStage;
+    }
+
+    public WorkEnum getWorkStatus() {
+        return workStatus;
+    }
+
+    public void setWorkStatus(WorkEnum workStatus) {
+        this.workStatus = workStatus;
+    }
+
+    public ProductionOrderDetail getProductionOrderDetail() {
+        return productionOrderDetail;
+    }
+
+    public void setProductionOrderDetail(ProductionOrderDetail productionOrderDetail) {
+        this.productionOrderDetail = productionOrderDetail;
     }
 }
