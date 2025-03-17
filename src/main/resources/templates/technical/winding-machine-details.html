@@ -252,7 +252,7 @@
                         <div class="detail-section">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <strong>Mã máy:</strong> <span th:text="${windingMachine.id}"></span>
+                                    <strong>Mã máy:</strong> <span th:text="'Máy côn ' + ${windingMachine.id}"></span>
                                 </div>
                                 <div class="col-md-4">
                                     <strong>Tốc độ động cơ:</strong> <span th:text="${windingMachine.motor_speed}"></span>
@@ -293,7 +293,7 @@
                     </div>
                     <form th:action="@{/technical/update-winding-machine}" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="id" th:value="${windingMachine.id}">
+                            <input type="hidden" name="id" th:value="'Máy côn ' + ${windingMachine.id}">
                             <div class="form-group">
                                 <label for="motor_speed">Tốc độ động cơ:</label>
                                 <input type="number" class="form-control" id="motor_speed" name="motor_speed" th:value="${windingMachine.motor_speed}" required min="1">

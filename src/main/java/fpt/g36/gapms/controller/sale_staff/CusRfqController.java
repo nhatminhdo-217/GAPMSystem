@@ -1,8 +1,10 @@
 package fpt.g36.gapms.controller.sale_staff;
 
+import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.Solution;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.services.CompanyService;
 import fpt.g36.gapms.services.RfqService;
 import fpt.g36.gapms.services.SolutionService;
 import fpt.g36.gapms.services.UserService;
@@ -31,15 +33,18 @@ public class CusRfqController {
     private final UserUtils userUtils;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final CompanyService companyService;
 
-    public CusRfqController(RfqService rfqService, UserUtils userUtils, UserService userService) {
+    public CusRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, CompanyService companyService) {
         this.rfqService = rfqService;
         this.userUtils = userUtils;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/view-all-cus-rfq")
-    public String getSolutionViewList(Model model, Principal principal) {
+    public String getRfqViewList(Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             List<Rfq> rfq = rfqService.getAllRfq();
@@ -50,13 +55,15 @@ public class CusRfqController {
     }
 
     @GetMapping("/cus-rfq-details/{id}")
-    public String getSolutionDetailsView(@PathVariable Long id, Model model) {
+    public String getRfqDetailsView(@PathVariable Long id, Model model) {
         Rfq rfq = rfqService.getRfqById(id);
-        if (rfq == null) {
+        Company company = companyService.getCompanyByUserId(rfq.getCreateBy().getId());
+        if (rfq == null || company == null) {
             return "redirect:/error";
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
+        model.addAttribute("company", company);
         return "/sale-staff/cus-rfq-details";
     }
 

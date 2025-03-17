@@ -36,10 +36,14 @@ public class WorkOrderDetail extends BaseEntity{
     @JoinColumn(name = "production_order_detail_id")
     private ProductionOrderDetail productionOrderDetail;
 
+    @OneToOne
+    @JoinColumn(name = "purchase_order_detail_id")
+    private PurchaseOrderDetail purchaseOrderDetail;
+
     public WorkOrderDetail() {
     }
 
-    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, WorkEnum workStatus, ProductionOrderDetail productionOrderDetail) {
+    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, WorkEnum workStatus, ProductionOrderDetail productionOrderDetail, PurchaseOrderDetail purchaseOrderDetail) {
         super(id, createAt, updateAt);
         this.workOrder = workOrder;
         this.startAt = startAt;
@@ -49,6 +53,7 @@ public class WorkOrderDetail extends BaseEntity{
         this.packagingStage = packagingStage;
         this.workStatus = workStatus;
         this.productionOrderDetail = productionOrderDetail;
+        this.purchaseOrderDetail = purchaseOrderDetail;
     }
 
     public WorkOrder getWorkOrder() {
@@ -113,5 +118,13 @@ public class WorkOrderDetail extends BaseEntity{
 
     public void setProductionOrderDetail(ProductionOrderDetail productionOrderDetail) {
         this.productionOrderDetail = productionOrderDetail;
+    }
+
+    public PurchaseOrderDetail getPurchaseOrderDetail() {
+        return purchaseOrderDetail;
+    }
+
+    public void setPurchaseOrderDetail(PurchaseOrderDetail purchaseOrderDetail) {
+        this.purchaseOrderDetail = purchaseOrderDetail;
     }
 }

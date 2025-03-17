@@ -42,13 +42,15 @@ public class Contract extends TimestampEntity {
     public Contract() {
     }
 
-    public Contract(LocalDateTime createAt, LocalDateTime updateAt, String id, BaseEnum status, PurchaseOrder purchaseOrder, User approvedBy, User createBy) {
+    public Contract(LocalDateTime createAt, LocalDateTime updateAt, String id, BaseEnum status, PurchaseOrder purchaseOrder, User approvedBy, User createBy, String name,String path) {
         super(createAt, updateAt);
         this.id = id;
         this.status = status;
         this.purchaseOrder = purchaseOrder;
         this.approvedBy = approvedBy;
         this.createBy = createBy;
+        this.name =name;
+        this.path = path;
     }
 
     public String getId() {
@@ -89,5 +91,21 @@ public class Contract extends TimestampEntity {
 
     public void setCreateBy(User createBy) {
         this.createBy = createBy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
