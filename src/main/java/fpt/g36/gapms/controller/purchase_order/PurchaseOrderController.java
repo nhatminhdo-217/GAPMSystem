@@ -73,7 +73,9 @@ public class PurchaseOrderController {
     @PostMapping("/detail/{id}")
     public String postPurchaseOrderDetailPage(@PathVariable Long id) {
 
-        PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id);
+        User currUser = userUtils.getOptionalUserInfo();
+
+        PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
 
         return "redirect:/purchase-order/detail/" + po.getId();
     }

@@ -16,7 +16,7 @@ public interface PurchaseOrderService {
 
     List<PurchaseOrderItemsDTO> getPurchaseOrderItemsDTOById(Long id);
 
-    PurchaseOrder updatePurchaseOrderStatus(Long id);
+    PurchaseOrder updatePurchaseOrderStatus(Long id, User currUser);
 
     List<PurchaseOrderDTO> getAllPurchaseOrder();
 

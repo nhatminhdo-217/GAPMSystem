@@ -48,18 +48,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public PurchaseOrder updatePurchaseOrderStatus(Long id) {
+    public PurchaseOrder updatePurchaseOrderStatus(Long id, User currUser) {
         PurchaseOrder po = getPurchaseOrderById(id)
                 .orElseThrow(() -> new RuntimeException("Purchase Order not found"));
 
-        System.err.println("Purchase Order status: " + getStatusByPurchaseOrderId(id));
-
         if (getStatusByPurchaseOrderId(id) == BaseEnum.NOT_APPROVED){
-            System.err.println("Purchase Order is not approved" + getStatusByPurchaseOrderId(id));
             po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
         } else if (getStatusByPurchaseOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
-            System.err.println("Purchase Order is waiting for approval" + getStatusByPurchaseOrderId(id));
             po.setStatus(BaseEnum.APPROVED);
+            po.setApprovedBy(currUser);
         }
         return purchaseOrderRepository.save(po);
     }
