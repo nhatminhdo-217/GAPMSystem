@@ -57,7 +57,7 @@
 
         <div class="container-fluid d-flex flex-column m-2">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Đơn đặt hàng</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
                     <li class="breadcrumb-item active">Chi tiết</li>
                 </ul>
                 <div class="heading mt-3">
@@ -69,7 +69,16 @@
                         <p><b>Công ty: </b> <span th:text="${orderInfo.companyName}"></span></p>
                         <p><b>Mã thuế: </b> <span th:text="${orderInfo.taxNumber}"></span></p>
                         <p><b>Địa chỉ: </b> <span th:text="${orderInfo.companyAddress}"></span></p>
-                        <p><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                        <div th:if="${currUser.role.name == 'SALE_STAFF'}">
+                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}"> Tải ảnh lên</a> </p>
+                        </div>
+                        <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> Hãy đợi nhân viên tải ảnh lên.</p>
+                        </div>
+
+
                     </div>
                     <div class="col m-3">
                         <p><b>Trạng thái: </b>
@@ -77,16 +86,17 @@
                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
                                                style="color: green;">
                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
                                                 style="color: #ffc107;">
                                           </span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'" style="color: #ffc107;"></span>
                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
                                            <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
                             </span>
                         </p>
                         <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyy')}"></span> </p>
                         <p><b>Ngày thực giao: </b> <span th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyy')}"></span></p>
-                        <p><b>Giải pháp: </b> <a th:href="@{'/purchase-order/detail/contract/' + ${orderInfo.solutionId}}">Ấn để xem</a></p>
+                        <p><b>Giải pháp: </b> <a th:href="@{'/purchase-order/detail/solution/' + ${orderInfo.solutionId}}">Ấn để xem</a></p>
                     </div>
                 </div>
 
@@ -115,8 +125,8 @@
                             <td th:text="${item.categoryName}"></td>
                             <td th:text="${item.noteColor}"></td>
                             <td th:text="${item.quantity}"></td>
-                            <td th:text="${item.price}"></td>
-                            <td th:text="${item.detailAmount}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -125,9 +135,10 @@
                 <hr>
 
                 <div class="d-flex flex-column mt-3">
-                    <p><strong>Ngày thực giao: </strong> 11 - 02 - 2025</p>
-                    <div>
-                        <span th:text="${#aggregates.sum(items.![detailAmount])}"></span> VND
+                    <p><strong>Ngày thực giao: </strong> 11-02-2025</p>
+                    <div class="d-flex">
+                        <p style="margin-right: 10px"><strong>Tổng tiền: </strong></p>
+                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT')}" style="margin-right: 3px"></span> VND
                     </div>
                 </div>
 
@@ -139,9 +150,15 @@
                         <button type="submit" class="btn btn-primary">Confirm</button>
                     </form>
                     <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
-                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="#">
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                        <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
+                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                    </div>
                     <a th:href="@{/purchase-order/list}" class="btn">Back</a>
                 </div>
         </div>

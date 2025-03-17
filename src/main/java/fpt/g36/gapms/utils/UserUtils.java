@@ -46,6 +46,18 @@ public class UserUtils {
         return null;
     }
 
+    public User getOptionalUserInfo() {
+        // Get the current user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+            if (optionalUser.isPresent()) {
+                return optionalUser.get();
+            }
+        }
+        return null;
+    }
 
     public String cleanSpaces(String input) {
         return input.replaceAll("\\s+", " ").trim();
