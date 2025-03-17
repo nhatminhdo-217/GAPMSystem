@@ -130,6 +130,12 @@ public class RfqDetailServiceImpl implements RfqDetailService {
         }
     }
 
+    @Override
+    public List<RfqDetail> getAllRfqDetailByRfqId(Long rfqId) {
+        List<RfqDetail> rfqDetails = rfqDetailRepository.getAllRfqDetailByRfqId(rfqId);
+        return rfqDetails;
     }
+
+}
 
 
