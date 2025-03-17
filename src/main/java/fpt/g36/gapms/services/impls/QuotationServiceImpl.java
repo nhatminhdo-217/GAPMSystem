@@ -47,7 +47,6 @@ public class QuotationServiceImpl implements QuotationService {
         this.rfqDetailService = rfqDetailService;
         this.purchaseOrderDetailRepository  = purchaseOrderDetailRepository;
     }
-
     @Override
     public QuotationInfoDTO getQuotationInfo(long id) {
         List<QuotationInfoProjection> quotationDetail = quotationRepository.findQuotationDetail(id);
@@ -169,12 +168,12 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public void approvedQuotation(long rfqId) {
-          Quotation quotation = quotationRepository.findByRfqId(rfqId);
+        Quotation quotation = quotationRepository.findByRfqId(rfqId);
         if (quotation == null) {
             throw new RuntimeException("Quotation not found");
         }
-          quotation.setIsAccepted(BaseEnum.APPROVED);
-          quotationRepository.save(quotation);
+        quotation.setIsAccepted(BaseEnum.APPROVED);
+        quotationRepository.save(quotation);
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
