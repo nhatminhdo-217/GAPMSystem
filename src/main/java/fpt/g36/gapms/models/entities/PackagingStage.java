@@ -31,9 +31,11 @@ public class PackagingStage extends BaseEntity{
     private LocalDateTime completeAt;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TestEnum testStatus;
 
     private Integer actualOutput;
