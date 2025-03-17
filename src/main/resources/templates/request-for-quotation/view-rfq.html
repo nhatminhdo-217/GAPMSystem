@@ -805,9 +805,18 @@
             });
     }
 
-const today = new Date().toISOString().split("T")[0];
+// Tạo đối tượng Date cho hôm nay
+const today = new Date();
+
+// Thêm 3 ngày vào ngày hiện tại
+today.setDate(today.getDate() + 3);
+
+// Chuyển ngày mới thành định dạng yyyy-mm-dd
+const threeDaysLater = today.toISOString().split("T")[0];
+
 // Gán giá trị min cho input
-document.getElementById("editDeliveryDate").setAttribute("min", today);
+document.getElementById("editDeliveryDate").setAttribute("min", threeDaysLater);
+
 </script>
 
 
