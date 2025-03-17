@@ -252,7 +252,7 @@
                         <div class="detail-section">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <strong>Mã máy:</strong> <span th:text="${dyeMachine.id}"></span>
+                                    <strong>Mã máy:</strong> <span th:text="'Máy nhuộm ' + ${dyeMachine.id}"></span>
                                 </div>
                                 <div class="col-md-4">
                                     <strong>Đường kính:</strong> <span th:text="${dyeMachine.diameter}"></span>
@@ -299,7 +299,7 @@
                     </div>
                     <form th:action="@{/technical/update-dye-machine}" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="id" th:value="${dyeMachine.id}">
+                            <input type="hidden" name="id" th:value="'Máy nhuộm ' + ${dyeMachine.id}">
                             <div class="form-group">
                                 <label for="diameter">Đường kính:</label>
                                 <input type="number" class="form-control" id="diameter" name="diameter" th:value="${dyeMachine.diameter}" required min="1">

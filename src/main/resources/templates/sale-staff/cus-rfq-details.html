@@ -23,20 +23,133 @@
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
     <style>
-        /* Giữ nguyên các style cũ và thêm style cho nút và toast */
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            background-color: #4A90E2;
+        }
+
+        /* Container cho 2 phần thông tin khách hàng và RFQ */
+        .info-container {
+            display: flex;
+            gap: 20px; /* Khoảng cách giữa 2 phần */
+            margin-bottom: 30px;
+        }
+
+        /* Phần Thông tin khách hàng */
+        .customer-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1; /* Chia đều không gian */
+        }
+
+        /* Phần Thông tin RFQ */
+        .rfq-info {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1; /* Chia đều không gian */
+        }
+
+        .row {
+            margin-bottom: 15px;
+        }
+
+        .row > div {
+            padding: 10px;
+        }
+
+        strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        span {
+            font-size: 15px;
+            color: #212529;
+            word-break: break-word;
+        }
+
+        .product-details {
+            margin-bottom: 30px;
+        }
+
+        .product-details table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .product-details th, .product-details td {
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .product-details th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .product-details td {
+            border-bottom: 1px solid #e9ecef;
+        }
+
         .btn-container {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: center;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
         .btn-custom {
             min-width: 180px;
             height: 45px;
-            line-height: 45px;
+            padding: 0 20px;
             text-align: center;
             background-color: #4A90E2 !important;
             color: white !important;
@@ -47,11 +160,24 @@
             border-radius: 5px;
             transition: background-color 0.3s ease;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .btn-custom:hover {
             background-color: #357ABD !important;
             opacity: 0.9;
+        }
+
+        .detail-info {
+            margin-bottom: 30px;
+        }
+
+        .detail-info .solution-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
         }
 
         .modal-content {
@@ -60,8 +186,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            border-radius: 10px;
             width: 80%;
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -70,7 +196,7 @@
         .modal-header {
             border-bottom: 1px solid #e9ecef;
             padding-bottom: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .modal-title {
@@ -79,19 +205,39 @@
             color: #333;
         }
 
+        .modal-body {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal-body p {
+            font-size: 15px;
+            color: #495057;
+            margin-bottom: 0;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-control {
             border-radius: 5px;
             border: 1px solid #ced4da;
-            padding: 8px 12px;
+            padding: 10px 15px;
             font-size: 14px;
+            width: 100%;
+        }
+
+        .modal-footer {
+            padding: 15px 0;
+            border-top: 1px solid #e9ecef;
+            justify-content: flex-end;
+            gap: 15px;
         }
 
         .toast {
             opacity: 0.9;
+            border-radius: 5px;
         }
 
         .success-toast {
@@ -103,10 +249,12 @@
         .success-toast .toast-header {
             background-color: #c3e6cb;
             color: #155724;
+            border-radius: 5px 5px 0 0;
         }
 
         .success-toast .toast-body {
             color: #155724;
+            padding: 15px;
         }
 
         .error-toast {
@@ -118,10 +266,12 @@
         .error-toast .toast-header {
             background-color: #f5c6cb;
             color: #721c24;
+            border-radius: 5px 5px 0 0;
         }
 
         .error-toast .toast-body {
             color: #721c24;
+            padding: 15px;
         }
 
         #toastSuccess, #toastError {
@@ -130,6 +280,80 @@
             right: 20px;
             z-index: 1050;
             min-width: 300px;
+            border-radius: 5px;
+        }
+
+        #toastError {
+            bottom: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .info-container {
+                flex-direction: column; /* Xếp chồng trên mobile */
+                gap: 15px; /* Giảm khoảng cách giữa 2 phần */
+            }
+
+            .customer-info, .rfq-info {
+                padding: 15px; /* Giảm padding trên mobile */
+            }
+
+            .card-body {
+                padding: 15px 20px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+
+            .row > div {
+                padding: 8px;
+            }
+
+            .product-details th, .product-details td {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .btn-custom {
+                min-width: 150px;
+                height: 40px;
+                font-size: 13px;
+            }
+
+            .detail-info .solution-info {
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 15px;
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .modal-header {
+                margin-bottom: 15px;
+            }
+
+            .modal-body {
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .modal-footer {
+                padding: 10px 0;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -165,35 +389,68 @@
                     <div class="card" th:data-rfq-id="${rfq.id}">
                         <div class="card-body">
                             <h2 class="text-center mb-4">Chi tiết RFQ</h2>
-
-                            <!-- RFQ Info -->
-                            <div class="rfq-info">
-                                <h3 class="section-title">Thông tin RFQ</h3>
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                            <!-- Container cho Thông tin khách hàng và RFQ -->
+                            <div class="info-container">
+                                <!-- Cus Info -->
+                                <div class="customer-info">
+                                    <h3 class="section-title">Thông tin khách hàng</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Tên khách hàng:</strong> <span th:text="${rfq.createBy.getUsername()}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số điện thoại cá nhân:</strong> <span
+                                                th:text="${rfq.createBy.phoneNumber}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Email cá nhân:</strong> <span
+                                                th:text="${rfq.createBy.getEmail()}"></span>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <strong>Số lượng sản phẩm:</strong> <span
-                                            th:text="${rfq.rfqDetails.size()}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Ngày tạo đơn:</strong> <span
-                                            th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Tên công ty khách hàng:</strong> <span th:text="${company.getName()}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số điện thoại công ty:</strong> <span
+                                                th:text="${company.getPhoneNumber()}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Email công ty:</strong> <span
+                                                th:text="${company.getEmail()}"></span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <strong>Nhân viên phụ trách:</strong> <span
-                                            th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
+
+                                <!-- RFQ Info -->
+                                <div class="rfq-info">
+                                    <h3 class="section-title">Thông tin RFQ</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số lượng sản phẩm:</strong> <span
+                                                th:text="${rfq.rfqDetails.size()}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo đơn:</strong> <span
+                                                th:text="${#temporals.format(rfq.createAt, 'yyyy-MM-dd')}"></span>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <strong>Trạng thái gửi:</strong>
-                                        <span th:text="${rfq.isApproved != null ? (rfq.isApproved.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Ngày mong muốn nhận hàng:</strong> <span
-                                            th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Nhân viên phụ trách:</strong> <span
+                                                th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:text="${rfq.isApproved != null ? (rfq.isApproved.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày mong muốn nhận hàng:</strong> <span
+                                                th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
