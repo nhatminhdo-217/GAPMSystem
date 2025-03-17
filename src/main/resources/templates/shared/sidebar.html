@@ -69,9 +69,9 @@
             <a href="index.html" class="nav-item nav-link active">
                 <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
             <a href="/quotation/list" class="nav-item nav-link">
-                <i class="fa-solid fa-user"></i>Quotation</a>
-            <a href="widget.html" class="nav-item nav-link">
-                <i class="fa fa-th me-2"></i>Production Order</a>
+                <i class="fa-solid fa-user"></i>Danh sách báo giá</a>
+            <a href="/purchase-order/list" class="nav-item nav-link">
+                <i class="fa fa-th me-2"></i>Danh sách đơn hàng</a>
             <a href="/sale-staff/view-all-cus-rfq" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i> Yêu cầu báo giá</a>
             <a href="/sale-staff/view-all-rfq-solution" class="nav-item nav-link">
@@ -86,6 +86,13 @@
                 <i class="fa fa-th me-2"></i>Yêu cầu báo giá</a>
             <a href="/technical/view-all-machine" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Quản lý máy móc</a>
+        </div>
+
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+            <a href="/dashboard" class="nav-item nav-link active">
+                <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="/purchase-order/list" class="nav-item nav-link">
+                <i class="fa fa-th me-2"></i>Danh sách đơn hàng</a>
         </div>
     </nav>
 </div>

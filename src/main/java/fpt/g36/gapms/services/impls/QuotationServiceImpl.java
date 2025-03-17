@@ -3,14 +3,11 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.quotation.*;
-import fpt.g36.gapms.models.entities.PurchaseOrder;
-import fpt.g36.gapms.models.entities.Quotation;
-import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.RfqDetail;
-import fpt.g36.gapms.models.entities.Solution;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.CateBrandPriceService;
 import fpt.g36.gapms.services.QuotationService;
+import fpt.g36.gapms.services.RfqDetailService;
 import fpt.g36.gapms.services.RfqService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,10 +31,11 @@ public class QuotationServiceImpl implements QuotationService {
     private final ProductRepository productRepository;
     private final CateBrandPriceService cateBrandPriceService;
     private final RfqService rfqService;
+    private final RfqDetailService rfqDetailService;
     private PurchaseOrderRepository purchaseOrderRepository;
+    private PurchaseOrderDetailRepository purchaseOrderDetailRepository;
 
-
-    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService) {
+    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService, RfqDetailService rfqDetailService,PurchaseOrderDetailRepository purchaseOrderDetailRepository) {
 
         this.quotationRepository = quotationRepository;
         this.brandRepository = brandRepository;
@@ -45,7 +43,9 @@ public class QuotationServiceImpl implements QuotationService {
         this.productRepository = productRepository;
         this.cateBrandPriceService = cateBrandPriceService;
         this.rfqService = rfqService;
-        this.purchaseOrderRepository = purchaseOrderRepository;
+        this.purchaseOrderRepository  = purchaseOrderRepository;
+        this.rfqDetailService = rfqDetailService;
+        this.purchaseOrderDetailRepository  = purchaseOrderDetailRepository;
     }
 
     @Override
@@ -179,7 +179,27 @@ public class QuotationServiceImpl implements QuotationService {
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
         purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
-        purchaseOrderRepository.save(purchaseOrder);
+       PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
+
+        List<RfqDetail> rfqDetails = rfqDetailService.getAllRfqDetailByRfqId(rfqId);
+
+        for(RfqDetail rfqDetail : rfqDetails){
+            PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
+            purchaseOrderDetail.setQuantity(rfqDetail.getQuantity());
+            purchaseOrderDetail.setBrand(rfqDetail.getBrand());
+            purchaseOrderDetail.setCategory(rfqDetail.getCate());
+            purchaseOrderDetail.setProduct(rfqDetail.getProduct());
+            purchaseOrderDetail.setPurchaseOrder(purchaseOrderSaved);
+            purchaseOrderDetail.setNote_color(rfqDetail.getNoteColor());
+            boolean checkColor = rfqDetail.getNoteColor().equals("#FFFFFF");
+
+            BigDecimal unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),checkColor);
+            purchaseOrderDetail.setUnitPrice(unitPrice);
+            purchaseOrderDetail.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(rfqDetail.getQuantity())));
+            purchaseOrderDetailRepository.save(purchaseOrderDetail);
+
+        }
+
 
     }
 

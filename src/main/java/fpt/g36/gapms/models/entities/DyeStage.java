@@ -41,11 +41,14 @@ public class DyeStage extends BaseEntity{
     private LocalDateTime completeAt;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TestEnum testStatus;
 
+    @Column(name = "actual_output", precision = 10, scale = 2)
     private BigDecimal actualOutput;
 
     @NotNull

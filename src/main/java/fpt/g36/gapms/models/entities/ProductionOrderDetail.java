@@ -22,15 +22,19 @@ public class ProductionOrderDetail extends BaseEntity {
     @JoinColumn(name = "production_order_id", nullable = false)
     private ProductionOrder productionOrder;
 
+    @OneToOne(mappedBy = "productionOrderDetail")
+    private WorkOrderDetail workOrderDetail;
+
     public ProductionOrderDetail() {
     }
 
-    public ProductionOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal thread_mass, Boolean light_env, String description, ProductionOrder productionOrder) {
+    public ProductionOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal thread_mass, Boolean light_env, String description, ProductionOrder productionOrder, WorkOrderDetail workOrderDetail) {
         super(id, createAt, updateAt);
         this.thread_mass = thread_mass;
         this.light_env = light_env;
         this.description = description;
         this.productionOrder = productionOrder;
+        this.workOrderDetail = workOrderDetail;
     }
 
     public BigDecimal getThread_mass() {
@@ -63,5 +67,13 @@ public class ProductionOrderDetail extends BaseEntity {
 
     public void setProductionOrder(ProductionOrder productionOrder) {
         this.productionOrder = productionOrder;
+    }
+
+    public WorkOrderDetail getWorkOrderDetail() {
+        return workOrderDetail;
+    }
+
+    public void setWorkOrderDetail(WorkOrderDetail workOrderDetail) {
+        this.workOrderDetail = workOrderDetail;
     }
 }
