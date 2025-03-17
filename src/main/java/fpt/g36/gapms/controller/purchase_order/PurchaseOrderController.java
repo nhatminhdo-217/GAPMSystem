@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.Contract;
+import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;

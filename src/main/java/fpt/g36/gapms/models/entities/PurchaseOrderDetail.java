@@ -33,10 +33,13 @@ public class PurchaseOrderDetail extends BaseEntity{
 
     private BigDecimal totalPrice;
 
+    @OneToOne(mappedBy = "purchaseOrderDetail")
+    private WorkOrderDetail workOrderDetail;
+
     public PurchaseOrderDetail() {
     }
 
-    public PurchaseOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, PurchaseOrder purchaseOrder, Product product, Brand brand, Category category, String note_color, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
+    public PurchaseOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, PurchaseOrder purchaseOrder, Product product, Brand brand, Category category, String note_color, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice, WorkOrderDetail workOrderDetail) {
         super(id, createAt, updateAt);
         this.purchaseOrder = purchaseOrder;
         this.product = product;
@@ -46,6 +49,7 @@ public class PurchaseOrderDetail extends BaseEntity{
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
+        this.workOrderDetail = workOrderDetail;
     }
 
     public PurchaseOrder getPurchaseOrder() {
@@ -110,5 +114,13 @@ public class PurchaseOrderDetail extends BaseEntity{
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public WorkOrderDetail getWorkOrderDetail() {
+        return workOrderDetail;
+    }
+
+    public void setWorkOrderDetail(WorkOrderDetail workOrderDetail) {
+        this.workOrderDetail = workOrderDetail;
     }
 }

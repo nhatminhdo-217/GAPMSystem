@@ -101,7 +101,7 @@ public class QuotationController {
         userUtils.getOptionalUser(model);
         model.addAttribute("quotation_customer", quotationCustomer);
         redirectAttributes.addFlashAttribute("approved", "Bạn đã chấp nhận đơn báo giá");
-        return "redirect:/quotation/quotation-customer/"+rfqId;
+        return "redirect:/purchase-order/customer/list";
     }
     @GetMapping("/quotation-customer-cancel/{rfq-id}")
     public String getQuotationCustomerCancel(@PathVariable("rfq-id") int rfqId, Model model, RedirectAttributes redirectAttributes) {
