@@ -4,6 +4,7 @@ import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.RfqDetail;
 import fpt.g36.gapms.repositories.RfqDetailRepository;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.UserUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,18 @@ public class RfqDetailServiceImpl implements RfqDetailService {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private UserUtils userUtils;
+
     @Override
     public void saveRfqDetail(List<RfqDetail> rfqDetails) {
+        // Xử lý khoảng trắng cho từng màu trong danh sách
+        for (RfqDetail detail : rfqDetails) {
+            if (detail.getNoteColor() != null) {
+                detail.setNoteColor(userUtils.cleanSpaces(detail.getNoteColor()));
+            }
+        }
+        // Lưu danh sách sau khi chuẩn hóa dữ liệu
         rfqDetailRepository.saveAll(rfqDetails);
     }
 

@@ -26,7 +26,11 @@ public class SecurityConfig {
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-                        .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**","/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**").hasRole("CUSTOMER")
+                        .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**",
+                                "/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**",
+                                "/purchase-order/customer/list",
+                                  "/purchase-order/customer/detail/**")
+                        .hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .requestMatchers("/technical/**").hasRole("TECHNICAL")

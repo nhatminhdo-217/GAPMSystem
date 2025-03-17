@@ -58,4 +58,8 @@ public class UserUtils {
         }
         return null;
     }
+
+    public String cleanSpaces(String input) {
+        return input.replaceAll("\\s+", " ").trim();
+    }
 }

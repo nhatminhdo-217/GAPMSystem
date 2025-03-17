@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            /* Default margin for sidebar-quick */
+            transition: 0.3s ease;
+            padding: 20px;
+        }
+
+        .main-content.shifted {
+            margin-left: 330px;
+            /* Margin when sidebar-main is active */
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h2,
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Process Bar */
+        .process-bar {
+            display: flex;
+            background: #fff;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .process-step {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            position: relative;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '\f054';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #6c757d;
+            z-index: 1;
+        }
+
+        .process-step .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover .step-circle {
+            transform: scale(1.1);
+        }
+
+        .process-step.completed .step-circle {
+            background: #28a745;
+        }
+
+        .process-step.in-progress .step-circle {
+            background: #ffc107;
+        }
+
+        .process-step.not-started .step-circle {
+            background: #dc3545;
+        }
+
+        .process-step p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .process-step strong {
+            color: #212529;
+            font-size: 16px;
+        }
+
+        /* Info Row */
+        .info-row {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .info-row p {
+            margin: 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .info-row strong {
+            color: #212529;
+        }
+
+        /* Table */
+        .table {
+            margin: 0;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .table thead th {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .table tfoot th {
+            padding: 15px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        /* Modal */
+        .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .contract-img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .po-date-light {
+            color: #6c757d; /* Màu xám nhạt, bạn có thể tùy chỉnh mã màu */
+            font-weight: normal; /* Đảm bảo không bị đậm như <strong> */
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+
+        <!-- Main Content Start -->
+        <div class="main-content" id="mainContent">
+            <div class="container">
+                <!-- Purchase Order Info -->
+                <div class="card" th:object="${purchaseOrder}">
+                    <div class="card-header">
+                        <h2 th:text="'PO_'+ ${purchaseOrder.id}"><i class="fas fa-file-invoice me-2"></i></h2>
+                        <div>
+                            <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal"
+                                    data-bs-target="#contractModal">
+                                <i class="fas fa-file-contract me-1"></i> Xem hợp đồng
+                            </button>
+                            <button class="btn btn-light btn-sm" onclick="window.print()">
+                                <i class="fas fa-print me-1"></i> In
+                            </button>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <p>
+                            <i class="fas fa-calendar me-1"></i>
+                            <strong>Ngày tạo:</strong>
+                            <span class="po-date-light"
+                                  th:text="${#temporals.format(purchaseOrder.quotation.rfq.createAt, 'dd/MM/yyyy')}"></span>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-spinner me-1"></i>
+                            <strong>Trạng thái:</strong>
+                            <span th:switch="${purchaseOrder.productionOrder.workOrder.isProduction}">
+        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang sản xuất'" class="badge"
+              style="background-color: #ffc107; color: white;"></span>
+        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Đã hoàn thành'" class="badge"
+              style="background-color: #28a745; color: black;"></span>
+        <span th:case="*" th:text="'Chờ lệnh sản xuất'" class="badge"
+              style="background-color: #6c757d; color: white;"></span>
+    </span>
+                        </p>
+                        <p><i class="fas fa-truck me-1"></i><strong>Ngày Giao:</strong>
+                            <span class="po-date-light"
+                                  th:text="${#temporals.format(purchaseOrder.quotation.rfq.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-boxes me-2"></i> Lô hàng</h4>
+                    </div>
+                    <table class="table table-striped mb-0">
+                        <thead>
+                        <tr>
+
+                            <th>Sản Phẩm</th>
+                            <th>Nhãn Hiệu</th>
+                            <th>Loại Hàng</th>
+                            <th>Màu</th>
+                            <th>Số Lượng</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="pod: ${purchaseOrder.purchaseOrderDetails}">
+                        <tr>
+
+                            <td th:text="${pod.product.name}"></td>
+                            <td th:text="${pod.brand.name}"></td>
+                            <td th:text="${pod.category.name}"></td>
+                            <td th:text="${pod.note_color}"></td>
+                            <td th:text="${pod.quantity}"></td>
+                            <td th:text="${#numbers.formatDecimal(pod.unitPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(pod.totalPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="5.5" class="text-end">Tổng cộng:</th>
+                            <th th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0), 0, 'COMMA', 0, 'POINT')} + ' VND'">24,000,000 VNĐ</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Production Process -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-cogs me-2"></i> Quy trình sản xuất</h4>
+                    </div>
+                    <div class="process-bar">
+                        <div class="process-step completed">
+                            <div class="step-circle"><i class="fas fa-tint"></i></div>
+                            <strong>Nhuộm</strong>
+                            <p>Đã hoàn thành</p>
+                            <p>11/03 - 12/03</p>
+                        </div>
+                        <div class="process-step in-progress">
+                            <div class="step-circle"><i class="fas fa-hammer"></i></div>
+                            <strong>Đánh côn</strong>
+                            <p>Đang thực hiện</p>
+                            <p>13/03 - 60%</p>
+                        </div>
+                        <div class="process-step not-started">
+                            <div class="step-circle"><i class="fas fa-box"></i></div>
+                            <strong>Đóng hàng</strong>
+                            <p>Chưa thực hiện</p>
+                            <p>15/03</p>
+                        </div>
+                        <div class="process-step not-started">
+                            <div class="step-circle"><i class="fas fa-shipping-fast"></i></div>
+                            <strong>Vận chuyển</strong>
+                            <p>Chưa thực hiện</p>
+                            <p>18/03</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- Contract Modal -->
+<div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contractModalLabel"><i class="fas fa-file-contract me-2"></i> Hợp đồng
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Mã hợp đồng:</strong> HD2025-001</p>
+                        <p><strong>Ngày ký:</strong> 09/03/2025</p>
+                        <p><strong>Ngày giao hàng:</strong> 20/03/2025</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <img src="/assert/images/meme-loopy-30.jpg" alt="Ảnh hợp đồng"
+                             class="contract-img">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contractModalLabel"><i class="fas fa-file-contract me-2"></i> Hợp đồng Mua bán</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    &lt;!&ndash; Bên trái: Bảng thông tin giống ảnh &ndash;&gt;
+                    <div class="col-md-6 contract-details">
+                        <div class="contract-section">
+                            <h6><strong >Bên Mua (Bên A): <span th:text="${purchaseOrder.customer.companyUsers.get(0).company.name}"></span></strong></h6>
+                            <p><strong>Người đại diện:</strong> Bà NGUYỄN HOÀI THƯƠNG</p>
+                            <p><strong>Chức vụ:</strong> Giám đốc</p>
+                            <p><strong>Địa chỉ ĐKKD:</strong> Tầng 6, số nhà 32, Dương Trấn Phú, Phường Mộ Lào, Quận Hà Đông, Thành Phố Hà Nội, Việt Nam</p>
+                            <p><strong>Mã số thuế:</strong> 0108328445</p>
+                            <p><strong>Điện thoại:</strong> </p>
+                            <p><strong>Tài khoản số:</strong> 1306888888</p>
+                            <p><strong>Đại diện liên hệ:</strong> MS. THƯƠNG</p>
+                        </div>
+                        <div class="contract-section">
+                            <h6><strong>Bên Bán (Bên B): CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI VÀ ĐẦU TƯ DŨNG ĐÔNG</strong></h6>
+                            <p><strong>Người đại diện:</strong> Ông TRIỆU QUANG DŨNG</p>
+                            <p><strong>Chức vụ:</strong> Phó Giám đốc</p>
+                            <p><strong>Giấy Ủy Quyền:</strong> Số 01/2022/UQ-DD ngày 06 tháng 12 năm 2022</p>
+                            <p><strong>Địa chỉ ĐKKD:</strong> Lô N10-2, Cụm Sản xuất làng nghề tập trung, X. Tân Triều, H. Thanh Trì, Hà Nội, Việt Nam</p>
+                            <p><strong>Mã số thuế:</strong> 0101196599</p>
+                            <p><strong>Điện thoại:</strong> 0243.5521898</p>
+                            <p><strong>Fax:</strong> 0243.5520488</p>
+                            <p><strong>Số tài khoản:</strong> 3180211040000129</p>
+                            <p><strong>Đại diện liên hệ:</strong> MR. DŨNG</p>
+                        </div>
+                    </div>
+
+                    &lt;!&ndash; Bên phải: Thông tin hợp đồng và hình ảnh &ndash;&gt;
+                    <div class="col-md-6">
+                        <div class="contract-info">
+                            <p><strong>Mã hợp đồng:</strong> HD2025-001</p>
+                            <p><strong>Ngày ký:</strong> 09/03/2025</p>
+                            <p><strong>Ngày giao hàng:</strong> 20/03/2025</p>
+                            <p><i class="fas fa-user me-1"></i> <strong>Khách hàng:</strong> Công ty TNHH ABC</p>
+                        </div>
+                        <div class="text-center">
+                            <img src="/assert/images/meme-loopy-30.jpg" alt="Ảnh hợp đồng" class="contract-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+</body>
+
+</html>

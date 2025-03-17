@@ -31,6 +31,9 @@ public class DyeMachine extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+//    @Column(name = "is_active", columnDefinition = "boolean default true")
+//    private boolean isActive = true;
+
     public DyeMachine() {
     }
 

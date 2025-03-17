@@ -181,7 +181,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="label" for="color-1">Màu</label>
-                                    <input type="text" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu" minlength="1" maxlength="20" required>
+                                    <input type="color" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu"  required>
                                 </div>
                                 <div class="form-group">
                                     <label class="label" for="quantity-1">Số lượng</label>
@@ -373,9 +373,18 @@
     $('.remove-row-btn').hide();
 
     // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
-    const today = new Date().toISOString().split("T")[0];
+    // Tạo đối tượng Date cho hôm nay
+    const today = new Date();
+
+    // Thêm 3 ngày vào ngày hiện tại
+    today.setDate(today.getDate() + 3);
+
+    // Chuyển ngày mới thành định dạng yyyy-mm-dd
+    const threeDaysLater = today.toISOString().split("T")[0];
+
     // Gán giá trị min cho input
-    document.getElementById("desiredDeliveryDate").setAttribute("min", today);
+    document.getElementById("desiredDeliveryDate").setAttribute("min", threeDaysLater);
+
 </script>
 </body>
 </html>

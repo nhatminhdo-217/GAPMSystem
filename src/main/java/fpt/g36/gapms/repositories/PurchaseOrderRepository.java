@@ -7,6 +7,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -62,4 +63,13 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     List<Object[]> getPurchaseOrderItemsDTOById(@Param("id") Long id);
 
     List<PurchaseOrder> getAllByStatus(BaseEnum status, Pageable pageable);
+
+    @Query("select po from PurchaseOrder po where po.customer.id = :userId order by po.createAt desc")
+    Page<PurchaseOrder> getAllPurchaseOrdersByUserId(Long userId, Pageable pageable);
+
+    @Query("SELECT po FROM PurchaseOrder po WHERE po.customer.id = :userId AND YEAR(po.createAt) = :year ORDER BY po.createAt DESC")
+    Page<PurchaseOrder> getAllPurchaseOrdersByUserIdAndYear(@Param("userId") Long userId, @Param("year") Integer year, Pageable pageable);
+
+    @Query("select po from PurchaseOrder po where po.id = :poi")
+    PurchaseOrder getPurchaseOrderCustomerDetail(Long poi);
 }

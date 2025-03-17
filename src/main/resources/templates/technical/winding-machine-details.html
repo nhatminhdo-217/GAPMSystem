@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Chi tiết máy cuốn</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+        .container-fluid {
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .detail-section {
+            padding: 20px;
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            border: 1px solid #e2e7f0;
+            margin-top: 20px;
+        }
+        .detail-section .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .detail-section .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+        .detail-section strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+            display: block;
+        }
+        .detail-section span {
+            font-size: 15px;
+            color: #212529;
+        }
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .btn-custom:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+        .btn-custom:disabled {
+            background-color: #b0c4de !important;
+            cursor: not-allowed;
+        }
+        .toast {
+            opacity: 0.9;
+        }
+        .success-toast {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        .success-toast .toast-body {
+            color: #155724;
+        }
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+        #toastSuccess, #toastError {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+        #toastError {
+            bottom: 80px;
+        }
+        /* Modal CSS */
+        .modal-content {
+            background-color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 15px;
+        }
+        .modal-footer .btn-secondary {
+            min-width: 120px;
+            height: 40px;
+            padding: 0 15px;
+            text-align: center;
+            background-color: #dcdcdc !important;
+            color: #333 !important;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #ccc !important;
+            color: #000 !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .modal-footer .btn-primary {
+            min-width: 120px;
+            height: 40px;
+            padding: 0 15px;
+            text-align: center;
+            background-color: #4CAF50 !important;
+            color: white !important;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #45a049 !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
+<div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+
+    <div class="content">
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light rounded p-4">
+                <h6 class="mb-4 section-title">Chi tiết máy cuốn</h6>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="detail-section">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Mã máy:</strong> <span th:text="${windingMachine.id}"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Tốc độ động cơ:</strong> <span th:text="${windingMachine.motor_speed}"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Số trục:</strong> <span th:text="${windingMachine.spindle}"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Công suất:</strong> <span th:text="${windingMachine.capacity} + ' vòng/phút'"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Mô tả:</strong> <span th:text="${windingMachine.description != null ? windingMachine.description : 'N/A'}"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(windingMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Ngày cập nhật:</strong> <span th:text="${#temporals.format(windingMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-container">
+                            <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editWindingMachineModal" th:disabled="${windingMachine.windingStage != null}">Chỉnh sửa</button>
+                            <a href="/technical/view-all-machine" class="btn btn-custom" style="background-color: #6c757d !important;">Quay lại</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal chỉnh sửa -->
+        <div class="modal fade" id="editWindingMachineModal" tabindex="-1" aria-labelledby="editWindingMachineModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editWindingMachineModalLabel">Chỉnh sửa máy cuốn</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/technical/update-winding-machine}" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="id" th:value="${windingMachine.id}">
+                            <div class="form-group">
+                                <label for="motor_speed">Tốc độ động cơ:</label>
+                                <input type="number" class="form-control" id="motor_speed" name="motor_speed" th:value="${windingMachine.motor_speed}" required min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="spindle">Số trục:</label>
+                                <input type="number" class="form-control" id="spindle" name="spindle" th:value="${windingMachine.spindle}" required min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="capacity">Công suất (vòng/phút):</label>
+                                <input type="number" class="form-control" id="capacity" name="capacity" th:value="${windingMachine.capacity}" required min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Mô tả:</label>
+                                <textarea class="form-control" id="description" name="description" th:text="${windingMachine.description}"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <div id="toastSuccess" class="toast success-toast">
+        <div class="toast-header">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="successMessage"></p>
+        </div>
+    </div>
+
+    <div id="toastError" class="toast error-toast">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $(window).on('load', function () { $('#spinner').removeClass('show'); });
+        $('.back-to-top').click(function () { $('html, body').animate({scrollTop: 0}, 1000); return false; });
+
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
+            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
+            successToast.show();
+            setTimeout(() => successToast.hide(), 3000);
+        }
+
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+    });
+</script>
+</body>
+</html>

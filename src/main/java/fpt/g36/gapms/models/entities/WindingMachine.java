@@ -1,9 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
@@ -26,6 +23,9 @@ public class WindingMachine extends BaseEntity {
 
     @Lob
     private String description;
+
+//    @Column(name = "is_active", columnDefinition = "boolean default true")
+//    private boolean isActive = true;
 
     public WindingMachine() {
     }

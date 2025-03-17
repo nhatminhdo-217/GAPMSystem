@@ -11,6 +11,7 @@ import fpt.g36.gapms.services.PurchaseOrderService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -110,4 +111,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return dto;
     }
 
+    @Override
+    public Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year) {
+        return purchaseOrderRepository.getAllPurchaseOrdersByUserIdAndYear(userId, year, pageable);
+    }
+
+    @Override
+    public PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderCustomerDetail(purchase_order_id);
+        return purchaseOrder;
+    }
 }

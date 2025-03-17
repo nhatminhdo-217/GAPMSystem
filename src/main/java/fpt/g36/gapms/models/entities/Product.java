@@ -32,7 +32,7 @@ public class Product extends BaseEntity {
     @JsonIgnore
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 
