@@ -208,7 +208,7 @@ public class QuotationServiceImpl implements QuotationService {
         }
 
         Quotation quotation = new Quotation();
-        quotation.setCanceled(false);
+        quotation.setIsCanceled(false);
         quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
         quotation.setRfq(rfq);
 

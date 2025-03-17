@@ -8,6 +8,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Quotation;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.impls.PurchaseOrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,7 +103,7 @@ class PurchaseOrderServiceImplTest {
 
         when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
 
-        PurchaseOrder updatedOrder = purchaseOrderService.updatePurchaseOrderStatus(1L);
+        PurchaseOrder updatedOrder = purchaseOrderService.updatePurchaseOrderStatus(1L, null);
 
         assertNotNull(updatedOrder, "Cập nhật đơn hàng không thành công");
         assertEquals(BaseEnum.NOT_APPROVED, updatedOrder.getStatus(), "Trạng thái không đúng");
@@ -117,7 +118,7 @@ class PurchaseOrderServiceImplTest {
         when(purchaseOrderRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Kiểm tra khi không tìm thấy đơn hàng, phương thức sẽ ném ra ngoại lệ
-        assertThrows(RuntimeException.class, () -> purchaseOrderService.updatePurchaseOrderStatus(1L),
+        assertThrows(RuntimeException.class, () -> purchaseOrderService.updatePurchaseOrderStatus(1L, null),
                 "Purchase order not found");
 
         // Kiểm tra phương thức không gọi save() khi không tìm thấy đơn hàng
