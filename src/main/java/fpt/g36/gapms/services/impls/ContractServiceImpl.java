@@ -85,7 +85,7 @@ public class ContractServiceImpl implements ContractService {
         return contractRepository.save(contract);
     }
 
-    public String saveImageMultiFile(MultipartFile file) throws IOException {
+    private String saveImageMultiFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             return null;
         }
