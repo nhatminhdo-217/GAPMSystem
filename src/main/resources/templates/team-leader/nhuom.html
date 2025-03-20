@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Work Order Con (Leader Nhuộm)</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- Inline CSS -->
+    <style>
+        .main-content {
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #28a745, #34d058);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-header h2 {
+            margin-bottom: 0;
+            font-size: 1.5rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table th {
+            background-color: #F3F6F9;
+            color: #191C24;
+            font-weight: 600;
+            padding: 15px 20px;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+            background: #fff;
+        }
+
+        .table tbody tr {
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .complete-btn, .capture-btn, .report-btn, .update-btn {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .complete-btn {
+            background-color: #ccc;
+            color: #fff;
+        }
+
+        .complete-btn.completed {
+            background-color: #28a745;
+        }
+
+        .capture-btn, .report-btn, .update-btn {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .complete-btn:hover, .capture-btn:hover, .report-btn:hover, .update-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .captured-image {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .audit-trail {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .audit-trail h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .audit-trail p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .popup-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #28a745;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Status Styles */
+        .status {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .status i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .status-not-started i {
+            color: #dc3545; /* Màu đỏ cho "Chưa bắt đầu" */
+        }
+
+        .status-in-progress i {
+            color: #ffc107; /* Màu vàng cho "Đang nhuộm" */
+        }
+
+        .status-completed i {
+            color: #28a745; /* Màu xanh cho "Đã hoàn thành" */
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .table th, .table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .complete-btn, .capture-btn, .report-btn, .update-btn {
+                padding: 15px;
+                font-size: 16px;
+                min-width: 100px;
+                height: 60px;
+            }
+
+            .captured-image {
+                width: 80px;
+            }
+
+            .status i {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main Content Start -->
+        <div class="main-content" id="mainContent">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-tasks me-2"></i> Work Order Con (Leader Nhuộm) - WOT-001</h2>
+                        <a href="work-order-total-list.html" class="btn btn-light">Quay lại</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Mã Work Order Con</th>
+                                <th>Thiết bị</th>
+                                <th>Thời Gian Bắt Đầu</th>
+                                <th>Tên màu</th>
+                                <th>Loại sợi</th>
+                                <th>Số lượng</th>
+                                <th>Số mẻ</th>
+                                <th>Ánh Sáng</th>
+                                <th>Ghi chú kế hoạch</th>
+                                <th>Số lít nước tối thiểu</th>
+                                <th>Số lít nước</th>
+                                <th>Số quả</th>
+                                <th>Nhãn hiệu</th>
+                                <th>Quy trình đánh hồ</th>
+                                <th>Hành Động</th>
+                            </tr>
+                            </thead>
+                            <tbody id="workOrderChildTableBody">
+                            <!-- Work Order Con 1 -->
+                            <tr>
+                                <td>
+                                    <span class="status status-completed">
+                                        <i class="fas fa-check-circle"></i> Đã hoàn thành
+                                    </span>
+                                </td>
+                                <td>WOC-001-1</td>
+                                <td>Mb-01</td>
+                                <td>15/03/2025</td>
+                                <td>#f00000</td>
+                                <td>40/2BGK</td>
+                                <td>31.2</td>
+                                <td>1</td>
+                                <td>AD</td>
+                                <td>Chuẩn MD+TKMV</td>
+                                <td>160</td>
+                                <td>187</td>
+                                <td>24.96</td>
+                                <td>NORATEX</td>
+                                <td>31.0</td>
+                                <td>
+                                    <button class="update-btn" onclick="showUpdatePopup()">
+                                        <i class="fas fa-edit"></i> Cập nhật trạng thái
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Work Order Con 2 -->
+                            <tr>
+                                <td>
+                                    <span class="status status-in-progress">
+                                        <i class="fas fa-spinner"></i> Đang nhuộm
+                                    </span>
+                                </td>
+                                <td>WOC-001-2</td>
+                                <td>Mb-01</td>
+                                <td>15/03/2025</td>
+                                <td>#f00000</td>
+                                <td>40/2BGK</td>
+                                <td>31.2</td>
+                                <td>1</td>
+                                <td>AD</td>
+                                <td>Chuẩn MD+TKMV</td>
+                                <td>160</td>
+                                <td>187</td>
+                                <td>24.96</td>
+                                <td>NORATEX</td>
+                                <td>31.0</td>
+                                <td>
+                                    <button class="update-btn" onclick="showUpdatePopup()">
+                                        <i class="fas fa-edit"></i> Cập nhật trạng thái
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Work Order Con 3 (Thêm để minh họa "Chưa bắt đầu") -->
+                            <tr>
+                                <td>
+                                    <span class="status status-not-started">
+                                        <i class="fas fa-times-circle"></i> Chưa bắt đầu
+                                    </span>
+                                </td>
+                                <td>WOC-001-3</td>
+                                <td>Mb-02</td>
+                                <td>15/03/2025</td>
+                                <td>#00ff00</td>
+                                <td>40/2BGK</td>
+                                <td>31.2</td>
+                                <td>1</td>
+                                <td>AD</td>
+                                <td>Chuẩn MD+TKMV</td>
+                                <td>160</td>
+                                <td>187</td>
+                                <td>24.96</td>
+                                <td>NORATEX</td>
+                                <td>31.0</td>
+                                <td>
+                                    <button class="update-btn" onclick="showUpdatePopup()">
+                                        <i class="fas fa-edit"></i> Cập nhật trạng thái
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+    <!-- Popup Form -->
+    <div id="completePhotoPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">×</span>
+            <h3>Xác nhận hoàn thành và chụp ảnh</h3>
+            <form id="completePhotoForm">
+                <div class="form-group">
+                    <label>Trạng thái hoàn thành:</label>
+                    <button type="button" id="completeBtnPopup" class="complete-btn" onclick="toggleCompletePopup()">
+                        <i class="fas fa-check"></i> Hoàn Thành
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>Chụp ảnh:</label>
+                    <button type="button" class="capture-btn" onclick="capturePhotoPopup()">
+                        <i class="fas fa-camera"></i> Chụp ảnh
+                    </button>
+                    <div id="photoPreview"></div>
+                </div>
+                <button type="button" class="submit-btn" onclick="submitPopup()">Xác nhận</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<!-- Script cho các chức năng -->
+<script>
+    let currentWorkOrderTotalId = '';
+    let currentWorkOrderChildId = '';
+    let currentProcess = '';
+
+    // Hiển thị popup khi nhấn "Gửi báo cáo chất lượng"
+    function sendQualityReport(workOrderChildId) {
+        currentWorkOrderChildId = workOrderChildId;
+        currentWorkOrderTotalId = 'WOT-001';
+        currentProcess = 'Nhuom';
+
+        const popup = document.getElementById('completePhotoPopup');
+        const completeBtn = document.getElementById('completeBtnPopup');
+        const row = document.querySelector(`tr td:nth-child(2):contains('${workOrderChildId}')`).parentElement;
+        const existingCompleteBtn = row.querySelector('.complete-btn');
+
+        // Đồng bộ trạng thái hoàn thành
+        if (existingCompleteBtn && existingCompleteBtn.classList.contains('completed')) {
+            completeBtn.classList.add('completed');
+            completeBtn.innerHTML = '<i class="fas fa-check"></i> Đã Hoàn Thành';
+        } else {
+            completeBtn.classList.remove('completed');
+            completeBtn.innerHTML = '<i class="fas fa-check"></i> Hoàn Thành';
+        }
+
+        document.getElementById('photoPreview').innerHTML = '';
+        popup.style.display = 'flex';
+    }
+
+    // Hiển thị popup khi nhấn "Cập nhật trạng thái" (không cần ID)
+    function showUpdatePopup() {
+        const popup = document.getElementById('completePhotoPopup');
+        const completeBtn = document.getElementById('completeBtnPopup');
+
+        // Reset trạng thái mặc định khi không có ID
+        completeBtn.classList.remove('completed');
+        completeBtn.innerHTML = '<i class="fas fa-check"></i> Hoàn Thành';
+        document.getElementById('photoPreview').innerHTML = '';
+        popup.style.display = 'flex';
+    }
+
+    // Đóng popup
+    function closePopup() {
+        document.getElementById('completePhotoPopup').style.display = 'none';
+    }
+
+    // Toggle trạng thái hoàn thành trong popup
+    function toggleCompletePopup() {
+        const button = document.getElementById('completeBtnPopup');
+        if (!button.classList.contains('completed')) {
+            button.classList.add('completed');
+            button.innerHTML = '<i class="fas fa-check"></i> Đã Hoàn Thành';
+        } else {
+            button.classList.remove('completed');
+            button.innerHTML = '<i class="fas fa-check"></i> Hoàn Thành';
+        }
+    }
+
+    // Chụp ảnh trong popup
+    async function capturePhotoPopup() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            const ctx = canvas.getContext('2d');
+
+            setTimeout(() => {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/png');
+
+                const photoPreview = document.getElementById('photoPreview');
+                const img = document.createElement('img');
+                img.src = imageData;
+                img.className = 'captured-image';
+                photoPreview.innerHTML = '';
+                photoPreview.appendChild(img);
+
+                stream.getTracks().forEach(track => track.stop());
+            }, 1000);
+        } catch (err) {
+            alert('Không thể truy cập webcam: ' + err.message);
+        }
+    }
+
+    // Xử lý khi nhấn "Xác nhận" trong popup
+    function submitPopup() {
+        const completeBtnPopup = document.getElementById('completeBtnPopup');
+        const isCompleted = completeBtnPopup.classList.contains('completed');
+        const photoPreview = document.getElementById('photoPreview').querySelector('img');
+        const auditTrail = document.getElementById('auditTrail');
+        const timestamp = new Date().toLocaleString('vi-VN');
+
+        // Nếu có currentWorkOrderChildId (từ sendQualityReport)
+        if (currentWorkOrderChildId) {
+            const row = document.querySelector(`tr td:nth-child(2):contains('${currentWorkOrderChildId}')`).parentElement;
+            const statusCell = row.querySelector('.status');
+
+            if (isCompleted) {
+                statusCell.className = 'status status-completed';
+                statusCell.innerHTML = '<i class="fas fa-check-circle"></i> Đã hoàn thành';
+                const log = document.createElement('p');
+                log.textContent = `${timestamp} - Leader Nhuộm đánh dấu hoàn thành ${currentProcess} cho ${currentWorkOrderChildId}.`;
+                auditTrail && auditTrail.appendChild(log);
+            } else {
+                statusCell.className = 'status status-in-progress';
+                statusCell.innerHTML = '<i class="fas fa-spinner"></i> Đang nhuộm';
+                const log = document.createElement('p');
+                log.textContent = `${timestamp} - Leader Nhuộm bỏ đánh dấu hoàn thành ${currentProcess} cho ${currentWorkOrderChildId}.`;
+                auditTrail && auditTrail.appendChild(log);
+            }
+
+            if (photoPreview) {
+                const photoDiv = document.getElementById(`photo-${currentWorkOrderChildId}`);
+                if (photoDiv) {
+                    const img = document.createElement('img');
+                    img.src = photoPreview.src;
+                    img.className = 'captured-image';
+                    photoDiv.innerHTML = '';
+                    photoDiv.appendChild(img);
+                }
+                const log = document.createElement('p');
+                log.textContent = `${timestamp} - Leader Nhuộm chụp ảnh cho ${currentWorkOrderChildId}.`;
+                auditTrail && auditTrail.appendChild(log);
+            }
+
+            alert(`Đã cập nhật trạng thái cho Work Order Con ${currentWorkOrderChildId}!`);
+        } else {
+            // Nếu không có ID (từ showUpdatePopup), chỉ hiển thị thông báo demo
+            alert('Popup đã được xác nhận, nhưng không có Work Order Con nào được chọn để cập nhật.');
+        }
+
+        closePopup();
+    }
+</script>
+</body>
+</html>

@@ -365,6 +365,22 @@ public class RfqController {
         return "redirect:/request-for-quotation/view-list";
     }
 
+    @GetMapping("/test-teamLeader")
+    public String test(){
+        return "team-leader/test";
+    }
+    @GetMapping("/test-nhuom")
+    public String nhuom(){
+        return "team-leader/nhuom";
+    }
+    @GetMapping("/test-danhCon")
+    public String danhCon(){
+        return "team-leader/danh-con";
+    }
+    @GetMapping("/test-dongGoi")
+    public String dongGoi(){
+        return "team-leader/dong-goi";
+    }
 
     /*@GetMapping("/edit/brands")
     public ResponseEntity<List<Brand>> getBrandsByProductIdEdit(@RequestParam("productId") Long productId) {
