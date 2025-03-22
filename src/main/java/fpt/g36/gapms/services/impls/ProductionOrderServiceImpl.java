@@ -53,4 +53,12 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
                 .map(productionOrderMapper::toDetailDTO)
                 .toList();
     }
+
+    @Override
+    public ProductionOrderDetailDTO findDetailById(Long id) {
+
+        return productionOrderRepository.findByProductionOrderId(id)
+                .map(productionOrderMapper::toDetailDTO)
+                .orElseThrow(() -> new RuntimeException("Production Order Detail not found"));
+    }
 }

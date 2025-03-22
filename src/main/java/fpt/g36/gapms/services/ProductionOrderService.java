@@ -13,4 +13,6 @@ public interface ProductionOrderService {
     ProductionOrderDTO findById(Long id);
 
     List<ProductionOrderDetailDTO> findDetailByProductionOrderId(Long id);
+
+    ProductionOrderDetailDTO findDetailById(Long id);
 }

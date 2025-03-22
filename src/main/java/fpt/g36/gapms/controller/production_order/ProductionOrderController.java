@@ -66,9 +66,11 @@ public class ProductionOrderController {
 
         ProductionOrderDTO productionOrder = productionOrderService.findById(id);
         List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailByProductionOrderId(id);
+        ProductionOrderDetailDTO productionOrderDetail = productionOrderService.findDetailById(id);
 
         model.addAttribute("productionOrder", productionOrder);
         model.addAttribute("productionOrderDetailList", productionOrderDetailList);
+        model.addAttribute("productionOrderDetail", productionOrderDetail);
 
 
         return "production_order/detail_production_order";
