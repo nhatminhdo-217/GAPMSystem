@@ -2,6 +2,7 @@ package fpt.g36.gapms.services;
 
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
+import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface ProductionOrderService {
     List<ProductionOrderDetailDTO> findDetailByProductionOrderId(Long id);
 
     ProductionOrderDetailDTO findDetailById(Long id);
+
+    ProductionOrderDetailDTO updateProductionOrderDetail(ProductionOrderDetailDTO productionOrderDetailDTO);
+
+    ProductionOrderDTO updateStatusByProductionOrderId(Long id, User currUser);
 }

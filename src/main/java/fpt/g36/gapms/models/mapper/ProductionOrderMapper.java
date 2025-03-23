@@ -23,8 +23,9 @@ public class ProductionOrderMapper {
     dto.setCreateAt(po.getCreateAt());
     dto.setUpdateAt(po.getUpdateAt());
     dto.setPurchaseOrderId(po.getPurchaseOrder().getId());
-    dto.setApprovedBy(po.getApprovedBy().getUsername());
     dto.setCreatedBy(po.getCreatedBy().getUsername());
+
+    System.err.println("DTO: " + dto.getStatus());
 
     return dto;
   }
@@ -42,8 +43,6 @@ public class ProductionOrderMapper {
     dto.setId(pod.getId());
     dto.setCreatedAt(pod.getCreateAt());
     dto.setUpdatedAt(pod.getUpdateAt());
-    dto.setLightEnv(pod.getLight_env());
-    dto.setThreadMass(pod.getThread_mass());
     dto.setProductionOrderId(pod.getProductionOrder().getId());
     dto.setPurchaseOrderDetailId(pod.getPurchaseOrderDetail().getId());
     dto.setBrandName(pod.getPurchaseOrderDetail().getBrand().getName());
@@ -59,5 +58,30 @@ public class ProductionOrderMapper {
 
   public List<ProductionOrderDetailDTO> toDetailDTOList(List<ProductionOrderDetail> pod) {
     return pod.stream().map(this::toDetailDTO).collect(Collectors.toList());
+  }
+
+  public ProductionOrderDetailDTO convertToDTO(ProductionOrderDetail entity) {
+    ProductionOrderDetailDTO dto = new ProductionOrderDetailDTO();
+    dto.setId(entity.getId());
+    dto.setCreatedAt(entity.getCreateAt());
+    dto.setUpdatedAt(entity.getUpdateAt());
+    dto.setLightEnv(entity.getLight_env());
+    dto.setThreadMass(entity.getThread_mass());
+    dto.setProductionOrderId(entity.getProductionOrder().getId());
+
+    // Kiểm tra null trước khi lấy ID
+    if (entity.getPurchaseOrderDetail() != null) {
+      dto.setPurchaseOrderDetailId(entity.getPurchaseOrderDetail().getId());
+    }
+
+    dto.setBrandName(entity.getPurchaseOrderDetail().getBrand().getName());
+    dto.setNoteColor(entity.getPurchaseOrderDetail().getNote_color());
+    dto.setQuantity(entity.getPurchaseOrderDetail().getQuantity());
+    dto.setCategory(entity.getPurchaseOrderDetail().getCategory().getName());
+    dto.setThreadName(entity.getPurchaseOrderDetail().getProduct().getThread().getName());
+    dto.setRate(entity.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate());
+    dto.setProcess(entity.getPurchaseOrderDetail().getProduct().getThread().getProcess().getId());
+
+    return dto;
   }
 }

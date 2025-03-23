@@ -2,15 +2,14 @@ package fpt.g36.gapms.controller.production_order;
 
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
+import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ProductionOrderController {
 
     @GetMapping("/list")
     public String listProductionOrder(Model model) {
-        return findPaginated(1, "create_at", "asc", model);
+        return findPaginated(1, "createAt", "asc", model);
     }
 
     @GetMapping("/list/page/{page}")
@@ -66,13 +65,35 @@ public class ProductionOrderController {
 
         ProductionOrderDTO productionOrder = productionOrderService.findById(id);
         List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailByProductionOrderId(id);
-        ProductionOrderDetailDTO productionOrderDetail = productionOrderService.findDetailById(id);
 
         model.addAttribute("productionOrder", productionOrder);
         model.addAttribute("productionOrderDetailList", productionOrderDetailList);
-        model.addAttribute("productionOrderDetail", productionOrderDetail);
+        model.addAttribute("productionOrderDetail", new ProductionOrderDetailDTO());
 
 
         return "production_order/detail_production_order";
     }
+
+    @PostMapping("/detail/{id}")
+    public String createProductionOrderDetail(@PathVariable("id") Long id,
+                                              Model model) {
+
+        User currUser = userUtils.getOptionalUserInfo();
+
+        ProductionOrderDTO productionOrderDTO = productionOrderService.updateStatusByProductionOrderId(id, currUser);
+
+        return "redirect:/production-order/detail/" + productionOrderDTO.getId();
+    }
+
+    @PostMapping("/detail/update/{id}")
+    public String updateProductionOrderDetail(@PathVariable("id") Long id,
+                                              @ModelAttribute("productionOrderDetail") ProductionOrderDetailDTO productionOrderDetailDTO,
+                                              Model model) {
+
+        ProductionOrderDetailDTO dto = productionOrderService.updateProductionOrderDetail(productionOrderDetailDTO);
+
+        return "redirect:/production-order/detail/" + id;
+    }
+
+
 }

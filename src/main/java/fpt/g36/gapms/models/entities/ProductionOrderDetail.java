@@ -22,7 +22,7 @@ public class ProductionOrderDetail extends BaseEntity {
   private WorkOrderDetail workOrderDetail;
 
   @OneToOne
-  @JoinColumn(name = "production_order_id", nullable = false)
+  @JoinColumn(name = "purchase_order_detail_id", nullable = false)
   private PurchaseOrderDetail purchaseOrderDetail;
 
   public ProductionOrderDetail() {
