@@ -43,6 +43,13 @@ public class ProductionOrderMapper {
     dto.setId(pod.getId());
     dto.setCreatedAt(pod.getCreateAt());
     dto.setUpdatedAt(pod.getUpdateAt());
+
+    if (pod.getLight_env() != null) {
+      dto.setLightEnv(pod.getLight_env());
+    }
+    if (pod.getThread_mass() != null) {
+        dto.setThreadMass(pod.getThread_mass());
+    }
     dto.setProductionOrderId(pod.getProductionOrder().getId());
     dto.setPurchaseOrderDetailId(pod.getPurchaseOrderDetail().getId());
     dto.setBrandName(pod.getPurchaseOrderDetail().getBrand().getName());

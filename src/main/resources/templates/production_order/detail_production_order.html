@@ -61,18 +61,18 @@
             <div class="heading mt-3">
                 <h3>Đơn đặt hàng - <span th:text="${productionOrder.id}"></span>
                     <span th:switch="${productionOrder.status}">
-                                         <span th:case="${productionOrder.status.name() == 'APPROVED'}" th:text="'Đã được duyệt'"
-                                               class="badge rounded-pill bg-success">
-                                         </span>
-                                          <span th:case="${productionOrder.status.name() == 'NOT_APPROVED'}" th:text="'Chưa được phê duyệt'"
-                                                class="badge rounded-pill bg-warning">
-                                          </span>
-                                          <span th:case="${productionOrder.status.name() == 'WAIT_FOR_APPROVAL'}" th:text="'Đang chờ phê duyệt'"
-                                                class="badge rounded-pill bg-warning">
-                                          </span>
-                                           <span th:case="${productionOrder.status.name() == 'CANCELED'}" th:text="'Đã hủy'" class="badge rounded-pill bg-danger"></span>
-                                           <span th:case="${productionOrder.status.name() == 'DRAFT'}" th:text="'Sơ thảo'" class="badge rounded-pill bg-secondary"></span>
-                                           <span th:case="*" th:text="'trạng thái không xác định'" class="badge rounded-pill bg-secondary"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
+                              class="badge rounded-pill bg-success">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
+                              class="badge rounded-pill bg-warning">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"
+                              class="badge rounded-pill bg-warning">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" class="badge rounded-pill bg-danger"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'" class="badge rounded-pill bg-secondary"></span>
+                        <span th:case="*" th:text="'trạng thái không xác định'" class="badge rounded-pill bg-secondary"></span>
                     </span>
                 </h3>
             </div>
@@ -95,13 +95,24 @@
                             <label for="rate">Định mức:</label>
                             <input type="text" class="form-control" id="rate" name="rate" th:value="*{rate}" disabled>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
                             <label for="threadMass">Khối lượng sợi:</label>
                             <input type="text" class="form-control" id="threadMass" name="threadMass" th:value="*{threadMass}">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                            <label for="threadMass">Khối lượng sợi:</label>
+                            <input type="text" class="form-control" id="threadMass" name="threadMass" th:value="*{threadMass}" disabled>
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
                             <label for="lightEnv">Môi trường AS:</label>
                             <select id="lightEnv" class="form-select" name="lightEnv">
+                                <option value="true" th:selected="*{lightEnv}">AD</option>
+                                <option value="false" th:selected="*{!lightEnv}">TN</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                            <label for="lightEnv">Môi trường AS:</label>
+                            <select id="lightEnv" class="form-select" name="lightEnv" disabled>
                                 <option value="true" th:selected="*{lightEnv}">AD</option>
                                 <option value="false" th:selected="*{!lightEnv}">TN</option>
                             </select>
@@ -125,7 +136,7 @@
                             <input type="text" class="form-control" id="process" name="process" th:value="*{process}" disabled>
                         </div>
                     </div>
-                    <div class="text-center mt-3">
+                    <div class="text-center mt-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
                         <button id="submitButton" type="submit" class="btn btn-primary">Lưu thay đổi</button>
                     </div>
                 </form>
@@ -169,6 +180,12 @@
                       th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
+                <div th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                    <form th:if="${productionOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
+                          th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">Approve</button>
+                    </form>
+                </div>
                 <a th:href="@{/purchase-order/list}" class="btn">Back</a>
             </div>
         </div>
@@ -280,7 +297,6 @@
             })
             .catch(error => {
                 console.error('Error fetching detail data:', error);
-                alert('Không thể tải dữ liệu chi tiết. Vui lòng thử lại sau.');
             });
     }
 </script>

@@ -42,7 +42,9 @@ public class ProductionOrderController {
 
         int pageSize = 5;
 
-        Page<ProductionOrderDTO> pageData = productionOrderService.findPaginated(page, pageSize, sortField, sortDir);
+        User currUser = userUtils.getOptionalUserInfo(model);
+
+        Page<ProductionOrderDTO> pageData = productionOrderService.findPaginatedByRoles(page, pageSize, sortField, sortDir, currUser);
 
         List<ProductionOrderDTO> productionOrderList = pageData.getContent();
 

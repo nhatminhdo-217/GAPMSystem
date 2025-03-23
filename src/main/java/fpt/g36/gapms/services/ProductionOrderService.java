@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductionOrderService {
 
-    Page<ProductionOrderDTO> findPaginated(Integer page, Integer pageSize , String sortField, String sortDir);
+    Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize , String sortField, String sortDir, User currUser);
 
     ProductionOrderDTO findById(Long id);
 

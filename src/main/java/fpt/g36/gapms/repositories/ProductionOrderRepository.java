@@ -1,6 +1,7 @@
 package fpt.g36.gapms.repositories;
 
 import aj.org.objectweb.asm.commons.Remapper;
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.entities.ProductionOrder;
 import fpt.g36.gapms.models.entities.ProductionOrderDetail;
 import org.springframework.data.domain.Page;
@@ -25,4 +26,6 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
 
     @Query("SELECT pod FROM ProductionOrderDetail pod WHERE pod.id = :id")
     Optional<ProductionOrderDetail> findByProductionOrderId(@Param("id") Long id);
+
+    Page<ProductionOrder> findAllByStatus(BaseEnum status, Pageable pageable);
 }

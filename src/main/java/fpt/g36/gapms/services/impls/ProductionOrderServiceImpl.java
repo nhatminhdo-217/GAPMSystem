@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductionOrderServiceImpl implements ProductionOrderService {
@@ -34,19 +35,21 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public Page<ProductionOrderDTO> findPaginated(Integer page, Integer pageSize, String sortField, String sortDir) {
+    public Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser) {
 
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortField).ascending()
                 : Sort.by(sortField).descending();
 
-        System.err.println("Sort");
+        if (currUser.getRole().getName().equals("SALE_STAFF")) {
+            Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+            return productionOrderRepository.findAll(pageable).map(productionOrderMapper::toDTO);
+        }
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        Page<ProductionOrder> productionOrders = productionOrderRepository.findAllByStatus(BaseEnum.WAIT_FOR_APPROVAL, pageable);
+        return productionOrders.map(productionOrderMapper::toDTO);
 
-        System.err.println("Pageable");
-
-        return productionOrderRepository.findAll(pageable).map(productionOrderMapper::toDTO);
     }
 
     @Override
