@@ -229,11 +229,11 @@
                                 <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025</td>
                                 <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
-                                    <span th:switch="${po.productionOrder.workOrder.status}">
-                                        <span th:case="0" th:text="'Đang sản xuất'" class="badge" style="background-color: #28a745; color: white;"></span>
-                                        <span th:case="1" th:text="'Đã hoàn thành'" class="badge" style="background-color: #ffc107; color: black;"></span>
-                                        <span th:case="*" th:text="'Chờ lệnh sản xuất'" class="badge" style="background-color: #6c757d; color: white;"></span>
-                                    </span>
+                                     <span th:switch="${po.productionOrder.workOrder.isProduction}">
+                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang sản xuất'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
+                                <span th:case="*" th:text="'Chờ sản xuất'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+                            </span>
                                 </td>
                                 <td>
                                     <a th:href="@{/purchase-order/customer/detail/{id}(id=${po.id})}" class="btn btn-primary btn-action">

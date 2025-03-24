@@ -367,7 +367,7 @@ public class RfqController {
 
     @GetMapping("/test-teamLeader")
     public String test(){
-        return "team-leader/test";
+        return "work-order-list-team-leader";
     }
     @GetMapping("/test-nhuom")
     public String nhuom(){
