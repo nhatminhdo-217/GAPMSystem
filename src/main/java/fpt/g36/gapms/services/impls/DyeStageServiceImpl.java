@@ -1,6 +1,7 @@
 package fpt.g36.gapms.services.impls;
 
 
+import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.DyeStage;
 import fpt.g36.gapms.repositories.DyeStageRepository;
@@ -29,7 +30,10 @@ public class DyeStageServiceImpl implements DyeStageService {
         DyeStage dyeStage = dyeStageRepository.findById(dyeId).orElseThrow(() -> new RuntimeException("dyeId not found"));
 
             dyeStage.setWorkStatus(WorkEnum.IN_PROGRESS);
+            dyeStage.getWorkOrderDetail().getWorkOrder().setIsProduction(WorkEnum.IN_PROGRESS);
+            dyeStage.setTestStatus(TestEnum.TESTING);
             dyeStageRepository.save(dyeStage);
+
     }
 
     @Override

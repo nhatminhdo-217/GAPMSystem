@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.DyeStage;
 import fpt.g36.gapms.models.entities.WindingStage;
@@ -26,6 +27,7 @@ public class WindingStageServiceImpl implements WindingStageService {
         WindingStage windingStage = windingStageRepository.findById(wdId).orElseThrow(() -> new RuntimeException("wdId not found"));
 
         windingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
+        windingStage.setTestStatus(TestEnum.TESTING);
         windingStageRepository.save(windingStage);
     }
 

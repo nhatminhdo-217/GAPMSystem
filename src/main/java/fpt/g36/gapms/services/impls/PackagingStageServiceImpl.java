@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.PackagingStage;
 import fpt.g36.gapms.models.entities.WindingStage;
@@ -27,6 +28,7 @@ public class PackagingStageServiceImpl implements PackagingStageService {
         PackagingStage packagingStage = packagingStageRepository.findById(psId).orElseThrow(() -> new RuntimeException("psId not found"));
 
         packagingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
+        packagingStage.setTestStatus(TestEnum.TESTING);
         packagingStageRepository.save(packagingStage);
     }
 
