@@ -94,5 +94,20 @@
             <a href="/purchase-order/list" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Danh sách đơn hàng</a>
         </div>
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_DYE'')')}">
+            <a href="index.html" class="nav-item nav-link active"><i
+                    class="fa fa-tachometer-alt me-2"></i>Tổ Nhuộm</a>
+            <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm Việc</a>
+        </div>
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_WINDING'')')}">
+            <a href="index.html" class="nav-item nav-link active"><i
+                    class="fa fa-tachometer-alt me-2"></i>Tổ Đánh Côn</a>
+            <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm Việc</a>
+        </div>
+        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_PACKAGING'')')}">
+            <a href="index.html" class="nav-item nav-link active"><i
+                    class="fa fa-tachometer-alt me-2"></i>Tổ Đóng Gói</a>
+            <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm Việc</a>
+        </div>
     </nav>
 </div>

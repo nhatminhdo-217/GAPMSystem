@@ -67,6 +67,7 @@ public class DyeStage extends BaseEntity{
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 
+    private String dyePhoto;
     public DyeStage() {
     }
 
@@ -207,5 +208,13 @@ public class DyeStage extends BaseEntity{
 
     public void setDyeMachine(DyeMachine dyeMachine) {
         this.dyeMachine = dyeMachine;
+    }
+
+    public String getDyePhoto() {
+        return dyePhoto;
+    }
+
+    public void setDyePhoto(String dyePhoto) {
+        this.dyePhoto = dyePhoto;
     }
 }

@@ -56,6 +56,7 @@ public class WindingStage extends BaseEntity{
     @OneToOne(mappedBy = "windingStage")
     private PackagingStage packagingStage;
 
+    private String windingPhoto;
     public WindingStage() {
     }
 
@@ -178,5 +179,13 @@ public class WindingStage extends BaseEntity{
 
     public void setPackagingStage(PackagingStage packagingStage) {
         this.packagingStage = packagingStage;
+    }
+
+    public String getWindingPhoto() {
+        return windingPhoto;
+    }
+
+    public void setWindingPhoto(String windingPhoto) {
+        this.windingPhoto = windingPhoto;
     }
 }

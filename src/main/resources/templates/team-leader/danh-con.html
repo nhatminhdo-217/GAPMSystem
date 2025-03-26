@@ -2,7 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Work Order Con (Leader Đánh Côn)</title>
+    <title>Chỉ may Dũng Đông - Work Order Con (Leader Nhuộm)</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -11,7 +11,7 @@
     <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -30,199 +30,363 @@
 
     <!-- Inline CSS -->
     <style>
-        .main-content {
-            padding: 20px;
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            color: #333;
         }
+        .container-fluid { padding: 0; }
+        .main-content { padding: 30px; }
 
+        /* Card Styles */
         .card {
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             background: #fff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
-
+        .card:hover { transform: translateY(-5px); }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(90deg, #ffc107, #ffca2c);
-            color: black;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
+            background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
         }
-
         .card-header h2 {
-            margin-bottom: 0;
-            font-size: 1.5rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .table th {
-            background-color: #F3F6F9;
-            color: #191C24;
+            margin: 0;
+            font-size: 1.8rem;
             font-weight: 600;
-            padding: 15px 20px;
-            text-transform: uppercase;
-            font-size: 14px;
-            border-bottom: 2px solid #ddd;
         }
+        .card-header .btn-light {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        .card-header .btn-light:hover { background: rgba(255, 255, 255, 0.4); }
 
+        /* Table Styles */
+        .table-responsive { overflow-x: auto; }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-bottom: 0;
+        }
+        .table th {
+            background: #eef2f7;
+            color: #1f2a44;
+            font-weight: 600;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border-bottom: none;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
         .table td {
-            padding: 15px 20px;
+            padding: 15px;
             vertical-align: middle;
             background: #fff;
-        }
-
-        .table tbody tr {
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-            transition: transform 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .badge {
-            padding: 8px 15px;
             font-size: 14px;
-            border-radius: 20px;
-            font-weight: 500;
-            min-width: 100px;
+            border-bottom: 1px solid #e9ecef;
             text-align: center;
         }
-
-        .progress {
-            height: 20px;
+        .table tbody tr {
+            background: #fff;
             border-radius: 10px;
-            background-color: #e9ecef;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .progress-bar {
-            background: linear-gradient(90deg, #ffc107, #ffca2c);
-            border-radius: 10px;
-        }
-
-        .process-row {
-            display: flex;
-            align-items: center;
-        }
-
-        .process-row input[type="checkbox"] {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
-        }
-
-        .note-input, .defect-input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .capture-btn, .notify-btn, .report-btn {
-            background-color: #007bff;
-            color: white;
+        /* Button Styles */
+        .update-btn {
             padding: 10px 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 5px 0;
-            width: 100%;
             font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .capture-btn, .submit-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .capture-btn {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745, #34d058);
+            color: white;
+        }
+        .capture-btn:hover, .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Status Styles */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f3f5;
+        }
+        .status i { margin-right: 8px; font-size: 16px; }
+        .status-not-started { background: #ffe5e5; color: #dc3545; }
+        .status-not-started i { color: #dc3545; }
+        .status-in-progress { background: #fff3e0; color: #856404; }
+        .status-in-progress i { color: #ffc107; }
+        .status-completed { background: #e6ffe6; color: #155724; }
+        .status-completed i { color: #28a745; }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .popup-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover { color: #333; }
+        .popup-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+            text-align: center;
+        }
+        .status-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .status-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 48%;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .capture-btn i, .notify-btn i, .report-btn i {
-            margin-right: 5px;
-        }
-
-        .capture-btn:hover, .notify-btn:hover, .report-btn:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
+        .status-btn.in-progress { background: #ffc107; color: #333; }
+        .status-btn.completed { background: #28a745; color: white; }
+        .status-btn:hover { transform: scale(1.02); }
         .captured-image {
-            width: 100px;
+            width: 100%;
+            max-width: 320px;
             height: auto;
-            border-radius: 5px;
-            margin-top: 5px;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .disabled-link {
+            background: #d3d3d3;
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+            color: #666;
+        }
+        /*.video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }*/
+
+        /* Container bao quanh video và các nút bên trong */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
         }
 
-        .audit-trail {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+        /* Video preview */
+        .video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .audit-trail h4 {
-            margin-bottom: 15px;
-            font-size: 1.2rem;
+        /* Nút "Đổi camera" và "Chụp ảnh" bên trong khung video */
+        .camera-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
-        .audit-trail p {
-            margin: 5px 0;
+        .camera-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Nút "Đổi camera" - ở góc trên bên phải */
+        .camera-switch-btn {
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Nút "Chụp ảnh" - ở giữa dưới cùng */
+        .camera-capture-btn {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%); /* Chỉ dùng để căn giữa, không có hiệu ứng transform khi hover */
+        }
+
+        /* Icon trong nút */
+        .camera-btn i {
+            font-size: 18px;
+        }
+
+        /* Nút "Bật camera" bên dưới */
+        .capture-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
         }
 
-        /* Responsive cho điện thoại */
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-to-top:hover { transform: scale(1.1); }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .card-header h2 {
-                font-size: 1.2rem;
-            }
-
-            .table th, .table td {
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            /* Ẩn các cột không cần thiết trên điện thoại */
-            .table th:nth-child(4), .table td:nth-child(4), /* Thời Gian Bắt Đầu */
-            .table th:nth-child(5), .table td:nth-child(5), /* Tiến Độ */
-            .table th:nth-child(8), .table td:nth-child(8), /* Tỷ Lệ Lỗi */
-            .table th:nth-child(9), .table td:nth-child(9) /* Ghi Chú */ {
-                display: none;
-            }
-
-            .badge {
-                padding: 6px 10px;
+            .main-content { padding: 20px; }
+            .card-header { padding: 15px; }
+            .card-header h2 { font-size: 1.4rem; }
+            .table th, .table td { padding: 10px; font-size: 12px; }
+            .update-btn, .capture-btn, .submit-btn {
+                padding: 8px 12px;
+                min-width: 100px;
                 font-size: 12px;
-                min-width: 80px;
             }
-
-            .process-row input[type="checkbox"] {
-                width: 30px;
-                height: 30px;
-            }
-
-            .capture-btn, .notify-btn, .report-btn {
-                padding: 15px;
-                font-size: 16px;
-            }
-
-            .captured-image {
-                width: 80px;
-            }
-
-            .table-responsive {
-                -webkit-overflow-scrolling: touch;
-            }
+            .status { padding: 6px 10px; font-size: 12px; }
+            .status i { font-size: 14px; }
+            .popup-content { padding: 20px; max-width: 350px; }
+            .captured-image, .video-preview { max-width: 100%; }
+            .status-btn { font-size: 12px; padding: 8px; }
         }
     </style>
 </head>
@@ -251,104 +415,54 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-tasks me-2"></i> Work Order Con (Leader Đánh Côn) - WOT-001</h2>
-                        <a href="work-order-total-list.html" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WO-<span th:text="${windingStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Mã Work Order Con</th>
-                                <th>Số Lượng</th>
-                                <th>Quy Trình</th>
+                                <th>Trạng thái</th>
+                                <th>Mã Sản Phẩm Côn</th>
                                 <th>Thời Gian Bắt Đầu</th>
-                                <th>Tiến Độ</th>
-                                <th>Trạng Thái</th>
-                                <th>Hoàn Thành</th>
-                                <th>Tỷ Lệ Lỗi (%)</th>
-                                <th>Ghi Chú</th>
-                                <th>Chụp Ảnh</th>
+                                <th>Tên màu</th>
+                                <th>Số lượng</th>
+                                <th>LOẠI HÀNG</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr>
-                                <td>WOC-001-1</td>
-                                <td>500</td>
-                                <td class="process-row">Đánh Côn</td>
-                                <td>16/03/2025 08:00</td>
+                            <tr data-id="WOC-001-1" th:each="ws : ${windingStages}">
                                 <td>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                                    </div>
+                                    <span th:switch="${ws.workStatus}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đang Côn
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã Côn
+                                        </span>
+                                        <span th:case="*" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chưa Côn
+                                        </span>
+                                    </span>
                                 </td>
-                                <td><span class="badge" style="background-color: #ffc107; color: black;">Chờ xử lý</span></td>
-                                <td><input type="checkbox" onchange="markProcessComplete('WOT-001', 'WOC-001-1', 'DanhCon', this)"></td>
-                                <td><input type="number" class="defect-input" placeholder="Tỷ lệ lỗi (%)" value="1"></td>
-                                <td><input type="text" class="note-input" placeholder="Ghi chú..." value="Máy chạy ổn"></td>
+                                <td>WD-<span th:text="${ws.workOrderDetail.id}"></span></td>
+                                <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
                                 <td>
-                                    <button class="capture-btn" onclick="capturePhoto('WOC-001-1')"><i class="fas fa-camera"></i> Chụp ảnh</button>
-                                    <div id="photo-WOC-001-1"></div>
-                                </td>
-                                <td>
-                                    <button class="notify-btn" onclick="notifyNextStep('WOC-001-1')"><i class="fas fa-bell"></i> Thông báo Đóng Gói</button>
-                                    <button class="report-btn" onclick="sendQualityReport('WOC-001-1')"><i class="fas fa-file-alt"></i> Gửi báo cáo chất lượng</button>
-                                </td>
-                            </tr>
-                            <!-- Work Order Con 2 -->
-                            <tr>
-                                <td>WOC-001-2</td>
-                                <td>300</td>
-                                <td class="process-row">Đánh Côn</td>
-                                <td>16/03/2025 09:00</td>
-                                <td>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">40%</div>
-                                    </div>
-                                </td>
-                                <td><span class="badge" style="background-color: #ffc107; color: black;">Chờ xử lý</span></td>
-                                <td><input type="checkbox" onchange="markProcessComplete('WOT-001', 'WOC-001-2', 'DanhCon', this)"></td>
-                                <td><input type="number" class="defect-input" placeholder="Tỷ lệ lỗi (%)" value="0"></td>
-                                <td><input type="text" class="note-input" placeholder="Ghi chú..."></td>
-                                <td>
-                                    <button class="capture-btn" onclick="capturePhoto('WOC-001-2')"><i class="fas fa-camera"></i> Chụp ảnh</button>
-                                    <div id="photo-WOC-001-2"></div>
-                                </td>
-                                <td>
-                                    <button class="notify-btn" onclick="notifyNextStep('WOC-001-2')"><i class="fas fa-bell"></i> Thông báo Đóng Gói</button>
-                                    <button class="report-btn" onclick="sendQualityReport('WOC-001-2')"><i class="fas fa-file-alt"></i> Gửi báo cáo chất lượng</button>
+                                    <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${ws.id} + '\')'">
+                                        <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
+                                    </button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- Lịch sử thao tác -->
-                <div class="audit-trail">
-                    <h4><i class="fas fa-history me-2"></i> Lịch Sử Thao tác</h4>
-                    <div id="auditTrail">
-                        <p>16/03/2025 08:00 - Leader Đánh Côn bắt đầu công đoạn Đánh Côn cho WOC-001-1.</p>
-                        <p>16/03/2025 09:00 - Leader Đánh Côn bắt đầu công đoạn Đánh Côn cho WOC-001-2.</p>
-                    </div>
-                </div>
             </div>
-
-            <!-- Phân trang -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mt-4">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Previous</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
         </div>
         <!-- Main Content End -->
 
@@ -358,10 +472,108 @@
     </div>
     <!-- Content End -->
 
+    <!-- Popup Form -->
+    <th:block th:each="ws : ${windingStages}">
+        <div th:id="'popup-' + ${ws.id}" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ws.id} + '\')'">×</span>
+                <h3>Cập nhật trạng thái</h3>
+                <form th:action="@{/work-order/team-leader-winding/change/finish/{id}(id=${ws.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ws.id}">
+                    <div class="form-group">
+                        <label>Cập Nhật Trạng Thái Đánh Côn:</label>
+                        <div class="status-buttons">
+                            <a th:href="@{/work-order/team-leader-winding/change/in-process/{id}(id=${ws.id})}"
+                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.workOrderDetail.dyeStage.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                               class="status-btn in-progress">
+                                <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
+                            </a>
+                            <button type="button"
+                                    class="status-btn completed"
+                                    th:onclick="'submitFormWithPhoto(\'form-' + ${ws.id} + '\')'"
+                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                <i class="fas fa-check-circle me-2"></i> Hoàn thành
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Chụp ảnh xác thực:</label>
+                        <div th:if="${ws.getWindingPhoto() == null}">
+                            <!-- Container bao quanh video và các nút bên trong -->
+                            <div class="camera-container">
+                                <video th:id="'video-' + ${ws.id}" class="video-preview" autoplay></video>
+                                <!-- Nút "Đổi camera" -->
+                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${ws.id}">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                                <!-- Nút "Chụp ảnh" -->
+                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${ws.id}">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <!-- Nút "Bật camera" bên dưới -->
+                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'">
+                                <i class="fas fa-camera me-2"></i> Bật camera
+                            </button>
+                        </div>
+                        <div th:if="${ws.getWindingPhoto() != null}">
+                            <img th:src="'/uploads/' + ${ws.getWindingPhoto()}" class="captured-image" alt="Ảnh xác thực">
+                        </div>
+                        <div th:id="'photoPreview-' + ${ws.id}"></div>
+                        <input type="file" th:id="'photoInput-' + ${ws.id}" name="photo" style="display: none;">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </th:block>
+
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
+<div th:if="${in_process_winding} or ${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Hiển thị thông báo thành công (in_process_winding)
+            const inProcessMessage = /*[[${in_process_winding}]]*/ null;
+            if (inProcessMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: inProcessMessage,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
 
+            // Hiển thị thông báo lỗi (error)
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Lỗi",
+                    text: errorMessage,
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        });
+    </script>
+</div>
+
+<div th:if="${complete_winding}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${complete_winding}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -372,98 +584,297 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
 <!-- Script cho các chức năng -->
 <script>
-    // Đánh dấu hoàn thành và cập nhật lịch sử
-    function markProcessComplete(workOrderTotalId, workOrderChildId, process, checkbox) {
-        const auditTrail = document.getElementById('auditTrail');
-        const timestamp = new Date().toLocaleString('vi-VN');
-        if (checkbox.checked) {
-            alert(`Quy trình ${process} của Work Order Con ${workOrderChildId} (thuộc Work Order Tổng ${workOrderTotalId}) đã được đánh dấu hoàn thành!`);
-            const statusCell = checkbox.parentElement.previousElementSibling.querySelector('.badge');
-            statusCell.textContent = 'Hoàn thành';
-            statusCell.style.backgroundColor = '#6c757d';
-            statusCell.style.color = 'white';
-            // Cập nhật lịch sử thao tác
-            const log = document.createElement('p');
-            log.textContent = `${timestamp} - Leader Đánh Côn đánh dấu hoàn thành ${process} cho ${workOrderChildId}.`;
-            auditTrail.appendChild(log);
-        } else {
-            alert(`Quy trình ${process} của Work Order Con ${workOrderChildId} đã được bỏ đánh dấu hoàn thành.`);
-            const statusCell = checkbox.parentElement.previousElementSibling.querySelector('.badge');
-            statusCell.textContent = 'Chờ xử lý';
-            statusCell.style.backgroundColor = '#ffc107';
-            statusCell.style.color = 'black';
-            // Cập nhật lịch sử thao tác
-            const log = document.createElement('p');
-            log.textContent = `${timestamp} - Leader Đánh Côn bỏ đánh dấu hoàn thành ${process} cho ${workOrderChildId}.`;
-            auditTrail.appendChild(log);
-        }
+    // Khai báo biến toàn cục để lưu trữ stream của camera
+    // - `currentStream`: Lưu trữ stream video từ camera (khi camera được bật).
+    // - `null` ban đầu vì camera chưa được bật.
+    let currentStream = null;
+
+    // Biến để quyết định sử dụng camera trước hay sau
+    // - `useRearCamera`: Nếu `true`, sử dụng camera sau (môi trường - "environment").
+    // - Nếu `false`, sử dụng camera trước (người dùng - "user").
+    // - Mặc định là `true` để ưu tiên camera sau (thường dùng để chụp ảnh).
+    let useRearCamera = true;
+
+    // Hàm hiển thị popup
+    // - `popupId`: ID của popup (ví dụ: "popup-1"), được truyền vào từ HTML.
+    // - Mục đích: Hiển thị popup và làm sạch khu vực preview ảnh (nếu có ảnh cũ).
+    function showUpdatePopup(popupId) {
+        // Lấy phần tử popup bằng ID
+        // - `document.getElementById(popupId)`: Tìm phần tử có ID tương ứng (ví dụ: <div id="popup-1">).
+        const popup = document.getElementById(popupId);
+
+        // Lấy phần tử preview ảnh
+        // - `popupId.split('-')[1]`: Tách ID để lấy số (ví dụ: "popup-1" → "1").
+        // - `photoPreview-` + số: Tạo ID của phần tử preview (ví dụ: "photoPreview-1").
+        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
+
+        // Làm sạch khu vực preview ảnh
+        // - `photoPreview.innerHTML = ''`: Xóa toàn bộ nội dung HTML bên trong (bỏ ảnh cũ nếu có).
+        photoPreview.innerHTML = '';
+
+        // Hiển thị popup
+        // - `popup.style.display = 'flex'`: Đặt `display: flex` để hiển thị popup (theo CSS đã định nghĩa).
+        popup.style.display = 'flex';
     }
 
-    // Chụp ảnh thời gian thực (demo)
-    async function capturePhoto(workOrderChildId) {
+    // Hàm đóng popup và dừng camera
+    // - `popupId`: ID của popup (ví dụ: "popup-1").
+    // - Mục đích: Ẩn popup và dừng camera nếu đang bật.
+    function closePopup(popupId) {
+        // Lấy phần tử popup bằng ID
+        const popup = document.getElementById(popupId);
+
+        // Kiểm tra nếu camera đang bật (có stream)
+        // - `currentStream`: Nếu không phải `null`, nghĩa là camera đang hoạt động.
+        if (currentStream) {
+            // Dừng tất cả các track (video) của stream
+            // - `getTracks()`: Lấy danh sách các track (video, audio, ...).
+            // - `forEach(track => track.stop())`: Dừng từng track để tắt camera.
+            currentStream.getTracks().forEach(track => track.stop());
+
+            // Đặt lại `currentStream` về `null`
+            // - Đảm bảo trạng thái camera đã được dừng hoàn toàn.
+            currentStream = null;
+        }
+
+        // Ẩn popup
+        // - `popup.style.display = 'none'`: Ẩn popup bằng cách đặt `display: none`.
+        popup.style.display = 'none';
+    }
+
+    // Hàm bật camera
+    // - `videoId`: ID của thẻ <video> (ví dụ: "video-1").
+    // - `popupId`: ID của popup (ví dụ: "popup-1").
+    // - Mục đích: Bật camera, hiển thị video stream trong thẻ <video>, và hiển thị các nút "Chụp ảnh" và "Đổi camera".
+    async function startCamera(videoId, popupId) {
+        // Lấy thẻ <video> để hiển thị stream
+        const video = document.getElementById(videoId);
+
+        // Lấy nút "Chụp ảnh"
+        // - `capture-btn-` + số: ID của nút "Chụp ảnh" (ví dụ: "capture-btn-1").
+        const captureBtn = document.getElementById('capture-btn-' + popupId.split('-')[1]);
+
+        // Lấy nút "Đổi camera"
+        // - `switch-btn-` + số: ID của nút "Đổi camera" (ví dụ: "switch-btn-1").
+        const switchBtn = document.getElementById('switch-btn-' + popupId.split('-')[1]);
+
+        // Lấy nút "Bật camera"
+        // - Dùng `querySelector` để tìm nút có `onclick` chứa `startCamera` với tham số `videoId` và `popupId`.
+        // - Ví dụ: <button onclick="startCamera('video-1', 'popup-1')">.
+        const startBtn = document.querySelector(`button[onclick*="startCamera('${videoId}', '${popupId}')]`);
+
+        // Sử dụng `try-catch` để xử lý lỗi khi truy cập camera
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
+            // Kiểm tra nếu camera đang bật (có stream)
+            // - Nếu có, dừng stream hiện tại để tránh xung đột.
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
 
-            const canvas = document.createElement('canvas');
-            canvas.width = 320;
-            canvas.height = 240;
-            const ctx = canvas.getContext('2d');
+            // Yêu cầu truy cập camera
+            // - `navigator.mediaDevices.getUserMedia`: API để truy cập camera.
+            // - `video: { facingMode: ... }`: Cấu hình camera (camera sau hoặc trước).
+            // - `useRearCamera ? "environment" : "user"`: Nếu `useRearCamera` là `true`, dùng camera sau; nếu `false`, dùng camera trước.
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: useRearCamera ? "environment" : "user"
+                }
+            });
 
-            setTimeout(() => {
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const imageData = canvas.toDataURL('image/png');
+            // Gán stream vào thẻ <video>
+            // - `video.srcObject = currentStream`: Hiển thị video từ camera trong thẻ <video>.
+            video.srcObject = currentStream;
 
-                const photoDiv = document.getElementById(`photo-${workOrderChildId}`);
-                const img = document.createElement('img');
-                img.src = imageData;
-                img.className = 'captured-image';
-                photoDiv.innerHTML = '';
-                photoDiv.appendChild(img);
+            // Hiển thị nút "Chụp ảnh"
+            // - `captureBtn.style.display = 'flex'`: Hiển thị nút (ban đầu ẩn bằng `display: none` trong HTML).
+            captureBtn.style.display = 'flex';
 
-                stream.getTracks().forEach(track => track.stop());
+            // Hiển thị nút "Đổi camera"
+            // - `switchBtn.style.display = 'flex'`: Hiển thị nút (ban đầu ẩn).
+            switchBtn.style.display = 'flex';
 
-                // Cập nhật lịch sử thao tác
-                const auditTrail = document.getElementById('auditTrail');
-                const timestamp = new Date().toLocaleString('vi-VN');
-                const log = document.createElement('p');
-                log.textContent = `${timestamp} - Leader Đánh Côn chụp ảnh cho ${workOrderChildId}.`;
-                auditTrail.appendChild(log);
-            }, 1000);
+            // Ẩn nút "Bật camera"
+            // - `startBtn.style.display = 'none'`: Ẩn nút "Bật camera" sau khi camera đã mở.
+            if (startBtn) {
+                startBtn.style.display = 'none';
+            }
         } catch (err) {
-            alert('Không thể truy cập webcam: ' + err.message);
+            // Xử lý lỗi nếu không truy cập được camera
+            // - Ví dụ: Người dùng không cấp quyền, hoặc thiết bị không có camera.
+            Swal.fire({
+                icon: 'error', // Biểu tượng lỗi
+                title: 'Lỗi', // Tiêu đề thông báo
+                text: 'Không thể truy cập camera: ' + err.message, // Nội dung lỗi
+            });
         }
     }
 
-    // Thông báo cho công đoạn tiếp theo (demo)
-    function notifyNextStep(workOrderChildId) {
-        alert(`Đã thông báo cho Leader Đóng Gói về Work Order Con ${workOrderChildId}!`);
-        const auditTrail = document.getElementById('auditTrail');
-        const timestamp = new Date().toLocaleString('vi-VN');
-        const log = document.createElement('p');
-        log.textContent = `${timestamp} - Leader Đánh Côn thông báo cho Leader Đóng Gói về ${workOrderChildId}.`;
-        auditTrail.appendChild(log);
+    // Hàm chuyển đổi giữa camera trước và sau
+    // - `videoId`: ID của thẻ <video>.
+    // - `popupId`: ID của popup.
+    // - Mục đích: Chuyển đổi giữa camera trước và sau khi người dùng nhấn nút "Đổi camera".
+    async function switchCamera(videoId, popupId) {
+        // Lấy thẻ <video>
+        const video = document.getElementById(videoId);
+
+        // Đảo ngược trạng thái camera
+        // - Nếu đang dùng camera sau (`true`), chuyển sang camera trước (`false`) và ngược lại.
+        useRearCamera = !useRearCamera;
+
+        // Sử dụng `try-catch` để xử lý lỗi
+        try {
+            // Dừng stream hiện tại (nếu có)
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Yêu cầu truy cập camera với chế độ mới
+            // - Tương tự `startCamera`, nhưng với `facingMode` mới.
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: useRearCamera ? "environment" : "user"
+                }
+            });
+
+            // Gán stream mới vào thẻ <video>
+            video.srcObject = currentStream;
+        } catch (err) {
+            // Xử lý lỗi nếu không chuyển đổi được camera
+            // - Ví dụ: Thiết bị không có camera trước/sau.
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể chuyển camera: ' + err.message,
+            });
+        }
     }
 
-    // Gửi báo cáo chất lượng (demo)
-    function sendQualityReport(workOrderChildId) {
-        const row = document.querySelector(`tr td:first-child:contains('${workOrderChildId}')`).parentElement;
-        const defectRate = row.querySelector('.defect-input').value;
-        const note = row.querySelector('.note-input').value;
-        alert(`Báo cáo chất lượng cho ${workOrderChildId}:\nTỷ lệ lỗi: ${defectRate}%\nGhi chú: ${note}\nĐã gửi lên cấp trên!`);
-        const auditTrail = document.getElementById('auditTrail');
-        const timestamp = new Date().toLocaleString('vi-VN');
-        const log = document.createElement('p');
-        log.textContent = `${timestamp} - Leader Đánh Côn gửi báo cáo chất lượng cho ${workOrderChildId} (Tỷ lệ lỗi: ${defectRate}%).`;
-        auditTrail.appendChild(log);
+    // Hàm chụp ảnh từ video
+    // - `videoId`: ID của thẻ <video>.
+    // - `popupId`: ID của popup.
+    // - Mục đích: Chụp ảnh từ stream video, hiển thị ảnh trong khu vực preview, và gán file ảnh vào input để gửi form.
+    function capturePhoto(videoId, popupId) {
+        // Lấy thẻ <video>
+        const video = document.getElementById(videoId);
+
+        // Lấy khu vực preview ảnh
+        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
+
+        // Lấy input file ẩn
+        // - `photoInput-` + số: ID của input file (ví dụ: "photoInput-1").
+        // - Dùng để gửi file ảnh lên server.
+        const photoInput = document.getElementById('photoInput-' + popupId.split('-')[1]);
+
+        // Tạo canvas để vẽ ảnh từ video
+        // - `canvas`: Tạo một thẻ <canvas> động (không hiển thị trên giao diện).
+        const canvas = document.createElement('canvas');
+
+        // Đặt kích thước canvas bằng kích thước video
+        // - `video.videoWidth` và `video.videoHeight`: Lấy kích thước thực tế của video stream.
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Lấy context 2D của canvas để vẽ
+        const ctx = canvas.getContext('2d');
+
+        // Vẽ khung hình hiện tại của video lên canvas
+        // - `drawImage(video, 0, 0, ...)`: Vẽ video lên canvas tại vị trí (0,0) với kích thước của canvas.
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Chuyển canvas thành dữ liệu ảnh (base64)
+        // - `toDataURL('image/png')`: Chuyển canvas thành chuỗi base64 định dạng PNG.
+        const imageData = canvas.toDataURL('image/png');
+
+        // Tạo thẻ <img> để hiển thị ảnh trong khu vực preview
+        const img = document.createElement('img');
+        img.src = imageData; // Gán dữ liệu ảnh vào `src`
+        img.className = 'captured-image'; // Thêm class để style (đã định nghĩa trong CSS)
+
+        // Làm sạch khu vực preview và thêm ảnh mới
+        photoPreview.innerHTML = '';
+        photoPreview.appendChild(img);
+
+        // Chuyển dữ liệu ảnh thành file và gán vào input
+        // - `fetch(imageData)`: Tải dữ liệu base64.
+        // - `res.blob()`: Chuyển dữ liệu thành Blob (định dạng nhị phân).
+        fetch(imageData)
+            .then(res => res.blob())
+            .then(blob => {
+                // Tạo file từ Blob
+                // - `new File([blob], ...)`: Tạo file với tên và định dạng.
+                // - Tên file: `photo-${popupId.split('-')[1]}.png` (ví dụ: "photo-1.png").
+                // - Định dạng: `image/png`.
+                const file = new File([blob], `photo-${popupId.split('-')[1]}.png`, { type: 'image/png' });
+
+                // Tạo DataTransfer để gán file vào input
+                // - `DataTransfer`: API để tạo danh sách file giả lập.
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+
+                // Gán file vào input
+                // - `photoInput.files`: Gán danh sách file vào input để gửi form.
+                photoInput.files = dataTransfer.files;
+            });
+
+        // Dừng camera sau khi chụp ảnh
+        // - Tương tự `closePopup`, dừng stream và đặt lại trạng thái.
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        video.srcObject = null; // Xóa stream khỏi thẻ <video>
+    }
+
+    // Hàm xử lý khi nhấn "Hoàn thành"
+    // - `formId`: ID của form (ví dụ: "form-1").
+    // - Mục đích: Kiểm tra form và file ảnh, sau đó gửi form lên server.
+    function submitFormWithPhoto(formId) {
+        // Debug: In ID của form
+        console.log('Form ID:', formId);
+
+        // Lấy form bằng ID
+        const form = document.getElementById(formId);
+
+        // Lấy input file
+        const photoInput = document.getElementById('photoInput-' + formId.split('-')[1]);
+
+        // Debug: In thông tin form và file
+        console.log('Form element:', form);
+        console.log('photoInput.files:', photoInput.files);
+
+        // Kiểm tra nếu form không tồn tại
+        if (!form) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không tìm thấy form với ID: ' + formId,
+            });
+            return;
+        }
+
+        // Kiểm tra nếu không có file ảnh
+        // - `photoInput.files`: Danh sách file trong input.
+        // - Nếu rỗng hoặc không có file, hiển thị cảnh báo.
+        if (!photoInput.files || photoInput.files.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu chụp ảnh',
+                text: 'Bạn phải chụp ảnh xác thực trước khi hoàn thành!',
+            });
+        } else {
+            // Debug: In URL mà form sẽ gửi đến
+            console.log('Submitting form to:', form.action);
+
+            // Gửi form
+            // - `form.submit()`: Gửi form lên server (theo `action` và `method` của form).
+            form.submit();
+        }
     }
 </script>
 </body>
