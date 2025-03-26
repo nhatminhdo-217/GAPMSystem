@@ -49,6 +49,8 @@ public class PackagingStage extends BaseEntity{
     @JoinColumn(name = "checked_by")
     private User checkedBy;
 
+    private String PackagingPhoto;
+
     public PackagingStage() {
     }
 
@@ -153,5 +155,13 @@ public class PackagingStage extends BaseEntity{
 
     public void setCheckedBy(User checkedBy) {
         this.checkedBy = checkedBy;
+    }
+
+    public String getPackagingPhoto() {
+        return PackagingPhoto;
+    }
+
+    public void setPackagingPhoto(String packagingPhoto) {
+        PackagingPhoto = packagingPhoto;
     }
 }
