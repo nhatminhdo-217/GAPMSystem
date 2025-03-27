@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "winding_stage")
@@ -40,10 +41,15 @@ public class WindingStage extends BaseEntity{
 
     private Integer actualOutput;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", nullable = false)
-    private User leader;
+    @JoinColumn(name = "leader_start_id")
+    private User leaderStart;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_end_id")
+    private User leaderEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checked_by")
@@ -56,10 +62,14 @@ public class WindingStage extends BaseEntity{
     @OneToOne(mappedBy = "windingStage")
     private PackagingStage packagingStage;
 
+    @OneToMany(  mappedBy = "windingStage",fetch = FetchType.LAZY)
+    private List<WindingRiskAssessment> windingRiskAssessmentList;
+
+    private String windingPhoto;
     public WindingStage() {
     }
 
-    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leader, User checkedBy, WindingMachine windingMachine, PackagingStage packagingStage) {
+    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leaderStart, User leaderEnd, User checkedBy, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingRiskAssessment> windingRiskAssessmentList, String windingPhoto) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.dyeStage = dyeStage;
@@ -70,10 +80,13 @@ public class WindingStage extends BaseEntity{
         this.workStatus = workStatus;
         this.testStatus = testStatus;
         this.actualOutput = actualOutput;
-        this.leader = leader;
+        this.leaderStart = leaderStart;
+        this.leaderEnd = leaderEnd;
         this.checkedBy = checkedBy;
         this.windingMachine = windingMachine;
         this.packagingStage = packagingStage;
+        this.windingRiskAssessmentList = windingRiskAssessmentList;
+        this.windingPhoto = windingPhoto;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -148,12 +161,20 @@ public class WindingStage extends BaseEntity{
         this.actualOutput = actualOutput;
     }
 
-    public User getLeader() {
-        return leader;
+    public User getLeaderStart() {
+        return leaderStart;
     }
 
-    public void setLeader(User leader) {
-        this.leader = leader;
+    public void setLeaderStart(User leaderStart) {
+        this.leaderStart = leaderStart;
+    }
+
+    public User getLeaderEnd() {
+        return leaderEnd;
+    }
+
+    public void setLeaderEnd(User leaderEnd) {
+        this.leaderEnd = leaderEnd;
     }
 
     public User getCheckedBy() {
@@ -178,5 +199,21 @@ public class WindingStage extends BaseEntity{
 
     public void setPackagingStage(PackagingStage packagingStage) {
         this.packagingStage = packagingStage;
+    }
+
+    public String getWindingPhoto() {
+        return windingPhoto;
+    }
+
+    public void setWindingPhoto(String windingPhoto) {
+        this.windingPhoto = windingPhoto;
+    }
+
+    public List<WindingRiskAssessment> getWindingRiskAssessmentList() {
+        return windingRiskAssessmentList;
+    }
+
+    public void setWindingRiskAssessmentList(List<WindingRiskAssessment> windingRiskAssessmentList) {
+        this.windingRiskAssessmentList = windingRiskAssessmentList;
     }
 }

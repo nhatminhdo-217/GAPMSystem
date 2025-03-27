@@ -29,6 +29,7 @@ public class PurchaseOrderDetail extends BaseEntity{
 
     private Integer quantity;
 
+
     private BigDecimal unitPrice;
 
     private BigDecimal totalPrice;

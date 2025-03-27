@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "packaging_stage")
@@ -40,19 +41,29 @@ public class PackagingStage extends BaseEntity{
 
     private Integer actualOutput;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", nullable = false)
-    private User leader;
+    @JoinColumn(name = "leader_start_id")
+    private User leaderStart;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_end_id")
+    private User leaderEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checked_by")
     private User checkedBy;
 
+    private String PackagingPhoto;
+
     public PackagingStage() {
     }
 
-    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leader, User checkedBy) {
+    @OneToMany(  mappedBy = "packagingStage",fetch = FetchType.LAZY)
+    private List<PackagingRiskAssessment> packagingRiskAssessments;
+
+    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leaderStart, User leaderEnd, User checkedBy, String packagingPhoto, List<PackagingRiskAssessment> packagingRiskAssessments) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.windingStage = windingStage;
@@ -63,8 +74,11 @@ public class PackagingStage extends BaseEntity{
         this.workStatus = workStatus;
         this.testStatus = testStatus;
         this.actualOutput = actualOutput;
-        this.leader = leader;
+        this.leaderStart = leaderStart;
+        this.leaderEnd = leaderEnd;
         this.checkedBy = checkedBy;
+        PackagingPhoto = packagingPhoto;
+        this.packagingRiskAssessments = packagingRiskAssessments;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -139,12 +153,20 @@ public class PackagingStage extends BaseEntity{
         this.actualOutput = actualOutput;
     }
 
-    public User getLeader() {
-        return leader;
+    public User getLeaderStart() {
+        return leaderStart;
     }
 
-    public void setLeader(User leader) {
-        this.leader = leader;
+    public void setLeaderStart(User leaderStart) {
+        this.leaderStart = leaderStart;
+    }
+
+    public User getLeaderEnd() {
+        return leaderEnd;
+    }
+
+    public void setLeaderEnd(User leaderEnd) {
+        this.leaderEnd = leaderEnd;
     }
 
     public User getCheckedBy() {
@@ -153,5 +175,21 @@ public class PackagingStage extends BaseEntity{
 
     public void setCheckedBy(User checkedBy) {
         this.checkedBy = checkedBy;
+    }
+
+    public String getPackagingPhoto() {
+        return PackagingPhoto;
+    }
+
+    public void setPackagingPhoto(String packagingPhoto) {
+        PackagingPhoto = packagingPhoto;
+    }
+
+    public List<PackagingRiskAssessment> getPackagingRiskAssessments() {
+        return packagingRiskAssessments;
+    }
+
+    public void setPackagingRiskAssessments(List<PackagingRiskAssessment> packagingRiskAssessments) {
+        this.packagingRiskAssessments = packagingRiskAssessments;
     }
 }
