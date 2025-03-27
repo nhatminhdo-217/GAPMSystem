@@ -38,7 +38,11 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CompanyUser> companyUsers;
 
-    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers) {
+    @OneToOne()
+    @JoinColumn(name = "shift_id")
+    private Shift shift;
+
+    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers, Shift shift) {
         super(id, createAt, updateAt);
         this.username = username;
         this.password = password;
@@ -49,6 +53,7 @@ public class User extends BaseEntity{
         this.avatar = avatar;
         this.isActive = isActive;
         this.companyUsers = companyUsers;
+        this.shift = shift;
     }
 
     public User() {
@@ -124,5 +129,13 @@ public class User extends BaseEntity{
 
     public void setCompanyUsers(List<CompanyUser> companyUsers) {
         this.companyUsers = companyUsers;
+    }
+
+    public Shift getShift() {
+        return shift;
+    }
+
+    public void setShift(Shift shift) {
+        this.shift = shift;
     }
 }

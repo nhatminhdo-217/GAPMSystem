@@ -40,6 +40,7 @@ public class WorkOrderDetail extends BaseEntity{
     @JoinColumn(name = "purchase_order_detail_id")
     private PurchaseOrderDetail purchaseOrderDetail;
 
+
     public WorkOrderDetail() {
     }
 
