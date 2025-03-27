@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "dye_stage")
@@ -51,10 +52,17 @@ public class DyeStage extends BaseEntity{
     @Column(name = "actual_output", precision = 10, scale = 2)
     private BigDecimal actualOutput;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", nullable = false)
-    private User leader;
+    @JoinColumn(name = "leader_start_id")
+    private User leaderStart;
+
+    @OneToMany(  mappedBy = "dyeStage",fetch = FetchType.LAZY)
+    private List<DyeRiskAssessment> dyeRiskAssessments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_end_id")
+    private User leaderEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checked_by")
@@ -71,7 +79,7 @@ public class DyeStage extends BaseEntity{
     public DyeStage() {
     }
 
-    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, BigDecimal actualOutput, User leader, User checkedBy, WindingStage windingStage, DyeMachine dyeMachine) {
+    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, BigDecimal actualOutput, User leaderStart, List<DyeRiskAssessment> dyeRiskAssessments, User leaderEnd, User checkedBy, WindingStage windingStage, DyeMachine dyeMachine, String dyePhoto) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.liters_min = liters_min;
@@ -84,10 +92,13 @@ public class DyeStage extends BaseEntity{
         this.workStatus = workStatus;
         this.testStatus = testStatus;
         this.actualOutput = actualOutput;
-        this.leader = leader;
+        this.leaderStart = leaderStart;
+        this.dyeRiskAssessments = dyeRiskAssessments;
+        this.leaderEnd = leaderEnd;
         this.checkedBy = checkedBy;
         this.windingStage = windingStage;
         this.dyeMachine = dyeMachine;
+        this.dyePhoto = dyePhoto;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -178,13 +189,6 @@ public class DyeStage extends BaseEntity{
         this.actualOutput = actualOutput;
     }
 
-    public User getLeader() {
-        return leader;
-    }
-
-    public void setLeader(User leader) {
-        this.leader = leader;
-    }
 
     public User getCheckedBy() {
         return checkedBy;
@@ -216,5 +220,29 @@ public class DyeStage extends BaseEntity{
 
     public void setDyePhoto(String dyePhoto) {
         this.dyePhoto = dyePhoto;
+    }
+
+    public User getLeaderStart() {
+        return leaderStart;
+    }
+
+    public void setLeaderStart(User leaderStart) {
+        this.leaderStart = leaderStart;
+    }
+
+    public User getLeaderEnd() {
+        return leaderEnd;
+    }
+
+    public void setLeaderEnd(User leaderEnd) {
+        this.leaderEnd = leaderEnd;
+    }
+
+    public List<DyeRiskAssessment> getDyeRiskAssessments() {
+        return dyeRiskAssessments;
+    }
+
+    public void setDyeRiskAssessments(List<DyeRiskAssessment> dyeRiskAssessments) {
+        this.dyeRiskAssessments = dyeRiskAssessments;
     }
 }
