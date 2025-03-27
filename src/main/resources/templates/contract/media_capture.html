@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tạo hợp đồng</title>
+    <title>Chụp ảnh</title>
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -25,6 +25,8 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assert/css/style/camera/style.css">
 
     <style>
         a {
@@ -55,43 +57,7 @@
         <!-- Navbar End -->
 
         <div class="container-fluid d-flex flex-column m-2">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
-                <li class="breadcrumb-item"><a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId}}">Chi tiết</a></li>
-                <li class="breadcrumb-item active">Hợp đồng</li>
-            </ul>
-            <div class="heading mt-3">
-                <h3>Tạo hợp đồng</h3>
-            </div>
-            <div class="d-flex flex-column align-items-center mt-3">
-                <div class="container mt-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div th:if="${error}" class="alert alert-danger">
-                                <p th:text="${error}"></p>
-                            </div>
-
-                            <form th:action="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}" method="post" enctype="multipart/form-data" th:object="${contractDTO}">
-                                <div class="form-group mt-3">
-                                    <label for="name">Tên Hợp Đồng:</label>
-                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label for="file" class="form-label">Tài Liệu Hợp Đồng:</label>
-                                    <input type="file" class="form-control" id="file" name="file" required>
-                                    <small class="form-text text-muted">Hỗ trợ: PDF, JPG, PNG</small>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <button type="submit" class="btn btn-primary">Lưu Hợp Đồng</button>
-                                    <a class="btn btn-success" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload/camera'}">Chụp ảnh</a>
-                                    <a class="btn btn-secondary" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId}}">Hủy</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div th:replace="~{shared/camera.html :: camera}"></div>
         </div>
     </div>
 </div>
@@ -112,5 +78,7 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
+
+<script src="/assert/js/camera.js"></script>
 </body>
 </html>

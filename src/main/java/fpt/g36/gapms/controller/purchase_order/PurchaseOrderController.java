@@ -18,6 +18,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +30,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/purchase-order")
@@ -40,6 +43,7 @@ public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
     private final ContractService contractService;
     private final UserService userService;
+    private static String latestImagePath = null;
 
     public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService) {
         this.userUtils = userUtils;
@@ -180,6 +184,88 @@ public class PurchaseOrderController {
         }
     }
 
+    @GetMapping("/detail/{id}/contract/upload/camera")
+    public String getUploadContractCameraPage(
+            @PathVariable Long id, Model model) {
+
+        userUtils.getOptionalUser(model);
+
+        model.addAttribute("purchaseOrderId", id);
+
+        return "contract/media_capture";
+    }
+
+    @PostMapping("/detail/{id}/contract/upload/camera")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> captureImage(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload,
+            RedirectAttributes redirectAttributes) {
+        Map<String, String> response = new HashMap<>();
+
+        String imageData = payload.get("image");
+        if (imageData != null && imageData.contains(",")) {
+            try {
+                // Xóa tiền tố "data:image/png;base64," nếu có
+                String base64Image = imageData.split(",")[1];
+                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+
+                // Tạo tên file cho ảnh mới nhất
+                String fileName = "latest-image.png";
+                String uploadDir = "uploads";
+
+                // Tạo thư mục nếu chưa tồn tại
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                // Lưu đường dẫn của ảnh mới nhất
+                latestImagePath = uploadDir + File.separator + fileName;
+
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(new File(directory, fileName))) {
+                    fos.write(imageBytes);
+                    response.put("success", "true");
+                    response.put("fileName", fileName);
+                    response.put("path", latestImagePath);
+
+                    return ResponseEntity.ok(response);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                response.put("success", "false");
+                response.put("error", e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            } catch (IllegalArgumentException e) {
+                // Xử lý lỗi khi decode Base64
+                response.put("success", "false");
+                response.put("error", "Invalid Base64 encoding: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } else {
+            response.put("success", "false");
+            response.put("error", "Invalid image data");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @GetMapping("/detail/{id}/contract/upload/camera/latest-image-path")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> getLatestImagePath(
+            @PathVariable Long id, Model model
+    ) {
+        Map<String, String> response = new HashMap<>();
+
+        if (latestImagePath != null) {
+            response.put("path", latestImagePath);
+            response.put("exists", "true");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("exists", "false");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 
 
     @GetMapping("/customer/list")
