@@ -1,7 +1,7 @@
 package fpt.g36.gapms.controller.technical;
 
-import fpt.g36.gapms.models.dto.technical.ProductionOrderDTO;
-import fpt.g36.gapms.models.dto.technical.ProductionOrderDetailsDTO;
+import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDTO;
+import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDetailsDTO;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/technical")
-public class ProductionOrderController {
+public class TechnicalProductionOrderController {
     private final ProductionOrderService productionOrderService;
     private final UserUtils userUtils;
 
     @Autowired
-    public ProductionOrderController(ProductionOrderService productionOrderService, UserUtils userUtils) {
+    public TechnicalProductionOrderController(ProductionOrderService productionOrderService, UserUtils userUtils) {
         this.productionOrderService = productionOrderService;
         this.userUtils = userUtils;
     }
@@ -41,7 +41,7 @@ public class ProductionOrderController {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ProductionOrderDTO> productionOrderPage = productionOrderService.getApprovedProductionOrders(pageable);
+            Page<TechnicalProductionOrderDTO> productionOrderPage = productionOrderService.getApprovedProductionOrders(pageable);
             model.addAttribute("productionOrders", productionOrderPage.getContent());
             model.addAttribute("productionOrderPage", productionOrderPage);
             return "technical/view-approved-production-order";
@@ -56,7 +56,7 @@ public class ProductionOrderController {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
-                ProductionOrderDetailsDTO productionOrder = productionOrderService.getProductionOrderDetails(id);
+                TechnicalProductionOrderDetailsDTO productionOrder = productionOrderService.getProductionOrderDetails(id);
                 model.addAttribute("productionOrder", productionOrder);
                 return "technical/production-order-details";
             } catch (RuntimeException e) {
