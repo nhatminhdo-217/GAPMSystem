@@ -29,4 +29,8 @@ public interface MachineService {
     DyeMachine updateDyeMachine(Long id, DyeMachine dyeMachine);
 
     WindingMachine updateWindingMachine(Long id, WindingMachine windingMachine);
+
+    void updateDyeMachineStatus(Long id, boolean isActive);
+
+    void updateWindingMachineStatus(Long id, boolean isActive);
 }

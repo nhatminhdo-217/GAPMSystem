@@ -276,6 +276,9 @@
                                     <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(dyeMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                 </div>
                                 <div class="col-md-4">
+                                    <strong>Trạng thái:</strong> <span th:text="${dyeMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></span>
+                                </div>
+                                <div class="col-md-4">
                                     <strong>Ngày cập nhật:</strong> <span th:text="${#temporals.format(dyeMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                 </div>
                             </div>
@@ -299,7 +302,7 @@
                     </div>
                     <form th:action="@{/technical/update-dye-machine}" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="id" th:value="'Máy nhuộm ' + ${dyeMachine.id}">
+                            <input type="hidden" name="id" th:value="${dyeMachine.id}">
                             <div class="form-group">
                                 <label for="diameter">Đường kính:</label>
                                 <input type="number" class="form-control" id="diameter" name="diameter" th:value="${dyeMachine.diameter}" required min="1">
@@ -323,6 +326,13 @@
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
                                 <textarea class="form-control" id="description" name="description" th:text="${dyeMachine.description}"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="active">Trạng thái:</label>
+                                <select class="form-control" id="active" name="active" required>
+                                    <option value="true" th:selected="${dyeMachine.active}">Hoạt động</option>
+                                    <option value="false" th:selected="${!dyeMachine.active}">Không hoạt động</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">

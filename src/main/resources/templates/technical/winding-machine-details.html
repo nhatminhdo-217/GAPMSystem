@@ -270,6 +270,9 @@
                                     <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(windingMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                 </div>
                                 <div class="col-md-4">
+                                    <strong>Trạng thái:</strong> <span th:text="${windingMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></span>
+                                </div>
+                                <div class="col-md-4">
                                     <strong>Ngày cập nhật:</strong> <span th:text="${#temporals.format(windingMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                 </div>
                             </div>
@@ -293,7 +296,7 @@
                     </div>
                     <form th:action="@{/technical/update-winding-machine}" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="id" th:value="'Máy côn ' + ${windingMachine.id}">
+                            <input type="hidden" name="id" th:value="${windingMachine.id}">
                             <div class="form-group">
                                 <label for="motor_speed">Tốc độ động cơ:</label>
                                 <input type="number" class="form-control" id="motor_speed" name="motor_speed" th:value="${windingMachine.motor_speed}" required min="1">
@@ -309,6 +312,13 @@
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
                                 <textarea class="form-control" id="description" name="description" th:text="${windingMachine.description}"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="active">Trạng thái:</label>
+                                <select class="form-control" id="active" name="active" required>
+                                    <option value="true" th:selected="${windingMachine.active}">Hoạt động</option>
+                                    <option value="false" th:selected="${!windingMachine.active}">Không hoạt động</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
