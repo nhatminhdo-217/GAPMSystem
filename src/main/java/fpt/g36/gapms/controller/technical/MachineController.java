@@ -315,4 +315,50 @@ public class MachineController {
         }
         return "redirect:/login";
     }
+
+    @GetMapping("/dye-machine/{id}/toggle-status")
+    public String toggleDyeMachineStatus(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userUtils.getOptionalUser(model);
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            try {
+                DyeMachine dyeMachine = machineService.getDyeMachinesById(id);
+                if (dyeMachine == null) {
+                    redirectAttributes.addFlashAttribute("error", "Không tìm thấy máy nhuộm!");
+                    return "redirect:/technical/view-all-machine?tab=dye";
+                }
+                boolean newStatus = !dyeMachine.isActive();
+                machineService.updateDyeMachineStatus(id, newStatus);
+                redirectAttributes.addFlashAttribute("success", "Trạng thái máy nhuộm đã được cập nhật!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật trạng thái: " + e.getMessage());
+            }
+            return "redirect:/technical/view-all-machine?tab=dye";
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("/winding-machine/{id}/toggle-status")
+    public String toggleWindingMachineStatus(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userUtils.getOptionalUser(model);
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            try {
+                WindingMachine windingMachine = machineService.getWindingMachinesById(id);
+                if (windingMachine == null) {
+                    redirectAttributes.addFlashAttribute("error", "Không tìm thấy máy cuốn!");
+                    return "redirect:/technical/view-all-machine?tab=winding";
+                }
+                boolean newStatus = !windingMachine.isActive();
+                machineService.updateWindingMachineStatus(id, newStatus);
+                redirectAttributes.addFlashAttribute("success", "Trạng thái máy cuốn đã được cập nhật!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật trạng thái: " + e.getMessage());
+            }
+            return "redirect:/technical/view-all-machine?tab=winding";
+        }
+        return "redirect:/login";
+    }
 }

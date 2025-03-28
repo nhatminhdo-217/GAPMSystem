@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Production Order</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%; /* Đảm bảo bảng chiếm toàn chiều rộng */
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            background-color: #ffffff;
+            cursor: default;
+            white-space: normal; /* Cho phép nội dung xuống dòng */
+            word-wrap: break-word; /* Đảm bảo từ dài sẽ xuống dòng */
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+
+        .production-order-info, .production-order-details {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: default;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Khoảng cách giữa các nút */
+            flex-wrap: wrap;
+        }
+
+        .btn-custom, .btn-secondary {
+            min-width: 180px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Giãn cách giữa icon và chữ */
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0 15px; /* Thêm padding để nút rộng hơn một chút */
+        }
+
+        .btn-custom.add-work-order {
+            background-color: #28a745 !important;
+        }
+
+        .btn-custom.add-work-order:hover {
+            background-color: #218838 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-custom.view-work-order {
+            background-color: #007bff !important;
+        }
+
+        .btn-custom.view-work-order:hover {
+            background-color: #0056b3 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* CSS cho phần Production Order Info */
+        .production-order-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .production-order-info .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+
+        .production-order-info strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .production-order-info span {
+            font-size: 15px;
+            color: #212529;
+        }
+
+        /* CSS cho Work Order Status */
+        .work-order-status {
+            color: #dc3545; /* Màu đỏ cho "CHƯA CÓ" */
+        }
+
+        .work-order-status.exists {
+            color: #28a745; /* Màu xanh cho "ĐÃ CÓ" */
+        }
+
+        /* CSS cho phần Production Order Details */
+        .production-order-details {
+            overflow-x: auto; /* Cho phép cuộn ngang trên mobile */
+        }
+
+        .production-order-details table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* Đảm bảo bảng có chiều rộng tối thiểu để không bị co lại quá nhỏ */
+        }
+
+        /* CSS cho Back to Top */
+        .back-to-top {
+            cursor: pointer;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .btn-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn-custom, .btn-secondary {
+                width: 100%; /* Nút mở rộng toàn chiều rộng trên mobile */
+                max-width: 300px; /* Giới hạn chiều rộng tối đa */
+                margin: 0 auto;
+                font-size: 16px; /* Tăng kích thước chữ trên mobile để dễ đọc */
+                height: 50px; /* Tăng chiều cao nút trên mobile */
+                line-height: 50px;
+                gap: 10px; /* Tăng khoảng cách giữa icon và chữ trên mobile */
+            }
+
+            .production-order-info .col-md-4 {
+                flex: 1 1 100%;
+            }
+
+            /* Điều chỉnh bảng trên mobile */
+            .production-order-details table {
+                min-width: 600px; /* Đảm bảo bảng có thể cuộn ngang */
+            }
+
+            .table th, .table td {
+                font-size: 12px; /* Giảm kích thước chữ trên mobile */
+                padding: 8px; /* Giảm padding để tiết kiệm không gian */
+            }
+
+            .table th:nth-child(1), .table td:nth-child(1) { /* Cột ID */
+                min-width: 50px;
+            }
+
+            .table th:nth-child(2), .table td:nth-child(2) { /* Cột Thread Mass */
+                min-width: 100px;
+            }
+
+            .table th:nth-child(3), .table td:nth-child(3) { /* Cột Light Environment */
+                min-width: 120px;
+            }
+
+            .table th:nth-child(4), .table td:nth-child(4) { /* Cột Description */
+                min-width: 150px;
+            }
+
+            .table th:nth-child(5), .table td:nth-child(5) { /* Cột Work Order Detail */
+                min-width: 180px;
+            }
+
+            /* Đảm bảo nút trong bảng không bị tràn */
+            .btn-custom.view-work-order {
+                font-size: 12px;
+                padding: 5px 10px;
+                min-width: 150px;
+                height: 35px;
+                line-height: 35px;
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:if="${productionOrder}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết Production Order</h2>
+
+                            <!-- Thông báo lỗi nếu có -->
+                            <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+
+                            <!-- Production Order Info -->
+                            <div class="production-order-info">
+                                <h3 class="section-title">Thông tin Production Order</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã Production Order:</strong> <span
+                                            th:text="${productionOrder.id}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Mã Purchase Order:</strong> <span
+                                            th:text="${productionOrder.purchaseOrder?.id ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái:</strong> <span th:text="${productionOrder.status}"
+                                                                           style="color: #28a745;"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Người tạo:</strong> <span
+                                            th:text="${productionOrder.createdBy?.username ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Người phê duyệt:</strong> <span
+                                            th:text="${productionOrder.approvedBy?.username ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo:</strong> <span
+                                            th:text="${productionOrder.createAt != null ? #temporals.format(productionOrder.createAt, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Ngày cập nhật:</strong> <span
+                                            th:text="${productionOrder.updateAt != null ? #temporals.format(productionOrder.updateAt, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Work Order Status:</strong>
+                                        <span th:if="${productionOrder.workOrder == null}" class="work-order-status"
+                                              th:text="'CHƯA CÓ'"></span>
+                                        <span th:if="${productionOrder.workOrder != null}"
+                                              class="work-order-status exists" th:text="'ĐÃ CÓ'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Production Order Details -->
+                            <div class="production-order-details">
+                                <h3 class="section-title">Danh sách chi tiết Production Order</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="text-dark">
+                                        <th>ID</th>
+                                        <th>Thread Mass</th>
+                                        <th>Light Environment</th>
+                                        <th>Description</th>
+                                        <th>Work Order Detail</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="detail : ${productionOrder.productionOrderDetails}">
+                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="${detail.threadMass}"></td>
+                                        <td th:text="${detail.lightEnv} ? 'Natural Light (TN)' : 'Artificial Light (AD)'"></td>
+                                        <td th:text="${detail.description ?: 'N/A'}"></td>
+                                        <td>
+                                            <span th:if="${detail.hasWorkOrderDetail}">
+                                                <a th:href="@{/technical/work-order-details/{id}(id=${detail.workOrderDetail.workOrder.id})}"
+                                                   class="btn-custom view-work-order">
+                                                    <i class="fas fa-eye"></i> Xem Work Order Detail
+                                                </a>
+                                            </span>
+                                            <span th:unless="${detail.hasWorkOrderDetail}" th:text="'Chưa có'"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Nút Thêm/Xem Work Order và Quay lại -->
+                            <div class="btn-container">
+                                <div th:if="${productionOrder.workOrder == null}">
+                                    <a th:href="@{/technical/add-work-order(productionOrderId=${productionOrder.id})}"
+                                       class="btn-custom add-work-order">
+                                        <i class="fas fa-plus"></i> Thêm Work Order
+                                    </a>
+                                </div>
+                                <div th:if="${productionOrder.workOrder != null}">
+                                    <a th:href="@{/technical/work-order-details/{id}(id=${productionOrder.workOrder.id})}"
+                                       class="btn-custom view-work-order">
+                                        <i class="fas fa-eye"></i> Xem Work Order Detail
+                                    </a>
+                                </div>
+                                <a th:href="@{/technical/view-approved-production-order}" class="btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Ẩn spinner khi trang tải xong
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Loại bỏ sự kiện click trên card để không chuyển hướng
+        $('.card').off('click');
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

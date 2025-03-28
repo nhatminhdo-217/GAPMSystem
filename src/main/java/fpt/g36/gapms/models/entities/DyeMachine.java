@@ -31,21 +31,30 @@ public class DyeMachine extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-//    @Column(name = "is_active", columnDefinition = "boolean default true")
-//    private boolean isActive = true;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
     public DyeMachine() {
     }
 
-    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, Integer diameter, Integer pile, Integer conePerPile, Integer maxWeight, Integer capacity, String description) {
+    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, boolean isActive, String description, Integer capacity, Integer maxWeight, Integer conePerPile, Integer pile, Integer diameter) {
         super(id, createAt, updateAt);
         this.dyeStage = dyeStage;
-        this.diameter = diameter;
-        this.pile = pile;
-        this.conePerPile = conePerPile;
-        this.maxWeight = maxWeight;
-        this.capacity = capacity;
+        this.isActive = isActive;
         this.description = description;
+        this.capacity = capacity;
+        this.maxWeight = maxWeight;
+        this.conePerPile = conePerPile;
+        this.pile = pile;
+        this.diameter = diameter;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public DyeStage getDyeStage() {

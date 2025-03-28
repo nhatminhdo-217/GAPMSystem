@@ -635,6 +635,15 @@
                                                     <strong>Ngày tạo</strong><br>
                                                     <span th:text="${#temporals.format(machine.createAt, 'yyyy-MM-dd')}"></span>
                                                 </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <div class="form-check form-switch">
+                                                        <input type="checkbox" class="form-check-input toggle-switch"
+                                                               th:checked="${machine.active}"
+                                                               th:attr="data-url=@{/technical/dye-machine/{id}/toggle-status(id=${machine.id})}"
+                                                               onchange="toggleStatus(this)">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="collapse"
@@ -725,6 +734,15 @@
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
                                                     <span th:text="${#temporals.format(machine.createAt, 'yyyy-MM-dd')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <div class="form-check form-switch">
+                                                        <input type="checkbox" class="form-check-input toggle-switch"
+                                                               th:checked="${machine.active}"
+                                                               th:attr="data-url=@{/technical/winding-machine/{id}/toggle-status(id=${machine.id})}"
+                                                               onchange="toggleStatus(this)">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1120,6 +1138,12 @@
             console.log("No error message found or element missing");
         }
     });
+
+    function toggleStatus(element) {
+        let url = element.getAttribute("data-url");
+        console.log("Toggling status with URL:", url);
+        window.location.href = url;
+    }
 </script>
 </body>
 </html>

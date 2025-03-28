@@ -24,19 +24,28 @@ public class WindingMachine extends BaseEntity {
     @Lob
     private String description;
 
-//    @Column(name = "is_active", columnDefinition = "boolean default true")
-//    private boolean isActive = true;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
     public WindingMachine() {
     }
 
-    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, WindingStage windingStage, Integer motor_speed, Integer spindle, Integer capacity, String description) {
+    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, WindingStage windingStage, Integer motor_speed, Integer spindle, boolean isActive, String description, Integer capacity) {
         super(id, createAt, updateAt);
         this.windingStage = windingStage;
         this.motor_speed = motor_speed;
         this.spindle = spindle;
-        this.capacity = capacity;
+        this.isActive = isActive;
         this.description = description;
+        this.capacity = capacity;
     }
 
     public WindingStage getWindingStage() {
