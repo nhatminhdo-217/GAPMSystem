@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lệnh sản xuất chi tiết</title>
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <div class="container-fluid d-flex flex-column m-2">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/production-order/list}">Lệnh sản xuất</a></li>
+                <li class="breadcrumb-item active">Chi tiết</li>
+            </ul>
+            <div class="heading mt-3">
+                <h3>Đơn đặt hàng - <span th:text="${productionOrder.id}"></span>
+                    <span th:switch="${productionOrder.status}">
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
+                              class="badge rounded-pill bg-success">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
+                              class="badge rounded-pill bg-warning">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"
+                              class="badge rounded-pill bg-warning">
+                        </span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" class="badge rounded-pill bg-danger"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'" class="badge rounded-pill bg-secondary"></span>
+                        <span th:case="*" th:text="'trạng thái không xác định'" class="badge rounded-pill bg-secondary"></span>
+                    </span>
+                </h3>
+            </div>
+            <div id="order-info" class="row">
+                <form id="detailForm" th:action="@{/production-order/detail/update/0}" method="post" class="row" th:object="${productionOrderDetail}">
+
+                    <input type="hidden" id="detailId" name="id" th:value="*{id}">
+                    <input type="hidden" id="productionOrderIdField" name="productionOrderId" th:value="*{productionOrderId}">
+
+                    <div class="col m-3">
+                        <div class="mb-3">
+                            <label for="category">Loại hàng:</label>
+                            <input type="text" class="form-control" id="category" name="category" th:value="*{category}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="threadName">Loại sợi:</label>
+                            <input type="text" class="form-control" id="threadName" name="threadName" th:value="*{threadName}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rate">Định mức:</label>
+                            <input type="text" class="form-control" id="rate" name="rate" th:value="*{rate}" disabled>
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+                            <label for="threadMass">Khối lượng sợi:</label>
+                            <input type="text" class="form-control" id="threadMass" name="threadMass" th:value="*{threadMass}">
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                            <label for="threadMass">Khối lượng sợi:</label>
+                            <input type="text" class="form-control" id="threadMass" name="threadMass" th:value="*{threadMass}" disabled>
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+                            <label for="lightEnv">Môi trường AS:</label>
+                            <select id="lightEnv" class="form-select" name="lightEnv">
+                                <option value="true" th:selected="*{lightEnv}">AD</option>
+                                <option value="false" th:selected="*{!lightEnv}">TN</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                            <label for="lightEnv">Môi trường AS:</label>
+                            <select id="lightEnv" class="form-select" name="lightEnv" disabled>
+                                <option value="true" th:selected="*{lightEnv}">AD</option>
+                                <option value="false" th:selected="*{!lightEnv}">TN</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col m-3">
+                        <div class="mb-3">
+                            <label for="brandName">Nhãn hiệu</label>
+                            <input type="text" class="form-control" id="brandName" name="brandName" th:value="*{brandName}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="noteColor">Tên màu</label>
+                            <input type="text" class="form-control" id="noteColor" name="noteColor" th:value="*{noteColor}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity">Số lượng</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" th:value="*{quantity}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="process">Số quy trình</label>
+                            <input type="text" class="form-control" id="process" name="process" th:value="*{process}" disabled>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+                        <button id="submitButton" type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+            <hr>
+
+            <div class="mt-3">
+                <h4>Chi tiết lệnh sản xuất</h4>
+            </div>
+            <table id="order-table" class="table table-hover mt-3 text-center">
+                <thead>
+                <tr>
+                    <th>Loại hàng</th>
+                    <th>Loại sợi</th>
+                    <th>Định mức</th>
+                    <th>Khối lượng sợi</th>
+                    <th>Môi trường AS</th>
+                    <th>Số quy trình</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${productionOrderDetailList}" th:data-id="${item.id}" onclick="loadDetailData(this.getAttribute('data-id'))" style="cursor: pointer;">
+                    <td th:text="${item.category}"></td>
+                    <td th:text="${item.threadName}"></td>
+                    <td th:text="${item.rate}"></td>
+                    <td th:text="${item.threadMass != null ? item.threadMass : 'N/A'}"></td>
+                    <td th:text="${item.lightEnv ? 'AD' : 'TN'}"></td>
+                    <td th:text="${item.process}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr>
+
+            <div class="mt-3 d-flex align-items-center">
+                <form th:if="${productionOrder.status.name() == 'DRAFT'}"
+                      th:action="@{'/purchase-order/detail/' + ${productionOrder.id}}" method="post">
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+                <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
+                      th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+                <div th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                    <form th:if="${productionOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
+                          th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">Approve</button>
+                    </form>
+                </div>
+                <a th:href="@{/purchase-order/list}" class="btn">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content End -->
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Vô hiệu hóa form khi tải trang nếu chưa có ID nào được chọn
+        const submitButton = document.getElementById('submitButton');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Chọn một dòng để chỉnh sửa';
+        }
+    });
+
+    function loadDetailData(id) {
+        // Sử dụng AJAX để lấy dữ liệu chi tiết từ server
+        fetch('/production-order/api/detail/' + id)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Received data:", data);
+
+                // Kiểm tra xem form có tồn tại không trước khi cập nhật
+                const form = document.getElementById('detailForm');
+                if (!form) {
+                    console.error("Form with ID 'detailForm' not found in the DOM");
+                    alert("Lỗi: Không tìm thấy form trên trang. Vui lòng tải lại trang.");
+                    return;
+                }
+
+                // Cập nhật form action với contextPath và đường dẫn đúng
+                form.action = '/production-order/detail/update/' + id;
+
+                // Kiểm tra từng phần tử trước khi cập nhật
+                const updateField = (fieldId, value) => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        // Xử lý giá trị null bằng cách đặt thành chuỗi rỗng
+                        field.value = (value !== null && value !== undefined) ? value : '';
+                    } else {
+                        console.warn(`Field with ID '${fieldId}' not found`);
+                    }
+                };
+
+                // Cập nhật các trường form - xử lý null
+                updateField('detailId', id);
+                updateField('category', data.category);
+                updateField('threadName', data.threadName);
+                updateField('rate', data.rate);
+                updateField('threadMass', data.threadMass);
+
+                // Xử lý select box cho lightEnv
+                const lightEnvSelect = document.getElementById('lightEnv');
+                if (lightEnvSelect) {
+                    lightEnvSelect.value = data.lightEnv ? 'true' : 'false';
+                }
+
+                updateField('brandName', data.brandName);
+                updateField('noteColor', data.noteColor);
+                updateField('quantity', data.quantity);
+                updateField('process', data.process);
+                updateField('productionOrderIdField', data.productionOrderId);
+
+                // Bật lại nút submit
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Lưu thay đổi';
+                }
+
+                // Cuộn lên đầu trang để thấy form
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                // Thêm class đánh dấu hàng đang được chọn
+                const allRows = document.querySelectorAll('#order-table tbody tr');
+                allRows.forEach(row => {
+                    row.classList.remove('table-primary');
+                });
+                const selectedRow = document.querySelector(`tr[data-id="${id}"]`);
+                if (selectedRow) {
+                    selectedRow.classList.add('table-primary');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching detail data:', error);
+            });
+    }
+</script>
+
+</body>
+</html>

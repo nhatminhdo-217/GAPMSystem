@@ -9,71 +9,73 @@ import java.time.LocalDateTime;
 @Table(name = "production_order_detail")
 public class ProductionOrderDetail extends BaseEntity {
 
-    @Column(name = "thread_mass", precision = 10, scale = 4)
-    private BigDecimal thread_mass; // Khối lượng sợi
+  @Column(name = "thread_mass", precision = 10, scale = 4)
+  private BigDecimal thread_mass; // Khối lượng sợi
 
-    private Boolean light_env; // 0: ánh đèn (AD), 1: ánh sáng tự nhiên (TN)
+  private Boolean light_env; // 0: ánh đèn (AD), 1: ánh sáng tự nhiên (TN)
 
-    @Lob
-    @Column(name = "description", length = 255)
-    private String description;
+  @ManyToOne
+  @JoinColumn(name = "production_order_id", nullable = false)
+  private ProductionOrder productionOrder;
 
-    @ManyToOne
-    @JoinColumn(name = "production_order_id", nullable = false)
-    private ProductionOrder productionOrder;
+  @OneToOne(mappedBy = "productionOrderDetail")
+  private WorkOrderDetail workOrderDetail;
 
-    @OneToOne(mappedBy = "productionOrderDetail")
-    private WorkOrderDetail workOrderDetail;
+  @OneToOne
+  @JoinColumn(name = "purchase_order_detail_id", nullable = false)
+  private PurchaseOrderDetail purchaseOrderDetail;
 
-    public ProductionOrderDetail() {
-    }
+  public ProductionOrderDetail() {
+  }
 
-    public ProductionOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal thread_mass, Boolean light_env, String description, ProductionOrder productionOrder, WorkOrderDetail workOrderDetail) {
-        super(id, createAt, updateAt);
-        this.thread_mass = thread_mass;
-        this.light_env = light_env;
-        this.description = description;
-        this.productionOrder = productionOrder;
-        this.workOrderDetail = workOrderDetail;
-    }
+  public ProductionOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal thread_mass,
+      Boolean light_env, ProductionOrder productionOrder, WorkOrderDetail workOrderDetail,
+      PurchaseOrderDetail purchaseOrderDetail) {
+    super(id, createAt, updateAt);
+    this.thread_mass = thread_mass;
+    this.light_env = light_env;
+    this.productionOrder = productionOrder;
+    this.workOrderDetail = workOrderDetail;
+    this.purchaseOrderDetail = purchaseOrderDetail;
+  }
 
-    public BigDecimal getThread_mass() {
-        return thread_mass;
-    }
+  public BigDecimal getThread_mass() {
+    return thread_mass;
+  }
 
-    public void setThread_mass(BigDecimal thread_mass) {
-        this.thread_mass = thread_mass;
-    }
+  public void setThread_mass(BigDecimal thread_mass) {
+    this.thread_mass = thread_mass;
+  }
 
-    public Boolean getLight_env() {
-        return light_env;
-    }
+  public Boolean getLight_env() {
+    return light_env;
+  }
 
-    public void setLight_env(Boolean light_env) {
-        this.light_env = light_env;
-    }
+  public void setLight_env(Boolean light_env) {
+    this.light_env = light_env;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public ProductionOrder getProductionOrder() {
+    return productionOrder;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setProductionOrder(ProductionOrder productionOrder) {
+    this.productionOrder = productionOrder;
+  }
 
-    public ProductionOrder getProductionOrder() {
-        return productionOrder;
-    }
+  public WorkOrderDetail getWorkOrderDetail() {
+    return workOrderDetail;
+  }
 
-    public void setProductionOrder(ProductionOrder productionOrder) {
-        this.productionOrder = productionOrder;
-    }
+  public void setWorkOrderDetail(WorkOrderDetail workOrderDetail) {
+    this.workOrderDetail = workOrderDetail;
+  }
 
-    public WorkOrderDetail getWorkOrderDetail() {
-        return workOrderDetail;
-    }
+  public PurchaseOrderDetail getPurchaseOrderDetail() {
+    return purchaseOrderDetail;
+  }
 
-    public void setWorkOrderDetail(WorkOrderDetail workOrderDetail) {
-        this.workOrderDetail = workOrderDetail;
-    }
+  public void setPurchaseOrderDetail(PurchaseOrderDetail purchaseOrderDetail) {
+    this.purchaseOrderDetail = purchaseOrderDetail;
+  }
 }
