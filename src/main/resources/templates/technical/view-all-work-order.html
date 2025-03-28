@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉ may Dũng Đông - Danh sách Work Order</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .parent-row {
+            background-color: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            color: #dc3545;
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .toggle-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .text-start strong {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .text-start span {
+            font-weight: 400;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            background-color: #ffffff;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+
+        .text-start.me-3 {
+            flex: 1;
+            text-align: center;
+            min-width: 0;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input {
+            max-width: 200px;
+            margin-left: 15px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 6px 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+
+        .index-in-card {
+            margin-right: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .card-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 0;
+        }
+
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 12px 15px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .toggle-container {
+            padding: 5px;
+            min-width: 30px;
+        }
+
+        .detail-table {
+            background-color: #ffffff;
+            border-radius: 0 0 8px 8px;
+            padding: 0;
+        }
+
+        .card-body.detail-table {
+            background-color: #f9fafc;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .solution-details {
+            background-color: #f8f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e7f0;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .solution-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #495057;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .solution-details strong {
+            color: #333;
+            font-weight: 600;
+            flex: 0 0 50%;
+        }
+
+        .solution-details span {
+            color: #212529;
+            text-align: right;
+            flex: 0 0 50%;
+        }
+
+        .nav-tabs .nav-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: #495057;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            background-color: transparent;
+        }
+
+        .tab-content {
+            padding-top: 20px;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.disabled .page-link {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .create-machine-btn {
+            margin-left: auto;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .create-machine-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-dialog {
+            max-width: 80%;
+            margin: 1.75rem auto;
+        }
+
+        .modal-content {
+            max-height: 100vh;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 20px;
+            background-color: #ffffff;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .modal-body h6 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-check {
+            margin-bottom: 10px;
+        }
+
+        .form-check-label {
+            font-size: 14px;
+            color: #495057;
+            margin-left: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+            padding: 15px 20px;
+            justify-content: flex-end;
+            background-color: #ffffff;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .create-machine-modal {
+            max-width: 60%;
+        }
+
+        .toast {
+            opacity: 0.9;
+        }
+
+        .success-toast {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .success-toast .toast-body {
+            color: #155724;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastSuccess, #toastError {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        #toastError {
+            bottom: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .content-section {
+                flex-direction: column;
+                width: 100%;
+                align-items: flex-start;
+            }
+
+            .text-start.me-3 {
+                width: 100%;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .search-input {
+                max-width: 100%;
+                margin-top: 10px;
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .card-body {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .card-wrapper {
+                flex-direction: column;
+                gap: 0;
+                align-items: flex-start;
+            }
+
+            .index-in-card {
+                margin-bottom: 10px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .toggle-container {
+                margin-top: 10px;
+                margin-left: 0;
+                text-align: right;
+                width: 100%;
+            }
+
+            .solution-details p {
+                flex-direction: column;
+                text-align: left;
+                gap: 5px;
+            }
+
+            .solution-details strong, .solution-details span {
+                flex: none;
+                width: 100%;
+            }
+
+            .solution-details span {
+                text-align: left;
+            }
+
+            .create-machine-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .nav-tabs .nav-link {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            .modal-dialog {
+                max-width: 90%;
+                margin: 0.5rem;
+            }
+
+            .modal-content {
+                max-height: 80vh;
+            }
+
+            .modal-body {
+                padding: 15px;
+            }
+
+            .form-label, .form-check-label {
+                font-size: 12px;
+            }
+
+            .form-control {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .btn-primary, .btn-secondary {
+                font-size: 12px;
+                padding: 6px 15px;
+            }
+
+            .modal-title {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Hidden data -->
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
+<div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <!-- Search and title -->
+                <div class="search-container">
+                    <h6 class="mb-0">Danh sách kế hoạch</h6>
+                    <form method="get" action="/technical/view-all-work-order" class="d-flex align-items-center">
+                        <input type="text" name="search" class="form-control search-input" id="searchInput"
+                               placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <select name="status" class="form-control search-input ms-2">
+                            <option value="">Tất cả trạng thái</option>
+                            <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
+                                    th:selected="${status == selectedStatus}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary ms-2" style="padding: 6px 12px;">Tìm</button>
+                    </form>
+                </div>
+
+                <!-- Work Order List -->
+                <div class="row g-3">
+                    <div class="col-12" th:if="${workOrders == null or workOrders.isEmpty()}">
+                        <div class="alert alert-info text-center">
+                            <p>Không tìm thấy Work Order nào.</p>
+                        </div>
+                    </div>
+                    <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                        <div class="card-wrapper">
+                            <div class="card"
+                                 th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                 th:data-workorder-id="${workOrder.id}">
+                                <div class="card-body parent-row">
+                                    <span class="index-in-card"
+                                          th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                    <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
+                                         style="width: 100%;">
+                                        <div class="text-start me-3">
+                                            <strong>Work Order ID</strong><br>
+                                            <span th:text="${workOrder.id}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Production Order ID</strong><br>
+                                            <span th:text="${workOrder.productionOrder.id}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Create At</strong><br>
+                                            <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Deadline</strong><br>
+                                            <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Status</strong><br>
+                                            <span th:text="${workOrder.status}"></span>
+                                        </div>
+                                        <div class="text-start me-3">
+                                            <strong>Send Status</strong><br>
+                                            <span th:text="${workOrder.sendStatus}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="collapse"
+                                     th:id="'workorder-details-' + ${iterStat.count + workOrderPage.number * workOrderPage.size}">
+                                    <div class="card-body detail-table">
+                                        <div class="solution-details">
+                                            <p><strong>Created By:</strong>
+                                                <span th:text="${workOrder.createdBy != null ? workOrder.createdBy.username : 'N/A'}"></span>
+                                            </p>
+                                            <p><strong>Approved By:</strong>
+                                                <span th:text="${workOrder.approvedBy != null ? workOrder.approvedBy.username : 'N/A'}"></span>
+                                            </p>
+                                            <p><strong>Create At:</strong>
+                                                <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy HH:mm')}"></span>
+                                            </p>
+                                            <p><strong>Update At:</strong>
+                                                <span th:text="${#temporals.format(workOrder.updateAt, 'dd/MM/yyyy HH:mm')}"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="toggle-container">
+                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
+                                        th:data-target="'#workorder-details-' + ${iterStat.count + workOrderPage.number * workOrderPage.size}"
+                                        style="padding: 0; color: #dc3545; text-decoration: none;">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${workOrderPage.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${workOrderPage.number == 0 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Previous</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, workOrderPage.totalPages - 1)}"
+                            th:classappend="${i == workOrderPage.number ? 'active' : ''}">
+                            <a class="page-link"
+                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}"
+                               th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${workOrderPage.number == workOrderPage.totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Toast Error -->
+    <div id="toastError" class="toast error-toast">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Ẩn spinner khi trang tải xong
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Xử lý nút toggle để hiển thị chi tiết
+        $('.toggle-btn').click(function (event) {
+            event.stopPropagation();
+            var target = $(this).data('target');
+            var icon = $(this).find('i');
+            $(target).collapse('toggle');
+            if ($(target).hasClass('show')) {
+                icon.removeClass('fa-plus').addClass('fa-minus');
+            } else {
+                icon.removeClass('fa-minus').addClass('fa-plus');
+            }
+        });
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+
+        // Hiển thị toast lỗi từ server
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+    });
+</script>
+</body>
+</html>

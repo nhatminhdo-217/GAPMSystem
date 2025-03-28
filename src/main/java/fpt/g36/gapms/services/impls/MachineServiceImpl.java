@@ -105,6 +105,7 @@ public class MachineServiceImpl implements MachineService {
         existingMachine.setCapacity(dyeMachine.getCapacity());
         existingMachine.setDescription(dyeMachine.getDescription() != null ? dyeMachine.getDescription() : "");
         existingMachine.setUpdateAt(LocalDateTime.now());
+        existingMachine.setActive(dyeMachine.isActive());
 
         return dyeMachineRepository.save(existingMachine);
     }
@@ -125,7 +126,26 @@ public class MachineServiceImpl implements MachineService {
         existingMachine.setCapacity(windingMachine.getCapacity());
         existingMachine.setDescription(windingMachine.getDescription() != null ? windingMachine.getDescription() : "");
         existingMachine.setUpdateAt(LocalDateTime.now());
+        existingMachine.setActive(windingMachine.isActive());
 
         return windingMachineRepository.save(existingMachine);
+    }
+
+    @Override
+    public void updateDyeMachineStatus(Long id, boolean isActive) {
+        DyeMachine dyeMachine = dyeMachineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy máy nhuộm với ID: " + id));
+        dyeMachine.setActive(isActive);
+        dyeMachine.setUpdateAt(LocalDateTime.now());
+        dyeMachineRepository.save(dyeMachine);
+    }
+
+    @Override
+    public void updateWindingMachineStatus(Long id, boolean isActive) {
+        WindingMachine windingMachine = windingMachineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy máy cuốn với ID: " + id));
+        windingMachine.setActive(isActive);
+        windingMachine.setUpdateAt(LocalDateTime.now());
+        windingMachineRepository.save(windingMachine);
     }
 }
