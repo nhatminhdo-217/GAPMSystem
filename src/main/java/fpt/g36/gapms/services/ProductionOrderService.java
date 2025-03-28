@@ -1,7 +1,9 @@
 package fpt.g36.gapms.services;
 
-import fpt.g36.gapms.models.dto.technical.ProductionOrderDTO;
-import fpt.g36.gapms.models.dto.technical.ProductionOrderDetailsDTO;
+import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
+import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
+import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDTO;
+import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDetailsDTO;
 import fpt.g36.gapms.models.entities.ProductionOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +15,9 @@ import java.util.List;
 
 @Service
 public interface ProductionOrderService {
-    Page<ProductionOrderDTO> getApprovedProductionOrders(Pageable pageable);
+    Page<TechnicalProductionOrderDTO> getApprovedProductionOrders(Pageable pageable);
 
-    ProductionOrderDetailsDTO getProductionOrderDetails(Long id);
+    TechnicalProductionOrderDetailsDTO getProductionOrderDetails(Long id);
 
     ProductionOrder getProductionOrderById(Long id);
 
@@ -23,7 +25,7 @@ public interface ProductionOrderService {
 
     ProductionOrderDTO findById(Long id);
 
-    List<ProductionOrderDetailDTO> findDetailByProductionOrderId(Long id);
+    List<ProductionOrderDetailDTO> findDetailsByProductionOrderId(Long id);
 
     ProductionOrderDetailDTO findDetailById(Long id);
 

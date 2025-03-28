@@ -22,12 +22,12 @@ import java.util.Collections;
 
 @Controller
 @RequestMapping("/technical")
-public class ApprovedWorkOrderController {
+public class TechnicalWorkOrderController {
     private final WorkOrderService workOrderService;
     private final UserUtils userUtils;
 
     @Autowired
-    public ApprovedWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils) {
+    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils) {
         this.workOrderService = workOrderService;
         this.userUtils = userUtils;
     }

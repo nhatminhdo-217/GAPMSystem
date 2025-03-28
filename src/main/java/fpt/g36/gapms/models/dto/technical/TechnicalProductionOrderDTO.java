@@ -6,7 +6,7 @@ import fpt.g36.gapms.models.entities.User;
 
 import java.time.LocalDateTime;
 
-public class ProductionOrderDTO {
+public class TechnicalProductionOrderDTO {
     private Long id;
     private BaseEnum status;
     private User createdBy;

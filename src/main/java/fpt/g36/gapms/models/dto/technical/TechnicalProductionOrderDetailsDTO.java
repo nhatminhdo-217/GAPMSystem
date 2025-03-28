@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ProductionOrderDetailsDTO {
+public class TechnicalProductionOrderDetailsDTO {
     private Long id;
     private BaseEnum status;
     private User createdBy;

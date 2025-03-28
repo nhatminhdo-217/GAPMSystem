@@ -66,7 +66,7 @@ public class ProductionOrderController {
         userUtils.getOptionalUser(model);
 
         ProductionOrderDTO productionOrder = productionOrderService.findById(id);
-        List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailByProductionOrderId(id);
+        List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailsByProductionOrderId(id);
 
         model.addAttribute("productionOrder", productionOrder);
         model.addAttribute("productionOrderDetailList", productionOrderDetailList);
