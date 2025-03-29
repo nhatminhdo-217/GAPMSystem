@@ -31,4 +31,6 @@ public interface PurchaseOrderService {
     Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year);
 
     PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id);
+
+    boolean checkContractWithStatus(BaseEnum status, Long id);
 }

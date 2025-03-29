@@ -1,5 +1,6 @@
 package fpt.g36.gapms.controller.purchase_order;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.contract.ContractDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
@@ -87,13 +88,32 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/detail/{id}")
-    public String postPurchaseOrderDetailPage(@PathVariable Long id) {
+    public String postPurchaseOrderDetailPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
 
         User currUser = userUtils.getOptionalUserInfo();
 
-        PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+        BaseEnum status = purchaseOrderService.getStatusByPurchaseOrderId(id);
 
-        return "redirect:/purchase-order/detail/" + po.getId();
+        if (status.equals(BaseEnum.NOT_APPROVED)) {
+            boolean isPurchaseOrderContract = purchaseOrderService.checkContractWithStatus(status, id);
+            if (!isPurchaseOrderContract) {
+                redirectAttributes.addFlashAttribute("errorUpdate", "Không thể gửi đơn hàng khi chưa có hợp đồng");
+                return "redirect:/purchase-order/detail/" + id;
+            }
+
+            PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
+            return "redirect:/purchase-order/detail/" + po.getId();
+        }else {
+            if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
+                contractService.updateContractStatus(id, currUser);
+                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
+            } else {
+                redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
+            }
+            PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+            return "redirect:/purchase-order/detail/" + po.getId();
+        }
     }
 
     @GetMapping("/detail/{purchaseId}/contract/{id}")
@@ -176,6 +196,9 @@ public class PurchaseOrderController {
         }
         try {
             Contract contract = contractService.createContract(id, contractDTO, file);
+            if (!contractService.updateContractToPurchaseOrder(id, contract)){
+                System.err.println("Update contract to purchase order failed");
+            }
             redirectAttributes.addFlashAttribute("success", "Tạo hợp đồng thành công");
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){

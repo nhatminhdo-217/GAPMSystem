@@ -56,6 +56,14 @@
         <!-- Navbar End -->
 
         <div class="container-fluid d-flex flex-column m-2">
+            <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" th:if="${errorUpdate}" role="alert">
+                <span th:text="${errorUpdate}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
                     <li class="breadcrumb-item active">Chi tiết</li>
@@ -70,8 +78,13 @@
                         <p><b>Mã thuế: </b> <span th:text="${orderInfo.taxNumber}"></span></p>
                         <p><b>Địa chỉ: </b> <span th:text="${orderInfo.companyAddress}"></span></p>
                         <div th:if="${currUser.role.name == 'SALE_STAFF'}">
-                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
-                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}"> Tải ảnh lên</a> </p>
+                            <div th:if="${orderInfo.status.name() ==  'DRAFT'}">
+                                <p><b>Hợp đồng: </b> Hãy tạo đơn để tải ảnh lên</p>
+                            </div>
+                            <div th:unless="${orderInfo.status.name() ==  'DRAFT'}">
+                                <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
+                                <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}"> Tải ảnh lên</a> </p>
+                            </div>
                         </div>
                         <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
                             <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
@@ -90,6 +103,7 @@
                                                 style="color: #ffc107;">
                                           </span>
                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'" style="color: #ffc107;"></span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'" style="color: #ffc107;"></span>
                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
                                            <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
                             </span>
@@ -159,7 +173,7 @@
                             <button type="submit" class="btn btn-primary">Approve</button>
                         </form>
                     </div>
-                    <a th:href="@{/purchase-order/list}" class="btn">Back</a>
+                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary">Back</a>
                 </div>
         </div>
 

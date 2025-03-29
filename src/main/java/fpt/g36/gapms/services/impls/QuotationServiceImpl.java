@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class QuotationServiceImpl implements QuotationService {
@@ -177,7 +177,8 @@ public class QuotationServiceImpl implements QuotationService {
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
-        purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
+        purchaseOrder.setStatus(BaseEnum.DRAFT);
+        purchaseOrder.setCustomer(quotation.getRfq().getCreateBy());
        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
 
         List<RfqDetail> rfqDetails = rfqDetailService.getAllRfqDetailByRfqId(rfqId);
@@ -228,7 +229,7 @@ public class QuotationServiceImpl implements QuotationService {
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
+        quotation.setIsAccepted(BaseEnum.DRAFT);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -237,5 +238,25 @@ public class QuotationServiceImpl implements QuotationService {
     @Override
     public Long getQuotationIdByRfqId(long rfqId) {
         return quotationRepository.findQuotationIdByRfqId(rfqId);
+    }
+
+    @Override
+    public void updateQuotationStatus(Long id, User currentUser) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+
+        if (getStatusByQuotationId(id) == BaseEnum.DRAFT) {
+            quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
+            quotation.setUpdateAt(LocalDateTime.now());
+            quotation.setCreatedBy(currentUser);
+        }  else {
+            throw new RuntimeException("Quotation status not valid");
+        }
+        quotationRepository.save(quotation);
+    }
+
+    private BaseEnum getStatusByQuotationId(Long id) {
+        Optional<Quotation> quotation = quotationRepository.findById(id);
+        return quotation.map(Quotation::getIsAccepted).orElse(null);
     }
 }
