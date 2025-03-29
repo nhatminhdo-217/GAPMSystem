@@ -33,4 +33,6 @@ public interface PurchaseOrderService {
     PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id);
 
     boolean checkContractWithStatus(BaseEnum status, Long id);
+
+    boolean cancelPurchaseOrder(Long id);
 }

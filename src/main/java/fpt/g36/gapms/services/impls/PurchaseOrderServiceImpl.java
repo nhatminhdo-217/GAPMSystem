@@ -132,6 +132,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     }
 
+    @Override
+    public boolean cancelPurchaseOrder(Long id) {
+        Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
+        if (purchaseOrder.isPresent()) {
+            PurchaseOrder po = purchaseOrder.get();
+            if (po.getStatus().equals(BaseEnum.WAIT_FOR_APPROVAL)) {
+                po.setStatus(BaseEnum.CANCELED);
+                purchaseOrderRepository.save(po);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();

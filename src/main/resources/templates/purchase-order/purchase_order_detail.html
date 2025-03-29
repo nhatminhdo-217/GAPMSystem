@@ -60,8 +60,8 @@
                 <span th:text="${success}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="alert alert-danger alert-dismissible fade show" th:if="${errorUpdate}" role="alert">
-                <span th:text="${errorUpdate}"></span>
+            <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+                <span th:text="${error}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
                 <ul class="breadcrumb">
@@ -159,21 +159,28 @@
                 <hr>
 
                 <div class="mt-3 d-flex align-items-center">
-                    <form th:if="${orderInfo.status.name() == 'DRAFT'}"
-                            th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                        <button type="submit" class="btn btn-primary">Confirm</button>
-                    </form>
-                    <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
-                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                    <div th:if="${currUser.role.name == 'SALE_STAFF'}" class="mt-3 d-flex align-items-center">
+                        <form th:if="${orderInfo.status.name() == 'DRAFT'}"
+                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </form>
+                        <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
+                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        <a th:href="@{/purchase-order/list}" class="btn btn-secondary">Back</a>
+                    </div>
+                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}" class="mt-3 d-flex align-items-center">
                         <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
                               th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
                             <button type="submit" class="btn btn-primary">Approve</button>
                         </form>
+                        <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
+                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post">
+                            <button type="submit" class="btn btn-danger">Cancel</button>
+                        </form>
+                        <a th:href="@{/purchase-order/list}" class="btn btn-secondary" th:if="${orderInfo.status.name() == 'APPROVED' or orderInfo.status.name() == 'CANCELED'}">Back</a>
                     </div>
-                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary">Back</a>
                 </div>
         </div>
 

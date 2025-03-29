@@ -97,7 +97,7 @@ public class PurchaseOrderController {
         if (status.equals(BaseEnum.NOT_APPROVED)) {
             boolean isPurchaseOrderContract = purchaseOrderService.checkContractWithStatus(status, id);
             if (!isPurchaseOrderContract) {
-                redirectAttributes.addFlashAttribute("errorUpdate", "Không thể gửi đơn hàng khi chưa có hợp đồng");
+                redirectAttributes.addFlashAttribute("error", "Không thể gửi đơn hàng khi chưa có hợp đồng");
                 return "redirect:/purchase-order/detail/" + id;
             }
 
@@ -114,6 +114,25 @@ public class PurchaseOrderController {
             PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
             return "redirect:/purchase-order/detail/" + po.getId();
         }
+    }
+
+    @GetMapping("/detail/{id}/cancel")
+    public String getPurchaseOrderCancelPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+
+        return postPurchaseOrderCancelPage(id, redirectAttributes, model);
+    }
+
+    @PostMapping("/detail/{id}/cancel")
+    public String postPurchaseOrderCancelPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+
+        boolean isCancel = purchaseOrderService.cancelPurchaseOrder(id);
+
+        if (isCancel) {
+            redirectAttributes.addFlashAttribute("success", "Hủy đơn hàng thành công");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được phê duyệt, không thể hủy");
+        }
+        return "redirect:/purchase-order/detail/" + id;
     }
 
     @GetMapping("/detail/{purchaseId}/contract/{id}")
