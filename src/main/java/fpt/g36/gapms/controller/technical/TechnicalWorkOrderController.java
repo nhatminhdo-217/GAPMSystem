@@ -40,10 +40,6 @@ public class TechnicalWorkOrderController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Pageable pageable = PageRequest.of(page, size);
 
-            // Hiển thị thông báo nếu có
-            if (success != null) model.addAttribute("success", success);
-            if (error != null) model.addAttribute("error", error);
-
             Page<WorkOrder> workOrderPage;
             if (search != null && !search.trim().isEmpty()) {
                 try {
@@ -98,11 +94,11 @@ public class TechnicalWorkOrderController {
         }
         return "redirect:/login";
     }
-}
 
-// Class tạm thời để bọc PageImpl vì không thấy PageImplWrapper trong code gốc
-class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {
-    public PageImplWrapper(java.util.List<T> content, Pageable pageable, long total) {
-        super(content, pageable, total);
+    private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {
+        public PageImplWrapper(java.util.List<T> content, Pageable pageable, long total) {
+            super(content, pageable, total);
+        }
     }
 }
+

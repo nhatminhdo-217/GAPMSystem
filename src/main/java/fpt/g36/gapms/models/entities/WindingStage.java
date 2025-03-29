@@ -35,26 +35,6 @@ public class WindingStage extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private TestEnum testStatus;
-
-    private Integer actualOutput;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_start_id")
-    private User leaderStart;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_end_id")
-    private User leaderEnd;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checked_by")
-    private User checkedBy;
-
     @OneToOne
     @JoinColumn(name = "winding_machine_id", nullable = false)
     private WindingMachine windingMachine;
@@ -62,14 +42,13 @@ public class WindingStage extends BaseEntity{
     @OneToOne(mappedBy = "windingStage")
     private PackagingStage packagingStage;
 
-    @OneToMany(  mappedBy = "windingStage",fetch = FetchType.LAZY)
-    private List<WindingRiskAssessment> windingRiskAssessmentList;
+    @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY)
+    private List<WindingBatch> windingbatches;
 
-    private String windingPhoto;
     public WindingStage() {
     }
 
-    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leaderStart, User leaderEnd, User checkedBy, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingRiskAssessment> windingRiskAssessmentList, String windingPhoto) {
+    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.dyeStage = dyeStage;
@@ -78,15 +57,9 @@ public class WindingStage extends BaseEntity{
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
-        this.testStatus = testStatus;
-        this.actualOutput = actualOutput;
-        this.leaderStart = leaderStart;
-        this.leaderEnd = leaderEnd;
-        this.checkedBy = checkedBy;
         this.windingMachine = windingMachine;
         this.packagingStage = packagingStage;
-        this.windingRiskAssessmentList = windingRiskAssessmentList;
-        this.windingPhoto = windingPhoto;
+        this.windingbatches = windingbatches;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -145,46 +118,6 @@ public class WindingStage extends BaseEntity{
         this.workStatus = workStatus;
     }
 
-    public TestEnum getTestStatus() {
-        return testStatus;
-    }
-
-    public void setTestStatus(TestEnum testStatus) {
-        this.testStatus = testStatus;
-    }
-
-    public Integer getActualOutput() {
-        return actualOutput;
-    }
-
-    public void setActualOutput(Integer actualOutput) {
-        this.actualOutput = actualOutput;
-    }
-
-    public User getLeaderStart() {
-        return leaderStart;
-    }
-
-    public void setLeaderStart(User leaderStart) {
-        this.leaderStart = leaderStart;
-    }
-
-    public User getLeaderEnd() {
-        return leaderEnd;
-    }
-
-    public void setLeaderEnd(User leaderEnd) {
-        this.leaderEnd = leaderEnd;
-    }
-
-    public User getCheckedBy() {
-        return checkedBy;
-    }
-
-    public void setCheckedBy(User checkedBy) {
-        this.checkedBy = checkedBy;
-    }
-
     public WindingMachine getWindingMachine() {
         return windingMachine;
     }
@@ -201,19 +134,11 @@ public class WindingStage extends BaseEntity{
         this.packagingStage = packagingStage;
     }
 
-    public String getWindingPhoto() {
-        return windingPhoto;
+    public List<WindingBatch> getWindingbatches() {
+        return windingbatches;
     }
 
-    public void setWindingPhoto(String windingPhoto) {
-        this.windingPhoto = windingPhoto;
-    }
-
-    public List<WindingRiskAssessment> getWindingRiskAssessmentList() {
-        return windingRiskAssessmentList;
-    }
-
-    public void setWindingRiskAssessmentList(List<WindingRiskAssessment> windingRiskAssessmentList) {
-        this.windingRiskAssessmentList = windingRiskAssessmentList;
+    public void setWindingbatches(List<WindingBatch> windingbatches) {
+        this.windingbatches = windingbatches;
     }
 }

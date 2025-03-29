@@ -31,7 +31,6 @@ public class DyeStageServiceImpl implements DyeStageService {
 
             dyeStage.setWorkStatus(WorkEnum.IN_PROGRESS);
             dyeStage.getWorkOrderDetail().getWorkOrder().setIsProduction(WorkEnum.IN_PROGRESS);
-            dyeStage.setTestStatus(TestEnum.TESTING);
             dyeStageRepository.save(dyeStage);
 
     }
@@ -40,7 +39,6 @@ public class DyeStageServiceImpl implements DyeStageService {
     public void changeStatusDyeStageFinish(Long dyeId, String photo) {
         DyeStage dyeStage = dyeStageRepository.findById(dyeId).orElseThrow(() -> new RuntimeException("dyeId not found"));
         dyeStage.setWorkStatus(WorkEnum.FINISHED);
-        dyeStage.setDyePhoto(photo);
         dyeStageRepository.save(dyeStage);
     }
 

@@ -28,7 +28,6 @@ public class PackagingStageServiceImpl implements PackagingStageService {
         PackagingStage packagingStage = packagingStageRepository.findById(psId).orElseThrow(() -> new RuntimeException("psId not found"));
 
         packagingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
-        packagingStage.setTestStatus(TestEnum.TESTING);
         packagingStageRepository.save(packagingStage);
     }
 
@@ -36,7 +35,6 @@ public class PackagingStageServiceImpl implements PackagingStageService {
     public void changeStatusPackagingStageFinish(Long psId, String photo) {
         PackagingStage packagingStage = packagingStageRepository.findById(psId).orElseThrow(() -> new RuntimeException("psId not found"));
         packagingStage.setWorkStatus(WorkEnum.FINISHED);
-        packagingStage.setPackagingPhoto(photo);
         packagingStageRepository.save(packagingStage);
     }
 

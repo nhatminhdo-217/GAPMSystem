@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "dye_stage")
-public class DyeStage extends BaseEntity{
+public class DyeStage extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "work_order_detail_id", nullable = false)
@@ -20,19 +20,23 @@ public class DyeStage extends BaseEntity{
 
     @NotNull
     @Column(name = "liters_min", precision = 10, scale = 2)
-    private BigDecimal liters_min;
+    private BigDecimal liters_min; // Khối lượng tổng * 6
 
     @NotNull
     @Column(name = "liters", precision = 10, scale = 2)
-    private BigDecimal liters;
+    private BigDecimal liters; // tối đa
 
     @NotNull
-    @Column(name = "cone_weight", precision = 10, scale = 2)
-    private BigDecimal cone_weight; // Khối lượng
+    @Column(name = "cone_total_weight", precision = 10, scale = 2)
+    private BigDecimal cone_weight; // Khối lượng tổng
+
+    @NotNull
+    @Column(name = "cone_batch_weight", precision = 10, scale = 2)
+    private BigDecimal cone_batch_weight; // Khối lượng tối đa của mẻ để tính số quả
 
     @NotNull
     @Column(name = "cone_quantity", precision = 10, scale = 2)
-    private BigDecimal cone_quantity; // Số quả
+    private BigDecimal cone_quantity; // Số quả = khối lượng quả(1.25) * khối lượng mẻ -> chọn máy
 
     @NotNull
     private LocalDate deadline;
@@ -45,29 +49,6 @@ public class DyeStage extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private TestEnum testStatus;
-
-    @Column(name = "actual_output", precision = 10, scale = 2)
-    private BigDecimal actualOutput;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_start_id")
-    private User leaderStart;
-
-    @OneToMany(  mappedBy = "dyeStage",fetch = FetchType.LAZY)
-    private List<DyeRiskAssessment> dyeRiskAssessments;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_end_id")
-    private User leaderEnd;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checked_by")
-    private User checkedBy;
-
     @OneToOne(mappedBy = "dyeStage")
     private WindingStage windingStage;
 
@@ -75,30 +56,35 @@ public class DyeStage extends BaseEntity{
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 
-    private String dyePhoto;
+    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY)
+    private List<DyeBatch> dyebatches;
+
     public DyeStage() {
     }
 
-    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, BigDecimal actualOutput, User leaderStart, List<DyeRiskAssessment> dyeRiskAssessments, User leaderEnd, User checkedBy, WindingStage windingStage, DyeMachine dyeMachine, String dyePhoto) {
+    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.liters_min = liters_min;
         this.liters = liters;
         this.cone_weight = cone_weight;
+        this.cone_batch_weight = cone_batch_weight;
         this.cone_quantity = cone_quantity;
         this.deadline = deadline;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
-        this.testStatus = testStatus;
-        this.actualOutput = actualOutput;
-        this.leaderStart = leaderStart;
-        this.dyeRiskAssessments = dyeRiskAssessments;
-        this.leaderEnd = leaderEnd;
-        this.checkedBy = checkedBy;
         this.windingStage = windingStage;
         this.dyeMachine = dyeMachine;
-        this.dyePhoto = dyePhoto;
+        this.dyebatches = dyebatches;
+    }
+
+    public BigDecimal getCone_batch_weight() {
+        return cone_batch_weight;
+    }
+
+    public void setCone_batch_weight(BigDecimal cone_batch_weight) {
+        this.cone_batch_weight = cone_batch_weight;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -117,20 +103,20 @@ public class DyeStage extends BaseEntity{
         this.liters_min = liters_min;
     }
 
-    public BigDecimal getLiters() {
-        return liters;
-    }
-
-    public void setLiters(BigDecimal liters) {
-        this.liters = liters;
-    }
-
     public BigDecimal getCone_weight() {
         return cone_weight;
     }
 
     public void setCone_weight(BigDecimal cone_weight) {
         this.cone_weight = cone_weight;
+    }
+
+    public BigDecimal getLiters() {
+        return liters;
+    }
+
+    public void setLiters(BigDecimal liters) {
+        this.liters = liters;
     }
 
     public BigDecimal getCone_quantity() {
@@ -173,31 +159,6 @@ public class DyeStage extends BaseEntity{
         this.workStatus = workStatus;
     }
 
-    public TestEnum getTestStatus() {
-        return testStatus;
-    }
-
-    public void setTestStatus(TestEnum testStatus) {
-        this.testStatus = testStatus;
-    }
-
-    public BigDecimal getActualOutput() {
-        return actualOutput;
-    }
-
-    public void setActualOutput(BigDecimal actualOutput) {
-        this.actualOutput = actualOutput;
-    }
-
-
-    public User getCheckedBy() {
-        return checkedBy;
-    }
-
-    public void setCheckedBy(User checkedBy) {
-        this.checkedBy = checkedBy;
-    }
-
     public WindingStage getWindingStage() {
         return windingStage;
     }
@@ -214,35 +175,11 @@ public class DyeStage extends BaseEntity{
         this.dyeMachine = dyeMachine;
     }
 
-    public String getDyePhoto() {
-        return dyePhoto;
+    public List<DyeBatch> getDyebatches() {
+        return dyebatches;
     }
 
-    public void setDyePhoto(String dyePhoto) {
-        this.dyePhoto = dyePhoto;
-    }
-
-    public User getLeaderStart() {
-        return leaderStart;
-    }
-
-    public void setLeaderStart(User leaderStart) {
-        this.leaderStart = leaderStart;
-    }
-
-    public User getLeaderEnd() {
-        return leaderEnd;
-    }
-
-    public void setLeaderEnd(User leaderEnd) {
-        this.leaderEnd = leaderEnd;
-    }
-
-    public List<DyeRiskAssessment> getDyeRiskAssessments() {
-        return dyeRiskAssessments;
-    }
-
-    public void setDyeRiskAssessments(List<DyeRiskAssessment> dyeRiskAssessments) {
-        this.dyeRiskAssessments = dyeRiskAssessments;
+    public void setDyebatches(List<DyeBatch> dyebatches) {
+        this.dyebatches = dyebatches;
     }
 }
