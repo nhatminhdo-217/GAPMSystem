@@ -11,6 +11,7 @@ import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ContractService;
+import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.UserServiceImpl;
@@ -45,12 +46,14 @@ public class PurchaseOrderController {
     private final ContractService contractService;
     private final UserService userService;
     private static String latestImagePath = null;
+    private final ProductionOrderService productionOrderService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
         this.contractService = contractService;
         this.userService = userService;
+        this.productionOrderService = productionOrderService;
     }
 
     @GetMapping("/list")
@@ -107,6 +110,7 @@ public class PurchaseOrderController {
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
                 contractService.updateContractStatus(id, currUser);
+                productionOrderService.createProductionOrder(id);
                 redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
@@ -215,9 +219,6 @@ public class PurchaseOrderController {
         }
         try {
             Contract contract = contractService.createContract(id, contractDTO, file);
-            if (!contractService.updateContractToPurchaseOrder(id, contract)){
-                System.err.println("Update contract to purchase order failed");
-            }
             redirectAttributes.addFlashAttribute("success", "Tạo hợp đồng thành công");
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){

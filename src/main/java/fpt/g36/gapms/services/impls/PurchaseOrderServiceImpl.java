@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
@@ -144,6 +145,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
         }
         return false;
+    }
+
+    @Override
+    public PurchaseOrderDetail getPurchaseOrderDetailById(Long id) {
+        Optional<PurchaseOrderDetail> purchaseOrderDetail = purchaseOrderRepository.getPurchaseOrderDetailById(id);
+        if (purchaseOrderDetail.isPresent()) {
+            return purchaseOrderDetail.get();
+        } else {
+            throw new RuntimeException("Purchase Order Detail not found");
+        }
     }
 
     private boolean isPurchaseOrderContract(Long id){
