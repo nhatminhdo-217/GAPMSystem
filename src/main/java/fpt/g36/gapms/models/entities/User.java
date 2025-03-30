@@ -3,12 +3,13 @@ package fpt.g36.gapms.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "user")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Column(name = "name", nullable = false, length = 100)
     private String username;
@@ -38,11 +39,15 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CompanyUser> companyUsers;
 
-    @OneToOne()
-    @JoinColumn(name = "shift_id")
-    private Shift shift;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserShift> userShifts;
 
-    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers, Shift shift) {
+    public User() {
+    }
+
+    ;
+
+    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers, List<UserShift> userShifts) {
         super(id, createAt, updateAt);
         this.username = username;
         this.password = password;
@@ -53,10 +58,7 @@ public class User extends BaseEntity{
         this.avatar = avatar;
         this.isActive = isActive;
         this.companyUsers = companyUsers;
-        this.shift = shift;
-    }
-
-    public User() {
+        this.userShifts = userShifts;
     }
 
     public String getUsername() {
@@ -131,11 +133,11 @@ public class User extends BaseEntity{
         this.companyUsers = companyUsers;
     }
 
-    public Shift getShift() {
-        return shift;
+    public List<UserShift> getUserShifts() {
+        return userShifts;
     }
 
-    public void setShift(Shift shift) {
-        this.shift = shift;
+    public void setUserShifts(List<UserShift> userShifts) {
+        this.userShifts = userShifts;
     }
 }
