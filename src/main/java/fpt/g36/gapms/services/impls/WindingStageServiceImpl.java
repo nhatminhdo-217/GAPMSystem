@@ -27,7 +27,6 @@ public class WindingStageServiceImpl implements WindingStageService {
         WindingStage windingStage = windingStageRepository.findById(wdId).orElseThrow(() -> new RuntimeException("wdId not found"));
 
         windingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
-        windingStage.setTestStatus(TestEnum.TESTING);
         windingStageRepository.save(windingStage);
     }
 
@@ -35,7 +34,6 @@ public class WindingStageServiceImpl implements WindingStageService {
     public void changeStatusWindingStageFinish(Long wdId, String photo) {
         WindingStage windingStage = windingStageRepository.findById(wdId).orElseThrow(() -> new RuntimeException("wdId not found"));
         windingStage.setWorkStatus(WorkEnum.FINISHED);
-        windingStage.setWindingPhoto(photo);
         windingStageRepository.save(windingStage);
     }
 

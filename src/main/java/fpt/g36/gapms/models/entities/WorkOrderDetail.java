@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "work_order_detail")
-public class WorkOrderDetail extends BaseEntity{
+public class WorkOrderDetail extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "work_order_id", nullable = false)
@@ -18,6 +18,12 @@ public class WorkOrderDetail extends BaseEntity{
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
+
+    @NotNull
+    private LocalDateTime plannedStartAt;
+
+    @NotNull
+    private LocalDateTime plannedEndAt;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -44,15 +50,17 @@ public class WorkOrderDetail extends BaseEntity{
     public WorkOrderDetail() {
     }
 
-    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, WorkEnum workStatus, ProductionOrderDetail productionOrderDetail, PurchaseOrderDetail purchaseOrderDetail) {
+    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedEndAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, LocalDateTime plannedStartAt, WorkEnum workStatus, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, ProductionOrderDetail productionOrderDetail, PurchaseOrderDetail purchaseOrderDetail) {
         super(id, createAt, updateAt);
+        this.plannedEndAt = plannedEndAt;
         this.workOrder = workOrder;
         this.startAt = startAt;
         this.completeAt = completeAt;
+        this.plannedStartAt = plannedStartAt;
+        this.workStatus = workStatus;
         this.dyeStage = dyeStage;
         this.windingStage = windingStage;
         this.packagingStage = packagingStage;
-        this.workStatus = workStatus;
         this.productionOrderDetail = productionOrderDetail;
         this.purchaseOrderDetail = purchaseOrderDetail;
     }
@@ -81,6 +89,30 @@ public class WorkOrderDetail extends BaseEntity{
         this.completeAt = completeAt;
     }
 
+    public LocalDateTime getPlannedStartAt() {
+        return plannedStartAt;
+    }
+
+    public void setPlannedStartAt(LocalDateTime plannedStartAt) {
+        this.plannedStartAt = plannedStartAt;
+    }
+
+    public LocalDateTime getPlannedEndAt() {
+        return plannedEndAt;
+    }
+
+    public void setPlannedEndAt(LocalDateTime plannedEndAt) {
+        this.plannedEndAt = plannedEndAt;
+    }
+
+    public WorkEnum getWorkStatus() {
+        return workStatus;
+    }
+
+    public void setWorkStatus(WorkEnum workStatus) {
+        this.workStatus = workStatus;
+    }
+
     public DyeStage getDyeStage() {
         return dyeStage;
     }
@@ -103,14 +135,6 @@ public class WorkOrderDetail extends BaseEntity{
 
     public void setPackagingStage(PackagingStage packagingStage) {
         this.packagingStage = packagingStage;
-    }
-
-    public WorkEnum getWorkStatus() {
-        return workStatus;
-    }
-
-    public void setWorkStatus(WorkEnum workStatus) {
-        this.workStatus = workStatus;
     }
 
     public ProductionOrderDetail getProductionOrderDetail() {

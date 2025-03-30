@@ -7,15 +7,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class WindingRiskAssessment extends BaseEntity{
-
+public class WindingRiskAssessment extends BaseEntity {
 
     private int falseCone;
 
     private Boolean isLightTrue;
 
     private Boolean isColorAdhesion;
-
 
     @OneToMany(mappedBy = "windingRiskAssessment")
     private List<PhotoStage> photo;
@@ -26,17 +24,17 @@ public class WindingRiskAssessment extends BaseEntity{
     private User createBy;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "winding_stage_id")
-    private WindingStage windingStage;
+    @JoinColumn(name = "winding_batch_id")
+    private WindingBatch windingBatch;
 
-    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, int falseCone, Boolean isLightTrue, Boolean isColorAdhesion, List<PhotoStage> photo, User createBy, WindingStage windingStage) {
+    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, int falseCone, Boolean isLightTrue, Boolean isColorAdhesion, List<PhotoStage> photo, User createBy, WindingBatch windingBatch) {
         super(id, createAt, updateAt);
         this.falseCone = falseCone;
         this.isLightTrue = isLightTrue;
         this.isColorAdhesion = isColorAdhesion;
         this.photo = photo;
         this.createBy = createBy;
-        this.windingStage = windingStage;
+        this.windingBatch = windingBatch;
     }
 
     public WindingRiskAssessment() {
@@ -82,11 +80,11 @@ public class WindingRiskAssessment extends BaseEntity{
         this.createBy = createBy;
     }
 
-    public WindingStage getWindingStage() {
-        return windingStage;
+    public WindingBatch getWindingBatch() {
+        return windingBatch;
     }
 
-    public void setWindingStage(WindingStage windingStage) {
-        this.windingStage = windingStage;
+    public void setWindingBatch(WindingBatch windingBatch) {
+        this.windingBatch = windingBatch;
     }
 }
