@@ -25,6 +25,9 @@ public class WindingStage extends BaseEntity{
     private LocalDateTime receivedConeAt; //Thời gian sợi về
 
     @NotNull
+    private LocalDate plannedStart;
+
+    @NotNull
     private LocalDate deadline;
 
     private LocalDateTime startAt;
@@ -48,11 +51,13 @@ public class WindingStage extends BaseEntity{
     public WindingStage() {
     }
 
-    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches) {
+
+    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.dyeStage = dyeStage;
         this.receivedConeAt = receivedConeAt;
+        this.plannedStart = plannedStart;
         this.deadline = deadline;
         this.startAt = startAt;
         this.completeAt = completeAt;
@@ -60,6 +65,14 @@ public class WindingStage extends BaseEntity{
         this.windingMachine = windingMachine;
         this.packagingStage = packagingStage;
         this.windingbatches = windingbatches;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart
     }
 
     public WorkOrderDetail getWorkOrderDetail() {

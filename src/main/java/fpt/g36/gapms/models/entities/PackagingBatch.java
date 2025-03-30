@@ -14,6 +14,9 @@ import java.util.List;
 public class PackagingBatch extends BaseEntity {
 
     @NotNull
+    private LocalDate plannedStart;
+
+    @NotNull
     private LocalDateTime receivedProductAt;
 
     @NotNull
@@ -58,8 +61,10 @@ public class PackagingBatch extends BaseEntity {
 
     ;
 
-    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments) {
+
+    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments) {
         super(id, createAt, updateAt);
+        this.plannedStart = plannedStart;
         this.receivedProductAt = receivedProductAt;
         this.deadline = deadline;
         this.startAt = startAt;
@@ -72,6 +77,14 @@ public class PackagingBatch extends BaseEntity {
         this.packagingStage = packagingStage;
         this.windingBatch = windingBatch;
         this.packagingRiskAssessments = packagingRiskAssessments;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public LocalDateTime getReceivedProductAt() {
