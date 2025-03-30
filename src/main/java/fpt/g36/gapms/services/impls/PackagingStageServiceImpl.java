@@ -3,6 +3,7 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.PackagingStage;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.entities.WindingStage;
 import fpt.g36.gapms.repositories.PackagingStageRepository;
 import fpt.g36.gapms.repositories.WindingStageRepository;
@@ -24,19 +25,21 @@ public class PackagingStageServiceImpl implements PackagingStageService {
     }
 
     @Override
-    public void changeStatusPackagingStageInProcess(Long psId) {
+    public void changeStatusPackagingStageInProcess(Long psId, User leader) {
         PackagingStage packagingStage = packagingStageRepository.findById(psId).orElseThrow(() -> new RuntimeException("psId not found"));
 
         packagingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
         packagingStage.setTestStatus(TestEnum.TESTING);
+        packagingStage.setLeaderStart(leader);
         packagingStageRepository.save(packagingStage);
     }
 
     @Override
-    public void changeStatusPackagingStageFinish(Long psId, String photo) {
+    public void changeStatusPackagingStageFinish(Long psId, String photo, User leader) {
         PackagingStage packagingStage = packagingStageRepository.findById(psId).orElseThrow(() -> new RuntimeException("psId not found"));
         packagingStage.setWorkStatus(WorkEnum.FINISHED);
         packagingStage.setPackagingPhoto(photo);
+        packagingStage.setLeaderEnd(leader);
         packagingStageRepository.save(packagingStage);
     }
 

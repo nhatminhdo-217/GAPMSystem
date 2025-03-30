@@ -10,13 +10,29 @@ import java.util.List;
 @Entity
 public class DyeRiskAssessment extends BaseEntity{
 
+      // độ ẩm
       private Boolean isHumidity;
 
+      //màu đúng
       private Boolean isColorTrue;
 
+      // ánh sáng
       private Boolean isLightTrue;
 
-      private Boolean isColorAdhesion;
+
+      // loang màu
+      private Boolean isColorFading;
+
+      // bám thuốc
+      private Boolean isMedication;
+
+      // két thuốc
+      private Boolean isMedicineSafe;
+
+      //bẩn vệ sinh công nghiệp
+      private Boolean isIndustrialCleaningStains;
+
+      private Boolean isPass;
 
       @ManyToOne(fetch = FetchType.LAZY, optional = false)
       @JoinColumn(name = "dye_stage_id")
@@ -25,18 +41,22 @@ public class DyeRiskAssessment extends BaseEntity{
       @OneToMany(mappedBy = "dyeRiskAssessment")
       private List<PhotoStage> photo;
 
-      @NotNull
+
       @ManyToOne(fetch = FetchType.LAZY, optional = false)
-      @JoinColumn(name = "create_by", nullable = false)
+      @JoinColumn(name = "create_by")
       private User createBy;
 
 
-      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorAdhesion, DyeStage dyeStage, List<PhotoStage> photo, User createBy) {
+      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeStage dyeStage, List<PhotoStage> photo, User createBy) {
             super(id, createAt, updateAt);
             this.isHumidity = isHumidity;
             this.isColorTrue = isColorTrue;
             this.isLightTrue = isLightTrue;
-            this.isColorAdhesion = isColorAdhesion;
+            this.isColorFading = isColorFading;
+            this.isMedication = isMedication;
+            this.isMedicineSafe = isMedicineSafe;
+            this.isIndustrialCleaningStains = isIndustrialCleaningStains;
+            this.isPass = isPass;
             this.dyeStage = dyeStage;
             this.photo = photo;
             this.createBy = createBy;
@@ -70,13 +90,6 @@ public class DyeRiskAssessment extends BaseEntity{
             isLightTrue = lightTrue;
       }
 
-      public Boolean getColorAdhesion() {
-            return isColorAdhesion;
-      }
-
-      public void setColorAdhesion(Boolean colorAdhesion) {
-            isColorAdhesion = colorAdhesion;
-      }
 
       public DyeStage getDyeStage() {
             return dyeStage;
@@ -100,5 +113,45 @@ public class DyeRiskAssessment extends BaseEntity{
 
       public void setCreateBy(User createBy) {
             this.createBy = createBy;
+      }
+
+      public Boolean getColorFading() {
+            return isColorFading;
+      }
+
+      public void setColorFading(Boolean colorFading) {
+            isColorFading = colorFading;
+      }
+
+      public Boolean getMedication() {
+            return isMedication;
+      }
+
+      public void setMedication(Boolean medication) {
+            isMedication = medication;
+      }
+
+      public Boolean getMedicineSafe() {
+            return isMedicineSafe;
+      }
+
+      public void setMedicineSafe(Boolean medicineSafe) {
+            isMedicineSafe = medicineSafe;
+      }
+
+      public Boolean getIndustrialCleaningStains() {
+            return isIndustrialCleaningStains;
+      }
+
+      public void setIndustrialCleaningStains(Boolean industrialCleaningStains) {
+            isIndustrialCleaningStains = industrialCleaningStains;
+      }
+
+      public Boolean getPass() {
+            return isPass;
+      }
+
+      public void setPass(Boolean pass) {
+            isPass = pass;
       }
 }

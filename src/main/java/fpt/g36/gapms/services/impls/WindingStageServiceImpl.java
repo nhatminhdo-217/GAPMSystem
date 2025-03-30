@@ -3,6 +3,7 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.DyeStage;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.entities.WindingStage;
 import fpt.g36.gapms.repositories.WindingStageRepository;
 import fpt.g36.gapms.services.WindingStageService;
@@ -23,19 +24,21 @@ public class WindingStageServiceImpl implements WindingStageService {
     }
 
     @Override
-    public void changeStatusWindingStageInProcess(Long wdId) {
+    public void changeStatusWindingStageInProcess(Long wdId, User leader) {
         WindingStage windingStage = windingStageRepository.findById(wdId).orElseThrow(() -> new RuntimeException("wdId not found"));
 
         windingStage.setWorkStatus(WorkEnum.IN_PROGRESS);
         windingStage.setTestStatus(TestEnum.TESTING);
+        windingStage.setLeaderStart(leader);
         windingStageRepository.save(windingStage);
     }
 
     @Override
-    public void changeStatusWindingStageFinish(Long wdId, String photo) {
+    public void changeStatusWindingStageFinish(Long wdId, String photo, User leader) {
         WindingStage windingStage = windingStageRepository.findById(wdId).orElseThrow(() -> new RuntimeException("wdId not found"));
         windingStage.setWorkStatus(WorkEnum.FINISHED);
         windingStage.setWindingPhoto(photo);
+        windingStage.setLeaderEnd(leader);
         windingStageRepository.save(windingStage);
     }
 

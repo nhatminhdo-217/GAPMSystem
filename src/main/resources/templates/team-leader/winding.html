@@ -478,11 +478,11 @@
             <div class="popup-content">
                 <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ws.id} + '\')'">×</span>
                 <h3>Cập nhật trạng thái</h3>
-                <form th:action="@{/work-order/team-leader-winding/change/finish/{id}(id=${ws.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ws.id}">
+                <form th:action="@{/work-order/team-leader/winding/change/finish/{id}(id=${ws.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ws.id}">
                     <div class="form-group">
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
-                            <a th:href="@{/work-order/team-leader-winding/change/in-process/{id}(id=${ws.id})}"
+                            <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${ws.id})}"
                                th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.workOrderDetail.dyeStage.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
