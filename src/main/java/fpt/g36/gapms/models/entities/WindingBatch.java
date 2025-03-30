@@ -57,6 +57,7 @@ public class WindingBatch extends BaseEntity {
 
     public WindingBatch() {};
 
+
     public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;

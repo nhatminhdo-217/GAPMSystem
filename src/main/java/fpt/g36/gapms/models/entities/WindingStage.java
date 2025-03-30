@@ -51,6 +51,7 @@ public class WindingStage extends BaseEntity{
     public WindingStage() {
     }
 
+
     public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
@@ -71,7 +72,7 @@ public class WindingStage extends BaseEntity{
     }
 
     public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart;
+        this.plannedStart = plannedStart
     }
 
     public WorkOrderDetail getWorkOrderDetail() {

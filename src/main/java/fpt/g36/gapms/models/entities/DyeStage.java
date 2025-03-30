@@ -65,6 +65,7 @@ public class DyeStage extends BaseEntity {
     public DyeStage() {
     }
 
+
     public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;

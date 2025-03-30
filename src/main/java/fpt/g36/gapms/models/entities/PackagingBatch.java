@@ -61,6 +61,7 @@ public class PackagingBatch extends BaseEntity {
 
     ;
 
+
     public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;

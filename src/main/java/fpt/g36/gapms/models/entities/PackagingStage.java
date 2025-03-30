@@ -43,6 +43,7 @@ public class PackagingStage extends BaseEntity {
     public PackagingStage() {
     }
 
+
     public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
