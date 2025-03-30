@@ -41,6 +41,9 @@ public class DyeStage extends BaseEntity {
     @NotNull
     private LocalDate deadline;
 
+    @NotNull
+    private LocalDate plannedStart;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -62,7 +65,7 @@ public class DyeStage extends BaseEntity {
     public DyeStage() {
     }
 
-    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches) {
+    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.liters_min = liters_min;
@@ -71,12 +74,21 @@ public class DyeStage extends BaseEntity {
         this.cone_batch_weight = cone_batch_weight;
         this.cone_quantity = cone_quantity;
         this.deadline = deadline;
+        this.plannedStart = plannedStart;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
         this.windingStage = windingStage;
         this.dyeMachine = dyeMachine;
         this.dyebatches = dyebatches;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public BigDecimal getCone_batch_weight() {

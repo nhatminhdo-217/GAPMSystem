@@ -26,6 +26,9 @@ public class PackagingStage extends BaseEntity {
     @NotNull
     private LocalDate deadline;
 
+    @NotNull
+    private LocalDate plannedStart;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -40,16 +43,25 @@ public class PackagingStage extends BaseEntity {
     public PackagingStage() {
     }
 
-    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches) {
+    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.windingStage = windingStage;
         this.receivedProductAt = receivedProductAt;
         this.deadline = deadline;
+        this.plannedStart = plannedStart;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
         this.packagingBatches = packagingBatches;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {

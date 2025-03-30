@@ -28,6 +28,9 @@ public class DyeBatch extends BaseEntity {
     @NotNull
     private LocalDate deadline;
 
+    @NotNull
+    private LocalDate plannedStart;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -65,12 +68,13 @@ public class DyeBatch extends BaseEntity {
 
     ;
 
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments) {
         super(id, createAt, updateAt);
         this.liters_min = liters_min;
         this.liters = liters;
         this.cone_batch_weight = cone_batch_weight;
         this.deadline = deadline;
+        this.plannedStart = plannedStart;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
@@ -81,6 +85,14 @@ public class DyeBatch extends BaseEntity {
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public WindingBatch getWindingBatch() {
