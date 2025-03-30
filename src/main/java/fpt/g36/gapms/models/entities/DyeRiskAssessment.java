@@ -34,12 +34,12 @@ public class DyeRiskAssessment extends BaseEntity{
 
       private Boolean isPass;
 
-      @ManyToOne(fetch = FetchType.LAZY, optional = false)
-      @JoinColumn(name = "dye_stage_id")
-      private DyeStage dyeStage;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "dye_batch_id")
+    private DyeBatch dyeBatch;
 
-      @OneToMany(mappedBy = "dyeRiskAssessment")
-      private List<PhotoStage> photo;
+    @OneToMany(mappedBy = "dyeRiskAssessment")
+    private List<PhotoStage> photo;
 
 
       @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -47,7 +47,7 @@ public class DyeRiskAssessment extends BaseEntity{
       private User createBy;
 
 
-      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeStage dyeStage, List<PhotoStage> photo, User createBy) {
+      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeStage dyeStage, List<PhotoStage> photo, User createBy, DyeBatch dyeBatch) {
             super(id, createAt, updateAt);
             this.isHumidity = isHumidity;
             this.isColorTrue = isColorTrue;
@@ -57,12 +57,12 @@ public class DyeRiskAssessment extends BaseEntity{
             this.isMedicineSafe = isMedicineSafe;
             this.isIndustrialCleaningStains = isIndustrialCleaningStains;
             this.isPass = isPass;
-            this.dyeStage = dyeStage;
+            this.dyeBatch = dyeBatch;
             this.photo = photo;
             this.createBy = createBy;
       }
 
-      public DyeRiskAssessment(){
+    public DyeRiskAssessment() {
 
       }
 
@@ -91,25 +91,25 @@ public class DyeRiskAssessment extends BaseEntity{
       }
 
 
-      public DyeStage getDyeStage() {
-            return dyeStage;
-      }
+    public DyeBatch getDyeBatch() {
+        return dyeBatch;
+    }
 
-      public void setDyeStage(DyeStage dyeStage) {
-            this.dyeStage = dyeStage;
-      }
+    public void setDyeBatch(DyeBatch dyeBatch) {
+        this.dyeBatch = dyeBatch;
+    }
 
-      public List<PhotoStage> getPhoto() {
-            return photo;
-      }
+    public List<PhotoStage> getPhoto() {
+        return photo;
+    }
 
-      public void setPhoto(List<PhotoStage> photo) {
-            this.photo = photo;
-      }
+    public void setPhoto(List<PhotoStage> photo) {
+        this.photo = photo;
+    }
 
-      public User getCreateBy() {
-            return createBy;
-      }
+    public User getCreateBy() {
+        return createBy;
+    }
 
       public void setCreateBy(User createBy) {
             this.createBy = createBy;

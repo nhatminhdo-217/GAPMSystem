@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class PackagingRiskAssessment extends BaseEntity{
+public class PackagingRiskAssessment extends BaseEntity {
 
     private Boolean label;
 
@@ -17,8 +17,8 @@ public class PackagingRiskAssessment extends BaseEntity{
     private Boolean isPackaged;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "packaging_stage_id")
-    private PackagingStage packagingStage;
+    @JoinColumn(name = "packaging_batch_id")
+    private PackagingBatch packagingBatch;
 
     @OneToMany(mappedBy = "packagingRiskAssessment")
     private List<PhotoStage> photo;
@@ -28,17 +28,19 @@ public class PackagingRiskAssessment extends BaseEntity{
     @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
 
-    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean label, Boolean nylon, Boolean isPackaged, PackagingStage packagingStage, List<PhotoStage> photo, User createBy) {
+    public PackagingRiskAssessment() {
+    }
+
+    ;
+
+    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean label, Boolean nylon, Boolean isPackaged, PackagingBatch packagingBatch, List<PhotoStage> photo, User createBy) {
         super(id, createAt, updateAt);
         this.label = label;
         this.nylon = nylon;
         this.isPackaged = isPackaged;
-        this.packagingStage = packagingStage;
+        this.packagingBatch = packagingBatch;
         this.photo = photo;
         this.createBy = createBy;
-    }
-
-    public PackagingRiskAssessment() {
     }
 
     public Boolean getLabel() {
@@ -65,12 +67,12 @@ public class PackagingRiskAssessment extends BaseEntity{
         isPackaged = packaged;
     }
 
-    public PackagingStage getPackagingStage() {
-        return packagingStage;
+    public PackagingBatch getPackagingBatch() {
+        return packagingBatch;
     }
 
-    public void setPackagingStage(PackagingStage packagingStage) {
-        this.packagingStage = packagingStage;
+    public void setPackagingBatch(PackagingBatch packagingBatch) {
+        this.packagingBatch = packagingBatch;
     }
 
     public List<PhotoStage> getPhoto() {
