@@ -8,12 +8,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
-    @Query("select wo from WorkOrder wo order by wo.createAt desc")
-    Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable);
+    @Query("SELECT wo FROM WorkOrder wo " +
+            "WHERE (:workOrderId IS NULL OR wo.id = :workOrderId) " +
+            "ORDER BY wo.createAt DESC")
+    Page<WorkOrder> getAllWorkOrderTeamLeader(@Param("workOrderId") Long workOrderId, Pageable pageable);
+
 
     WorkOrder findByProductionOrder(ProductionOrder productionOrder);
 

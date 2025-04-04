@@ -56,13 +56,14 @@ public class PackagingBatch extends BaseEntity {
     @OneToMany(mappedBy = "packagingBatch", fetch = FetchType.LAZY)
     private List<PackagingRiskAssessment> packagingRiskAssessments;
 
+    private Boolean isPass;
+
     public PackagingBatch() {
     }
 
     ;
 
-
-    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments) {
+    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime receivedProductAt, LocalDate deadline,LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, Boolean isPass) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;
         this.receivedProductAt = receivedProductAt;
@@ -77,6 +78,7 @@ public class PackagingBatch extends BaseEntity {
         this.packagingStage = packagingStage;
         this.windingBatch = windingBatch;
         this.packagingRiskAssessments = packagingRiskAssessments;
+        this.isPass = isPass;
     }
 
     public LocalDate getPlannedStart() {
@@ -181,5 +183,13 @@ public class PackagingBatch extends BaseEntity {
 
     public void setPackagingRiskAssessments(List<PackagingRiskAssessment> packagingRiskAssessments) {
         this.packagingRiskAssessments = packagingRiskAssessments;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

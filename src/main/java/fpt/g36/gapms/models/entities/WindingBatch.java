@@ -48,6 +48,8 @@ public class WindingBatch extends BaseEntity {
     @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 
+    private Boolean isPass;
+
     @OneToOne
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
@@ -58,7 +60,7 @@ public class WindingBatch extends BaseEntity {
     public WindingBatch() {};
 
 
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage,Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;
         this.deadline = deadline;
@@ -71,6 +73,7 @@ public class WindingBatch extends BaseEntity {
         this.leaderEnd = leaderEnd;
         this.windingPhoto = windingPhoto;
         this.windingStage = windingStage;
+        this.isPass = isPass;
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
     }
@@ -177,5 +180,13 @@ public class WindingBatch extends BaseEntity {
 
     public void setWindingRiskAssessmentList(List<WindingRiskAssessment> windingRiskAssessmentList) {
         this.windingRiskAssessmentList = windingRiskAssessmentList;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

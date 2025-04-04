@@ -10,11 +10,19 @@ import java.util.List;
 @Entity
 public class PackagingRiskAssessment extends BaseEntity {
 
-    private Boolean label;
+    // tem đầu
+    private Boolean firstStamp;
 
-    private Boolean nylon;
+    //tem lõi
+    private Boolean coreStamp;
 
-    private Boolean isPackaged;
+    // tem chuc
+    private Boolean dozenStamp;
+
+    // đóng dấu KCS
+    private Boolean kcsStamp;
+
+    private Boolean isPass;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "packaging_batch_id")
@@ -23,7 +31,7 @@ public class PackagingRiskAssessment extends BaseEntity {
     @OneToMany(mappedBy = "packagingRiskAssessment")
     private List<PhotoStage> photo;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
@@ -31,40 +39,57 @@ public class PackagingRiskAssessment extends BaseEntity {
     public PackagingRiskAssessment() {
     }
 
-    ;
 
-    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean label, Boolean nylon, Boolean isPackaged, PackagingBatch packagingBatch, List<PhotoStage> photo, User createBy) {
+    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean firstStamp, Boolean coreStamp, Boolean dozenStamp, Boolean kcsStamp, Boolean isPass, PackagingBatch packagingBatch, List<PhotoStage> photo, User createBy) {
         super(id, createAt, updateAt);
-        this.label = label;
-        this.nylon = nylon;
-        this.isPackaged = isPackaged;
+        this.firstStamp = firstStamp;
+        this.coreStamp = coreStamp;
+        this.dozenStamp = dozenStamp;
+        this.kcsStamp = kcsStamp;
+        this.isPass = isPass;
         this.packagingBatch = packagingBatch;
         this.photo = photo;
         this.createBy = createBy;
     }
 
-    public Boolean getLabel() {
-        return label;
+    public Boolean getFirstStamp() {
+        return firstStamp;
     }
 
-    public void setLabel(Boolean label) {
-        this.label = label;
+    public void setFirstStamp(Boolean firstStamp) {
+        this.firstStamp = firstStamp;
     }
 
-    public Boolean getNylon() {
-        return nylon;
+    public Boolean getCoreStamp() {
+        return coreStamp;
     }
 
-    public void setNylon(Boolean nylon) {
-        this.nylon = nylon;
+    public void setCoreStamp(Boolean coreStamp) {
+        this.coreStamp = coreStamp;
     }
 
-    public Boolean getPackaged() {
-        return isPackaged;
+    public Boolean getDozenStamp() {
+        return dozenStamp;
     }
 
-    public void setPackaged(Boolean packaged) {
-        isPackaged = packaged;
+    public void setDozenStamp(Boolean dozenStamp) {
+        this.dozenStamp = dozenStamp;
+    }
+
+    public Boolean getKcsStamp() {
+        return kcsStamp;
+    }
+
+    public void setKcsStamp(Boolean kcsStamp) {
+        this.kcsStamp = kcsStamp;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 
     public PackagingBatch getPackagingBatch() {

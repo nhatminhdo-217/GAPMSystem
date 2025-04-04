@@ -63,13 +63,14 @@ public class DyeBatch extends BaseEntity {
     @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY)
     private List<DyeRiskAssessment> dyeRiskAssessments;
 
+    private Boolean isPass;
+
     public DyeBatch() {
     }
 
     ;
 
-
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, Boolean isPass) {
         super(id, createAt, updateAt);
         this.liters_min = liters_min;
         this.liters = liters;
@@ -86,6 +87,7 @@ public class DyeBatch extends BaseEntity {
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
+        this.isPass = isPass;
     }
 
     public LocalDate getPlannedStart() {
@@ -206,5 +208,13 @@ public class DyeBatch extends BaseEntity {
 
     public void setDyeRiskAssessments(List<DyeRiskAssessment> dyeRiskAssessments) {
         this.dyeRiskAssessments = dyeRiskAssessments;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

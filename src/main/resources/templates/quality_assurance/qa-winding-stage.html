@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Work Order Con (Leader Nhuộm)</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- Inline CSS -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            color: #333;
+        }
+        .container-fluid { padding: 0; }
+        .main-content { padding: 30px; }
+
+        /* Card Styles */
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .card-header .btn-light {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        .card-header .btn-light:hover { background: rgba(255, 255, 255, 0.4); }
+
+        /* Table Styles */
+        .table-responsive { overflow-x: auto; }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-bottom: 0;
+        }
+        .table th {
+            background: #eef2f7;
+            color: #1f2a44;
+            font-weight: 600;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border-bottom: none;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .table td {
+            padding: 15px;
+            vertical-align: middle;
+            background: #fff;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+        }
+        .table tbody tr {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .update-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .capture-btn, .submit-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .capture-btn {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745, #34d058);
+            color: white;
+        }
+        .capture-btn:hover, .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Status Styles */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f3f5;
+        }
+        .status i { margin-right: 8px; font-size: 16px; }
+        .status-not-started { background: #ffe5e5; color: #dc3545; }
+        .status-not-started i { color: #dc3545; }
+        .status-in-progress { background: #fff3e0; color: #856404; }
+        .status-in-progress i { color: #ffc107; }
+        .status-completed { background: #e6ffe6; color: #155724; }
+        .status-completed i { color: #28a745; }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .popup-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover { color: #333; }
+        .popup-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+            text-align: center;
+        }
+        .status-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .status-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 48%;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-btn.in-progress { background: #ffc107; color: #333; }
+        .status-btn.completed { background: #28a745; color: white; }
+        .status-btn:hover { transform: scale(1.02); }
+        .captured-image {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .disabled-link {
+            background: #d3d3d3;
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+            color: #666;
+        }
+        /*.video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }*/
+
+        /* Container bao quanh video và các nút bên trong */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* Video preview */
+        .video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Nút "Đổi camera" và "Chụp ảnh" bên trong khung video */
+        .camera-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .camera-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Nút "Đổi camera" - ở góc trên bên phải */
+        .camera-switch-btn {
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Nút "Chụp ảnh" - ở giữa dưới cùng */
+        .camera-capture-btn {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%); /* Chỉ dùng để căn giữa, không có hiệu ứng transform khi hover */
+        }
+
+        /* Icon trong nút */
+        .camera-btn i {
+            font-size: 18px;
+        }
+
+        /* Nút "Bật camera" bên dưới */
+        .capture-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-to-top:hover { transform: scale(1.1); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content { padding: 20px; }
+            .card-header { padding: 15px; }
+            .card-header h2 { font-size: 1.4rem; }
+            .table th, .table td { padding: 10px; font-size: 12px; }
+            .update-btn, .capture-btn, .submit-btn {
+                padding: 8px 12px;
+                min-width: 100px;
+                font-size: 12px;
+            }
+            .status { padding: 6px 10px; font-size: 12px; }
+            .status i { font-size: 14px; }
+            .popup-content { padding: 20px; max-width: 350px; }
+            .captured-image, .video-preview { max-width: 100%; }
+            .status-btn { font-size: 12px; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main Content Start -->
+        <div class="main-content" id="mainContent">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WO-<span th:text="${windingStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Mã Sản Phẩm Côn</th>
+                                <th>Thời Gian Bắt Đầu</th>
+                                <th>Tên màu</th>
+                                <th>Số lượng</th>
+                                <th>LOẠI HÀNG</th>
+                                <th>Hành Động</th>
+                            </tr>
+                            </thead>
+                            <tbody id="workOrderChildTableBody">
+                            <!-- Work Order Con 1 -->
+                            <tr data-id="WOC-001-1" th:each="ws : ${windingStages}">
+                                <td>
+                                    <span th:switch="${ws.workStatus}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đang Côn
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã Côn
+                                        </span>
+                                        <span th:case="*" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chưa Côn
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>WD-<span th:text="${ws.workOrderDetail.id}"></span></td>
+                                <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
+                                <td th:text="${ws.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
+                                <td>
+                                    <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${ws.id})}"
+                                       class="btn btn-primary btn-action">
+                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+<div th:if="${in_process_winding} or ${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Hiển thị thông báo thành công (in_process_winding)
+            const inProcessMessage = /*[[${in_process_winding}]]*/ null;
+            if (inProcessMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: inProcessMessage,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+
+            // Hiển thị thông báo lỗi (error)
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Lỗi",
+                    text: errorMessage,
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        });
+    </script>
+</div>
+
+<div th:if="${complete_winding}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${complete_winding}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<!-- Script cho các chức năng -->
+
+</body>
+</html>

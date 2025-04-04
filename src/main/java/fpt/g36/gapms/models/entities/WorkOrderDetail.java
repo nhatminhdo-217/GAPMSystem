@@ -19,10 +19,10 @@ public class WorkOrderDetail extends BaseEntity {
 
     private LocalDateTime completeAt;
 
-    @NotNull
+    /*@NotNull*/
     private LocalDateTime plannedStartAt;
 
-    @NotNull
+    /*@NotNull*/
     private LocalDateTime plannedEndAt;
 
     @NotNull
