@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Work Order</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .stage-table {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stage-table .table {
+            margin-bottom: 0;
+            border-collapse: collapse;
+        }
+
+        .stage-table th, .stage-table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #e9ecef;
+        }
+
+        .stage-table thead th {
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        /* Màu sắc và kiểu dáng cho từng stage */
+        .general-table thead th {
+            background-color: #f1f3f5;
+        }
+
+        .detail-table thead th {
+            background-color: #e9ecef;
+        }
+
+        .dye-stage-table thead th {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .winding-stage-table thead th {
+            background-color: #e0f7fa;
+            color: #00796b;
+        }
+
+        .packaging-stage-table thead th {
+            background-color: #f1f8e9;
+            color: #388e3c;
+        }
+
+        .stage-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .work-order-info, .detail-table {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: default;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+
+        .work-order-info .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .work-order-info .col-md-4 {
+            flex: 1 1 300px;
+            padding: 10px;
+            cursor: default;
+        }
+
+        .work-order-info strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .work-order-info span {
+            font-size: 15px;
+            color: #212529;
+        }
+
+        .success-message {
+            color: #388e3c;
+            background-color: #f1f8e9;
+            border: 1px solid #c8e6c9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .toast {
+            opacity: 0.9;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastError {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .work-order-info .col-md-4 {
+                flex: 1 1 100%;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+
+            .stage-table {
+                overflow-x: auto;
+            }
+
+            .stage-table th, .stage-table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Hidden data -->
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-workorder-id="${workOrder?.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Chi tiết Work Order</h2>
+
+                            <!-- Hiển thị thông báo thành công -->
+                            <div th:if="${success}" class="success-message" th:text="${success}"></div>
+
+                            <!-- Work Order Info -->
+                            <div class="work-order-info">
+                                <h3 class="section-title">Thông tin Work Order</h3>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Mã Work Order:</strong> <span
+                                            th:text="${workOrder?.id ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Mã Production Order:</strong> <span
+                                            th:text="${workOrder?.productionOrder?.id ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày tạo:</strong> <span
+                                            th:text="${workOrder?.createAt != null ? #temporals.format(workOrder.createAt, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Người tạo:</strong> <span
+                                            th:text="${workOrder?.createdBy?.username ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Người phê duyệt:</strong> <span
+                                            th:text="${workOrder?.approvedBy?.username ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Ngày cập nhật:</strong> <span
+                                            th:text="${workOrder?.updateAt != null ? #temporals.format(workOrder.updateAt, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Hạn chót:</strong> <span
+                                            th:text="${workOrder?.deadline != null ? #temporals.format(workOrder.deadline, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái:</strong> <span
+                                            th:text="${workOrder?.status ?: 'N/A'}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Trạng thái gửi:</strong> <span
+                                            th:text="${workOrder?.sendStatus ?: 'N/A'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product and Stages Tables -->
+                            <div class="detail-table">
+                                <h3 class="section-title">Danh sách sản phẩm và giai đoạn</h3>
+
+                                <!-- General Info Table -->
+                                <div class="stage-table detail-table">
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="text-dark">
+                                            <th>Số thứ tự</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Loại chỉ</th>
+                                            <th>Brand + Category</th>
+                                            <th>Số lượng</th>
+                                            <th>Tên màu</th>
+                                            <th>Khối lượng sợi</th>
+                                            <th>Khối lượng sợi thực tế</th>
+                                            <th>Tổng khối lượng</th>
+                                            <th>Môi trường ánh sáng</th>
+                                            <th>Work Order Detail ID</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td th:text="${detail?.purchaseOrderDetail?.product?.name ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.name ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.purchaseOrderDetail?.brand?.name != null and detail?.purchaseOrderDetail?.category?.name != null ? detail.purchaseOrderDetail.brand.name + ' - ' + detail.purchaseOrderDetail.category.name : 'N/A'}"></td>
+                                            <td th:text="${detail?.purchaseOrderDetail?.quantity ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.purchaseOrderDetail?.note_color ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.thread_mass != null ? detail.thread_mass + ' kg' : 'N/A'}"></td>
+                                            <td th:text="${detail?.thread_mass != null ? (detail.thread_mass + 0.4) + ' kg' : 'N/A'}"></td>
+                                            <td th:text="${detail?.totalWeight != null ? detail.totalWeight + ' kg' : 'N/A'}"></td>
+                                            <td th:text="${detail?.productionOrderDetail?.light_env != null ? (detail.productionOrderDetail.light_env ? 'Ánh sáng tự nhiên (TN)' : 'Ánh đèn (AD)') : 'N/A'}"></td>
+                                            <td th:text="${detail?.id ?: 'N/A'}"></td>
+                                        </tr>
+                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td colspan="11">Không có sản phẩm nào.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Dye Stage Table -->
+                                <div class="stage-table dye-stage-table">
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="text-dark">
+                                            <th>Dye Stage ID</th>
+                                            <th>Lít tối thiểu</th>
+                                            <th>Lít</th>
+                                            <th>Khối lượng côn</th>
+                                            <th>Số lượng côn</th>
+                                            <th>Hạn chót</th>
+                                            <th>Người phụ trách</th>
+                                            <th>Máy Nhuộm ID</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
+                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.liters_min != null ? detail.dyeStage.liters_min + ' lít' : 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.liters != null ? detail.dyeStage.liters + ' lít' : 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.cone_weight != null ? detail.dyeStage.cone_weight + ' kg' : 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.cone_quantity ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.deadline != null ? #temporals.format(detail.dyeStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.leader?.username ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.dyeStage?.dyeMachine?.id ?: 'N/A'}"></td>
+                                        </tr>
+                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td colspan="8">Không có giai đoạn nhuộm nào.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Winding Stage Table -->
+                                <div class="stage-table winding-stage-table">
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="text-dark">
+                                            <th>Winding Stage ID</th>
+                                            <th>Thời gian nhận côn</th>
+                                            <th>Hạn chót</th>
+                                            <th>Người phụ trách</th>
+                                            <th>Máy Cuốn ID</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
+                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.windingStage?.receivedConeAt != null ? #temporals.format(detail.windingStage.receivedConeAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                            <td th:text="${detail?.windingStage?.deadline != null ? #temporals.format(detail.windingStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
+                                            <td th:text="${detail?.windingStage?.leader?.username ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
+                                        </tr>
+                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td colspan="5">Không có giai đoạn cuốn nào.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Packaging Stage Table -->
+                                <div class="stage-table packaging-stage-table">
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="text-dark">
+                                            <th>Packaging Stage ID</th>
+                                            <th>Hạn chót</th>
+                                            <th>Người phụ trách</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
+                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
+                                            <td th:text="${detail?.packagingStage?.deadline != null ? #temporals.format(detail.packagingStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
+                                            <td th:text="${detail?.packagingStage?.leader?.username ?: 'N/A'}"></td>
+                                        </tr>
+                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <td colspan="3">Không có giai đoạn đóng gói nào.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="btn-container">
+                                <a href="/technical/view-all-work-order" class="btn btn-secondary">Quay lại danh
+                                    sách</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Toast Error -->
+    <div id="toastError" class="toast error-toast">
+        <div class="toast-header">
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <!-- Toast Success -->
+    <div id="toastSuccess" class="toast"
+         style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px; background-color: #f1f8e9; border-color: #c8e6c9;">
+        <div class="toast-header" style="background-color: #c8e6c9; color: #388e3c;">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" style="color: #388e3c;">
+            <p id="successMessage"></p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hide spinner
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+
+        // Back to top
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
+
+        // Toast error
+        const hiddenError = document.getElementById('hiddenError');
+        if (hiddenError && hiddenError.textContent.trim()) {
+            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
+            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
+            errorToast.show();
+            setTimeout(() => errorToast.hide(), 3000);
+        }
+
+        // Toast success
+        const hiddenSuccess = document.getElementById('hiddenSuccess');
+        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
+            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
+            successToast.show();
+            setTimeout(() => successToast.hide(), 3000);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,16 +1,16 @@
 package fpt.g36.gapms.models.entities;
 
-import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "packaging_stage")
-public class PackagingStage extends BaseEntity{
+public class PackagingStage extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "work_order_detail_id", nullable = false)
@@ -18,13 +18,16 @@ public class PackagingStage extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "winding_stage_id", nullable = false)
-    private WindingStage windingStage; //Lấy ngày kết thúc đánh côn và khối lượng côn
+    private WindingStage windingStage;
 
     @NotNull
     private LocalDateTime receivedProductAt;
 
     @NotNull
     private LocalDate deadline;
+
+    @NotNull
+    private LocalDate plannedStart;
 
     private LocalDateTime startAt;
 
@@ -34,39 +37,32 @@ public class PackagingStage extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private TestEnum testStatus;
-
-    private Integer actualOutput;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", nullable = false)
-    private User leader;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checked_by")
-    private User checkedBy;
-
-    private String PackagingPhoto;
+    @OneToMany(mappedBy = "packagingStage", fetch = FetchType.LAZY)
+    private List<PackagingBatch> packagingBatches;
 
     public PackagingStage() {
     }
 
-    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, Integer actualOutput, User leader, User checkedBy) {
+
+    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.windingStage = windingStage;
         this.receivedProductAt = receivedProductAt;
         this.deadline = deadline;
+        this.plannedStart = plannedStart;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.workStatus = workStatus;
-        this.testStatus = testStatus;
-        this.actualOutput = actualOutput;
-        this.leader = leader;
-        this.checkedBy = checkedBy;
+        this.packagingBatches = packagingBatches;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
@@ -125,43 +121,11 @@ public class PackagingStage extends BaseEntity{
         this.workStatus = workStatus;
     }
 
-    public TestEnum getTestStatus() {
-        return testStatus;
+    public List<PackagingBatch> getPackagingBatches() {
+        return packagingBatches;
     }
 
-    public void setTestStatus(TestEnum testStatus) {
-        this.testStatus = testStatus;
-    }
-
-    public Integer getActualOutput() {
-        return actualOutput;
-    }
-
-    public void setActualOutput(Integer actualOutput) {
-        this.actualOutput = actualOutput;
-    }
-
-    public User getLeader() {
-        return leader;
-    }
-
-    public void setLeader(User leader) {
-        this.leader = leader;
-    }
-
-    public User getCheckedBy() {
-        return checkedBy;
-    }
-
-    public void setCheckedBy(User checkedBy) {
-        this.checkedBy = checkedBy;
-    }
-
-    public String getPackagingPhoto() {
-        return PackagingPhoto;
-    }
-
-    public void setPackagingPhoto(String packagingPhoto) {
-        PackagingPhoto = packagingPhoto;
+    public void setPackagingBatches(List<PackagingBatch> packagingBatches) {
+        this.packagingBatches = packagingBatches;
     }
 }

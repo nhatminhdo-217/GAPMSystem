@@ -4,6 +4,7 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
 import fpt.g36.gapms.models.entities.ProductionOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.utils.UserUtils;

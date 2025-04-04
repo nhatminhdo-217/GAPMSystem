@@ -47,6 +47,7 @@ public class QuotationServiceImpl implements QuotationService {
         this.rfqDetailService = rfqDetailService;
         this.purchaseOrderDetailRepository  = purchaseOrderDetailRepository;
     }
+
     @Override
     public QuotationInfoDTO getQuotationInfo(long id) {
         List<QuotationInfoProjection> quotationDetail = quotationRepository.findQuotationDetail(id);

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Work Order Con (Leader Nhuộm)</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Inline CSS -->
+    <style>
+        /* General Styles */
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            color: #333;
+        }
+        .container-fluid { padding: 0; }
+        .main-content { padding: 30px; }
+
+        /* Card Styles */
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .card-header .btn-light {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        .card-header .btn-light:hover { background: rgba(255, 255, 255, 0.4); }
+
+        /* Table Styles */
+        .table-responsive { overflow-x: auto; }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-bottom: 0;
+        }
+        .table th {
+            background: #eef2f7;
+            color: #1f2a44;
+            font-weight: 600;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border-bottom: none;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .table td {
+            padding: 15px;
+            vertical-align: middle;
+            background: #fff;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+        }
+        .table tbody tr {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .update-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .capture-btn, .submit-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .capture-btn {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745, #34d058);
+            color: white;
+        }
+        .capture-btn:hover, .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Status Styles */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f3f5;
+        }
+        .status i { margin-right: 8px; font-size: 16px; }
+        .status-not-started { background: #ffe5e5; color: #dc3545; }
+        .status-not-started i { color: #dc3545; }
+        .status-in-progress { background: #fff3e0; color: #856404; }
+        .status-in-progress i { color: #ffc107; }
+        .status-completed { background: #e6ffe6; color: #155724; }
+        .status-completed i { color: #28a745; }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover { color: #333; }
+        .popup-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+            text-align: center;
+        }
+
+        /* QC Info */
+        .qc-info {
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .qc-info p {
+            font-size: 14px;
+            color: #444;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .qc-info p strong {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Checklist */
+        .qc-checklist, .qc-photos, .qc-result, .qc-report {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .qc-checklist h4, .qc-photos h4, .qc-result h4, .qc-report h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .qc-checklist h4::after, .qc-photos h4::after, .qc-result h4::after, .qc-report h4::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #28a745, #34d058);
+            border-radius: 3px;
+        }
+        .checklist-item {
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+        .checklist-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .checklist-item label {
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+            flex: 1;
+        }
+        .checklist-item select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 120px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+        .checklist-item select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Camera */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .camera-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .camera-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .camera-switch-btn {
+            top: 10px;
+            right: 10px;
+        }
+        .camera-capture-btn {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .camera-btn i {
+            font-size: 18px;
+        }
+
+        /* Photo Preview */
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .photo-preview img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .photo-preview img:hover {
+            transform: scale(1.05);
+        }
+        .photo-preview .photo-item {
+            position: relative;
+        }
+        .photo-preview .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+        .photo-preview .delete-btn:hover {
+            background: #c82333;
+        }
+
+        /* Kết quả kiểm tra */
+        .result-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .status-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .pass {
+            background: linear-gradient(135deg, #28a745, #34d058);
+        }
+        .pass:hover {
+            background: linear-gradient(135deg, #218838, #2cb44e);
+        }
+        .fail {
+            background: linear-gradient(135deg, #dc3545, #f14658);
+        }
+        .fail:hover {
+            background: linear-gradient(135deg, #c82333, #d93a4b);
+        }
+        .status-btn.selected {
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        .status-btn:not(.selected) {
+            opacity: 0.6;
+        }
+        .note-section {
+            margin-top: 15px;
+        }
+        .note-section label {
+            display: block;
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .note-section select {
+            width: 120px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+        .note-section select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Báo cáo lỗi */
+        .qc-report {
+            display: none;
+        }
+        .qc-report select {
+            width: 120px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+        .qc-report select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Nút hành động */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 0 0 15px 15px;
+        }
+        .save-btn, .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .save-btn {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+        }
+        .save-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #0088cc);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .cancel-btn {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+        }
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #5a6268, #8a9299);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-to-top:hover { transform: scale(1.1); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content { padding: 20px; }
+            .card-header { padding: 15px; }
+            .card-header h2 { font-size: 1.4rem; }
+            .table th, .table td { padding: 10px; font-size: 12px; }
+            .update-btn, .capture-btn, .submit-btn {
+                padding: 8px 12px;
+                min-width: 100px;
+                font-size: 12px;
+            }
+            .status { padding: 6px 10px; font-size: 12px; }
+            .status i { font-size: 14px; }
+            .popup-content {
+                padding: 15px;
+                max-width: 350px;
+                max-height: 100vh;
+                border-radius: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .popup-content h3 {
+                font-size: 1.3rem;
+            }
+            .qc-info {
+                padding: 10px;
+            }
+            .qc-info p {
+                font-size: 13px;
+            }
+            .qc-checklist, .qc-photos, .qc-result, .qc-report {
+                padding: 10px;
+            }
+            .qc-checklist h4, .qc-photos h4, .qc-result h4, .qc-report h4 {
+                font-size: 14px;
+            }
+            .checklist-item {
+                flex-direction: row;
+                gap: 5px;
+            }
+            .checklist-item label {
+                font-size: 13px;
+            }
+            .checklist-item select {
+                width: 100px;
+                padding: 8px;
+                font-size: 13px;
+            }
+            .camera-container {
+                max-width: 100%;
+            }
+            .video-preview {
+                max-width: 100%;
+            }
+            .capture-btn {
+                padding: 10px;
+                font-size: 13px;
+            }
+            .photo-preview {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            .photo-preview img {
+                height: 80px;
+            }
+            .status-btn, .save-btn, .cancel-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .note-section select, .qc-report select {
+                width: 100px;
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+
+        /* Responsive cho máy tính */
+        @media (min-width: 769px) {
+            .popup-content {
+                width: 500px;
+                max-height: 80vh;
+            }
+            .qc-checklist, .qc-photos, .qc-result, .qc-report {
+                padding: 15px;
+            }
+            .qc-info {
+                padding: 15px;
+            }
+            .action-buttons {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main Content Start -->
+        <div class="main-content" id="mainContent">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<!--<span th:text="${dyeStages.first.workOrderDetail.workOrder.id}">--></span></h2>
+                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <!--<th>Trạng Thái Kiểm Tra</th>-->
+                                <th>Trạng Thái Nhuộm</th>
+                                <th>Mã Work Order Con</th>
+                                <th>Thời Gian Kết thúc</th>
+                                <th>Tên màu</th>
+                                <th>Loại sợi</th>
+                                <th>Khối lượng</th>
+                                <th>Ánh Sáng</th>
+                                <th>Số Quả</th>
+                                <th>Hành Động</th>
+                            </tr>
+                            </thead>
+                            <tbody id="workOrderChildTableBody">
+                            <tr th:each="dy : ${dyeStages}" th:attr="data-id=${dy.id}">
+                                <!--<td>
+                                    <span th:switch="${dy.}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đã Kiểm tra
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đang kiểm tra
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
+                                        </span>
+                                    </span>
+                                </td>-->
+                                <td>
+                                    <span th:switch="${dy.workStatus}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đang Nhuộm
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                        </span>
+                                        <span th:case="*" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>WD-<span th:text="${dy.id}"></span></td>
+                                <!--<td th:text="${dy.leaderStart.getUsername()}"></td>
+                                <td th:text="${dy.leaderEnd.getUsername()}"></td>-->
+                                <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
+                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
+                                <td th:text="${dy.cone_weight}">31.2</td>
+                                <td>na</td>
+                                <td th:text="${dy.cone_quantity}"></td>
+                                <td>
+                                    <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"
+                                       class="btn btn-primary btn-action">
+                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+<div th:if="${in_process} or ${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Hiển thị thông báo thành công (in_process)
+            const inProcessMessage = /*[[${in_process}]]*/ null;
+            if (inProcessMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: inProcessMessage,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+
+            // Hiển thị thông báo lỗi (error)
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Lỗi",
+                    text: errorMessage,
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        });
+    </script>
+</div>
+
+<div th:if="${completed}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${completed}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- JavaScript Libraries -->
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<!-- Script cho các chức năng -->
+<!--<script>
+    let currentStream = null;
+    let useRearCamera = true;
+    let photos = []; // Lưu danh sách ảnh đã chụp
+    let result = null; // Lưu trạng thái Pass/Fail
+
+    // Hiển thị popup kiểm tra chất lượng
+    function showUpdatePopup(popupId) {
+        const popup = document.getElementById(popupId);
+        popup.style.display = 'flex';
+    }
+
+    // Đóng popup và dừng camera
+    function closeQcPopup(popupId) {
+        const popup = document.getElementById(popupId);
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        popup.style.display = 'none';
+        // Đặt lại giao diện
+        const startBtn = document.querySelector(`button[onclick*="startCamera('video-${popupId.split('-')[1]}', '${popupId}')"]`);
+        if (startBtn) startBtn.style.display = 'flex';
+        photos = []; // Xóa danh sách ảnh
+        result = null; // Đặt lại kết quả
+        const photoPreview = document.getElementById(`photoPreview-${popupId.split('-')[1]}`);
+        photoPreview.innerHTML = '';
+        const noteSection = document.getElementById(`note-section-${popupId.split('-')[1]}`);
+        noteSection.style.display = 'none';
+        const reportSection = document.getElementById(`report-section-${popupId.split('-')[1]}`);
+        if (reportSection) reportSection.style.display = 'none';
+        // Đặt lại trạng thái nút Pass/Fail
+        const resultButtons = document.getElementById(`result-buttons-${popupId.split('-')[1]}`);
+        resultButtons.querySelectorAll('.status-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.style.opacity = '1';
+        });
+    }
+
+    // Bật camera
+    async function startCamera(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        const captureBtn = document.getElementById(`capture-btn-${popupId.split('-')[1]}`);
+        const switchBtn = document.getElementById(`switch-btn-${popupId.split('-')[1]}`);
+        const startBtn = document.querySelector(`button[onclick*="startCamera('${videoId}', '${popupId}')"]`);
+
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: useRearCamera ? "environment" : "user" }
+            });
+            video.srcObject = currentStream;
+            captureBtn.style.display = 'flex';
+            switchBtn.style.display = 'flex';
+            if (startBtn) startBtn.style.display = 'none';
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể truy cập camera: ' + err.message,
+            });
+        }
+    }
+
+    // Chuyển đổi camera
+    async function switchCamera(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        useRearCamera = !useRearCamera;
+
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: useRearCamera ? "environment" : "user" }
+            });
+            video.srcObject = currentStream;
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể chuyển camera: ' + err.message,
+            });
+        }
+    }
+
+    // Chụp ảnh
+    function capturePhoto(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        const photoPreview = document.getElementById(`photoPreview-${popupId.split('-')[1]}`);
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/png');
+
+        // Lưu ảnh vào mảng
+        photos.push(imageData);
+
+        // Hiển thị ảnh trong preview
+        updatePhotoPreview(popupId);
+
+        // Dừng camera
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        video.srcObject = null;
+    }
+
+    // Cập nhật khu vực preview ảnh
+    function updatePhotoPreview(popupId) {
+        const photoPreview = document.getElementById(`photoPreview-${popupId.split('-')[1]}`);
+        photoPreview.innerHTML = '';
+        photos.forEach((photo, index) => {
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <img src="${photo}" alt="Ảnh ${index + 1}" onclick="Swal.fire({imageUrl: '${photo}', imageAlt: 'Ảnh ${index + 1}'})">
+                <button class="delete-btn" onclick="deletePhoto(${index}, '${popupId}')">×</button>
+            `;
+            photoPreview.appendChild(photoItem);
+        });
+    }
+
+    // Xóa ảnh
+    function deletePhoto(index, popupId) {
+        photos.splice(index, 1);
+        updatePhotoPreview(popupId);
+    }
+
+    // Đánh dấu kết quả (Pass/Fail) và thêm hiệu ứng
+    function markResult(resultValue, popupId) {
+        result = resultValue;
+        const resultButtons = document.getElementById(`result-buttons-${popupId.split('-')[1]}`);
+        const passBtn = resultButtons.querySelector('.pass');
+        const failBtn = resultButtons.querySelector('.fail');
+
+        // Thêm hiệu ứng cho nút được chọn
+        if (resultValue === 'Pass') {
+            passBtn.classList.add('selected');
+            failBtn.classList.remove('selected');
+        } else {
+            failBtn.classList.add('selected');
+            passBtn.classList.remove('selected');
+        }
+
+        const noteSection = document.getElementById(`note-section-${popupId.split('-')[1]}`);
+        const reportSection = document.getElementById(`report-section-${popupId.split('-')[1]}`);
+        if (resultValue === 'Fail') {
+            noteSection.style.display = 'block';
+            if (reportSection) reportSection.style.display = 'block';
+        } else {
+            noteSection.style.display = 'none';
+            if (reportSection) reportSection.style.display = 'none';
+        }
+    }
+
+    // Lưu kết quả kiểm tra
+    async function saveQcResult(popupId) {
+        const noteSection = document.getElementById(`note-section-${popupId.split('-')[1]}`);
+        const reportSection = document.getElementById(`report-section-${popupId.split('-')[1]}`);
+        const note = noteSection.querySelector('select').value;
+        const report = reportSection ? reportSection.querySelector('select').value : '';
+
+        // Kiểm tra nếu không có ảnh
+        if (photos.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu chụp ảnh',
+                text: 'Bạn phải chụp ít nhất một ảnh xác thực!',
+            });
+            return;
+        }
+
+        // Kiểm tra nếu chưa chọn Pass/Fail
+        if (!result) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu chọn kết quả',
+                text: 'Vui lòng chọn Pass hoặc Fail trước khi lưu!',
+            });
+            return;
+        }
+
+        // Kiểm tra nếu có lỗi mà không chọn báo cáo
+        const hasError = Array.from(document.querySelectorAll(`#${popupId} .checklist-item select`))
+            .some(select => select.value === 'co' || select.value === 'khong-dat');
+        if (result === 'Fail' && hasError && report === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu chọn báo cáo',
+                text: 'Vui lòng chọn loại lỗi để lập báo cáo!',
+            });
+            return;
+        }
+
+        // Chuẩn bị dữ liệu để gửi lên server
+        const qcResult = {
+            workOrderId: `WD-${popupId.split('-')[1]}`,
+            stage: 'Nhuộm',
+            result: result,
+            photos: JSON.stringify(photos), // Chuyển mảng ảnh thành JSON string
+            note: note,
+            report: report
+        };
+
+        try {
+            const response = await fetch('/qc/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(qcResult)
+            });
+
+            const responseData = await response.json();
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã lưu',
+                    text: responseData,
+                    timer: 2000
+                }).then(() => {
+                    closeQcPopup(popupId);
+                });
+            } else {
+                throw new Error(responseData);
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể lưu kết quả: ' + error.message,
+            });
+        }
+    }
+</script>-->
+</body>
+</html>

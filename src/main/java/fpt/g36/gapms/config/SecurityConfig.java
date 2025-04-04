@@ -23,7 +23,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home", "/register", "/verify", "/resend", "/home_page", "/assert/**",
-                                "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code", "/request-for-quotation/test-teamLeader", "/request-for-quotation/test-nhuom", "/request-for-quotation/test-danhCon", "/request-for-quotation/test-dongGoi")
+                                "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
                         .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**",
@@ -34,7 +34,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .requestMatchers("/technical/**").hasRole("TECHNICAL")
-                        .requestMatchers("/work-order/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
+                        .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
+                        .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")

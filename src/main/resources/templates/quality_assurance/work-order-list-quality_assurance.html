@@ -66,12 +66,14 @@
             text-transform: uppercase;
             font-size: 14px;
             border-bottom: 2px solid #ddd;
+            text-align: center; /* Căn giữa tiêu đề */
         }
 
         .table td {
             padding: 15px 20px;
             vertical-align: middle;
             background: #fff;
+            text-align: center; /* Căn giữa dữ liệu */
         }
 
         .table tbody tr {
@@ -94,6 +96,15 @@
             font-weight: 500;
             min-width: 100px;
             text-align: center;
+            display: inline-flex; /* Đảm bảo căn giữa nội dung */
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+            transition: all 0.3s ease; /* Hiệu ứng mượt mà */
+        }
+
+        .badge:hover {
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
         }
 
         .btn-action {
@@ -103,6 +114,7 @@
             transition: all 0.3s ease;
             background-color: #007bff;
             border: none;
+            color: white;
         }
 
         .btn-action:hover {
@@ -128,6 +140,12 @@
             }
 
             .badge {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 80px; /* Giảm kích thước cho màn nhỏ */
+            }
+
+            .btn-action {
                 padding: 6px 10px;
                 font-size: 12px;
             }
@@ -157,16 +175,34 @@
         <!-- Main Content Start -->
         <div class="main-content" id="mainContent">
             <div class="container">
+                <div style="padding: 20px 0;">
+                    <form th:action="@{/work-order/quality_assurance/list}" method="get" id="searchForm">
+                        <div class="input-group mb-3" style="max-width: 500px;">
+                            <input type="text"
+                                   class="form-control"
+                                   name="workOrderId"
+                                   placeholder="Nhập mã lệnh sản xuất (VD:123)"
+                                   th:value="${param.workOrderId}"
+                                   style="border-radius: 5px;">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="card">
                     <div class="card-header text-center">
-                        <h2><i class="fas fa-tasks me-2"></i> Danh Sách Work Order Tổng</h2>
+                        <h2><i class="fas fa-tasks me-2"></i> Danh Sách Lệnh Làm Việc</h2>
                     </div>
+
+
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Mã Work Order</th>
-                                <th>Đơn Hàng</th>
+                                <th>Mã Lệnh Làm Việc</th>
+                                <th>Cán bộ Điều Hành</th>
                                 <th>Ngày Tạo</th>
                                 <th>Deadline</th>
                                 <th>Trạng Thái</th>
@@ -175,28 +211,31 @@
                             </thead>
                             <tbody id="workOrderTableBody">
                             <!-- Work Order Tổng 1 -->
-                            <tr>
-                                <td>WOT-001</td>
-                                <td>PO-123</td>
-                                <td>15/03/2025</td>
-                                <td class="deadline-soon">20/03/2025</td>
-                                <td><span class="badge" style="background-color: #28a745; color: white;">Đang thực hiện</span></td>
+                            <tr th:each="wo : ${workOrders}">
+                                <td>WO-<span th:text="${wo.id}"></span></td>
+                                <td th:text="${wo.productionOrder.purchaseOrder.quotation.rfq.approvedBy.username}"></td>
+                                <td th:text="${#temporals.format(wo.createAt, 'dd/MM/yyyy')}">15/03/2025</td>
+                                <td th:text="${#temporals.format(wo.deadline, 'dd/MM/yyyy')}"></td>
                                 <td>
-                                    <a href="work-order-child-list-nhuom.html?wotId=WOT-001" class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Xem Work Order Con
-                                    </a>
+                                    <span th:switch="${wo.isProduction}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                              th:text="'Đang sản xuất'"
+                                              class="badge"
+                                              style="background-color: #ffcc00; color: #333;"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                              th:text="'Hoàn thành'"
+                                              class="badge"
+                                              style="background-color: #34c759; color: white;"></span>
+                                        <span th:case="*"
+                                              th:text="'Chờ sản xuất'"
+                                              class="badge"
+                                              style="background-color: #ff3b30; color: white;"></span>
+                                    </span>
                                 </td>
-                            </tr>
-                            <!-- Work Order Tổng 2 -->
-                            <tr>
-                                <td>WOT-002</td>
-                                <td>PO-124</td>
-                                <td>16/03/2025</td>
-                                <td>25/03/2025</td>
-                                <td><span class="badge" style="background-color: #ffc107; color: black;">Chờ xử lý</span></td>
                                 <td>
-                                    <a href="work-order-child-list-nhuom.html?wotId=WOT-002" class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Xem Work Order Con
+                                    <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${wo.id})}"
+                                       class="btn btn-primary btn-action">
+                                        <i class="fas fa-eye"></i> Xem Quy Trình Đơn Hàng
                                     </a>
                                 </td>
                             </tr>
@@ -207,16 +246,20 @@
             </div>
 
             <!-- Phân trang -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mt-4">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Previous</a>
+            <nav aria-label="Page navigation" th:if="${totalItems > 0}">
+                <ul class="pagination justify-content-center">
+                    <!-- Nút Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
                     </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                    <!-- Các trang -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+                    </li>
+                    <!-- Nút Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
                     </li>
                 </ul>
             </nav>

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,11 +23,15 @@ public interface MachineService {
 
     WindingMachine addWindingMachine(WindingMachine windingMachine);
 
-    Page<DyeMachine> getDyeMachinesWithNoStage(Pageable pageable);
+    Page<DyeMachine> getDyeMachinesWithNoStageInAmmountOfTime(LocalDate plannedStart, LocalDate plannedEnd, Pageable pageable);
 
     Page<WindingMachine> getWindingMachinesWithNoStage(Pageable pageable);
 
     DyeMachine updateDyeMachine(Long id, DyeMachine dyeMachine);
 
     WindingMachine updateWindingMachine(Long id, WindingMachine windingMachine);
+
+    void updateDyeMachineStatus(Long id, boolean isActive);
+
+    void updateWindingMachineStatus(Long id, boolean isActive);
 }
