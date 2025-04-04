@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -79,8 +80,8 @@ public class MachineServiceImpl implements MachineService {
         return windingMachineRepository.save(newWindingMachine);
     }
 
-    public Page<DyeMachine> getDyeMachinesWithNoStage(Pageable pageable) {
-        return dyeMachineRepository.findByDyeStageIsNull(pageable);
+    public Page<DyeMachine> getDyeMachinesWithNoStageInAmmountOfTime(LocalDate plannedStart, LocalDate plannedEnd, Pageable pageable) {
+        return dyeMachineRepository.findAvailableDyeMachines(plannedStart, plannedEnd, pageable);
     }
 
     public Page<WindingMachine> getWindingMachinesWithNoStage(Pageable pageable) {

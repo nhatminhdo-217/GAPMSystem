@@ -12,6 +12,10 @@ import java.util.List;
 @Entity
 @Table(name = "winding_batch")
 public class WindingBatch extends BaseEntity {
+
+    @NotNull
+    private LocalDate plannedStart;
+
     @NotNull
     private LocalDate deadline;
 
@@ -55,8 +59,10 @@ public class WindingBatch extends BaseEntity {
 
     public WindingBatch() {};
 
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
+
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage,Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
         super(id, createAt, updateAt);
+        this.plannedStart = plannedStart;
         this.deadline = deadline;
         this.receivedConeAt = receivedConeAt;
         this.startAt = startAt;
@@ -70,6 +76,14 @@ public class WindingBatch extends BaseEntity {
         this.isPass = isPass;
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public LocalDate getDeadline() {
