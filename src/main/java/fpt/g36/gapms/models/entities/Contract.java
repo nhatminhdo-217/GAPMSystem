@@ -26,9 +26,7 @@ public class Contract extends TimestampEntity {
     @Column(name = "status", nullable = false)
     private BaseEnum status;
 
-    @NotNull
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "purchase_order_id", nullable = false)
+    @OneToOne(mappedBy = "contract")
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)

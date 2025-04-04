@@ -54,6 +54,14 @@
         <!-- Navbar End -->
 
         <div class="container-fluid d-flex flex-column m-2">
+            <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a th:href="@{/production-order/list}">Lệnh sản xuất</a></li>
                 <li class="breadcrumb-item active">Chi tiết</li>
@@ -136,7 +144,7 @@
                             <input type="text" class="form-control" id="process" name="process" th:value="*{process}" disabled>
                         </div>
                     </div>
-                    <div class="text-center mt-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+                    <div class="text-center mt-3" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')} and ${productionOrder.status.name() == 'NOT_APPROVED'}">
                         <button id="submitButton" type="submit" class="btn btn-primary">Lưu thay đổi</button>
                     </div>
                 </form>
@@ -172,19 +180,27 @@
             <hr>
 
             <div class="mt-3 d-flex align-items-center">
-                <form th:if="${productionOrder.status.name() == 'DRAFT'}"
-                      th:action="@{'/purchase-order/detail/' + ${productionOrder.id}}" method="post">
-                    <button type="submit" class="btn btn-primary">Confirm</button>
-                </form>
-                <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
-                      th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <div th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                <div th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}" class="mt-3 d-flex align-items-center">
+                    <form th:if="${productionOrder.status.name() == 'DRAFT'}"
+                          th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                    <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
+                          th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <a th:href="@{/purchase-order/list}" class="btn">Back</a>
+                </div>
+                <div th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}" class="mt-3 d-flex align-items-center">
                     <form th:if="${productionOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
                           th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
                         <button type="submit" class="btn btn-primary">Approve</button>
                     </form>
+                    <form th:if="${productionOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
+                          th:action="@{'/production-order/detail/' + ${productionOrder.id} + '/cancel'}" method="post">
+                        <button type="submit" class="btn btn-danger">Cancel</button>
+                    </form>
+                    <a th:href="@{/purchase-order/list}" th:if="${productionOrder.status.name() == 'CANCELED'}" class="btn">Back</a>
                 </div>
                 <a th:href="@{/purchase-order/list}" class="btn">Back</a>
             </div>

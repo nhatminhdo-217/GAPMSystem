@@ -54,7 +54,7 @@ public class ContractMapper {
         return dto;
     }
 
-    public Contract toContract(Long purchaseOrderId, ContractDTO contractDTO, User currUser) {
+    public Contract toContract(ContractDTO contractDTO, User currUser) {
         if (contractDTO == null) {
             return null;
         }
@@ -64,11 +64,7 @@ public class ContractMapper {
         contract.setName(contractDTO.getName());
         contract.setStatus(BaseEnum.NOT_APPROVED);
 
-        PurchaseOrder po = purchaseOrderRepository.findById(purchaseOrderId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy PurchaseOrder với ID: " + contractDTO.getPurchaseOrderId()));
-        contract.setPurchaseOrder(po);
-
-        contract.setApprovedBy(currUser);
+        contract.setCreateBy(currUser);
 
         return contract;
     }

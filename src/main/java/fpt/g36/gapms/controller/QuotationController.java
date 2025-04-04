@@ -3,6 +3,7 @@ package fpt.g36.gapms.controller;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.BrandService;
 import fpt.g36.gapms.services.CategoryService;
 import fpt.g36.gapms.services.ProductService;
@@ -61,22 +62,27 @@ public class QuotationController {
     }
 
     @GetMapping("/detail/{id}")
-    public String getQuotationDetail(@PathVariable("id") int id, Model model) {
+    public String getQuotationDetail(@PathVariable("id") Long id, Model model) {
 
         QuotationInfoDTO quotation_detail = quotationService.getQuotationInfo(id);
 
         userUtils.getOptionalUser(model);
+        User currentUser = userUtils.getOptionalUserInfo();
 
         model.addAttribute("quotation_detail", quotation_detail);
+        model.addAttribute("currentUser", currentUser);
 
         return "quotation/quotation_detail";
     }
 
     @PostMapping("/detail/{id}")
-    public String postQuotationDetail(@PathVariable("id") int id, Model model) {
+    public String postQuotationDetail(@PathVariable("id") Long id, Model model) {
 
+        User currentUser = userUtils.getOptionalUserInfo();
 
-        return "quotation/quotation_detail";
+        quotationService.updateQuotationStatus(id, currentUser);
+
+        return "redirect:/quotation/detail/" + id;
     }
 
 
