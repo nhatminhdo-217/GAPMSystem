@@ -112,6 +112,7 @@ public class PurchaseOrderController {
                 contractService.updateContractStatus(id, currUser);
                 productionOrderService.createProductionOrder(id);
                 redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
+                redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
             }

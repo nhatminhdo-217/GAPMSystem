@@ -60,6 +60,10 @@
                 <span th:text="${success}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            <div class="alert alert-success alert-dismissible fade show" th:if="${successCreate}" role="alert">
+                <span th:text="${successCreate}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
                 <span th:text="${error}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
