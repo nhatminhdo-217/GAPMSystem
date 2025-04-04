@@ -1,0 +1,65 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  # Security configuration
+  security:
+    user:
+      name: ${SECRET_USER}
+      password: ${SECRET_PASSWORD}
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile,email
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+  # Email configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  # Thymeleaf cache bật trong môi trường production để tăng hiệu suất
+  thymeleaf:
+    cache: true
+  # Flyway configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?&allowPublicKeyRetrieval=true&useSSL=false
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+logging:
+  level:
+    root: ERROR
+    org.springframework: WARN
+    fpt.g36.gapms: INFO
+    org.flywaydb: DEBUG
