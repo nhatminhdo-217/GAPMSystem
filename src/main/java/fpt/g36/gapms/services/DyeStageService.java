@@ -12,11 +12,6 @@ public interface DyeStageService {
 
     List<DyeStage> getAllDyeStageForDyeLead(Long woId);
 
-    void changeStatusDyeStageInProcess(Long dyeId, User leader);
-
-    void changeStatusDyeStageFinish(Long dyeId, String photo, User leader);
-
-
     DyeStage getDyeStageById(Long dyeId);
 
     DyeRiskAssessment getDyeRiskAssessmentByDyeStageId(Long dyeId);

@@ -28,9 +28,6 @@
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
     <!-- Inline CSS -->
     <style>
         /* General Styles */
@@ -418,7 +415,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Lệnh Nhuộm Hàng-WO-<span th:text="${dyeStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <h2><i class="fas fa-boxes me-2"></i> Lệnh Đóng Gói Hàng-WO-<span th:text="${workOrderId}"></span></h2>
                         <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
@@ -427,55 +424,41 @@
                             <tr>
                                 <th>Trạng thái</th>
                                 <th>Mã Work Order Con</th>
-                                <th>Thiết bị</th>
+                                <th>Mã Khách Hàng</th>
                                 <th>Thời Gian Bắt Đầu</th>
+                                <th>Số lượng</th>
                                 <th>Tên màu</th>
-                                <th>Loại sợi</th>
-                                <th>Khối lượng</th>
-                                <th>Số mẻ</th>
-                                <th>Ánh Sáng</th>
-                                <th>Ghi chú kế hoạch</th>
-                                <th>Số lít nước tối thiểu</th>
-                                <th>Số lít nước</th>
-                                <th>Số quả</th>
-                                <th>Nhãn hiệu</th>
-                                <th>Quy trình đánh hồ</th>
+                                <th>Loại Hàng</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
-                            <tr th:each="dy : ${dyeStages}" th:attr="data-id=${dy.id}">
+                            <!-- Work Order Con 1 -->
+                            <tr data-id="WOC-001-1" th:each="ps : ${packagingStages}">
                                 <td>
-                                    <span th:switch="${dy.workStatus}">
+                                    <span th:switch="${ps.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đang Nhuộm
+                                            <i class="fas fa-spinner"></i> Đang Đóng Gói
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                            <i class="fas fa-check-circle"></i> Đã Đóng Gói
                                         </span>
                                         <span th:case="*" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                                            <i class="fas fa-times-circle"></i> Chưa Đóng Gói
                                         </span>
                                     </span>
                                 </td>
-                                <td>WOD-<span th:text="${dy.workOrderDetail.id}"></span></td>
-                                <td>MB-<span th:text="${dy.dyeMachine.id}"></span></td>
-                                <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
-                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
-                                <td th:text="${dy.cone_weight}">31.2</td>
-                                <td>na</td>
-                                <td>na</td>
-                                <td>na</td>
-                                <td th:text="${dy.liters_min}">160</td>
-                                <td th:text="${dy.liters}">187</td>
-                                <td th:text="${dy.cone_quantity}"></td>
-                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.brand.name}">na</td>
-                                <td>na</td>
+                                <td>WD-<span th:text="${ps.workOrderDetail.id}"></span></td>
+                                <td>KH-<span th:text="${ps.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
+                                <td th:text="${#temporals.format(ps.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
+                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
+                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
                                 <td>
-                                    <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${dy.id} + '\')'">
-                                        <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
-                                    </button>
+                                    <a th:href="@{/work-order/team-leader/Batch/{id}(id=${ps.id})}"
+                                       class="btn btn-primary btn-action">
+                                        <i class="fas fa-eye"></i> Xem Quy Trình Đơn Hàng
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
@@ -492,69 +475,15 @@
     </div>
     <!-- Content End -->
 
-    <!-- Popup động cho mỗi Work Order Con -->
-    <th:block th:each="dy : ${dyeStages}">
-        <div th:id="'popup-' + ${dy.id}" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${dy.id} + '\')'">×</span>
-                <h3>Cập nhật trạng thái</h3>
-                <form th:action="@{/work-order/team-leader/Dye/change/finish/{id}(id=${dy.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${dy.id}">
-                    <div class="form-group">
-                        <label>Cập nhật trạng thái nhuộm:</label>
-                        <div class="status-buttons">
-                            <a th:href="@{/work-order/team-leader/Dye/change/in-process/{id}(id=${dy.id})}"
-                               th:classappend="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                               class="status-btn in-progress">
-                                <i class="fas fa-spinner me-2"></i> Bắt đầu nhuộm
-                            </a>
-                            <button type="button"
-                                    class="status-btn completed"
-                                    th:onclick="'submitFormWithPhoto(\'form-' + ${dy.id} + '\')'"
-                                    th:classappend="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
-                                <i class="fas fa-check-circle me-2"></i> Hoàn thành
-                            </button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Chụp ảnh xác thực:</label>
-                        <div th:if="${dy.getDyePhoto() == null}">
-                            <!-- Container bao quanh video và các nút bên trong -->
-                            <div class="camera-container">
-                                <video th:id="'video-' + ${dy.id}" class="video-preview" autoplay></video>
-                                <!-- Nút "Đổi camera" -->
-                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${dy.id} + '\', \'popup-' + ${dy.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${dy.id}">
-                                    <i class="fas fa-sync"></i>
-                                </button>
-                                <!-- Nút "Chụp ảnh" -->
-                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${dy.id} + '\', \'popup-' + ${dy.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${dy.id}">
-                                    <i class="fas fa-camera"></i>
-                                </button>
-                            </div>
-                            <!-- Nút "Bật camera" bên dưới -->
-                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${dy.id} + '\', \'popup-' + ${dy.id} + '\')'">
-                                <i class="fas fa-camera me-2"></i> Bật camera
-                            </button>
-                        </div>
-                        <div th:if="${dy.getDyePhoto() != null}">
-                            <img th:src="'/uploads/' + ${dy.getDyePhoto()}" class="captured-image" alt="Ảnh xác thực">
-                        </div>
-                        <div th:id="'photoPreview-' + ${dy.id}"></div>
-                        <input type="file" th:id="'photoInput-' + ${dy.id}" name="photo" style="display: none;">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </th:block>
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-<div th:if="${in_process} or ${error}">
+<div th:if="${in_process_packaging} or ${error}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
-            // Hiển thị thông báo thành công (in_process)
-            const inProcessMessage = /*[[${in_process}]]*/ null;
+            // Hiển thị thông báo thành công (in_process_packaging)
+            const inProcessMessage = /*[[${in_process_packaging}]]*/ null;
             if (inProcessMessage) {
                 Swal.fire({
                     position: "top-end",
@@ -581,13 +510,13 @@
     </script>
 </div>
 
-<div th:if="${completed}">
+<div th:if="${complete_packaging}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: /*[[${completed}]]*/ "Default message",
+                title: /*[[${complete_packaging}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -604,155 +533,9 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-<!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
-<!-- Script cho các chức năng -->
-<script>
-    let currentStream = null;
-    let useRearCamera = true; // Mặc định dùng camera sau
-
-    // Hiển thị popup (không tự động mở camera)
-    function showUpdatePopup(popupId) {
-        const popup = document.getElementById(popupId);
-        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
-        photoPreview.innerHTML = '';
-        popup.style.display = 'flex';
-    }
-
-    // Đóng popup và dừng camera
-    function closePopup(popupId) {
-        const popup = document.getElementById(popupId);
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop()); // Tự động tắt camera khi đóng popup
-            currentStream = null;
-        }
-        popup.style.display = 'none';
-    }
-
-    // Bật camera (mặc định camera sau)
-    async function startCamera(videoId, popupId) {
-        const video = document.getElementById(videoId);
-        const captureBtn = document.getElementById('capture-btn-' + popupId.split('-')[1]);
-        const switchBtn = document.getElementById('switch-btn-' + popupId.split('-')[1]);
-        const startBtn = document.querySelector(`button[onclick*="startCamera('${videoId}', '${popupId}')]`);
-
-        try {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-            currentStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: useRearCamera ? "environment" : "user"
-                }
-            });
-            video.srcObject = currentStream;
-            captureBtn.style.display = 'flex'; // Hiển thị nút "Chụp ảnh"
-            switchBtn.style.display = 'flex'; // Hiển thị nút "Đổi camera"
-            if (startBtn) {
-                startBtn.style.display = 'none'; // Ẩn nút "Bật camera" sau khi mở
-            }
-        } catch (err) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Không thể truy cập camera: ' + err.message,
-            });
-        }
-    }
-
-    // Chuyển đổi giữa camera trước và sau
-    async function switchCamera(videoId, popupId) {
-        const video = document.getElementById(videoId);
-        useRearCamera = !useRearCamera;
-
-        try {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-            currentStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: useRearCamera ? "environment" : "user"
-                }
-            });
-            video.srcObject = currentStream;
-        } catch (err) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Không thể chuyển camera: ' + err.message,
-            });
-        }
-    }
-
-    // Chụp ảnh từ video
-    function capturePhoto(videoId, popupId) {
-        const video = document.getElementById(videoId);
-        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
-        const photoInput = document.getElementById('photoInput-' + popupId.split('-')[1]);
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = canvas.toDataURL('image/png');
-
-        const img = document.createElement('img');
-        img.src = imageData;
-        img.className = 'captured-image';
-        photoPreview.innerHTML = '';
-        photoPreview.appendChild(img);
-
-        fetch(imageData)
-            .then(res => res.blob())
-            .then(blob => {
-                const file = new File([blob], `photo-${popupId.split('-')[1]}.png`, { type: 'image/png' });
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                photoInput.files = dataTransfer.files;
-            });
-
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
-        }
-        video.srcObject = null;
-    }
-
-    // Xử lý khi nhấn "Hoàn thành"
-    function submitFormWithPhoto(formId) {
-        console.log('Form ID:', formId);
-        const form = document.getElementById(formId);
-        const photoInput = document.getElementById('photoInput-' + formId.split('-')[1]);
-
-        console.log('Form element:', form);
-        console.log('photoInput.files:', photoInput.files);
-
-        if (!form) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Không tìm thấy form với ID: ' + formId,
-            });
-            return;
-        }
-
-        if (!photoInput.files || photoInput.files.length === 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Yêu cầu chụp ảnh',
-                text: 'Bạn phải chụp ảnh xác thực trước khi hoàn thành!',
-            });
-        } else {
-            console.log('Submitting form to:', form.action);
-            form.submit();
-        }
-    }
-</script>
 </body>
 </html>

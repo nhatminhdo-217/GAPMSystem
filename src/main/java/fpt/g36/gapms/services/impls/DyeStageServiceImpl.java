@@ -1,12 +1,11 @@
 package fpt.g36.gapms.services.impls;
 
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
-import fpt.g36.gapms.models.entities.DyeRiskAssessment;
-import fpt.g36.gapms.models.entities.DyeStage;
-import fpt.g36.gapms.models.entities.PhotoStage;
-import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.repositories.DyeBatchRepository;
 import fpt.g36.gapms.repositories.DyeRiskAssessmentRepository;
 import fpt.g36.gapms.repositories.DyeStageRepository;
 import fpt.g36.gapms.repositories.PhotoStageRepository;
@@ -26,6 +25,9 @@ public class DyeStageServiceImpl implements DyeStageService {
 
     @Autowired
     private DyeStageRepository dyeStageRepository;
+
+    @Autowired
+    private DyeBatchRepository dyeBatchRepository;
     @Autowired
     private PhotoStageRepository photoStageRepository;
 
@@ -41,15 +43,15 @@ public class DyeStageServiceImpl implements DyeStageService {
         return dyeStages;
     }
 
-    @Override
+    /*@Override
     public void changeStatusDyeStageInProcess(Long dyeId, User leader) {
 
         DyeStage dyeStage = dyeStageRepository.findById(dyeId).orElseThrow(() -> new RuntimeException("dyeId not found"));
 
             dyeStage.setWorkStatus(WorkEnum.IN_PROGRESS);
             dyeStage.getWorkOrderDetail().getWorkOrder().setIsProduction(WorkEnum.IN_PROGRESS);
-            dyeStage.setTestStatus(TestEnum.TESTING);
-            dyeStage.setLeaderStart(leader);
+            *//*dyeStage.setTestStatus(TestEnum.TESTING);
+            dyeStage.setLeaderStart(leader);*//*
             dyeStageRepository.save(dyeStage);
 
     }
@@ -58,15 +60,15 @@ public class DyeStageServiceImpl implements DyeStageService {
     public void changeStatusDyeStageFinish(Long dyeId, String photo, User leader) {
         DyeStage dyeStage = dyeStageRepository.findById(dyeId).orElseThrow(() -> new RuntimeException("dyeId not found"));
         dyeStage.setWorkStatus(WorkEnum.FINISHED);
-        dyeStage.setDyePhoto(photo);
-        dyeStage.setLeaderEnd(leader);
+        *//*dyeStage.setDyePhoto(photo);
+        dyeStage.setLeaderEnd(leader);*//*
         dyeStageRepository.save(dyeStage);
 
         DyeRiskAssessment dyeRiskAssessment = new DyeRiskAssessment();
-        dyeRiskAssessment.setDyeStage(dyeStage);
+        *//*dyeRiskAssessment.setDyeStage(dyeStage);*//*
         dyeRiskAssessmentRepository.save(dyeRiskAssessment);
 
-    }
+    }*/
 
     @Override
     public DyeStage getDyeStageById(Long dyeId) {
@@ -76,8 +78,11 @@ public class DyeStageServiceImpl implements DyeStageService {
 
     @Override
     public DyeRiskAssessment getDyeRiskAssessmentByDyeStageId(Long dyeId) {
-        List<DyeRiskAssessment> dyeRiskAssessments = dyeRiskAssessmentRepository.getByDyeId(dyeId);
-
+        List<DyeRiskAssessment> dyeRiskAssessments = dyeRiskAssessmentRepository.getByDyeBatchId(dyeId);
+        if (dyeRiskAssessments.isEmpty()) {
+            DyeRiskAssessment dyeRiskAssessment = null;
+            return dyeRiskAssessment; // Hoặc ném một ngoại lệ tùy chỉnh nếu cần
+        }
         DyeRiskAssessment dyeRiskAssessment = dyeRiskAssessments.get(0);
         return dyeRiskAssessment;
     }
@@ -85,7 +90,8 @@ public class DyeStageServiceImpl implements DyeStageService {
     @Override
     public DyeRiskAssessment saveTestDye(Long id, DyeRiskAssessment dyeRiskAssessment, User qaDye, MultipartFile[] photos) throws IOException {
 
-        DyeRiskAssessment dyeRiskAssessment_save = dyeRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("dyeId not found"));dyeRiskAssessment_save.setColorTrue(dyeRiskAssessment.getColorTrue());
+        DyeRiskAssessment dyeRiskAssessment_save = dyeRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("draId not found"));
+        dyeRiskAssessment_save.setColorTrue(dyeRiskAssessment.getColorTrue());
         dyeRiskAssessment_save.setColorTrue(dyeRiskAssessment.getColorTrue());
         dyeRiskAssessment_save.setHumidity(dyeRiskAssessment.getHumidity());
         dyeRiskAssessment_save.setLightTrue(dyeRiskAssessment.getLightTrue());
@@ -95,6 +101,21 @@ public class DyeStageServiceImpl implements DyeStageService {
         dyeRiskAssessment_save.setIndustrialCleaningStains(dyeRiskAssessment.getIndustrialCleaningStains());
         dyeRiskAssessment_save.setCreateBy(qaDye);
         dyeRiskAssessment_save.setPass(dyeRiskAssessment.getPass());
+        if(dyeRiskAssessment.getPass()!=null){
+            dyeRiskAssessment_save.getDyeBatch().setTestStatus(TestEnum.TESTED);
+            if(dyeRiskAssessment.getPass()) {
+                dyeRiskAssessment_save.getDyeBatch().setPass(true);
+            }else {
+                dyeRiskAssessment_save.getDyeBatch().setPass(false);
+
+            }
+            List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
+                boolean allTested = dyeBatches.stream()
+                        .allMatch(dyeBatch -> dyeBatch.getTestStatus() == TestEnum.TESTED && dyeBatch.getPass());
+                if (allTested) {
+                    dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
+                }
+        }
         dyeRiskAssessmentRepository.save(dyeRiskAssessment_save);
         List<PhotoStage> photoStages = new ArrayList<>();
         List<String> images = imageService.saveListImageMultiFile(photos);
@@ -105,6 +126,8 @@ public class DyeStageServiceImpl implements DyeStageService {
             photoStages.add(photoStage);
         }
         photoStageRepository.saveAll(photoStages);
+
+
 
         return dyeRiskAssessment_save;
     }

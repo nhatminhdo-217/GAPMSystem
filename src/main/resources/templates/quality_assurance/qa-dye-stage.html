@@ -646,18 +646,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${dyeStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<!--<span th:text="${dyeStages.first.workOrderDetail.workOrder.id}">--></span></h2>
                         <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Trạng Thái Kiểm Tra</th>
+                                <!--<th>Trạng Thái Kiểm Tra</th>-->
                                 <th>Trạng Thái Nhuộm</th>
                                 <th>Mã Work Order Con</th>
-                                <th>Tổ Trưởng Bắt Đầu Nhuộm</th>
-                                <th>Tổ Trưởng Kết Thúc Nhuộm</th>
                                 <th>Thời Gian Kết thúc</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
@@ -669,8 +667,8 @@
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <tr th:each="dy : ${dyeStages}" th:attr="data-id=${dy.id}">
-                                <td>
-                                    <span th:switch="${dy.testStatus}">
+                                <!--<td>
+                                    <span th:switch="${dy.}">
                                         <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
                                             <i class="fas fa-spinner"></i> Đã Kiểm tra
                                         </span>
@@ -681,7 +679,7 @@
                                             <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
                                         </span>
                                     </span>
-                                </td>
+                                </td>-->
                                 <td>
                                     <span th:switch="${dy.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -696,8 +694,8 @@
                                     </span>
                                 </td>
                                 <td>WD-<span th:text="${dy.id}"></span></td>
-                                <td th:text="${dy.leaderStart.getUsername()}"></td>
-                                <td th:text="${dy.leaderEnd.getUsername()}"></td>
+                                <!--<td th:text="${dy.leaderStart.getUsername()}"></td>
+                                <td th:text="${dy.leaderEnd.getUsername()}"></td>-->
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
@@ -705,7 +703,7 @@
                                 <td>na</td>
                                 <td th:text="${dy.cone_quantity}"></td>
                                 <td>
-                                    <a th:href="@{/work-order/quality_assurance/test-form/dye/{id}(id=${dy.id})}"
+                                    <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"
                                        class="btn btn-primary btn-action">
                                         <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
                                     </a>
@@ -725,121 +723,6 @@
     </div>
     <!-- Content End -->
 
-    <!-- Popup động cho mỗi Work Order Con -->
-    <!-- Popup động cho mỗi Work Order Con -->
-    <!--<th:block th:each="dy : ${dyeStages}">
-        <div th:id="'popup-' + ${dy.id}" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" th:onclick="|closeQcPopup('popup-${dy.id}')|">×</span>
-                <h3>Kiểm tra chất lượng - Công đoạn Nhuộm (WD-<span th:text="${dy.id}"></span>)</h3>
-
-                &lt;!&ndash; Form để gửi dữ liệu về backend &ndash;&gt;
-                <form th:action="@{/work-order/team-leader/Dye/submit-qc/{id}(id=${dy.id})}" method="post" enctype="multipart/form-data">
-                    <div class="qc-info">
-
-                        <input type="hidden" name="workOrderId" th:value="${dy.id}" />
-                        <input type="hidden" name="stage" value="Nhuộm" />
-                    </div>
-
-                    &lt;!&ndash; Checklist tiêu chí &ndash;&gt;
-                    <div class="qc-checklist">
-                        <h4>Tiêu chí kiểm tra</h4>
-                        <div class="checklist-item">
-                            <label>Màu nhuộm so với mẫu khách hàng:</label>
-                            <select name="colorMatch">
-                                <option value="dat">Đạt</option>
-                                <option value="khong-dat">Không đạt</option>
-                            </select>
-                        </div>
-                        <div class="checklist-item">
-                            <label>Độ ẩm sợi sau sấy:</label>
-                            <select name="moistureLevel">
-                                <option value="dat">Đạt</option>
-                                <option value="khong-dat">Không đạt</option>
-                            </select>
-                        </div>
-                        <div class="checklist-item">
-                            <label>Lỗi loang màu:</label>
-                            <select name="colorBleed">
-                                <option value="khong">Không</option>
-                                <option value="co">Có</option>
-                            </select>
-                        </div>
-                        <div class="checklist-item">
-                            <label>Lỗi bám thuốc:</label>
-                            <select name="dyeAdhesion">
-                                <option value="khong">Không</option>
-                                <option value="co">Có</option>
-                            </select>
-                        </div>
-                        <div class="checklist-item">
-                            <label>Lỗi kết thuốc:</label>
-                            <select name="dyeFixation">
-                                <option value="khong">Không</option>
-                                <option value="co">Có</option>
-                            </select>
-                        </div>
-                        <div class="checklist-item">
-                            <label>Lỗi bám VSCN:</label>
-                            <select name="vscnAdhesion">
-                                <option value="khong">Không</option>
-                                <option value="co">Có</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    &lt;!&ndash; Chụp ảnh xác thực &ndash;&gt;
-                    <div class="qc-photos">
-                        <h4>Chụp ảnh xác thực</h4>
-                        <div>
-                            <label>Chọn ảnh:</label>
-                            <input type="file" name="photos" multiple accept="image/*" />
-                        </div>
-                        <div th:if="${dy.getDyePhoto() != null}">
-                            <img th:src="'/uploads/' + ${dy.getDyePhoto()}" class="captured-image" alt="Ảnh xác thực">
-                        </div>
-                    </div>
-
-                    &lt;!&ndash; Kết quả kiểm tra &ndash;&gt;
-                    <div class="qc-result">
-                        <h4>Kết quả kiểm tra</h4>
-                        <div class="result-buttons">
-                            <label><input type="radio" name="result" value="Pass" required /> Pass</label>
-                            <label><input type="radio" name="result" value="Fail" /> Fail</label>
-                        </div>
-                        <div class="note-section">
-                            <label>Ghi chú (nếu Fail):</label>
-                            <select name="note">
-                                <option value="">Chọn ghi chú</option>
-                                <option value="loi-nhe">Lỗi nhẹ</option>
-                                <option value="loi-nang">Lỗi nặng</option>
-                                <option value="khac">Khác</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    &lt;!&ndash; Báo cáo lỗi (hiển thị nếu có lỗi) &ndash;&gt;
-                    <div class="qc-report">
-                        <h4>Báo cáo lỗi (nếu có)</h4>
-                        <select name="report">
-                            <option value="">Chọn loại lỗi</option>
-                            <option value="loang-mau">Loang màu</option>
-                            <option value="bam-thuoc">Bám thuốc</option>
-                            <option value="ket-thuoc">Kết thuốc</option>
-                            <option value="bam-vscn">Bám VSCN</option>
-                            <option value="khac">Khác</option>
-                        </select>
-                    </div>
-
-                    &lt;!&ndash; Nút hành động &ndash;&gt;
-                    <div class="action-buttons">
-                        <button type="submit" class="save-btn">Lưu</button>
-                        <button type="button" class="cancel-btn" th:onclick="|closeQcPopup('popup-${dy.id}')|">Hủy</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </th:block>-->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

@@ -415,7 +415,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-boxes me-2"></i> Lệnh Đóng Gói Hàng-WO-<span th:text="${packagingStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WD-<span th:text="${windingBatches.get(0).windingStage.id}"></span></h2>
                         <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
@@ -423,39 +423,39 @@
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã Work Order Con</th>
-                                <th>Mã Khách Hàng</th>
+                                <th>Mã MẺ</th>
                                 <th>Thời Gian Bắt Đầu</th>
-                                <th>Số lượng</th>
                                 <th>Tên màu</th>
-                                <th>Loại Hàng</th>
+                                <th>Số lượng</th>
+                                <th>LOẠI HÀNG</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ps : ${packagingStages}">
+                            <tr data-id="WOC-001-1" th:each="ws : ${windingBatches}">
+
+
                                 <td>
-                                    <span th:switch="${ps.workStatus}">
+                                    <span th:switch="${ws.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đang Đóng Gói
+                                            <i class="fas fa-spinner"></i> Đang Côn
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Đóng Gói
+                                            <i class="fas fa-check-circle"></i> Đã Côn
                                         </span>
                                         <span th:case="*" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chưa Đóng Gói
+                                            <i class="fas fa-times-circle"></i> Chưa Côn
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${ps.workOrderDetail.id}"></span></td>
-                                <td>KH-<span th:text="${ps.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
-                                <td th:text="${#temporals.format(ps.startAt, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
+                                <td>WB-<span th:text="${ws.id}"></span></td>
+                                <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
                                 <td>
-                                    <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${ps.id} + '\')'">
+                                    <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${ws.id} + '\')'">
                                         <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
                                     </button>
                                 </td>
@@ -475,54 +475,54 @@
     <!-- Content End -->
 
     <!-- Popup Form -->
-    <th:block th:each="ps : ${packagingStages}">
-        <div th:id="'popup-' + ${ps.id}" class="popup">
+    <th:block th:each="ws : ${windingBatches}">
+        <div th:id="'popup-' + ${ws.id}" class="popup">
             <div class="popup-content">
-                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ps.id} + '\')'">×</span>
+                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ws.id} + '\')'">×</span>
                 <h3>Cập nhật trạng thái</h3>
-                <form th:action="@{/work-order/team-leader/packaging/change/finish/{id}(id=${ps.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ps.id}">
+                <form th:action="@{/work-order/team-leader/winding/change/finish/{id}(id=${ws.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ws.id}">
                     <div class="form-group">
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
-                            <a th:href="@{/work-order/team-leader/packaging/change/in-process/{id}(id=${ps.id})}"
-                               th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ps.workOrderDetail.windingStage.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                            <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${ws.id})}"
+                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
                             </a>
                             <button type="button"
                                     class="status-btn completed"
-                                    th:onclick="'submitFormWithPhoto(\'form-' + ${ps.id} + '\')'"
-                                    th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:onclick="'submitFormWithPhoto(\'form-' + ${ws.id} + '\')'"
+                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Chụp ảnh xác thực:</label>
-                        <div th:if="${ps.getPackagingPhoto() == null}">
+                        <div th:if="${ws.windingPhoto == null}">
                             <!-- Container bao quanh video và các nút bên trong -->
                             <div class="camera-container">
-                                <video th:id="'video-' + ${ps.id}" class="video-preview" autoplay></video>
+                                <video th:id="'video-' + ${ws.id}" class="video-preview" autoplay></video>
                                 <!-- Nút "Đổi camera" -->
-                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${ps.id}">
+                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${ws.id}">
                                     <i class="fas fa-sync"></i>
                                 </button>
                                 <!-- Nút "Chụp ảnh" -->
-                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${ps.id}">
+                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${ws.id}">
                                     <i class="fas fa-camera"></i>
                                 </button>
                             </div>
                             <!-- Nút "Bật camera" bên dưới -->
-                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'">
+                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'">
                                 <i class="fas fa-camera me-2"></i> Bật camera
                             </button>
                         </div>
-                        <div th:if="${ps.getPackagingPhoto() != null}">
-                            <img th:src="'/uploads/' + ${ps.getPackagingPhoto()}" class="captured-image" alt="Ảnh xác thực">
+                        <div th:if="${ws.windingPhoto != null}">
+                            <img th:src="'/uploads/' + ${ws.windingPhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
-                        <div th:id="'photoPreview-' + ${ps.id}"></div>
-                        <input type="file" th:id="'photoInput-' + ${ps.id}" name="photo" style="display: none;">
+                        <div th:id="'photoPreview-' + ${ws.id}"></div>
+                        <input type="file" th:id="'photoInput-' + ${ws.id}" name="photo" style="display: none;">
                     </div>
                 </form>
             </div>
@@ -532,11 +532,11 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-<div th:if="${in_process_packaging} or ${error}">
+<div th:if="${in_process_winding} or ${error}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
-            // Hiển thị thông báo thành công (in_process_packaging)
-            const inProcessMessage = /*[[${in_process_packaging}]]*/ null;
+            // Hiển thị thông báo thành công (in_process_winding)
+            const inProcessMessage = /*[[${in_process_winding}]]*/ null;
             if (inProcessMessage) {
                 Swal.fire({
                     position: "top-end",
@@ -563,13 +563,13 @@
     </script>
 </div>
 
-<div th:if="${complete_packaging}">
+<div th:if="${complete_winding}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: /*[[${complete_packaging}]]*/ "Default message",
+                title: /*[[${complete_winding}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });

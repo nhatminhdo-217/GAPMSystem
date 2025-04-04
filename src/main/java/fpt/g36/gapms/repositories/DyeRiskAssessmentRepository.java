@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface DyeRiskAssessmentRepository extends JpaRepository<DyeRiskAssessment, Long> {
 
-    @Query("select dra from DyeRiskAssessment dra where dra.dyeStage.id = :dyeId ORDER BY dra.createAt DESC")
-    List<DyeRiskAssessment> getByDyeId(Long dyeId);
+    /*@Query("select dra from DyeRiskAssessment dra where dra.dyeStage.id = :dyeId ORDER BY dra.createAt DESC")*/
+    @Query("SELECT d FROM DyeRiskAssessment d WHERE d.dyeBatch.id = :dyeBatchId ORDER BY d.createAt DESC")
+    List<DyeRiskAssessment> getByDyeBatchId(Long dyeBatchId);
 }

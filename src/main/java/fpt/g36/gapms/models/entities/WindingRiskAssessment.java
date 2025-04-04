@@ -8,17 +8,24 @@ import java.util.List;
 
 @Entity
 public class WindingRiskAssessment extends BaseEntity {
+    //số cuộn chỉ hoàn thành
+    private Integer trueCone;
 
-    private int falseCone;
+    //số cuộn chỉ lỗi
+    private Integer falseCone;
 
-    private Boolean isLightTrue;
+    //độ đồng đều ánh màu
+    private Boolean isColorUniformity;
 
-    private Boolean isColorAdhesion;
+    //loang màu sau côn
+    private Boolean isColorFading;
 
     @OneToMany(mappedBy = "windingRiskAssessment")
     private List<PhotoStage> photo;
 
-    @NotNull
+    private Boolean isPass;
+
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
@@ -27,12 +34,14 @@ public class WindingRiskAssessment extends BaseEntity {
     @JoinColumn(name = "winding_batch_id")
     private WindingBatch windingBatch;
 
-    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, int falseCone, Boolean isLightTrue, Boolean isColorAdhesion, List<PhotoStage> photo, User createBy, WindingBatch windingBatch) {
+    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Integer trueCone, Integer falseCone, Boolean isColorUniformity, Boolean isColorFading, List<PhotoStage> photo, Boolean isPass, User createBy, WindingBatch windingBatch) {
         super(id, createAt, updateAt);
+        this.trueCone = trueCone;
         this.falseCone = falseCone;
-        this.isLightTrue = isLightTrue;
-        this.isColorAdhesion = isColorAdhesion;
+        this.isColorUniformity = isColorUniformity;
+        this.isColorFading = isColorFading;
         this.photo = photo;
+        this.isPass = isPass;
         this.createBy = createBy;
         this.windingBatch = windingBatch;
     }
@@ -40,28 +49,28 @@ public class WindingRiskAssessment extends BaseEntity {
     public WindingRiskAssessment() {
     }
 
-    public int getFalseCone() {
+    public Integer getFalseCone() {
         return falseCone;
     }
 
-    public void setFalseCone(int falseCone) {
+    public void setFalseCone(Integer falseCone) {
         this.falseCone = falseCone;
     }
 
-    public Boolean getLightTrue() {
-        return isLightTrue;
+    public Boolean getColorUniformity() {
+        return isColorUniformity;
     }
 
-    public void setLightTrue(Boolean lightTrue) {
-        isLightTrue = lightTrue;
+    public void setColorUniformity(Boolean colorUniformity) {
+        isColorUniformity = colorUniformity;
     }
 
-    public Boolean getColorAdhesion() {
-        return isColorAdhesion;
+    public Boolean getColorFading() {
+        return isColorFading;
     }
 
-    public void setColorAdhesion(Boolean colorAdhesion) {
-        isColorAdhesion = colorAdhesion;
+    public void setColorFading(Boolean colorFading) {
+        isColorFading = colorFading;
     }
 
     public List<PhotoStage> getPhoto() {
@@ -86,5 +95,21 @@ public class WindingRiskAssessment extends BaseEntity {
 
     public void setWindingBatch(WindingBatch windingBatch) {
         this.windingBatch = windingBatch;
+    }
+
+    public Integer getTrueCone() {
+        return trueCone;
+    }
+
+    public void setTrueCone(Integer trueCone) {
+        this.trueCone = trueCone;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

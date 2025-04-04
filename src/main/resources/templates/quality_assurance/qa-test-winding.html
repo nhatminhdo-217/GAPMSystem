@@ -126,17 +126,6 @@
             position: relative;
         }
 
-        /*.qc-checklist h4::after, .qc-photos h4::after, .qc-result h4::after, .qc-report h4::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(135deg, #28a745, #34d058);
-            border-radius: 3px;
-        }*/
-
         .checklist-item {
             margin-bottom: 15px;
             background: #f9f9f9;
@@ -162,7 +151,8 @@
             flex: 1;
         }
 
-        .checklist-item select {
+        .checklist-item select,
+        .checklist-item input[type="number"] {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -171,9 +161,12 @@
             background: #fff;
             color: #333;
             transition: border-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
         }
 
-        .checklist-item select:focus {
+        .checklist-item select:focus,
+        .checklist-item input[type="number"]:focus {
             outline: none;
             border-color: #28a745;
             box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
@@ -265,9 +258,9 @@
         }
 
         .photo-item {
-            display: inline-block; /* Đảm bảo các ảnh nằm cạnh nhau */
+            display: inline-block;
             position: relative;
-            width: 120px; /* Điều chỉnh kích thước ảnh */
+            width: 120px;
             height: 120px;
             overflow: hidden;
             border-radius: 8px;
@@ -276,7 +269,7 @@
         .captured-image {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Giữ tỷ lệ ảnh mà không bị méo */
+            object-fit: cover;
             border-radius: 8px;
         }
 
@@ -456,7 +449,8 @@
                 font-size: 13px;
             }
 
-            .checklist-item select {
+            .checklist-item select,
+            .checklist-item input[type="number"] {
                 width: 100px;
                 padding: 8px;
                 font-size: 13px;
@@ -479,8 +473,7 @@
             }
         }
 
-
-    /*   css icon */
+        /* CSS icon */
         .status-icon {
             display: inline-block;
             margin-left: 10px;
@@ -491,17 +484,16 @@
         }
 
         .icon.yellow {
-            color: #FFC107; /* Màu vàng */
+            color: #FFC107;
         }
 
         .icon.green {
-            color: #28A745; /* Màu xanh */
+            color: #28A745;
         }
 
         .icon.red {
-            color: #DC3545; /* Màu đỏ */
+            color: #DC3545;
         }
-
 
         .waiting-message {
             text-align: center;
@@ -532,293 +524,190 @@
         <!-- Navbar Start -->
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
         <!-- Navbar End -->
-        <div th:if="${dyeRiskAssessment != null}">
-        <!-- Main Content Start -->
-        <div class="main-content" id="mainContent" >
-            <div class="container">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
-                    </div>
-                    <div class="card-body">
-                        <!-- Thông tin Work Order -->
-                        <div class="table-responsive">
-                            <table class="table table-striped mb-0">
-                                <thead>
-                                <tr>
-                                    <th>Mã Work Order Con</th>
-                                    <th>Tên màu</th>
-                                    <th>Loại sợi</th>
-                                    <th>Khối lượng</th>
-                                    <th>Ánh Sáng</th>
-                                    <th>Số Quả</th>
-                                </tr>
-                                </thead>
-                                <tbody id="workOrderChildTableBody">
-                                <tr>
-                                    <td>WD-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.id}"></span></td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
-                                    <td>na</td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.cone_quantity}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Form để gửi dữ liệu về backend -->
-                        <form th:action="@{/work-order/quality_assurance/test/dye/{id}(id=${dyeRiskAssessment.id})}"
-                              th:object="${dyeRiskAssessment}" method="post" enctype="multipart/form-data" id="qcForm">
-                            <!-- Checklist tiêu chí -->
-                            <div class="qc-checklist">
-                                <h4>Tiêu chí kiểm tra</h4>
-                                <input type="hidden" name="dyeBatch" th:field="*{dyeBatch}">
-
-                                <div class="checklist-item">
-                                    <label>Màu nhuộm so với mẫu khách hàng:</label>
-                                    <div class="status-icon">
-            <span th:if="${dyeRiskAssessment.colorTrue == null}" class="icon yellow">
-                <i class="fas fa-clock"></i> <!-- Icon màu vàng -->
-            </span>
-                                        <span th:if="${dyeRiskAssessment.colorTrue == true}" class="icon green">
-                <i class="fas fa-check-circle"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.colorTrue == false}" class="icon red">
-                <i class="fas fa-times-circle"></i>
-            </span>
-                                    </div>
-                                    <select name="colorTrue" th:field="*{colorTrue}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.colorTrue == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                                <div class="checklist-item">
-                                    <label>Ánh sáng:</label>
-                                    <div class="status-icon">
-            <span th:if="${dyeRiskAssessment.lightTrue == null}" class="icon yellow">
-                <i class="fas fa-clock"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.lightTrue == true}" class="icon green">
-                <i class="fas fa-check-circle"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.lightTrue == false}" class="icon red">
-                <i class="fas fa-times-circle"></i>
-            </span>
-                                    </div>
-                                    <select name="humidity" th:field="*{lightTrue}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.lightTrue == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                                <!-- Độ ẩm sợi sau sấy -->
-                                <div class="checklist-item">
-                                    <label>Độ ẩm sợi sau sấy:</label>
-                                    <div class="status-icon">
-            <span th:if="${dyeRiskAssessment.humidity == null}" class="icon yellow">
-                <i class="fas fa-clock"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.humidity == true}" class="icon green">
-                <i class="fas fa-check-circle"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.humidity == false}" class="icon red">
-                <i class="fas fa-times-circle"></i>
-            </span>
-                                    </div>
-                                    <select name="humidity" th:field="*{humidity}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.humidity == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                                <!-- Lỗi loang màu -->
-                                <div class="checklist-item">
-                                    <label>Lỗi loang màu:</label>
-                                    <div class="status-icon">
-            <span th:if="${dyeRiskAssessment.colorFading == null}" class="icon yellow">
-                <i class="fas fa-clock"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.colorFading == true}" class="icon green">
-                <i class="fas fa-check-circle"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.colorFading == false}" class="icon red">
-                <i class="fas fa-times-circle"></i>
-            </span>
-                                    </div>
-                                    <select name="colorFading" th:field="*{colorFading}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.colorFading == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                                <!-- Lỗi bám thuốc -->
-                                <div class="checklist-item">
-                                    <label>Lỗi bám thuốc:</label>
-                                    <div class="status-icon">
-            <span th:if="${dyeRiskAssessment.medication == null}" class="icon yellow">
-                <i class="fas fa-clock"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.medication == true}" class="icon green">
-                <i class="fas fa-check-circle"></i>
-            </span>
-                                        <span th:if="${dyeRiskAssessment.medication == false}" class="icon red">
-                <i class="fas fa-times-circle"></i>
-            </span>
-                                    </div>
-                                    <select name="medication" th:field="*{medication}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.medication == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-                                <div class="checklist-item">
-                                    <label>Lỗi kết thuốc:</label>
-                                    <div class="status-icon">
-        <span th:if="${dyeRiskAssessment.medicineSafe == null}" class="icon yellow">
-            <i class="fas fa-clock"></i> <!-- Icon vàng -->
-        </span>
-                                        <span th:if="${dyeRiskAssessment.medicineSafe == true}" class="icon green">
-            <i class="fas fa-check-circle"></i>
-        </span>
-                                        <span th:if="${dyeRiskAssessment.medicineSafe == false}" class="icon red">
-            <i class="fas fa-times-circle"></i>
-        </span>
-                                    </div>
-                                    <select name="medicineSafe" th:field="*{medicineSafe}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.medicineSafe == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                                <div class="checklist-item">
-                                    <label>Lỗi bám VSCN:</label>
-                                    <div class="status-icon">
-        <span th:if="${dyeRiskAssessment.industrialCleaningStains == null}" class="icon yellow">
-            <i class="fas fa-clock"></i> <!-- Icon vàng -->
-        </span>
-                                        <span th:if="${dyeRiskAssessment.industrialCleaningStains == true}" class="icon green">
-            <i class="fas fa-check-circle"></i>
-        </span>
-                                        <span th:if="${dyeRiskAssessment.industrialCleaningStains == false}" class="icon red">
-            <i class="fas fa-times-circle"></i>
-        </span>
-                                    </div>
-                                    <select name="industrialCleaningStains" th:field="*{industrialCleaningStains}">
-                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.industrialCleaningStains == null}">---Chọn---</option>
-                                        <option th:value="true">Đạt</option>
-                                        <option th:value="false">Không đạt</option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                            <!-- Chụp ảnh xác thực -->
-                            <div class="qc-photos">
-                                <h4>Chụp ảnh xác thực</h4>
-                                <div class="camera-container">
-                                    <video id="video" class="video-preview" autoplay></video>
-                                    <button type="button" class="camera-btn camera-switch-btn" id="switchBtn"
-                                            style="display: none;">
-                                        <i class="fas fa-sync"></i>
-                                    </button>
-                                    <button type="button" class="camera-btn camera-capture-btn" id="captureBtn"
-                                            style="display: none;">
-                                        <i class="fas fa-camera"></i>
-                                    </button>
-                                </div>
-                                <button type="button" class="capture-btn" id="startCameraBtn">
-                                    <i class="fas fa-camera me-2"></i> Bật camera
-                                </button>
-                                <div id="photoPreview" class="photo-preview">
-                                    <!-- Hiển thị ảnh từ database nếu có -->
-                                    <div th:if="${dyeRiskAssessment.photo != null}">
-                                        <div th:each="photo : ${dyeRiskAssessment.photo}" class="photo-item"
-                                             th:attr="data-photo-name=${photo.photo}">
-                                            <img th:src="'/uploads/' + ${photo.photo}" class="captured-image" alt="Ảnh xác thực">
-                                            <button type="button" class="delete-btn" onclick="deletePhoto(this, true)">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <!--<input type="hidden" name="existingPhotos" id="existingPhotos"
-                                       th:value="${dyeRiskAssessment}">
-                                <input type="hidden" name="deletedPhotos" id="deletedPhotos">-->
-                                <input type="file" id="photoInput" name="photos" multiple style="display: none;">
-                            </div>
-
-                            <!-- Kết quả kiểm tra -->
-                            <div class="qc-result">
-                                <h4>Kết quả kiểm tra</h4>
-                                <div class="btn-group" role="group">
-                                    <!-- Radio "Pass" -->
-                                    <input type="radio" class="btn-check" th:field="*{pass}" id="pass" th:value="true">
-                                    <label class="btn btn-outline-success" for="pass">Pass</label>
-
-                                    <!-- Radio "Fail" -->
-                                    <input type="radio" class="btn-check" th:field="*{pass}" id="fail" th:value="false">
-                                    <label class="btn btn-outline-danger" for="fail">False</label>
-                                </div>
-
-
-
-                                <!-- <div class="note-section">
-                                     <label>Ghi chú (nếu Fail):</label>
-                                     <select name="note">
-                                         <option value="">Chọn ghi chú</option>
-                                         <option value="loi-nhe">Lỗi nhẹ</option>
-                                         <option value="loi-nang">Lỗi nặng</option>
-                                         <option value="khac">Khác</option>
-                                     </select>
-                                 </div>-->
-                            </div>
-
-                            <!--&lt;!&ndash; Báo cáo lỗi (nếu có) &ndash;&gt;
-                            <div class="qc-report">
-                                <h4>Báo cáo lỗi (nếu có)</h4>
-                                <select name="report">
-                                    <option value="">Chọn loại lỗi</option>
-                                    <option value="loang-mau">Loang màu</option>
-                                    <option value="bam-thuoc">Bám thuốc</option>
-                                    <option value="ket-thuoc">Kết thuốc</option>
-                                    <option value="bam-vscn">Bám VSCN</option>
-                                    <option value="khac">Khác</option>
-                                </select>
-                            </div>-->
-
-                            <!-- Nút hành động -->
-                            <div class="action-buttons">
-                                <button type="submit" class="save-btn">Lưu</button>
-                                <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
-                                   class="cancel-btn">Hủy</a>
-
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-
-        <div th:if="${dyeBatch != null}" class="waiting-message">
-
-
-            <div class="main-content"  >
+        <div th:if="${windingRiskAssessment != null}">
+            <!-- Main Content Start -->
+            <div class="main-content" id="mainContent">
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
                             <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
+                                    th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.workOrder.id}"></span>
+                            </h2>
+                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        </div>
+                        <div class="card-body">
+                            <!-- Thông tin Work Order -->
+                            <div class="table-responsive">
+                                <table class="table table-striped mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã Work Order Con</th>
+                                        <th>Tên màu</th>
+                                        <th>Loại sợi</th>
+                                        <th>Khối lượng</th>
+                                        <th>Ánh Sáng</th>
+                                        <th>Số Quả</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="workOrderChildTableBody">
+                                    <tr>
+                                        <td>WD-<span
+                                                th:text="${windingRiskAssessment.windingBatch.windingStage.dyeStage.id}"></span>
+                                        </td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.dyeBatch.cone_batch_weight}"></td>
+                                        <td>na</td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Form để gửi dữ liệu về backend -->
+                            <form th:action="@{/work-order/quality_assurance/test/winding/{id}(id=${windingRiskAssessment.id})}"
+                                  th:object="${windingRiskAssessment}" method="post" enctype="multipart/form-data"
+                                  id="qcForm">
+                                <input type="hidden" name="windingBatch" th:field="*{windingBatch}">
+                                <!-- Checklist tiêu chí -->
+                                <div class="qc-checklist">
+                                    <h4>Tiêu chí kiểm tra</h4>
+
+                                    <div class="checklist-item">
+                                        <label>Số cuộn chỉ hoàn thiện:</label>
+                                        <input type="number" id="qcValueTrue" name="trueCone" th:field="*{trueCone}"
+                                               min="0" oninput="validateNumber(this)">
+                                    </div>
+
+                                    <div class="checklist-item">
+                                        <label>Số cuộn chỉ lỗi:</label>
+                                        <input type="number" id="qcValueFalse" name="falseCone" th:field="*{falseCone}"
+                                               min="0" oninput="validateNumber(this)">
+                                    </div>
+
+                                    <div class="checklist-item">
+                                        <label>Độ đồng đều ánh màu của các cuộn chỉ:</label>
+                                        <div class="status-icon">
+                                            <span th:if="${windingRiskAssessment.colorUniformity == null}"
+                                                  class="icon yellow">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                            <span th:if="${windingRiskAssessment.colorUniformity == true}"
+                                                  class="icon green">
+                                                <i class="fas fa-check-circle"></i>
+                                            </span>
+                                            <span th:if="${windingRiskAssessment.colorUniformity == false}"
+                                                  class="icon red">
+                                                <i class="fas fa-times-circle"></i>
+                                            </span>
+                                        </div>
+                                        <select name="colorUniformity" th:field="*{colorUniformity}">
+                                            <option th:value="${null}"
+                                                    th:selected="${windingRiskAssessment.colorUniformity == null}">
+                                                ---Chọn---
+                                            </option>
+                                            <option th:value="true">Đạt</option>
+                                            <option th:value="false">Không đạt</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="checklist-item">
+                                        <label>Loang màu của cuộn chỉ sau côn:</label>
+                                        <div class="status-icon">
+                                            <span th:if="${windingRiskAssessment.colorFading == null}"
+                                                  class="icon yellow">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                            <span th:if="${windingRiskAssessment.colorFading == true}"
+                                                  class="icon green">
+                                                <i class="fas fa-check-circle"></i>
+                                            </span>
+                                            <span th:if="${windingRiskAssessment.colorFading == false}"
+                                                  class="icon red">
+                                                <i class="fas fa-times-circle"></i>
+                                            </span>
+                                        </div>
+                                        <select name="colorFading" th:field="*{colorFading}">
+                                            <option th:value="${null}"
+                                                    th:selected="${windingRiskAssessment.colorFading == null}">
+                                                ---Chọn---
+                                            </option>
+                                            <option th:value="true">Đạt</option>
+                                            <option th:value="false">Không đạt</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Chụp ảnh xác thực -->
+                                <div class="qc-photos">
+                                    <h4>Chụp ảnh xác thực</h4>
+                                    <div class="camera-container">
+                                        <video id="video" class="video-preview" autoplay></video>
+                                        <button type="button" class="camera-btn camera-switch-btn" id="switchBtn"
+                                                style="display: none;">
+                                            <i class="fas fa-sync"></i>
+                                        </button>
+                                        <button type="button" class="camera-btn camera-capture-btn" id="captureBtn"
+                                                style="display: none;">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                    </div>
+                                    <button type="button" class="capture-btn" id="startCameraBtn">
+                                        <i class="fas fa-camera me-2"></i> Bật camera
+                                    </button>
+                                    <div id="photoPreview" class="photo-preview">
+                                        <div th:if="${windingRiskAssessment.photo != null}">
+                                            <div th:each="photo : ${windingRiskAssessment.photo}" class="photo-item"
+                                                 th:attr="data-photo-name=${photo.photo}">
+                                                <img th:src="'/uploads/' + ${photo.photo}" class="captured-image"
+                                                     alt="Ảnh xác thực">
+                                                <button type="button" class="delete-btn"
+                                                        onclick="deletePhoto(this, true)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="file" id="photoInput" name="photos" multiple style="display: none;">
+                                </div>
+
+                                <!-- Kết quả kiểm tra -->
+                                <div class="qc-result">
+                                    <h4>Kết quả kiểm tra</h4>
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" th:field="*{pass}" id="pass"
+                                               th:value="true">
+                                        <label class="btn btn-outline-success" for="pass">Pass</label>
+                                        <input type="radio" class="btn-check" th:field="*{pass}" id="fail"
+                                               th:value="false">
+                                        <label class="btn btn-outline-danger" for="fail">False</label>
+                                    </div>
+                                </div>
+
+                                <!-- Nút hành động -->
+                                <div class="action-buttons">
+                                    <button type="submit" class="save-btn">Lưu</button>
+                                    <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${windingRiskAssessment.windingBatch.id})}"
+                                       class="cancel-btn">Hủy</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Main Content End -->
+        <div th:if="${windingBatch != null}" class="waiting-message">
+
+
+            <div class="main-content">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
+                                    th:text="${windingBatch.windingStage.workOrderDetail.workOrder.id}"></span></h2>
                             <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
@@ -837,26 +726,23 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>WD-<span th:text="${dyeBatch.dyeStage.id}"></span></td>
-                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                        <td th:text="${dyeBatch.cone_batch_weight}"></td>
+                                        <td>WD-<span th:text="${windingBatch.windingStage.dyeStage.id}"></span></td>
+                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
+                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
+                                        <td th:text="${windingBatch.dyeBatch.cone_batch_weight}"></td>
                                         <td>na</td>
-                                        <td th:text="${dyeBatch.dyeStage.cone_quantity}"></td>
+                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <h2>Chờ Công Đoạn Nhuộm hoàn thành</h2>
+                            <h2>Chờ công đoạn côn hoàn thành</h2>
 
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-        <!-- Main Content End -->
-
         <!-- Footer Start -->
         <div th:replace="~{shared/footer.html :: footer}"></div>
         <!-- Footer End -->
@@ -866,13 +752,13 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-<div th:if="${check_pass}">
+<div th:if="${check_pass_winding}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: /*[[${check_pass}]]*/ "Default message",
+                title: /*[[${check_pass_winding}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -880,13 +766,13 @@
     </script>
 </div>
 
-<div th:if="${save_dye}">
+<div th:if="${save_winding}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: /*[[${save_dye}]]*/ "Default message",
+                title: /*[[${save_winding}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -913,9 +799,9 @@
 <!-- WebRTC JavaScript for Camera Capture -->
 <script>
     let currentStream = null;
-    let useRearCamera = true; // Mặc định dùng camera sau
-    let capturedPhotos = []; // Danh sách các ảnh đã chụp
-    let deletedPhotos = []; // Danh sách các ảnh đã xóa từ database
+    let useRearCamera = true;
+    let capturedPhotos = [];
+    let deletedPhotos = [];
 
     document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('video');
@@ -924,10 +810,7 @@
         const startCameraBtn = document.getElementById('startCameraBtn');
         const photoPreview = document.getElementById('photoPreview');
         const photoInput = document.getElementById('photoInput');
-        const existingPhotosInput = document.getElementById('existingPhotos');
-        const deletedPhotosInput = document.getElementById('deletedPhotos');
 
-        // Bật camera
         startCameraBtn.addEventListener('click', async function () {
             try {
                 if (currentStream) {
@@ -951,7 +834,6 @@
             }
         });
 
-        // Chuyển đổi camera
         switchBtn.addEventListener('click', async function () {
             useRearCamera = !useRearCamera;
             try {
@@ -973,7 +855,6 @@
             }
         });
 
-        // Chụp ảnh
         captureBtn.addEventListener('click', function () {
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
@@ -982,38 +863,30 @@
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = canvas.toDataURL('image/png');
 
-            // Hiển thị ảnh vừa chụp
             const photoItem = document.createElement('div');
             photoItem.className = 'photo-item';
             photoItem.innerHTML = `
-                <img src="${imageData}" class="captured-image" alt="Ảnh xác thực">
-                <button type="button" class="delete-btn" onclick="deletePhoto(this, false)">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
+                    <img src="${imageData}" class="captured-image" alt="Ảnh xác thực">
+                    <button type="button" class="delete-btn" onclick="deletePhoto(this, false)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
             photoPreview.appendChild(photoItem);
 
-            // Thêm ảnh vào danh sách capturedPhotos
             capturedPhotos.push(imageData);
-
-            // Cập nhật input file
             updatePhotoInput();
         });
 
-        // Xóa ảnh
         window.deletePhoto = function (button, isExisting) {
             const photoItem = button.parentElement;
             const imgSrc = photoItem.querySelector('img').src;
 
             if (isExisting) {
-                // Nếu là ảnh từ database, thêm vào danh sách deletedPhotos
                 const photoName = photoItem.getAttribute('data-photo-name');
                 if (photoName) {
                     deletedPhotos.push(photoName);
-                    deletedPhotosInput.value = deletedPhotos.join(',');
                 }
             } else {
-                // Nếu là ảnh mới chụp, xóa khỏi capturedPhotos
                 capturedPhotos = capturedPhotos.filter(photo => photo !== imgSrc);
                 updatePhotoInput();
             }
@@ -1021,7 +894,6 @@
             photoItem.remove();
         };
 
-        // Cập nhật input file với các ảnh đã chụp
         function updatePhotoInput() {
             const dataTransfer = new DataTransfer();
             capturedPhotos.forEach((imageData, index) => {
@@ -1040,17 +912,20 @@
             }
         }
 
-        // Dừng camera khi rời trang
         window.addEventListener('beforeunload', function () {
             if (currentStream) {
                 currentStream.getTracks().forEach(track => track.stop());
             }
         });
     });
-
-
 </script>
-
+<script>
+    function validateNumber(input) {
+        if (input.value < 0) {
+            input.value = 0;
+        }
+    }
+</script>
 <!-- Hiển thị thông báo nếu có -->
 <div th:if="${successMessage}">
     <script th:inline="javascript">
