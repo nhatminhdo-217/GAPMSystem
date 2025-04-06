@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://${DB_HOST_LOCAL}:${DB_PORT}/${DB_NAME}?autoReconnect=true&useSSL=false
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,7 +11,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
   # Security configuration
   security:
@@ -44,6 +44,15 @@ spring:
           auth: true
           starttls:
             enable: true
+  # Flyway configuration
+#  flyway:
+#    enabled: false
+#    baseline-on-migrate: true
+#    locations: classpath:db/migration
+#    url: jdbc:mysql://${DB_HOST_LOCAL:localhost}:${DB_PORT:3306}/${DB_NAME:gapms}?&allowPublicKeyRetrieval=true&useSSL=false
+#    user: ${DB_USER:adota}
+#    password: ${DB_PASSWORD:Adota2003@}
+#    baseline-version: 0
 
 logging:
   level:

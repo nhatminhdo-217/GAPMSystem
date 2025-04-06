@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Ngày tạo</strong><br>
-                                    <span th:text="${po.createAt}"></span>
+                                    <span th:text="${#temporals.format(po.createAt.toLocalDate(), 'dd-MM-yyyy')}"></span>
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Người duyệt</strong><br>
@@ -143,7 +143,7 @@
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Ngày tạo</strong><br>
-                                    <span th:text="${po.createAt}"></span>
+                                    <span th:text="${#temporals.format(po.createAt.toLocalDate(), 'dd-MM-yyyy')}"></span>
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Người duyệt</strong><br>

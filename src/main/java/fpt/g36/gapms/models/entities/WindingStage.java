@@ -72,7 +72,7 @@ public class WindingStage extends BaseEntity{
     }
 
     public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart
+        this.plannedStart = plannedStart;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {
