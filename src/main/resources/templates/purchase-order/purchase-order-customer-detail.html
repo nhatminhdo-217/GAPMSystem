@@ -515,30 +515,30 @@
                                 <div class="process-step completed">
                                     <div class="step-circle"><i class="fas fa-tint"></i></div>
                                     <strong>Nhuộm</strong>
-                                    <span th:switch="${pod?.workOrderDetail?.dyeStage?.testStatus}">
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
+                                    <span th:switch="${pod?.workOrderDetail?.dyeStage?.workStatus}">
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
     <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>
                                 <div class="process-step in-progress">
                                     <div class="step-circle"><i class="fas fa-hammer"></i></div>
                                     <strong>Đánh côn</strong>
-                                    <span th:switch="${pod?.workOrderDetail?.windingStage?.testStatus}">
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
+                                    <span th:switch="${pod?.workOrderDetail?.windingStage?.workStatus}">
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
     <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>
                                 <div class="process-step not-started">
                                     <div class="step-circle"><i class="fas fa-box"></i></div>
                                     <strong>Đóng hàng</strong>
-                                    <span th:switch="${pod?.workOrderDetail?.packagingStage?.testStatus}">
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: white;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: white;"></span>
-    <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
+                                    <span th:switch="${pod?.workOrderDetail?.packagingStage?.workStatus}">
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
     <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>

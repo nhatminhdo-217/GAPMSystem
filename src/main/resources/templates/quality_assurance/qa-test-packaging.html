@@ -538,9 +538,9 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.workOrder.id}"></span></h2>
-                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói-WD-<span
+                                    th:text="${packagingRiskAssessment.packagingBatch.packagingStage.id}"></span></h2>
+                            <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingRiskAssessment.packagingBatch.packagingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
                             <!-- Thông tin Work Order -->
@@ -548,21 +548,23 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Mã Work Order Con</th>
-                                        <th>Tên màu</th>
-                                        <th>Loại sợi</th>
-                                        <th>Khối lượng</th>
-                                        <th>Ánh Sáng</th>
+                                        <th>Phụ trách bắt đầu</th>
+                                        <th>Phụ trách kết thúc</th>
+                                        <th>Mã Khách Hàng</th>
+                                        <th>Tên Màu</th>
+                                        <th>Số Lượng</th>
+                                        <th>Loại Hàng</th>
 
                                     </tr>
                                     </thead>
                                     <tbody id="workOrderChildTableBody">
                                     <tr>
-                                        <td>WD-<span th:text="${packagingRiskAssessment.packagingBatch.packagingStage.id}"></span></td>
+                                        <td th:text="${packagingRiskAssessment.packagingBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                        <td th:text="${packagingRiskAssessment.packagingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td> KH-<span th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                         <td th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                        <td th:text="${packagingRiskAssessment.packagingBatch.windingBatch.dyeBatch.cone_batch_weight}"></td>
-                                        <td>na</td>
+                                        <td th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -577,7 +579,7 @@
                                 <div class="qc-checklist">
                                     <h4>Tiêu chí kiểm tra</h4>
                                     <div class="checklist-item">
-                                        <label>Màu nhuộm so với mẫu khách hàng:</label>
+                                        <label>Tem Đầu Hoàn Thiện:</label>
                                         <div class="status-icon">
             <span th:if="${packagingRiskAssessment.firstStamp == null}" class="icon yellow">
                 <i class="fas fa-clock"></i> <!-- Icon màu vàng -->
@@ -597,7 +599,7 @@
                                     </div>
 
                                     <div class="checklist-item">
-                                        <label>Ánh sáng:</label>
+                                        <label>Tem Lõi Hoàn Thiện:</label>
                                         <div class="status-icon">
             <span th:if="${packagingRiskAssessment.coreStamp == null}" class="icon yellow">
                 <i class="fas fa-clock"></i>
@@ -618,7 +620,7 @@
 
                                     <!-- Độ ẩm sợi sau sấy -->
                                     <div class="checklist-item">
-                                        <label>Độ ẩm sợi sau sấy:</label>
+                                        <label>Tem Chuc Hoàn Thiện:</label>
                                         <div class="status-icon">
             <span th:if="${packagingRiskAssessment.dozenStamp == null}" class="icon yellow">
                 <i class="fas fa-clock"></i>
@@ -639,7 +641,7 @@
 
                                     <!-- Lỗi loang màu -->
                                     <div class="checklist-item">
-                                        <label>Lỗi loang màu:</label>
+                                        <label>Đóng Dấu KCS Hoàn Thiện:</label>
                                         <div class="status-icon">
             <span th:if="${packagingRiskAssessment.kcsStamp == null}" class="icon yellow">
                 <i class="fas fa-clock"></i>
@@ -718,7 +720,7 @@
                                 <!-- Nút hành động -->
                                 <div class="action-buttons">
                                     <button type="submit" class="save-btn">Lưu</button>
-                                    <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${packagingRiskAssessment.packagingBatch.packagingStage.id})}"
+                                    <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingRiskAssessment.packagingBatch.packagingStage.id})}"
                                        class="cancel-btn">Hủy</a>
 
                                 </div>
@@ -736,9 +738,9 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${packagingBatch.packagingStage.workOrderDetail.workOrder.id}"></span></h2>
-                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói-WD-<span
+                                    th:text="${packagingBatch.packagingStage.id}"></span></h2>
+                            <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingBatch.packagingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
                             <!-- Thông tin Work Order -->
@@ -746,21 +748,21 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Mã Work Order Con</th>
-                                        <th>Tên màu</th>
-                                        <th>Loại sợi</th>
-                                        <th>Khối lượng</th>
-                                        <th>Ánh Sáng</th>
-
+                                        <th>Phụ trách bắt đầu</th>
+                                        <th>Phụ trách kết thúc</th>
+                                        <th>Mã Khách Hàng</th>
+                                        <th>Tên Màu</th>
+                                        <th>Số Lượng</th>
+                                        <th>Loại Hàng</th>
                                     </tr>
                                     </thead>
                                     <tbody >
                                     <tr>
-                                        <td>WD-<span th:text="${packagingBatch.packagingStage.id}"></span></td>
+                                        <td th:text="${packagingBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                        <td th:text="${packagingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
                                         <td th:text="${packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                        <td th:text="${packagingBatch.windingBatch.dyeBatch.cone_batch_weight}"></td>
-                                        <td>na</td>
+                                        <td th:text="${packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -791,6 +793,20 @@
                 position: "top-end",
                 icon: "error",
                 title: /*[[${check_pass_packaging}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${check_photo_packaging}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${check_photo_packaging}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });

@@ -106,7 +106,7 @@ public class SecurityConfig {
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("mySecretKey") // Key để mã hóa token
-                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
+                        .tokenValiditySeconds(24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
                         .alwaysRemember(false))
                 .exceptionHandling(ex -> ex

@@ -121,9 +121,18 @@
             font-size: 14px;
             border-radius: 20px;
             font-weight: 500;
-            display: inline-block;
-            min-width: 100px; /* Đảm bảo badge không quá nhỏ */
+            min-width: 100px;
             text-align: center;
+            display: inline-flex; /* Đảm bảo căn giữa nội dung */
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+            transition: all 0.3s ease; /* Hiệu ứng mượt mà */
+        }
+
+
+        .badge:hover {
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
         }
 
         .btn-action {
@@ -230,9 +239,19 @@
                                 <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
                                      <span th:switch="${po.productionOrder.workOrder.isProduction}">
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang sản xuất'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                <span th:case="*" th:text="'Chờ sản xuất'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                              th:text="'Đang sản xuất'"
+                                              class="badge"
+                                              style="background-color: #ffcc00; color: #333;"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                              th:text="'Hoàn thành'"
+                                              class="badge"
+                                              style="background-color: #34c759; color: white;"></span>
+                                        <span th:case="*"
+                                              th:text="'Chờ sản xuất'"
+                                              class="badge"
+                                              style="background-color: #ff3b30; color: white;"></span>
+                                    </span>
                             </span>
                                 </td>
                                 <td>

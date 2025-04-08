@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "winding_batch")
 public class WindingBatch extends BaseEntity {
 
-    @NotNull
+
     private LocalDate plannedStart;
 
     @NotNull

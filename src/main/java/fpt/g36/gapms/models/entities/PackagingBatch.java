@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "packaging_batch")
 public class PackagingBatch extends BaseEntity {
 
-    @NotNull
+
     private LocalDate plannedStart;
 
     @NotNull

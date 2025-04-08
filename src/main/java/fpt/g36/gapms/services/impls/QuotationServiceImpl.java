@@ -250,8 +250,11 @@ public class QuotationServiceImpl implements QuotationService {
             quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
             quotation.setUpdateAt(LocalDateTime.now());
             quotation.setCreatedBy(currentUser);
-        }  else {
-            throw new RuntimeException("Quotation status not valid");
+        }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
+            quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
+            quotation.setUpdateAt(LocalDateTime.now());
+        }else {
+            throw new RuntimeException("Quotation status cannot valid");
         }
         quotationRepository.save(quotation);
     }

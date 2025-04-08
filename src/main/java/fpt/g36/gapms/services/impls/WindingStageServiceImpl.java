@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.WindingBatchRepository;
 import fpt.g36.gapms.repositories.WindingRiskAssessmentRepository;
 import fpt.g36.gapms.repositories.WindingStageRepository;
 import fpt.g36.gapms.services.ImageService;
+import fpt.g36.gapms.services.PhotoStageService;
 import fpt.g36.gapms.services.WindingStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ public class WindingStageServiceImpl implements WindingStageService {
 
     @Autowired
     private WindingBatchRepository windingBatchRepository;
-
+    @Autowired
+    private PhotoStageService photoStageService;
     @Autowired
     private PhotoStageRepository photoStageRepository;
 
@@ -57,6 +59,25 @@ public class WindingStageServiceImpl implements WindingStageService {
 
     @Override
     public WindingRiskAssessment saveTestWingding(Long id, WindingRiskAssessment windingRiskAssessment, User qaWinding, MultipartFile[] photos) throws IOException {
+
+        List<PhotoStage> photoStages = new ArrayList<>();
+        if(photos != null) {
+            List<String> images = imageService.saveListImageMultiFile(photos);
+            for (String photoUrl : images) {
+                PhotoStage photoStage = new PhotoStage();
+                photoStage.setPhoto(photoUrl);
+                photoStage.setWindingRiskAssessment(windingRiskAssessment);// Lưu từng ảnh riêng biệt
+                photoStages.add(photoStage);
+            }
+            photoStageRepository.saveAll(photoStages);
+        }
+
+        List<PhotoStage> photo_exist = photoStageService.getAllPhotoStageByWraId(id);
+        if(windingRiskAssessment.getPass() != null){
+            if(photo_exist.isEmpty()) {
+                throw new IllegalStateException("Chưa có Ảnh Kiểm Tra được tải lên");
+            }
+        }
         WindingRiskAssessment windingRiskAssessment_save = windingRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("wsaId not found"));
         windingRiskAssessment_save.setTrueCone(windingRiskAssessment.getTrueCone());
         windingRiskAssessment_save.setFalseCone(windingRiskAssessment.getFalseCone());
@@ -80,7 +101,7 @@ public class WindingStageServiceImpl implements WindingStageService {
             }
         }
         windingRiskAssessmentRepository.save(windingRiskAssessment_save);
-        List<PhotoStage> photoStages = new ArrayList<>();
+        /*List<PhotoStage> photoStages = new ArrayList<>();
         List<String> images = imageService.saveListImageMultiFile(photos);
         for (String photoUrl : images) {
             PhotoStage photoStage = new PhotoStage();
@@ -88,7 +109,7 @@ public class WindingStageServiceImpl implements WindingStageService {
             photoStage.setWindingRiskAssessment(windingRiskAssessment_save);// Lưu từng ảnh riêng biệt
             photoStages.add(photoStage);
         }
-        photoStageRepository.saveAll(photoStages);
+        photoStageRepository.saveAll(photoStages);*/
 
         return windingRiskAssessment_save;
     }

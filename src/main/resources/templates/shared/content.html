@@ -1,5 +1,5 @@
 <div th:fragment="content">
-    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}">
+    <!--<div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}">
         <div class="row g-4">
             <div class="col-sm-6 col-xl-3">
                 <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -40,7 +40,7 @@
         </div>
         <div class="container mt-5">
             <div class="row">
-                <!-- Form Đăng ký nhận tin -->
+                &lt;!&ndash; Form Đăng ký nhận tin &ndash;&gt;
                 <div class="col-md-6">
                     <h3 class="text-uppercase font-weight-bold">Đăng ký <span class="text-primary">Nhận tin</span></h3>
                     <form>
@@ -68,7 +68,7 @@
                     <p class="mt-3">Đăng ký để nhận thông tin và những khuyến mãi mới nhất của chúng tôi!</p>
                 </div>
 
-                <!-- Đối tác thân thiết -->
+                &lt;!&ndash; Đối tác thân thiết &ndash;&gt;
                 <div class="col-md-6">
                     <h3 class="text-uppercase font-weight-bold">Đối tác <span class="text-primary">Thân thiết</span></h3>
                     <div class="row text-center">
@@ -94,7 +94,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <!-- Đăng ký nhận tin -->
 
@@ -104,7 +104,7 @@
 
 
     <!-- Sales Chart Start -->
-    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SALE_STAFF'') or hasRole(''TECHNICAL'')')}">
         <div class="row g-4">
             <div class="col-sm-12 col-xl-6">
                 <div class="bg-light text-center rounded p-4">
@@ -129,16 +129,16 @@
 
     <!-- Sales Chart End -->
 
-    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
+    <!--<div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
         <div>
             <p>
                 Nothing
             </p>
         </div>
-    </div>
+    </div>-->1
 
 
-    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('not isAuthenticated()')}">
+    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('not isAuthenticated() or hasRole(''CUSTOMER'')')}">
 
 
         <!--giới thiệu chung-->

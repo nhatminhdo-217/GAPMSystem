@@ -28,7 +28,7 @@ public class DyeBatch extends BaseEntity {
     @NotNull
     private LocalDate deadline;
 
-    @NotNull
+
     private LocalDate plannedStart;
 
     private LocalDateTime startAt;

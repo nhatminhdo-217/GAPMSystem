@@ -538,9 +538,9 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WD-<span
+                                th:text="${dyeRiskAssessment.dyeBatch.dyeStage.id}"></span></h2>
+                        <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="card-body">
                         <!-- Thông tin Work Order -->
@@ -548,7 +548,8 @@
                             <table class="table table-striped mb-0">
                                 <thead>
                                 <tr>
-                                    <th>Mã Work Order Con</th>
+                                    <th>Phụ trách bắt đầu</th>
+                                    <th>Phụ trách kết thúc</th>
                                     <th>Tên màu</th>
                                     <th>Loại sợi</th>
                                     <th>Khối lượng</th>
@@ -558,7 +559,8 @@
                                 </thead>
                                 <tbody id="workOrderChildTableBody">
                                 <tr>
-                                    <td>WD-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.id}"></span></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
@@ -799,7 +801,7 @@
                             <!-- Nút hành động -->
                             <div class="action-buttons">
                                 <button type="submit" class="save-btn">Lưu</button>
-                                <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
+                                <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
                                    class="cancel-btn">Hủy</a>
 
                             </div>
@@ -817,9 +819,9 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
-                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WD-<span
+                                    th:text="${dyeBatch.dyeStage.id}"></span></h2>
+                            <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
                             <!-- Thông tin Work Order -->
@@ -827,7 +829,8 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Mã Work Order Con</th>
+                                        <th>Phụ trách bắt đầu</th>
+                                        <th>Phụ trách kết thúc</th>
                                         <th>Tên màu</th>
                                         <th>Loại sợi</th>
                                         <th>Khối lượng</th>
@@ -837,7 +840,8 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>WD-<span th:text="${dyeBatch.dyeStage.id}"></span></td>
+                                        <td th:text="${dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                        <td th:text="${dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                         <td th:text="${dyeBatch.cone_batch_weight}"></td>
@@ -873,6 +877,20 @@
                 position: "top-end",
                 icon: "error",
                 title: /*[[${check_pass}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${check_photo}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${check_photo}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });

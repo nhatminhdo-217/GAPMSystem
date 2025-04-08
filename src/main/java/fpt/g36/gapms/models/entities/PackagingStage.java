@@ -26,7 +26,7 @@ public class PackagingStage extends BaseEntity {
     @NotNull
     private LocalDate deadline;
 
-    @NotNull
+
     private LocalDate plannedStart;
 
     private LocalDateTime startAt;

@@ -388,6 +388,12 @@
             .captured-image, .video-preview { max-width: 100%; }
             .status-btn { font-size: 12px; padding: 8px; }
         }
+
+        .btn-dye-stage {
+            background: #FFD700;
+            border: none;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -415,36 +421,36 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WD-<span th:text="${windingBatches.get(0).windingStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-yarn me-2"></i> Mẻ Côn-WD-<span th:text="${stageId}"></span></h2>
+                        <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Trạng thái Test</th>
-                                <th>Trạng thái</th>
-                                <th>Mã MẺ</th>
+                                <th>Trạng thái kiểm tra</th>
+                                <th>Trạng thái côn</th>
+                                <th>Mã Mẻ</th>
                                 <th>Thời Gian Bắt Đầu</th>
-                                <th>Tên màu</th>
-                                <th>Số lượng</th>
-                                <th>LOẠI HÀNG</th>
+                                <th>Tên Màu</th>
+                                <th>Số Lượng</th>
+                                <th>Loại Hàng</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ws : ${windingBatches}">
+                            <tr data-id="WOC-001-1" th:each="ws, iterStat : ${windingBatches}">
                                 <td>
-                                    <span th:switch="${ws.testStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đã Kiểm tra
+                                    <span th:switch="${ws.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
                                         </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đang kiểm tra
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
                                         </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
                                         </span>
                                     </span>
                                 </td>
@@ -462,15 +468,15 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>WB-<span th:text="${ws.id}"></span></td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/test-form/winding/{id}(id=${ws.id})}"
-                                       class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                       class="btn btn-dye-stage btn-action">
+                                        <i class="fas fa-clipboard-check"></i> Kiểm Tra
                                     </a>
                                 </td>
                             </tr>

@@ -415,15 +415,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WD-<span th:text="${windingBatches.get(0).windingStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-yarn me-2"></i> Mẻ Côn-WD-<span th:text="${StageId}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã MẺ</th>
+                                <th>Trạng thái kiểm tra</th>
+                                <th>Thứ Tự Mẻ Côn</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
                                 <th>Số lượng</th>
@@ -433,9 +434,7 @@
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ws : ${windingBatches}">
-
-
+                            <tr data-id="WOC-001-1" th:each="ws, iterStat : ${windingBatches}">
                                 <td>
                                     <span th:switch="${ws.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -449,7 +448,20 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>WB-<span th:text="${ws.id}"></span></td>
+                                <td>
+                                    <span th:switch="${ws.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
+                                        </span>
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
+                                        </span>
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>

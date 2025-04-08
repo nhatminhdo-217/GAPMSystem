@@ -6,6 +6,7 @@ import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.PackagingStageService;
+import fpt.g36.gapms.services.PhotoStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,9 @@ public class PackagingStageServiceImpl implements PackagingStageService {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private PhotoStageService photoStageService;
 
     @Autowired
     private PackagingBatchRepository packagingBatchRepository;
@@ -60,6 +64,27 @@ public class PackagingStageServiceImpl implements PackagingStageService {
 
     @Override
     public PackagingRiskAssessment saveTestPackaging(Long id, PackagingRiskAssessment packagingRiskAssessment, User qaPackaging, MultipartFile[] photos) throws IOException {
+
+        List<PhotoStage> photoStages = new ArrayList<>();
+        if(photos != null) {
+            List<String> images = imageService.saveListImageMultiFile(photos);
+            for (String photoUrl : images) {
+                PhotoStage photoStage = new PhotoStage();
+                photoStage.setPhoto(photoUrl);
+                photoStage.setPackagingRiskAssessment(packagingRiskAssessment);// Lưu từng ảnh riêng biệt
+                photoStages.add(photoStage);
+            }
+            photoStageRepository.saveAll(photoStages);
+        }
+
+        List<PhotoStage> photo_exist = photoStageService.getAllPhotoStageByPraId(id);
+        if(packagingRiskAssessment.getPass() != null){
+            if(photo_exist.isEmpty()) {
+                throw new IllegalStateException("Chưa có Ảnh Kiểm Tra được tải lên");
+            }
+        }
+
+
         PackagingRiskAssessment packagingRiskAssessment_save = packagingRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("praId not found"));
         packagingRiskAssessment_save.setFirstStamp(packagingRiskAssessment.getFirstStamp());
         packagingRiskAssessment_save.setCoreStamp(packagingRiskAssessment.getCoreStamp());
@@ -91,7 +116,7 @@ public class PackagingStageServiceImpl implements PackagingStageService {
             }
         }
         packagingRiskAssessmentRepository.save(packagingRiskAssessment_save);
-        List<PhotoStage> photoStages = new ArrayList<>();
+        /*List<PhotoStage> photoStages = new ArrayList<>();
         List<String> images = imageService.saveListImageMultiFile(photos);
         for (String photoUrl : images) {
             PhotoStage photoStage = new PhotoStage();
@@ -99,7 +124,7 @@ public class PackagingStageServiceImpl implements PackagingStageService {
             photoStage.setPackagingRiskAssessment(packagingRiskAssessment_save);// Lưu từng ảnh riêng biệt
             photoStages.add(photoStage);
         }
-        photoStageRepository.saveAll(photoStages);
+        photoStageRepository.saveAll(photoStages);*/
 
         return packagingRiskAssessment_save;
     }
