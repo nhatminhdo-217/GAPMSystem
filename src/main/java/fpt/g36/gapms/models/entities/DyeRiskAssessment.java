@@ -8,15 +8,31 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class DyeRiskAssessment extends BaseEntity {
+public class DyeRiskAssessment extends BaseEntity{
 
-    private Boolean isHumidity;
+      // độ ẩm
+      private Boolean isHumidity;
 
-    private Boolean isColorTrue;
+      //màu đúng
+      private Boolean isColorTrue;
 
-    private Boolean isLightTrue;
+      // ánh sáng
+      private Boolean isLightTrue;
 
-    private Boolean isColorAdhesion;
+
+      // loang màu
+      private Boolean isColorFading;
+
+      // bám thuốc
+      private Boolean isMedication;
+
+      // két thuốc
+      private Boolean isMedicineSafe;
+
+      //bẩn vệ sinh công nghiệp
+      private Boolean isIndustrialCleaningStains;
+
+      private Boolean isPass;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dye_batch_id")
@@ -25,57 +41,55 @@ public class DyeRiskAssessment extends BaseEntity {
     @OneToMany(mappedBy = "dyeRiskAssessment")
     private List<PhotoStage> photo;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "create_by", nullable = false)
-    private User createBy;
 
-    public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorAdhesion, DyeBatch dyeBatch, List<PhotoStage> photo, User createBy) {
-        super(id, createAt, updateAt);
-        this.isHumidity = isHumidity;
-        this.isColorTrue = isColorTrue;
-        this.isLightTrue = isLightTrue;
-        this.isColorAdhesion = isColorAdhesion;
-        this.dyeBatch = dyeBatch;
-        this.photo = photo;
-        this.createBy = createBy;
-    }
+      @ManyToOne(fetch = FetchType.LAZY, optional = false)
+      @JoinColumn(name = "create_by")
+      private User createBy;
+
+
+      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeStage dyeStage, List<PhotoStage> photo, User createBy, DyeBatch dyeBatch) {
+            super(id, createAt, updateAt);
+            this.isHumidity = isHumidity;
+            this.isColorTrue = isColorTrue;
+            this.isLightTrue = isLightTrue;
+            this.isColorFading = isColorFading;
+            this.isMedication = isMedication;
+            this.isMedicineSafe = isMedicineSafe;
+            this.isIndustrialCleaningStains = isIndustrialCleaningStains;
+            this.isPass = isPass;
+            this.dyeBatch = dyeBatch;
+            this.photo = photo;
+            this.createBy = createBy;
+      }
 
     public DyeRiskAssessment() {
 
-    }
+      }
 
-    public Boolean getHumidity() {
-        return isHumidity;
-    }
+      public Boolean getHumidity() {
+            return isHumidity;
+      }
 
-    public void setHumidity(Boolean humidity) {
-        isHumidity = humidity;
-    }
+      public void setHumidity(Boolean humidity) {
+            isHumidity = humidity;
+      }
 
-    public Boolean getColorTrue() {
-        return isColorTrue;
-    }
+      public Boolean getColorTrue() {
+            return isColorTrue;
+      }
 
-    public void setColorTrue(Boolean colorTrue) {
-        isColorTrue = colorTrue;
-    }
+      public void setColorTrue(Boolean colorTrue) {
+            isColorTrue = colorTrue;
+      }
 
-    public Boolean getLightTrue() {
-        return isLightTrue;
-    }
+      public Boolean getLightTrue() {
+            return isLightTrue;
+      }
 
-    public void setLightTrue(Boolean lightTrue) {
-        isLightTrue = lightTrue;
-    }
+      public void setLightTrue(Boolean lightTrue) {
+            isLightTrue = lightTrue;
+      }
 
-    public Boolean getColorAdhesion() {
-        return isColorAdhesion;
-    }
-
-    public void setColorAdhesion(Boolean colorAdhesion) {
-        isColorAdhesion = colorAdhesion;
-    }
 
     public DyeBatch getDyeBatch() {
         return dyeBatch;
@@ -97,7 +111,47 @@ public class DyeRiskAssessment extends BaseEntity {
         return createBy;
     }
 
-    public void setCreateBy(User createBy) {
-        this.createBy = createBy;
-    }
+      public void setCreateBy(User createBy) {
+            this.createBy = createBy;
+      }
+
+      public Boolean getColorFading() {
+            return isColorFading;
+      }
+
+      public void setColorFading(Boolean colorFading) {
+            isColorFading = colorFading;
+      }
+
+      public Boolean getMedication() {
+            return isMedication;
+      }
+
+      public void setMedication(Boolean medication) {
+            isMedication = medication;
+      }
+
+      public Boolean getMedicineSafe() {
+            return isMedicineSafe;
+      }
+
+      public void setMedicineSafe(Boolean medicineSafe) {
+            isMedicineSafe = medicineSafe;
+      }
+
+      public Boolean getIndustrialCleaningStains() {
+            return isIndustrialCleaningStains;
+      }
+
+      public void setIndustrialCleaningStains(Boolean industrialCleaningStains) {
+            isIndustrialCleaningStains = industrialCleaningStains;
+      }
+
+      public Boolean getPass() {
+            return isPass;
+      }
+
+      public void setPass(Boolean pass) {
+            isPass = pass;
+      }
 }

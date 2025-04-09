@@ -107,6 +107,14 @@ public class WindingStage extends BaseEntity {
         this.plannedStart = plannedStart;
     }
 
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart
+    }
+
     public WorkOrderDetail getWorkOrderDetail() {
         return workOrderDetail;
     }

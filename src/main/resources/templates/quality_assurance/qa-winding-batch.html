@@ -415,49 +415,63 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-boxes me-2"></i> Lệnh Đóng Gói Hàng-WO-<span th:text="${packagingStages.first.workOrderDetail.workOrder.id}"></span></h2>
+                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WD-<span th:text="${windingBatches.get(0).windingStage.id}"></span></h2>
                         <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
+                                <th>Trạng thái Test</th>
                                 <th>Trạng thái</th>
-                                <th>Mã Work Order Con</th>
-                                <th>Mã Khách Hàng</th>
+                                <th>Mã MẺ</th>
                                 <th>Thời Gian Bắt Đầu</th>
-                                <th>Số lượng</th>
                                 <th>Tên màu</th>
-                                <th>Loại Hàng</th>
+                                <th>Số lượng</th>
+                                <th>LOẠI HÀNG</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ps : ${packagingStages}">
+                            <tr data-id="WOC-001-1" th:each="ws : ${windingBatches}">
                                 <td>
-                                    <span th:switch="${ps.workStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đang Đóng Gói
+                                    <span th:switch="${ws.testStatus}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đã Kiểm tra
                                         </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Đóng Gói
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đang kiểm tra
                                         </span>
-                                        <span th:case="*" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chưa Đóng Gói
+                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${ps.workOrderDetail.id}"></span></td>
-                                <td>KH-<span th:text="${ps.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
-                                <td th:text="${#temporals.format(ps.startAt, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
-                                <td th:text="${ps.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
+
                                 <td>
-                                    <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${ps.id} + '\')'">
-                                        <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
-                                    </button>
+                                    <span th:switch="${ws.workStatus}">
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Đang Côn
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã Côn
+                                        </span>
+                                        <span th:case="*" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chưa Côn
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>WB-<span th:text="${ws.id}"></span></td>
+                                <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
+                                <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
+                                <td>
+                                    <a th:href="@{/work-order/quality_assurance/test-form/winding/{id}(id=${ws.id})}"
+                                       class="btn btn-primary btn-action">
+                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
@@ -475,54 +489,54 @@
     <!-- Content End -->
 
     <!-- Popup Form -->
-    <th:block th:each="ps : ${packagingStages}">
-        <div th:id="'popup-' + ${ps.id}" class="popup">
+    <th:block th:each="ws : ${windingBatches}">
+        <div th:id="'popup-' + ${ws.id}" class="popup">
             <div class="popup-content">
-                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ps.id} + '\')'">×</span>
+                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${ws.id} + '\')'">×</span>
                 <h3>Cập nhật trạng thái</h3>
-                <form th:action="@{/work-order/team-leader-packaging/change/finish/{id}(id=${ps.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ps.id}">
+                <form th:action="@{/work-order/team-leader/winding/change/finish/{id}(id=${ws.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${ws.id}">
                     <div class="form-group">
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
-                            <a th:href="@{/work-order/team-leader-packaging/change/in-process/{id}(id=${ps.id})}"
-                               th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ps.workOrderDetail.windingStage.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                            <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${ws.id})}"
+                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
                             </a>
                             <button type="button"
                                     class="status-btn completed"
-                                    th:onclick="'submitFormWithPhoto(\'form-' + ${ps.id} + '\')'"
-                                    th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:onclick="'submitFormWithPhoto(\'form-' + ${ws.id} + '\')'"
+                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Chụp ảnh xác thực:</label>
-                        <div th:if="${ps.getPackagingPhoto() == null}">
+                        <div th:if="${ws.windingPhoto == null}">
                             <!-- Container bao quanh video và các nút bên trong -->
                             <div class="camera-container">
-                                <video th:id="'video-' + ${ps.id}" class="video-preview" autoplay></video>
+                                <video th:id="'video-' + ${ws.id}" class="video-preview" autoplay></video>
                                 <!-- Nút "Đổi camera" -->
-                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${ps.id}">
+                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${ws.id}">
                                     <i class="fas fa-sync"></i>
                                 </button>
                                 <!-- Nút "Chụp ảnh" -->
-                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${ps.id}">
+                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${ws.id}">
                                     <i class="fas fa-camera"></i>
                                 </button>
                             </div>
                             <!-- Nút "Bật camera" bên dưới -->
-                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${ps.id} + '\', \'popup-' + ${ps.id} + '\')'">
+                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${ws.id} + '\', \'popup-' + ${ws.id} + '\')'">
                                 <i class="fas fa-camera me-2"></i> Bật camera
                             </button>
                         </div>
-                        <div th:if="${ps.getPackagingPhoto() != null}">
-                            <img th:src="'/uploads/' + ${ps.getPackagingPhoto()}" class="captured-image" alt="Ảnh xác thực">
+                        <div th:if="${ws.windingPhoto != null}">
+                            <img th:src="'/uploads/' + ${ws.windingPhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
-                        <div th:id="'photoPreview-' + ${ps.id}"></div>
-                        <input type="file" th:id="'photoInput-' + ${ps.id}" name="photo" style="display: none;">
+                        <div th:id="'photoPreview-' + ${ws.id}"></div>
+                        <input type="file" th:id="'photoInput-' + ${ws.id}" name="photo" style="display: none;">
                     </div>
                 </form>
             </div>
@@ -532,11 +546,11 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-<div th:if="${in_process_packaging} or ${error}">
+<div th:if="${in_process_winding} or ${error}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
-            // Hiển thị thông báo thành công (in_process_packaging)
-            const inProcessMessage = /*[[${in_process_packaging}]]*/ null;
+            // Hiển thị thông báo thành công (in_process_winding)
+            const inProcessMessage = /*[[${in_process_winding}]]*/ null;
             if (inProcessMessage) {
                 Swal.fire({
                     position: "top-end",
@@ -563,13 +577,13 @@
     </script>
 </div>
 
-<div th:if="${complete_packaging}">
+<div th:if="${complete_winding}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: /*[[${complete_packaging}]]*/ "Default message",
+                title: /*[[${complete_winding}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -591,293 +605,6 @@
 <script src="/assert/js/main.js"></script>
 
 <!-- Script cho các chức năng -->
-<script>
-    // Khai báo biến toàn cục để lưu trữ stream của camera
-    // - `currentStream`: Lưu trữ stream video từ camera (khi camera được bật).
-    // - `null` ban đầu vì camera chưa được bật.
-    let currentStream = null;
 
-    // Biến để quyết định sử dụng camera trước hay sau
-    // - `useRearCamera`: Nếu `true`, sử dụng camera sau (môi trường - "environment").
-    // - Nếu `false`, sử dụng camera trước (người dùng - "user").
-    // - Mặc định là `true` để ưu tiên camera sau (thường dùng để chụp ảnh).
-    let useRearCamera = true;
-
-    // Hàm hiển thị popup
-    // - `popupId`: ID của popup (ví dụ: "popup-1"), được truyền vào từ HTML.
-    // - Mục đích: Hiển thị popup và làm sạch khu vực preview ảnh (nếu có ảnh cũ).
-    function showUpdatePopup(popupId) {
-        // Lấy phần tử popup bằng ID
-        // - `document.getElementById(popupId)`: Tìm phần tử có ID tương ứng (ví dụ: <div id="popup-1">).
-        const popup = document.getElementById(popupId);
-
-        // Lấy phần tử preview ảnh
-        // - `popupId.split('-')[1]`: Tách ID để lấy số (ví dụ: "popup-1" → "1").
-        // - `photoPreview-` + số: Tạo ID của phần tử preview (ví dụ: "photoPreview-1").
-        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
-
-        // Làm sạch khu vực preview ảnh
-        // - `photoPreview.innerHTML = ''`: Xóa toàn bộ nội dung HTML bên trong (bỏ ảnh cũ nếu có).
-        photoPreview.innerHTML = '';
-
-        // Hiển thị popup
-        // - `popup.style.display = 'flex'`: Đặt `display: flex` để hiển thị popup (theo CSS đã định nghĩa).
-        popup.style.display = 'flex';
-    }
-
-    // Hàm đóng popup và dừng camera
-    // - `popupId`: ID của popup (ví dụ: "popup-1").
-    // - Mục đích: Ẩn popup và dừng camera nếu đang bật.
-    function closePopup(popupId) {
-        // Lấy phần tử popup bằng ID
-        const popup = document.getElementById(popupId);
-
-        // Kiểm tra nếu camera đang bật (có stream)
-        // - `currentStream`: Nếu không phải `null`, nghĩa là camera đang hoạt động.
-        if (currentStream) {
-            // Dừng tất cả các track (video) của stream
-            // - `getTracks()`: Lấy danh sách các track (video, audio, ...).
-            // - `forEach(track => track.stop())`: Dừng từng track để tắt camera.
-            currentStream.getTracks().forEach(track => track.stop());
-
-            // Đặt lại `currentStream` về `null`
-            // - Đảm bảo trạng thái camera đã được dừng hoàn toàn.
-            currentStream = null;
-        }
-
-        // Ẩn popup
-        // - `popup.style.display = 'none'`: Ẩn popup bằng cách đặt `display: none`.
-        popup.style.display = 'none';
-    }
-
-    // Hàm bật camera
-    // - `videoId`: ID của thẻ <video> (ví dụ: "video-1").
-    // - `popupId`: ID của popup (ví dụ: "popup-1").
-    // - Mục đích: Bật camera, hiển thị video stream trong thẻ <video>, và hiển thị các nút "Chụp ảnh" và "Đổi camera".
-    async function startCamera(videoId, popupId) {
-        // Lấy thẻ <video> để hiển thị stream
-        const video = document.getElementById(videoId);
-
-        // Lấy nút "Chụp ảnh"
-        // - `capture-btn-` + số: ID của nút "Chụp ảnh" (ví dụ: "capture-btn-1").
-        const captureBtn = document.getElementById('capture-btn-' + popupId.split('-')[1]);
-
-        // Lấy nút "Đổi camera"
-        // - `switch-btn-` + số: ID của nút "Đổi camera" (ví dụ: "switch-btn-1").
-        const switchBtn = document.getElementById('switch-btn-' + popupId.split('-')[1]);
-
-        // Lấy nút "Bật camera"
-        // - Dùng `querySelector` để tìm nút có `onclick` chứa `startCamera` với tham số `videoId` và `popupId`.
-        // - Ví dụ: <button onclick="startCamera('video-1', 'popup-1')">.
-        const startBtn = document.querySelector(`button[onclick*="startCamera('${videoId}', '${popupId}')]`);
-
-        // Sử dụng `try-catch` để xử lý lỗi khi truy cập camera
-        try {
-            // Kiểm tra nếu camera đang bật (có stream)
-            // - Nếu có, dừng stream hiện tại để tránh xung đột.
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-
-            // Yêu cầu truy cập camera
-            // - `navigator.mediaDevices.getUserMedia`: API để truy cập camera.
-            // - `video: { facingMode: ... }`: Cấu hình camera (camera sau hoặc trước).
-            // - `useRearCamera ? "environment" : "user"`: Nếu `useRearCamera` là `true`, dùng camera sau; nếu `false`, dùng camera trước.
-            currentStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: useRearCamera ? "environment" : "user"
-                }
-            });
-
-            // Gán stream vào thẻ <video>
-            // - `video.srcObject = currentStream`: Hiển thị video từ camera trong thẻ <video>.
-            video.srcObject = currentStream;
-
-            // Hiển thị nút "Chụp ảnh"
-            // - `captureBtn.style.display = 'flex'`: Hiển thị nút (ban đầu ẩn bằng `display: none` trong HTML).
-            captureBtn.style.display = 'flex';
-
-            // Hiển thị nút "Đổi camera"
-            // - `switchBtn.style.display = 'flex'`: Hiển thị nút (ban đầu ẩn).
-            switchBtn.style.display = 'flex';
-
-            // Ẩn nút "Bật camera"
-            // - `startBtn.style.display = 'none'`: Ẩn nút "Bật camera" sau khi camera đã mở.
-            if (startBtn) {
-                startBtn.style.display = 'none';
-            }
-        } catch (err) {
-            // Xử lý lỗi nếu không truy cập được camera
-            // - Ví dụ: Người dùng không cấp quyền, hoặc thiết bị không có camera.
-            Swal.fire({
-                icon: 'error', // Biểu tượng lỗi
-                title: 'Lỗi', // Tiêu đề thông báo
-                text: 'Không thể truy cập camera: ' + err.message, // Nội dung lỗi
-            });
-        }
-    }
-
-    // Hàm chuyển đổi giữa camera trước và sau
-    // - `videoId`: ID của thẻ <video>.
-    // - `popupId`: ID của popup.
-    // - Mục đích: Chuyển đổi giữa camera trước và sau khi người dùng nhấn nút "Đổi camera".
-    async function switchCamera(videoId, popupId) {
-        // Lấy thẻ <video>
-        const video = document.getElementById(videoId);
-
-        // Đảo ngược trạng thái camera
-        // - Nếu đang dùng camera sau (`true`), chuyển sang camera trước (`false`) và ngược lại.
-        useRearCamera = !useRearCamera;
-
-        // Sử dụng `try-catch` để xử lý lỗi
-        try {
-            // Dừng stream hiện tại (nếu có)
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-
-            // Yêu cầu truy cập camera với chế độ mới
-            // - Tương tự `startCamera`, nhưng với `facingMode` mới.
-            currentStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: useRearCamera ? "environment" : "user"
-                }
-            });
-
-            // Gán stream mới vào thẻ <video>
-            video.srcObject = currentStream;
-        } catch (err) {
-            // Xử lý lỗi nếu không chuyển đổi được camera
-            // - Ví dụ: Thiết bị không có camera trước/sau.
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Không thể chuyển camera: ' + err.message,
-            });
-        }
-    }
-
-    // Hàm chụp ảnh từ video
-    // - `videoId`: ID của thẻ <video>.
-    // - `popupId`: ID của popup.
-    // - Mục đích: Chụp ảnh từ stream video, hiển thị ảnh trong khu vực preview, và gán file ảnh vào input để gửi form.
-    function capturePhoto(videoId, popupId) {
-        // Lấy thẻ <video>
-        const video = document.getElementById(videoId);
-
-        // Lấy khu vực preview ảnh
-        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
-
-        // Lấy input file ẩn
-        // - `photoInput-` + số: ID của input file (ví dụ: "photoInput-1").
-        // - Dùng để gửi file ảnh lên server.
-        const photoInput = document.getElementById('photoInput-' + popupId.split('-')[1]);
-
-        // Tạo canvas để vẽ ảnh từ video
-        // - `canvas`: Tạo một thẻ <canvas> động (không hiển thị trên giao diện).
-        const canvas = document.createElement('canvas');
-
-        // Đặt kích thước canvas bằng kích thước video
-        // - `video.videoWidth` và `video.videoHeight`: Lấy kích thước thực tế của video stream.
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        // Lấy context 2D của canvas để vẽ
-        const ctx = canvas.getContext('2d');
-
-        // Vẽ khung hình hiện tại của video lên canvas
-        // - `drawImage(video, 0, 0, ...)`: Vẽ video lên canvas tại vị trí (0,0) với kích thước của canvas.
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Chuyển canvas thành dữ liệu ảnh (base64)
-        // - `toDataURL('image/png')`: Chuyển canvas thành chuỗi base64 định dạng PNG.
-        const imageData = canvas.toDataURL('image/png');
-
-        // Tạo thẻ <img> để hiển thị ảnh trong khu vực preview
-        const img = document.createElement('img');
-        img.src = imageData; // Gán dữ liệu ảnh vào `src`
-        img.className = 'captured-image'; // Thêm class để style (đã định nghĩa trong CSS)
-
-        // Làm sạch khu vực preview và thêm ảnh mới
-        photoPreview.innerHTML = '';
-        photoPreview.appendChild(img);
-
-        // Chuyển dữ liệu ảnh thành file và gán vào input
-        // - `fetch(imageData)`: Tải dữ liệu base64.
-        // - `res.blob()`: Chuyển dữ liệu thành Blob (định dạng nhị phân).
-        fetch(imageData)
-            .then(res => res.blob())
-            .then(blob => {
-                // Tạo file từ Blob
-                // - `new File([blob], ...)`: Tạo file với tên và định dạng.
-                // - Tên file: `photo-${popupId.split('-')[1]}.png` (ví dụ: "photo-1.png").
-                // - Định dạng: `image/png`.
-                const file = new File([blob], `photo-${popupId.split('-')[1]}.png`, { type: 'image/png' });
-
-                // Tạo DataTransfer để gán file vào input
-                // - `DataTransfer`: API để tạo danh sách file giả lập.
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-
-                // Gán file vào input
-                // - `photoInput.files`: Gán danh sách file vào input để gửi form.
-                photoInput.files = dataTransfer.files;
-            });
-
-        // Dừng camera sau khi chụp ảnh
-        // - Tương tự `closePopup`, dừng stream và đặt lại trạng thái.
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
-        }
-        video.srcObject = null; // Xóa stream khỏi thẻ <video>
-    }
-
-    // Hàm xử lý khi nhấn "Hoàn thành"
-    // - `formId`: ID của form (ví dụ: "form-1").
-    // - Mục đích: Kiểm tra form và file ảnh, sau đó gửi form lên server.
-    function submitFormWithPhoto(formId) {
-        // Debug: In ID của form
-        console.log('Form ID:', formId);
-
-        // Lấy form bằng ID
-        const form = document.getElementById(formId);
-
-        // Lấy input file
-        const photoInput = document.getElementById('photoInput-' + formId.split('-')[1]);
-
-        // Debug: In thông tin form và file
-        console.log('Form element:', form);
-        console.log('photoInput.files:', photoInput.files);
-
-        // Kiểm tra nếu form không tồn tại
-        if (!form) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Không tìm thấy form với ID: ' + formId,
-            });
-            return;
-        }
-
-        // Kiểm tra nếu không có file ảnh
-        // - `photoInput.files`: Danh sách file trong input.
-        // - Nếu rỗng hoặc không có file, hiển thị cảnh báo.
-        if (!photoInput.files || photoInput.files.length === 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Yêu cầu chụp ảnh',
-                text: 'Bạn phải chụp ảnh xác thực trước khi hoàn thành!',
-            });
-        } else {
-            // Debug: In URL mà form sẽ gửi đến
-            console.log('Submitting form to:', form.action);
-
-            // Gửi form
-            // - `form.submit()`: Gửi form lên server (theo `action` và `method` của form).
-            form.submit();
-        }
-    }
-</script>
 </body>
 </html>

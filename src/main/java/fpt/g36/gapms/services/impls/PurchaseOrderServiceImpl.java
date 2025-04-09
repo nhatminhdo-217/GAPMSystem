@@ -5,9 +5,10 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
-import fpt.g36.gapms.services.PurchaseOrderService;
+import fpt.g36.gapms.services.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +53,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrder po = getPurchaseOrderById(id)
                 .orElseThrow(() -> new RuntimeException("Purchase Order not found"));
 
-        if (getStatusByPurchaseOrderId(id) == BaseEnum.NOT_APPROVED){
+        if (getStatusByPurchaseOrderId(id).equals(BaseEnum.DRAFT)) {
+            po.setStatus(BaseEnum.NOT_APPROVED);
+            po.setManageBy(currUser);
+        }
+        else if (getStatusByPurchaseOrderId(id) == BaseEnum.NOT_APPROVED){
             po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
         } else if (getStatusByPurchaseOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
             po.setStatus(BaseEnum.APPROVED);
@@ -120,5 +124,41 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderCustomerDetail(purchase_order_id);
         return purchaseOrder;
+    }
+
+    @Override
+    public boolean checkContractWithStatus(BaseEnum status, Long id) {
+
+        return status.equals(BaseEnum.NOT_APPROVED) && isPurchaseOrderContract(id);
+
+    }
+
+    @Override
+    public boolean cancelPurchaseOrder(Long id) {
+        Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
+        if (purchaseOrder.isPresent()) {
+            PurchaseOrder po = purchaseOrder.get();
+            if (po.getStatus().equals(BaseEnum.WAIT_FOR_APPROVAL)) {
+                po.setStatus(BaseEnum.CANCELED);
+                purchaseOrderRepository.save(po);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public PurchaseOrderDetail getPurchaseOrderDetailById(Long id) {
+        Optional<PurchaseOrderDetail> purchaseOrderDetail = purchaseOrderRepository.getPurchaseOrderDetailById(id);
+        if (purchaseOrderDetail.isPresent()) {
+            return purchaseOrderDetail.get();
+        } else {
+            throw new RuntimeException("Purchase Order Detail not found");
+        }
+    }
+
+    private boolean isPurchaseOrderContract(Long id){
+        Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
+        return purchaseOrder.filter(order -> order.getContract() != null).isPresent();
     }
 }

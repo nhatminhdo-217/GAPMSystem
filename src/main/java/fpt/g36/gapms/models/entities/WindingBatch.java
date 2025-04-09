@@ -14,6 +14,9 @@ import java.util.List;
 public class WindingBatch extends BaseEntity {
 
     @NotNull
+    private LocalDate plannedStart;
+
+    @NotNull
     private LocalDateTime plannedStart;
 
     @NotNull
@@ -47,6 +50,8 @@ public class WindingBatch extends BaseEntity {
     @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 
+    private Boolean isPass;
+
     @OneToOne
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
@@ -76,6 +81,7 @@ public class WindingBatch extends BaseEntity {
         this.leaderEnd = leaderEnd;
         this.windingPhoto = windingPhoto;
         this.windingStage = windingStage;
+        this.isPass = isPass;
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
         this.qa = qa;
@@ -96,7 +102,7 @@ public class WindingBatch extends BaseEntity {
     public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
-
+ 
     public LocalDateTime getDeadline() {
         return deadline;
     }
@@ -191,5 +197,13 @@ public class WindingBatch extends BaseEntity {
 
     public void setWindingRiskAssessmentList(List<WindingRiskAssessment> windingRiskAssessmentList) {
         this.windingRiskAssessmentList = windingRiskAssessmentList;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

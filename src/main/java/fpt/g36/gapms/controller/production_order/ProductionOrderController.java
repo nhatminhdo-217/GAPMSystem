@@ -1,7 +1,9 @@
 package fpt.g36.gapms.controller.production_order;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
+import fpt.g36.gapms.models.entities.ProductionOrder;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ProductionOrderService;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -66,7 +69,7 @@ public class ProductionOrderController {
         userUtils.getOptionalUser(model);
 
         ProductionOrderDTO productionOrder = productionOrderService.findById(id);
-        List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailsByProductionOrderId(id);
+        List<ProductionOrderDetailDTO> productionOrderDetailList = productionOrderService.findDetailByProductionOrderId(id);
 
         model.addAttribute("productionOrder", productionOrder);
         model.addAttribute("productionOrderDetailList", productionOrderDetailList);
@@ -78,13 +81,40 @@ public class ProductionOrderController {
 
     @PostMapping("/detail/{id}")
     public String createProductionOrderDetail(@PathVariable("id") Long id,
+                                              RedirectAttributes redirectAttributes,
                                               Model model) {
 
         User currUser = userUtils.getOptionalUserInfo();
 
-        ProductionOrderDTO productionOrderDTO = productionOrderService.updateStatusByProductionOrderId(id, currUser);
+        BaseEnum status = productionOrderService.getStatusByProductionOrder(id);
 
-        return "redirect:/production-order/detail/" + productionOrderDTO.getId();
+        if (status.equals(BaseEnum.NOT_APPROVED)) {
+            ProductionOrder po = productionOrderService.updateStatus(id, currUser);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật lệnh sản xuất thành công");
+            return "redirect:/production-order/detail/" + po.getId();
+        }else {
+            if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
+                redirectAttributes.addFlashAttribute("success", "Lệnh sản xuất đã được phê duyệt");
+            } else {
+                redirectAttributes.addFlashAttribute("success", "Cập nhật lệnh sản xuất thành công");
+            }
+            ProductionOrder po = productionOrderService.updateStatus(id, currUser);
+            return "redirect:/production-order/detail/" + po.getId();
+        }
+    }
+
+    @PostMapping("/detail/{id}/cancel")
+    public String cancelProductionOrderDetail(@PathVariable("id") Long id,
+                                              RedirectAttributes redirectAttributes) {
+
+        boolean isCancelled = productionOrderService.cancelProductionOrder(id);
+
+        if (isCancelled) {
+            redirectAttributes.addFlashAttribute("success", "Hủy lệnh sản xuất thành công");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Không thể hủy lệnh sản xuất");
+        }
+        return "redirect:/production-order/detail/" + id;
     }
 
     @PostMapping("/detail/update/{id}")

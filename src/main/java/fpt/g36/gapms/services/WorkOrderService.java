@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public interface WorkOrderService {
-    Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable);
+    Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId);
 
     Page<WorkOrder> getAllWorkOrders(Pageable pageable);
 

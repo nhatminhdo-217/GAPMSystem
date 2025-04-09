@@ -38,6 +38,9 @@ public class DyeStage extends BaseEntity {
     @NotNull
     private LocalDateTime plannedStart;
 
+    @NotNull
+    private LocalDate plannedStart;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -74,7 +77,7 @@ public class DyeStage extends BaseEntity {
 
     public DyeStage() {
     }
-
+  
     public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
@@ -115,6 +118,14 @@ public class DyeStage extends BaseEntity {
     }
 
     public void setPlannedStart(LocalDateTime plannedStart) {
+        this.plannedStart = plannedStart;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
         this.plannedStart = plannedStart;
     }
 

@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+import java.time.LocalDate;
 
 @Repository
 public interface DyeMachineRepository extends JpaRepository<DyeMachine, Long> {
@@ -23,4 +23,14 @@ public interface DyeMachineRepository extends JpaRepository<DyeMachine, Long> {
     @Query("SELECT dm FROM DyeMachine dm WHERE dm.id = :id")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     DyeMachine findByIdWithLock(@Param("id") Long id);
+
+    Page<DyeMachine> findByDyeStageIsNull(Pageable pageable);
+
+    @Query("SELECT dm FROM DyeMachine dm " +
+            "WHERE dm.id NOT IN (SELECT ds.dyeMachine.id FROM DyeStage ds " +
+            "WHERE ds.plannedStart BETWEEN :plannedStart AND :plannedEnd) " +
+            "ORDER BY dm.createAt DESC")
+    Page<DyeMachine> findAvailableDyeMachines(LocalDate plannedStart, LocalDate plannedEnd, Pageable pageable);
+
+
 }

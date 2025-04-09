@@ -117,8 +117,14 @@
 
           <hr>
 
-          <div class="mt-4">
-            <a href="/quotation/list" class="btn btn-primary">Back</a>
+          <div class="mt-4 d-flex">
+            <div th:if="${quotation_detail.isAccepted == 'DRAFT'}">
+              <button type="submit" class="btn btn-primary">Xác Nhận</button>
+            </div>
+            <div th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}">
+              <button type="submit" class="btn btn-primary">Gửi</button>
+            </div>
+            <a href="/quotation/list" class="btn">Back</a>
           </div>
         </form>
       </div>

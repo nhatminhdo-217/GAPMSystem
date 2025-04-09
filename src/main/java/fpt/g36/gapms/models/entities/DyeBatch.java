@@ -31,6 +31,9 @@ public class DyeBatch extends BaseEntity {
     @NotNull
     private LocalDateTime plannedStart;
 
+    @NotNull
+    private LocalDate plannedStart;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -67,6 +70,8 @@ public class DyeBatch extends BaseEntity {
     @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DyeRiskAssessment> dyeRiskAssessments;
 
+    private Boolean isPass;
+
     public DyeBatch() {
     }
 
@@ -90,6 +95,15 @@ public class DyeBatch extends BaseEntity {
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
+        this.isPass = isPass;
+    }
+
+    public LocalDate getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public User getQa() {
@@ -218,5 +232,13 @@ public class DyeBatch extends BaseEntity {
 
     public void setDyeRiskAssessments(List<DyeRiskAssessment> dyeRiskAssessments) {
         this.dyeRiskAssessments = dyeRiskAssessments;
+    }
+
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
     }
 }

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Kiểm Tra Chất Lượng Sau Nhuộm</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Inline CSS -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+            color: #333;
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        /* Card Styles */
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .card-header .btn-light {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .card-header .btn-light:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Form Styles */
+        .qc-info {
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .qc-info p {
+            font-size: 14px;
+            color: #444;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .qc-info p strong {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Checklist */
+        .qc-checklist, .qc-photos, .qc-result, .qc-report {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .qc-checklist h4, .qc-photos h4, .qc-result h4, .qc-report h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        /*.qc-checklist h4::after, .qc-photos h4::after, .qc-result h4::after, .qc-report h4::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #28a745, #34d058);
+            border-radius: 3px;
+        }*/
+
+        .checklist-item {
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .checklist-item label {
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .checklist-item select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 120px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        .checklist-item select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Photos */
+        .qc-photos {
+            text-align: center;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .camera-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .camera-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .camera-switch-btn {
+            top: 10px;
+            right: 10px;
+        }
+
+        .camera-capture-btn {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .camera-btn i {
+            font-size: 18px;
+        }
+
+        .capture-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 320px;
+            margin: 10px auto;
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .photo-item {
+            display: inline-block; /* Đảm bảo các ảnh nằm cạnh nhau */
+            position: relative;
+            width: 120px; /* Điều chỉnh kích thước ảnh */
+            height: 120px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .captured-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Giữ tỷ lệ ảnh mà không bị méo */
+            border-radius: 8px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        /* Kết quả kiểm tra */
+        .result-buttons {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .result-buttons label {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .note-section {
+            margin-top: 15px;
+        }
+
+        .note-section label {
+            display: block;
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .note-section select {
+            width: 120px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        .note-section select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Báo cáo lỗi */
+        .qc-report select {
+            width: 120px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        .qc-report select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Nút hành động */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .save-btn, .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #0088cc);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+        }
+
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #5a6268, #8a9299);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            background: linear-gradient(135deg, #007bff, #00aaff);
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .card-header {
+                padding: 15px;
+            }
+
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .qc-info {
+                padding: 10px;
+            }
+
+            .qc-info p {
+                font-size: 13px;
+            }
+
+            .qc-checklist, .qc-photos, .qc-result, .qc-report {
+                padding: 10px;
+            }
+
+            .qc-checklist h4, .qc-photos h4, .qc-result h4, .qc-report h4 {
+                font-size: 14px;
+            }
+
+            .checklist-item {
+                flex-direction: row;
+                gap: 5px;
+            }
+
+            .checklist-item label {
+                font-size: 13px;
+            }
+
+            .checklist-item select {
+                width: 100px;
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .save-btn, .cancel-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .note-section select, .qc-report select {
+                width: 100px;
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .photo-item {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+
+    /*   css icon */
+        .status-icon {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        .icon.yellow {
+            color: #FFC107; /* Màu vàng */
+        }
+
+        .icon.green {
+            color: #28A745; /* Màu xanh */
+        }
+
+        .icon.red {
+            color: #DC3545; /* Màu đỏ */
+        }
+
+
+        .waiting-message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+        <div th:if="${dyeRiskAssessment != null}">
+        <!-- Main Content Start -->
+        <div class="main-content" id="mainContent" >
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
+                                th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Thông tin Work Order -->
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Mã Work Order Con</th>
+                                    <th>Tên màu</th>
+                                    <th>Loại sợi</th>
+                                    <th>Khối lượng</th>
+                                    <th>Ánh Sáng</th>
+                                    <th>Số Quả</th>
+                                </tr>
+                                </thead>
+                                <tbody id="workOrderChildTableBody">
+                                <tr>
+                                    <td>WD-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.id}"></span></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
+                                    <td>na</td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.cone_quantity}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Form để gửi dữ liệu về backend -->
+                        <form th:action="@{/work-order/quality_assurance/test/dye/{id}(id=${dyeRiskAssessment.id})}"
+                              th:object="${dyeRiskAssessment}" method="post" enctype="multipart/form-data" id="qcForm">
+                            <!-- Checklist tiêu chí -->
+                            <div class="qc-checklist">
+                                <h4>Tiêu chí kiểm tra</h4>
+                                <input type="hidden" name="dyeBatch" th:field="*{dyeBatch}">
+
+                                <div class="checklist-item">
+                                    <label>Màu nhuộm so với mẫu khách hàng:</label>
+                                    <div class="status-icon">
+            <span th:if="${dyeRiskAssessment.colorTrue == null}" class="icon yellow">
+                <i class="fas fa-clock"></i> <!-- Icon màu vàng -->
+            </span>
+                                        <span th:if="${dyeRiskAssessment.colorTrue == true}" class="icon green">
+                <i class="fas fa-check-circle"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.colorTrue == false}" class="icon red">
+                <i class="fas fa-times-circle"></i>
+            </span>
+                                    </div>
+                                    <select name="colorTrue" th:field="*{colorTrue}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.colorTrue == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <label>Ánh sáng:</label>
+                                    <div class="status-icon">
+            <span th:if="${dyeRiskAssessment.lightTrue == null}" class="icon yellow">
+                <i class="fas fa-clock"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.lightTrue == true}" class="icon green">
+                <i class="fas fa-check-circle"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.lightTrue == false}" class="icon red">
+                <i class="fas fa-times-circle"></i>
+            </span>
+                                    </div>
+                                    <select name="humidity" th:field="*{lightTrue}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.lightTrue == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                                <!-- Độ ẩm sợi sau sấy -->
+                                <div class="checklist-item">
+                                    <label>Độ ẩm sợi sau sấy:</label>
+                                    <div class="status-icon">
+            <span th:if="${dyeRiskAssessment.humidity == null}" class="icon yellow">
+                <i class="fas fa-clock"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.humidity == true}" class="icon green">
+                <i class="fas fa-check-circle"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.humidity == false}" class="icon red">
+                <i class="fas fa-times-circle"></i>
+            </span>
+                                    </div>
+                                    <select name="humidity" th:field="*{humidity}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.humidity == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                                <!-- Lỗi loang màu -->
+                                <div class="checklist-item">
+                                    <label>Lỗi loang màu:</label>
+                                    <div class="status-icon">
+            <span th:if="${dyeRiskAssessment.colorFading == null}" class="icon yellow">
+                <i class="fas fa-clock"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.colorFading == true}" class="icon green">
+                <i class="fas fa-check-circle"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.colorFading == false}" class="icon red">
+                <i class="fas fa-times-circle"></i>
+            </span>
+                                    </div>
+                                    <select name="colorFading" th:field="*{colorFading}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.colorFading == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                                <!-- Lỗi bám thuốc -->
+                                <div class="checklist-item">
+                                    <label>Lỗi bám thuốc:</label>
+                                    <div class="status-icon">
+            <span th:if="${dyeRiskAssessment.medication == null}" class="icon yellow">
+                <i class="fas fa-clock"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.medication == true}" class="icon green">
+                <i class="fas fa-check-circle"></i>
+            </span>
+                                        <span th:if="${dyeRiskAssessment.medication == false}" class="icon red">
+                <i class="fas fa-times-circle"></i>
+            </span>
+                                    </div>
+                                    <select name="medication" th:field="*{medication}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.medication == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+                                <div class="checklist-item">
+                                    <label>Lỗi kết thuốc:</label>
+                                    <div class="status-icon">
+        <span th:if="${dyeRiskAssessment.medicineSafe == null}" class="icon yellow">
+            <i class="fas fa-clock"></i> <!-- Icon vàng -->
+        </span>
+                                        <span th:if="${dyeRiskAssessment.medicineSafe == true}" class="icon green">
+            <i class="fas fa-check-circle"></i>
+        </span>
+                                        <span th:if="${dyeRiskAssessment.medicineSafe == false}" class="icon red">
+            <i class="fas fa-times-circle"></i>
+        </span>
+                                    </div>
+                                    <select name="medicineSafe" th:field="*{medicineSafe}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.medicineSafe == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <label>Lỗi bám VSCN:</label>
+                                    <div class="status-icon">
+        <span th:if="${dyeRiskAssessment.industrialCleaningStains == null}" class="icon yellow">
+            <i class="fas fa-clock"></i> <!-- Icon vàng -->
+        </span>
+                                        <span th:if="${dyeRiskAssessment.industrialCleaningStains == true}" class="icon green">
+            <i class="fas fa-check-circle"></i>
+        </span>
+                                        <span th:if="${dyeRiskAssessment.industrialCleaningStains == false}" class="icon red">
+            <i class="fas fa-times-circle"></i>
+        </span>
+                                    </div>
+                                    <select name="industrialCleaningStains" th:field="*{industrialCleaningStains}">
+                                        <option th:value="${null}" th:selected="${dyeRiskAssessment.industrialCleaningStains == null}">---Chọn---</option>
+                                        <option th:value="true">Đạt</option>
+                                        <option th:value="false">Không đạt</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <!-- Chụp ảnh xác thực -->
+                            <div class="qc-photos">
+                                <h4>Chụp ảnh xác thực</h4>
+                                <div class="camera-container">
+                                    <video id="video" class="video-preview" autoplay></video>
+                                    <button type="button" class="camera-btn camera-switch-btn" id="switchBtn"
+                                            style="display: none;">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                    <button type="button" class="camera-btn camera-capture-btn" id="captureBtn"
+                                            style="display: none;">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                </div>
+                                <button type="button" class="capture-btn" id="startCameraBtn">
+                                    <i class="fas fa-camera me-2"></i> Bật camera
+                                </button>
+                                <div id="photoPreview" class="photo-preview">
+                                    <!-- Hiển thị ảnh từ database nếu có -->
+                                    <div th:if="${dyeRiskAssessment.photo != null}">
+                                        <div th:each="photo : ${dyeRiskAssessment.photo}" class="photo-item"
+                                             th:attr="data-photo-name=${photo.photo}">
+                                            <img th:src="'/uploads/' + ${photo.photo}" class="captured-image" alt="Ảnh xác thực">
+                                            <button type="button" class="delete-btn" onclick="deletePhoto(this, true)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--<input type="hidden" name="existingPhotos" id="existingPhotos"
+                                       th:value="${dyeRiskAssessment}">
+                                <input type="hidden" name="deletedPhotos" id="deletedPhotos">-->
+                                <input type="file" id="photoInput" name="photos" multiple style="display: none;">
+                            </div>
+
+                            <!-- Kết quả kiểm tra -->
+                            <div class="qc-result">
+                                <h4>Kết quả kiểm tra</h4>
+                                <div class="btn-group" role="group">
+                                    <!-- Radio "Pass" -->
+                                    <input type="radio" class="btn-check" th:field="*{pass}" id="pass" th:value="true">
+                                    <label class="btn btn-outline-success" for="pass">Pass</label>
+
+                                    <!-- Radio "Fail" -->
+                                    <input type="radio" class="btn-check" th:field="*{pass}" id="fail" th:value="false">
+                                    <label class="btn btn-outline-danger" for="fail">False</label>
+                                </div>
+
+
+
+                                <!-- <div class="note-section">
+                                     <label>Ghi chú (nếu Fail):</label>
+                                     <select name="note">
+                                         <option value="">Chọn ghi chú</option>
+                                         <option value="loi-nhe">Lỗi nhẹ</option>
+                                         <option value="loi-nang">Lỗi nặng</option>
+                                         <option value="khac">Khác</option>
+                                     </select>
+                                 </div>-->
+                            </div>
+
+                            <!--&lt;!&ndash; Báo cáo lỗi (nếu có) &ndash;&gt;
+                            <div class="qc-report">
+                                <h4>Báo cáo lỗi (nếu có)</h4>
+                                <select name="report">
+                                    <option value="">Chọn loại lỗi</option>
+                                    <option value="loang-mau">Loang màu</option>
+                                    <option value="bam-thuoc">Bám thuốc</option>
+                                    <option value="ket-thuoc">Kết thuốc</option>
+                                    <option value="bam-vscn">Bám VSCN</option>
+                                    <option value="khac">Khác</option>
+                                </select>
+                            </div>-->
+
+                            <!-- Nút hành động -->
+                            <div class="action-buttons">
+                                <button type="submit" class="save-btn">Lưu</button>
+                                <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
+                                   class="cancel-btn">Hủy</a>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div th:if="${dyeBatch != null}" class="waiting-message">
+
+
+            <div class="main-content"  >
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
+                                    th:text="${dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span></h2>
+                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        </div>
+                        <div class="card-body">
+                            <!-- Thông tin Work Order -->
+                            <div class="table-responsive">
+                                <table class="table table-striped mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã Work Order Con</th>
+                                        <th>Tên màu</th>
+                                        <th>Loại sợi</th>
+                                        <th>Khối lượng</th>
+                                        <th>Ánh Sáng</th>
+                                        <th>Số Quả</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>WD-<span th:text="${dyeBatch.dyeStage.id}"></span></td>
+                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
+                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
+                                        <td th:text="${dyeBatch.cone_batch_weight}"></td>
+                                        <td>na</td>
+                                        <td th:text="${dyeBatch.dyeStage.cone_quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h2>Chờ Công Đoạn Nhuộm hoàn thành</h2>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+<div th:if="${check_pass}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${check_pass}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${save_dye}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${save_dye}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<!-- WebRTC JavaScript for Camera Capture -->
+<script>
+    let currentStream = null;
+    let useRearCamera = true; // Mặc định dùng camera sau
+    let capturedPhotos = []; // Danh sách các ảnh đã chụp
+    let deletedPhotos = []; // Danh sách các ảnh đã xóa từ database
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById('video');
+        const captureBtn = document.getElementById('captureBtn');
+        const switchBtn = document.getElementById('switchBtn');
+        const startCameraBtn = document.getElementById('startCameraBtn');
+        const photoPreview = document.getElementById('photoPreview');
+        const photoInput = document.getElementById('photoInput');
+        const existingPhotosInput = document.getElementById('existingPhotos');
+        const deletedPhotosInput = document.getElementById('deletedPhotos');
+
+        // Bật camera
+        startCameraBtn.addEventListener('click', async function () {
+            try {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: useRearCamera ? "environment" : "user"
+                    }
+                });
+                video.srcObject = currentStream;
+                captureBtn.style.display = 'flex';
+                switchBtn.style.display = 'flex';
+                startCameraBtn.style.display = 'none';
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Không thể truy cập camera: ' + err.message,
+                });
+            }
+        });
+
+        // Chuyển đổi camera
+        switchBtn.addEventListener('click', async function () {
+            useRearCamera = !useRearCamera;
+            try {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: useRearCamera ? "environment" : "user"
+                    }
+                });
+                video.srcObject = currentStream;
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Không thể chuyển camera: ' + err.message,
+                });
+            }
+        });
+
+        // Chụp ảnh
+        captureBtn.addEventListener('click', function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png');
+
+            // Hiển thị ảnh vừa chụp
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <img src="${imageData}" class="captured-image" alt="Ảnh xác thực">
+                <button type="button" class="delete-btn" onclick="deletePhoto(this, false)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            photoPreview.appendChild(photoItem);
+
+            // Thêm ảnh vào danh sách capturedPhotos
+            capturedPhotos.push(imageData);
+
+            // Cập nhật input file
+            updatePhotoInput();
+        });
+
+        // Xóa ảnh
+        window.deletePhoto = function (button, isExisting) {
+            const photoItem = button.parentElement;
+            const imgSrc = photoItem.querySelector('img').src;
+
+            if (isExisting) {
+                // Nếu là ảnh từ database, thêm vào danh sách deletedPhotos
+                const photoName = photoItem.getAttribute('data-photo-name');
+                if (photoName) {
+                    deletedPhotos.push(photoName);
+                    deletedPhotosInput.value = deletedPhotos.join(',');
+                }
+            } else {
+                // Nếu là ảnh mới chụp, xóa khỏi capturedPhotos
+                capturedPhotos = capturedPhotos.filter(photo => photo !== imgSrc);
+                updatePhotoInput();
+            }
+
+            photoItem.remove();
+        };
+
+        // Cập nhật input file với các ảnh đã chụp
+        function updatePhotoInput() {
+            const dataTransfer = new DataTransfer();
+            capturedPhotos.forEach((imageData, index) => {
+                fetch(imageData)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], `photo-${index}.png`, {type: 'image/png'});
+                        dataTransfer.items.add(file);
+                        if (index === capturedPhotos.length - 1) {
+                            photoInput.files = dataTransfer.files;
+                        }
+                    });
+            });
+            if (capturedPhotos.length === 0) {
+                photoInput.files = dataTransfer.files;
+            }
+        }
+
+        // Dừng camera khi rời trang
+        window.addEventListener('beforeunload', function () {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+        });
+    });
+
+
+</script>
+
+<!-- Hiển thị thông báo nếu có -->
+<div th:if="${successMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${successMessage}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${errorMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Lỗi",
+                text: /*[[${errorMessage}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

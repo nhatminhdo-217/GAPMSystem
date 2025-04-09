@@ -1,5 +1,6 @@
 package fpt.g36.gapms.controller.purchase_order;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.contract.ContractDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
@@ -10,6 +11,7 @@ import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ContractService;
+import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.UserServiceImpl;
@@ -44,12 +46,14 @@ public class PurchaseOrderController {
     private final ContractService contractService;
     private final UserService userService;
     private static String latestImagePath = null;
+    private final ProductionOrderService productionOrderService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
         this.contractService = contractService;
         this.userService = userService;
+        this.productionOrderService = productionOrderService;
     }
 
     @GetMapping("/list")
@@ -87,13 +91,53 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/detail/{id}")
-    public String postPurchaseOrderDetailPage(@PathVariable Long id) {
+    public String postPurchaseOrderDetailPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
 
         User currUser = userUtils.getOptionalUserInfo();
 
-        PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+        BaseEnum status = purchaseOrderService.getStatusByPurchaseOrderId(id);
 
-        return "redirect:/purchase-order/detail/" + po.getId();
+        if (status.equals(BaseEnum.NOT_APPROVED)) {
+            boolean isPurchaseOrderContract = purchaseOrderService.checkContractWithStatus(status, id);
+            if (!isPurchaseOrderContract) {
+                redirectAttributes.addFlashAttribute("error", "Không thể gửi đơn hàng khi chưa có hợp đồng");
+                return "redirect:/purchase-order/detail/" + id;
+            }
+
+            PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
+            return "redirect:/purchase-order/detail/" + po.getId();
+        }else {
+            if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
+                contractService.updateContractStatus(id, currUser);
+                productionOrderService.createProductionOrder(id);
+                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
+                redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");
+            } else {
+                redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
+            }
+            PurchaseOrder po = purchaseOrderService.updatePurchaseOrderStatus(id, currUser);
+            return "redirect:/purchase-order/detail/" + po.getId();
+        }
+    }
+
+    @GetMapping("/detail/{id}/cancel")
+    public String getPurchaseOrderCancelPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+
+        return postPurchaseOrderCancelPage(id, redirectAttributes, model);
+    }
+
+    @PostMapping("/detail/{id}/cancel")
+    public String postPurchaseOrderCancelPage(@PathVariable Long id, RedirectAttributes redirectAttributes, Model model) {
+
+        boolean isCancel = purchaseOrderService.cancelPurchaseOrder(id);
+
+        if (isCancel) {
+            redirectAttributes.addFlashAttribute("success", "Hủy đơn hàng thành công");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được phê duyệt, không thể hủy");
+        }
+        return "redirect:/purchase-order/detail/" + id;
     }
 
     @GetMapping("/detail/{purchaseId}/contract/{id}")

@@ -36,9 +36,19 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private WindingMachineRepository windingMachineRepository;
 
     @Override
-    public Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable) {
-        Page<WorkOrder> workOrders = workOrderRepository.getAllWorkOrderTeamLeader(pageable);
-        return workOrders;
+    public Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId) {
+        Long id = null;
+        if (workOrderId != null && !workOrderId.trim().isEmpty()) {
+            try {
+                // Loại bỏ tiền tố "WO-" nếu có và chuyển thành Long
+                String numericPart = workOrderId.replace("WO-", "").trim();
+                id = Long.parseLong(numericPart);
+            } catch (NumberFormatException e) {
+                // Nếu không parse được, trả về null hoặc xử lý theo cách khác
+                id = null;
+            }
+        }
+        return workOrderRepository.getAllWorkOrderTeamLeader(id, pageable);
     }
 
     @Override
