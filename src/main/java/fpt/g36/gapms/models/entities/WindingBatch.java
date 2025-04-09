@@ -14,7 +14,6 @@ import java.util.List;
 public class WindingBatch extends BaseEntity {
 
 
-    private LocalDate plannedStart;
 
     @NotNull
     private LocalDateTime plannedStart;
@@ -66,9 +65,7 @@ public class WindingBatch extends BaseEntity {
     public WindingBatch() {
     }
 
-    ;
-
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa) {
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;
         this.deadline = deadline;
@@ -87,14 +84,6 @@ public class WindingBatch extends BaseEntity {
         this.qa = qa;
     }
 
-    public User getQa() {
-        return qa;
-    }
-
-    public void setQa(User qa) {
-        this.qa = qa;
-    }
-
     public LocalDateTime getPlannedStart() {
         return plannedStart;
     }
@@ -102,7 +91,7 @@ public class WindingBatch extends BaseEntity {
     public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
- 
+
     public LocalDateTime getDeadline() {
         return deadline;
     }
@@ -183,6 +172,14 @@ public class WindingBatch extends BaseEntity {
         this.windingStage = windingStage;
     }
 
+    public Boolean getPass() {
+        return isPass;
+    }
+
+    public void setPass(Boolean pass) {
+        isPass = pass;
+    }
+
     public DyeBatch getDyeBatch() {
         return dyeBatch;
     }
@@ -199,11 +196,11 @@ public class WindingBatch extends BaseEntity {
         this.windingRiskAssessmentList = windingRiskAssessmentList;
     }
 
-    public Boolean getPass() {
-        return isPass;
+    public User getQa() {
+        return qa;
     }
 
-    public void setPass(Boolean pass) {
-        isPass = pass;
+    public void setQa(User qa) {
+        this.qa = qa;
     }
 }

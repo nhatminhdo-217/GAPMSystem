@@ -64,8 +64,6 @@ public class PackagingBatch extends BaseEntity {
     public PackagingBatch() {
     }
 
-    ;
-
 
     public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime receivedProductAt, LocalDateTime deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, User qa, Boolean isPass) {
         super(id, createAt, updateAt);
@@ -78,20 +76,12 @@ public class PackagingBatch extends BaseEntity {
         this.testStatus = testStatus;
         this.leaderStart = leaderStart;
         this.leaderEnd = leaderEnd;
-        this.PackagingPhoto = packagingPhoto;
+        PackagingPhoto = packagingPhoto;
         this.packagingStage = packagingStage;
         this.windingBatch = windingBatch;
         this.packagingRiskAssessments = packagingRiskAssessments;
         this.qa = qa;
         this.isPass = isPass;
-    }
-
-    public User getQa() {
-        return qa;
-    }
-
-    public void setQa(User qa) {
-        this.qa = qa;
     }
 
     public LocalDateTime getPlannedStart() {
@@ -196,6 +186,14 @@ public class PackagingBatch extends BaseEntity {
 
     public void setPackagingRiskAssessments(List<PackagingRiskAssessment> packagingRiskAssessments) {
         this.packagingRiskAssessments = packagingRiskAssessments;
+    }
+
+    public User getQa() {
+        return qa;
+    }
+
+    public void setQa(User qa) {
+        this.qa = qa;
     }
 
     public Boolean getPass() {
