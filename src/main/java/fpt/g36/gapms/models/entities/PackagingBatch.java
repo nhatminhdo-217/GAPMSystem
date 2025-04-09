@@ -14,13 +14,12 @@ import java.util.List;
 public class PackagingBatch extends BaseEntity {
 
     @NotNull
-    private LocalDate plannedStart;
+    private LocalDateTime plannedStart;
 
-    @NotNull
     private LocalDateTime receivedProductAt;
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
     private LocalDateTime startAt;
 
@@ -53,8 +52,12 @@ public class PackagingBatch extends BaseEntity {
     @JoinColumn(name = "winding_batch_id", nullable = false)
     private WindingBatch windingBatch;
 
-    @OneToMany(mappedBy = "packagingBatch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "packagingBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PackagingRiskAssessment> packagingRiskAssessments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qa_id")
+    private User qa;
 
     private Boolean isPass;
 
@@ -63,7 +66,8 @@ public class PackagingBatch extends BaseEntity {
 
     ;
 
-    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime receivedProductAt, LocalDate deadline,LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, Boolean isPass) {
+
+    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime receivedProductAt, LocalDateTime deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, User qa, Boolean isPass) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;
         this.receivedProductAt = receivedProductAt;
@@ -78,14 +82,22 @@ public class PackagingBatch extends BaseEntity {
         this.packagingStage = packagingStage;
         this.windingBatch = windingBatch;
         this.packagingRiskAssessments = packagingRiskAssessments;
-        this.isPass = isPass;
+        this.qa = qa;
     }
 
-    public LocalDate getPlannedStart() {
+    public User getQa() {
+        return qa;
+    }
+
+    public void setQa(User qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
         return plannedStart;
     }
 
-    public void setPlannedStart(LocalDate plannedStart) {
+    public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
 
@@ -97,11 +109,11 @@ public class PackagingBatch extends BaseEntity {
         this.receivedProductAt = receivedProductAt;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 
