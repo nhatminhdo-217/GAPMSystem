@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "winding_stage")
-public class WindingStage extends BaseEntity {
+public class WindingStage extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "work_order_detail_id", nullable = false)
@@ -107,13 +107,6 @@ public class WindingStage extends BaseEntity {
         this.plannedStart = plannedStart;
     }
 
-    public LocalDate getPlannedStart() {
-        return plannedStart;
-    }
-
-    public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart
-    }
 
     public WorkOrderDetail getWorkOrderDetail() {
         return workOrderDetail;

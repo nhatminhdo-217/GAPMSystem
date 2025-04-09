@@ -38,8 +38,7 @@ public class DyeStage extends BaseEntity {
     @NotNull
     private LocalDateTime plannedStart;
 
-    @NotNull
-    private LocalDate plannedStart;
+
 
     private LocalDateTime startAt;
 
@@ -121,13 +120,6 @@ public class DyeStage extends BaseEntity {
         this.plannedStart = plannedStart;
     }
 
-    public LocalDate getPlannedStart() {
-        return plannedStart;
-    }
-
-    public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart;
-    }
 
     public BigDecimal getCone_batch_weight() {
         return cone_batch_weight;

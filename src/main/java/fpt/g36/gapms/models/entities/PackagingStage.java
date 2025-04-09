@@ -28,8 +28,6 @@ public class PackagingStage extends BaseEntity {
     @NotNull
     private LocalDateTime plannedStart;
 
-    @NotNull
-    private LocalDate plannedStart;
 
     private LocalDateTime startAt;
 
@@ -100,13 +98,6 @@ public class PackagingStage extends BaseEntity {
         this.plannedStart = plannedStart;
     }
 
-    public LocalDate getPlannedStart() {
-        return plannedStart;
-    }
-
-    public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart;
-    }
 
     public WorkOrderDetail getWorkOrderDetail() {
         return workOrderDetail;

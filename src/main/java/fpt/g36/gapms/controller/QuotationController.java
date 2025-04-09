@@ -3,11 +3,9 @@ package fpt.g36.gapms.controller;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
-import fpt.g36.gapms.services.BrandService;
-import fpt.g36.gapms.services.CategoryService;
-import fpt.g36.gapms.services.ProductService;
-import fpt.g36.gapms.services.QuotationService;
+import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -24,13 +22,15 @@ public class QuotationController {
     private final ProductService productService;
     private final BrandService brandService;
     private final CategoryService categoryService;
+    private final RfqService rfqService;
 
-    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService) {
+    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService) {
         this.quotationService = quotationService;
         this.userUtils = userUtils;
         this.productService = productService;
         this.brandService = brandService;
         this.categoryService = categoryService;
+        this.rfqService = rfqService;
     }
 
     @GetMapping("/list")
@@ -88,7 +88,6 @@ public class QuotationController {
 
     @GetMapping("/quotation-customer/{rfqId}")
     public String getQuotationCustomer(@PathVariable("rfqId") int rfqId,Model model) {
-
         QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
 
         userUtils.getOptionalUser(model);

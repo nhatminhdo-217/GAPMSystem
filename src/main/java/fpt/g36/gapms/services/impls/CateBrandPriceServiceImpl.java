@@ -28,7 +28,7 @@ public class CateBrandPriceServiceImpl implements CateBrandPriceService {
     }
 
     @Override
-    public BigDecimal getPriceByBrandIdAndCateIdAndIsColor(Long brandId, Long cateId, boolean isColor) {
+    public BigDecimal getPriceByBrandIdAndCateIdAndIsColor(Long brandId, Long cateId, Boolean isColor) {
         BigDecimal price = cateBrandPriceRepository.findPriceByBrandIdAndCateIdAndIsColor(brandId, cateId, isColor);
         return price != null ? price : BigDecimal.ZERO; // Trả về 0 nếu không tìm thấy
     }

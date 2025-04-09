@@ -415,15 +415,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-boxes me-2"></i> Lệnh Đóng Gói Hàng-WD-<span th:text="${packagingBatches.get(0).packagingStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-boxes me-2"></i>Mẻ Gói Hàng-WD-<span th:text="${StageId}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã Mẻ</th>
+                                <th>Trạng thái kiểm tra</th>
+                                <th>Thứ Tự Mẻ Đóng Gói</th>
                                 <th>Mã Khách Hàng</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Số lượng</th>
@@ -434,7 +435,7 @@
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ps : ${packagingBatches}">
+                            <tr data-id="WOC-001-1" th:each="ps, iterStat : ${packagingBatches}">
                                 <td>
                                     <span th:switch="${ps.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -448,7 +449,20 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>PB-<span th:text="${ps.id}"></span></td>
+                                <td>
+                                    <span th:switch="${ps.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
+                                        </span>
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
+                                        </span>
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td>KH-<span th:text="${ps.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                 <td th:text="${#temporals.format(ps.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ps.packagingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>

@@ -530,10 +530,10 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.workOrder.id}"></span>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Côn-WD-<span
+                                    th:text="${windingRiskAssessment.windingBatch.windingStage.id}"></span>
                             </h2>
-                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                            <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${windingRiskAssessment.windingBatch.windingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
                             <!-- Thông tin Work Order -->
@@ -541,24 +541,20 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Mã Work Order Con</th>
-                                        <th>Tên màu</th>
-                                        <th>Loại sợi</th>
-                                        <th>Khối lượng</th>
-                                        <th>Ánh Sáng</th>
-                                        <th>Số Quả</th>
+                                        <th>Phụ trách bắt đầu</th>
+                                        <th>Phụ trách kết thúc</th>
+                                        <th>Tên Màu</th>
+                                        <th>Số Lượng</th>
+                                        <th>Loại Hàng</th>
                                     </tr>
                                     </thead>
                                     <tbody id="workOrderChildTableBody">
                                     <tr>
-                                        <td>WD-<span
-                                                th:text="${windingRiskAssessment.windingBatch.windingStage.dyeStage.id}"></span>
-                                        </td>
+                                        <td th:text="${windingRiskAssessment.windingBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                        <td th:text="${windingRiskAssessment.windingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
                                         <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                        <td th:text="${windingRiskAssessment.windingBatch.dyeBatch.cone_batch_weight}"></td>
-                                        <td>na</td>
                                         <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -682,12 +678,28 @@
                                                th:value="false">
                                         <label class="btn btn-outline-danger" for="fail">False</label>
                                     </div>
+
+                                    <!-- Khu vực nhập liệu khi chọn "False" -->
+                                    <div id="failNoteSection" class="note-section" style="display: none;">
+                                        <label>Ghi Chú Lỗi:</label>
+                                        <textarea name="errorDetails" rows="3" th:field="*{errorDetails}"
+                                                  class="form-control" placeholder="Nhập ghi chú nếu có lỗi" oninvalid="this.setCustomValidity('Trường này không được bỏ trống')"
+                                                  oninput="this.setCustomValidity('')"></textarea>
+
+                                        <label style="margin-top: 10px;">Cấp độ lỗi:</label>
+                                        <select name="errorLevel" th:field="*{errorLevel}" oninvalid="this.setCustomValidity('Trường này không được bỏ trống')"
+                                                onchange="this.setCustomValidity('')">
+                                            <option th:value="${null}" th:selected="${windingRiskAssessment.errorLevel == null}">Mức độ lỗi</option>
+                                            <option th:value="true">Lỗi nặng</option>
+                                            <option th:value="false">Lỗi nhẹ</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <!-- Nút hành động -->
                                 <div class="action-buttons">
                                     <button type="submit" class="save-btn">Lưu</button>
-                                    <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${windingRiskAssessment.windingBatch.id})}"
+                                    <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${windingRiskAssessment.windingBatch.windingStage.id})}"
                                        class="cancel-btn">Hủy</a>
                                 </div>
                             </form>
@@ -706,9 +718,10 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm - WO-<span
-                                    th:text="${windingBatch.windingStage.workOrderDetail.workOrder.id}"></span></h2>
-                            <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Côn-WD-<span
+                                    th:text="${windingBatch.windingStage.id}"></span>
+                            </h2>
+                            <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${windingBatch.windingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
                             <!-- Thông tin Work Order -->
@@ -716,22 +729,20 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Mã Work Order Con</th>
-                                        <th>Tên màu</th>
-                                        <th>Loại sợi</th>
-                                        <th>Khối lượng</th>
-                                        <th>Ánh Sáng</th>
-                                        <th>Số Quả</th>
+                                        <th>Phụ trách bắt đầu</th>
+                                        <th>Phụ trách kết thúc</th>
+                                        <th>Tên Màu</th>
+                                        <th>Số Lượng</th>
+                                        <th>Loại Hàng</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>WD-<span th:text="${windingBatch.windingStage.dyeStage.id}"></span></td>
+                                        <td th:text="${windingBatch?.leaderStart?.username ?: 'n/a'}"></td>
+                                        <td th:text="${windingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
                                         <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
-                                        <td th:text="${windingBatch.dyeBatch.cone_batch_weight}"></td>
-                                        <td>na</td>
                                         <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -759,6 +770,20 @@
                 position: "top-end",
                 icon: "error",
                 title: /*[[${check_pass_winding}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${check_photo_winding}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${check_photo_winding}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -917,6 +942,42 @@
                 currentStream.getTracks().forEach(track => track.stop());
             }
         });
+    });
+
+
+
+    // nhập thông tin nếu false
+    document.addEventListener("DOMContentLoaded", function () {
+        const passRadio = document.getElementById('pass');
+        const failRadio = document.getElementById('fail');
+        const failNoteSection = document.getElementById('failNoteSection');
+        const failNoteTextarea = failNoteSection.querySelector('textarea[name="errorDetails"]');
+        const errorLevelSelect = failNoteSection.querySelector('select[name="errorLevel"]');
+
+        // Hàm hiển thị/ẩn khu vực nhập liệu và quản lý required
+        function toggleFailNoteSection() {
+            if (failRadio.checked) {
+                failNoteSection.style.display = 'block';
+                // Bật required khi chọn "False"
+                failNoteTextarea.setAttribute('required', 'required');
+                errorLevelSelect.setAttribute('required', 'required');
+            } else {
+                failNoteSection.style.display = 'none';
+                // Tắt required khi chọn "Pass"
+                failNoteTextarea.removeAttribute('required');
+                errorLevelSelect.removeAttribute('required');
+                // Xóa giá trị khi ẩn
+                failNoteTextarea.value = '';
+                errorLevelSelect.value = '';
+            }
+        }
+
+        // Lắng nghe sự kiện thay đổi của radio button
+        passRadio.addEventListener('change', toggleFailNoteSection);
+        failRadio.addEventListener('change', toggleFailNoteSection);
+
+        // Kiểm tra trạng thái ban đầu
+        toggleFailNoteSection();
     });
 </script>
 <script>
