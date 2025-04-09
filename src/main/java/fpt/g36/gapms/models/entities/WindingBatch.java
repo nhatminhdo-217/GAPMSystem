@@ -14,12 +14,11 @@ import java.util.List;
 public class WindingBatch extends BaseEntity {
 
     @NotNull
-    private LocalDate plannedStart;
+    private LocalDateTime plannedStart;
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
-    @NotNull
     private LocalDateTime receivedConeAt; //Thời gian sợi về
 
     private LocalDateTime startAt;
@@ -52,13 +51,19 @@ public class WindingBatch extends BaseEntity {
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
 
-    @OneToMany(mappedBy = "windingBatch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "windingBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<WindingRiskAssessment> windingRiskAssessmentList;
 
-    public WindingBatch() {};
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qa_id")
+    private User qa;
 
+    public WindingBatch() {
+    }
 
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList) {
+    ;
+
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa) {
         super(id, createAt, updateAt);
         this.plannedStart = plannedStart;
         this.deadline = deadline;
@@ -73,21 +78,30 @@ public class WindingBatch extends BaseEntity {
         this.windingStage = windingStage;
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
+        this.qa = qa;
     }
 
-    public LocalDate getPlannedStart() {
+    public User getQa() {
+        return qa;
+    }
+
+    public void setQa(User qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
         return plannedStart;
     }
 
-    public void setPlannedStart(LocalDate plannedStart) {
+    public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

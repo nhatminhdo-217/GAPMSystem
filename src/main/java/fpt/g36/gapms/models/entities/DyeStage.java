@@ -1,12 +1,10 @@
 package fpt.g36.gapms.models.entities;
 
-import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,15 +17,11 @@ public class DyeStage extends BaseEntity {
     private WorkOrderDetail workOrderDetail;
 
     @NotNull
-    @Column(name = "liters_min", precision = 10, scale = 2)
-    private BigDecimal liters_min; // Khối lượng tổng * 6
-
-    @NotNull
     @Column(name = "liters", precision = 10, scale = 2)
-    private BigDecimal liters; // tối đa
+    private BigDecimal liters; // Khối lượng nước tổng = Khối lượng tổng * 6
 
     @NotNull
-    @Column(name = "cone_total_weight", precision = 10, scale = 2)
+    @Column(name = "cone_weight", precision = 10, scale = 2)
     private BigDecimal cone_weight; // Khối lượng tổng
 
     @NotNull
@@ -36,13 +30,13 @@ public class DyeStage extends BaseEntity {
 
     @NotNull
     @Column(name = "cone_quantity", precision = 10, scale = 2)
-    private BigDecimal cone_quantity; // Số quả = khối lượng quả(1.25) * khối lượng mẻ -> chọn máy
+    private BigDecimal cone_quantity; // Số quả = khối lượng / khối lượng quả(1.25)
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
     @NotNull
-    private LocalDate plannedStart;
+    private LocalDateTime plannedStart;
 
     private LocalDateTime startAt;
 
@@ -59,17 +53,31 @@ public class DyeStage extends BaseEntity {
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 
-    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DyeBatch> dyebatches;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "dye_stage_team_leaders",
+            joinColumns = @JoinColumn(name = "dye_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> teamLeaders; // Danh sách Team Leaders
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "dye_stage_qa",
+            joinColumns = @JoinColumn(name = "dye_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> qa;
 
     public DyeStage() {
     }
 
-
-    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches) {
+    public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
-        this.liters_min = liters_min;
         this.liters = liters;
         this.cone_weight = cone_weight;
         this.cone_batch_weight = cone_batch_weight;
@@ -82,13 +90,31 @@ public class DyeStage extends BaseEntity {
         this.windingStage = windingStage;
         this.dyeMachine = dyeMachine;
         this.dyebatches = dyebatches;
+        this.teamLeaders = teamLeaders;
+        this.qa = qa;
     }
 
-    public LocalDate getPlannedStart() {
+    public List<User> getTeamLeaders() {
+        return teamLeaders;
+    }
+
+    public void setTeamLeaders(List<User> teamLeaders) {
+        this.teamLeaders = teamLeaders;
+    }
+
+    public List<User> getQa() {
+        return qa;
+    }
+
+    public void setQa(List<User> qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
         return plannedStart;
     }
 
-    public void setPlannedStart(LocalDate plannedStart) {
+    public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
 
@@ -106,14 +132,6 @@ public class DyeStage extends BaseEntity {
 
     public void setWorkOrderDetail(WorkOrderDetail workOrderDetail) {
         this.workOrderDetail = workOrderDetail;
-    }
-
-    public BigDecimal getLiters_min() {
-        return liters_min;
-    }
-
-    public void setLiters_min(BigDecimal liters_min) {
-        this.liters_min = liters_min;
     }
 
     public BigDecimal getCone_weight() {
@@ -140,11 +158,11 @@ public class DyeStage extends BaseEntity {
         this.cone_quantity = cone_quantity;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

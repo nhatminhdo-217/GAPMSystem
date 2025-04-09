@@ -367,7 +367,7 @@
                             <!-- Nút Thêm/Xem Work Order và Quay lại -->
                             <div class="btn-container">
                                 <div th:if="${productionOrder.workOrder == null}">
-                                    <a th:href="@{/technical/add-work-order(productionOrderId=${productionOrder.id})}"
+                                    <a th:href="@{/technical/create-work-order(productionOrderId=${productionOrder.id})}"
                                        class="btn-custom add-work-order">
                                         <i class="fas fa-plus"></i> Thêm Work Order
                                     </a>

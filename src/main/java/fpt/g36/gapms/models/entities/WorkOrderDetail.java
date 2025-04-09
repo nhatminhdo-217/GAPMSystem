@@ -29,13 +29,13 @@ public class WorkOrderDetail extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToOne(mappedBy = "workOrderDetail")
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL)
     private DyeStage dyeStage;
 
-    @OneToOne(mappedBy = "workOrderDetail")
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL)
     private WindingStage windingStage;
 
-    @OneToOne(mappedBy = "workOrderDetail")
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL)
     private PackagingStage packagingStage;
 
     @OneToOne
