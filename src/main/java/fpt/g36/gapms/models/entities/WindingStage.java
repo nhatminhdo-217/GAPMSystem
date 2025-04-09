@@ -21,14 +21,13 @@ public class WindingStage extends BaseEntity{
     @JoinColumn(name = "dye_stage_id", nullable = false)
     private DyeStage dyeStage; //Lấy ngày kết thúc nhuộm và khối lượng nhuộm
 
-    @NotNull
     private LocalDateTime receivedConeAt; //Thời gian sợi về
 
-
-    private LocalDate plannedStart;
+    @NotNull
+    private LocalDateTime plannedStart;
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
     private LocalDateTime startAt;
 
@@ -45,14 +44,29 @@ public class WindingStage extends BaseEntity{
     @OneToOne(mappedBy = "windingStage")
     private PackagingStage packagingStage;
 
-    @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<WindingBatch> windingbatches;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "winding_stage_team_leaders",
+            joinColumns = @JoinColumn(name = "winding_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> teamLeaders; // Danh sách Team Leaders
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "winding_stage_qa",
+            joinColumns = @JoinColumn(name = "winding_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> qa;
 
     public WindingStage() {
     }
 
-
-    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDate plannedStart, LocalDate deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches) {
+    public WindingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, DyeStage dyeStage, LocalDateTime receivedConeAt, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingMachine windingMachine, PackagingStage packagingStage, List<WindingBatch> windingbatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.dyeStage = dyeStage;
@@ -65,15 +79,34 @@ public class WindingStage extends BaseEntity{
         this.windingMachine = windingMachine;
         this.packagingStage = packagingStage;
         this.windingbatches = windingbatches;
+        this.teamLeaders = teamLeaders;
+        this.qa = qa;
     }
 
-    public LocalDate getPlannedStart() {
+    public List<User> getTeamLeaders() {
+        return teamLeaders;
+    }
+
+    public void setTeamLeaders(List<User> teamLeaders) {
+        this.teamLeaders = teamLeaders;
+    }
+
+    public List<User> getQa() {
+        return qa;
+    }
+
+    public void setQa(List<User> qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
         return plannedStart;
     }
 
-    public void setPlannedStart(LocalDate plannedStart) {
+    public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
+
 
     public WorkOrderDetail getWorkOrderDetail() {
         return workOrderDetail;
@@ -99,11 +132,11 @@ public class WindingStage extends BaseEntity{
         this.receivedConeAt = receivedConeAt;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

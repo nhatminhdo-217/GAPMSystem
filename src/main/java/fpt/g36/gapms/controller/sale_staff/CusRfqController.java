@@ -70,39 +70,40 @@ public class CusRfqController {
     @PostMapping("/submit-rfq/{id}")
     public String submitRfq(@PathVariable Long id, Model model, Principal principal) {
         userUtils.getOptionalUser(model);
-        Rfq rfq = rfqService.getRfqById(id);
-        Company company = companyService.getCompanyByUserId(rfq.getCreateBy().getId());
+
         String emailOrPhone = principal.getName();
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
 
         if (optionalUser.isEmpty()) {
             model.addAttribute("error", "Tài khoản đang dùng không còn tồn tại.");
-            model.addAttribute("company", company);
             return "/sale-staff/cus-rfq-details";
         }
 
         User currentUser = optionalUser.get();
-
+        Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null) {
             model.addAttribute("error", "RFQ không tồn tại.");
             model.addAttribute("rfq", null);
-            model.addAttribute("company", company);
             return "/sale-staff/cus-rfq-details";
         }
 
         model.addAttribute("rfq", rfq);
-
+        Company company = companyService.getCompanyByUserId(rfq.getCreateBy().getId());
+        model.addAttribute("company", company);
+        System.err.println("Company" + company);
         try {
             Rfq submittedRfq = rfqService.submitRfq(id, currentUser.getId());
+            Company currentCompany = companyService.getCompanyByUserId(submittedRfq.getCreateBy().getId());
+            System.err.println(currentCompany);
             model.addAttribute("rfq", submittedRfq);
-            model.addAttribute("company", company);// Cập nhật RFQ sau khi gửi
             model.addAttribute("success", "Gửi RFQ thành công!");
+            model.addAttribute("company", currentCompany);
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
             model.addAttribute("error", "Unexpected Error: " + e.getMessage());
         }
-        model.addAttribute("company", company);
+
         return "/sale-staff/cus-rfq-details";
     }
 }

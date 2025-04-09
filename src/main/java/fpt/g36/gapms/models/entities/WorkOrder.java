@@ -42,7 +42,7 @@ public class WorkOrder extends BaseEntity{
     private User createdBy;
 
     @NotNull
-    @OneToMany(mappedBy = "workOrder")
+    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
     private List<WorkOrderDetail> workOrderDetails;
 
     public WorkOrder() {

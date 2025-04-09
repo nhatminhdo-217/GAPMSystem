@@ -20,11 +20,13 @@ public class PackagingStage extends BaseEntity {
     @JoinColumn(name = "winding_stage_id", nullable = false)
     private WindingStage windingStage;
 
-    @NotNull
     private LocalDateTime receivedProductAt;
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
+
+    @NotNull
+    private LocalDateTime plannedStart;
 
 
     private LocalDate plannedStart;
@@ -37,14 +39,29 @@ public class PackagingStage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToMany(mappedBy = "packagingStage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "packagingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PackagingBatch> packagingBatches;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "packaging_stage_team_leaders",
+            joinColumns = @JoinColumn(name = "packaging_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> teamLeaders; // Danh sách Team Leaders
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "packaging_stage_qa",
+            joinColumns = @JoinColumn(name = "packaging_stage_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> qa;
 
     public PackagingStage() {
     }
 
-
-    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches) {
+    public PackagingStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, WindingStage windingStage, LocalDateTime receivedProductAt, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, List<PackagingBatch> packagingBatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;
         this.windingStage = windingStage;
@@ -55,6 +72,32 @@ public class PackagingStage extends BaseEntity {
         this.completeAt = completeAt;
         this.workStatus = workStatus;
         this.packagingBatches = packagingBatches;
+        this.teamLeaders = teamLeaders;
+        this.qa = qa;
+    }
+
+    public List<User> getTeamLeaders() {
+        return teamLeaders;
+    }
+
+    public void setTeamLeaders(List<User> teamLeaders) {
+        this.teamLeaders = teamLeaders;
+    }
+
+    public List<User> getQa() {
+        return qa;
+    }
+
+    public void setQa(List<User> qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDateTime plannedStart) {
+        this.plannedStart = plannedStart;
     }
 
     public LocalDate getPlannedStart() {
@@ -89,11 +132,11 @@ public class PackagingStage extends BaseEntity {
         this.receivedProductAt = receivedProductAt;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

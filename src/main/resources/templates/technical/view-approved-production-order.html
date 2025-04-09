@@ -123,15 +123,18 @@
             padding: 6px 12px;
             font-size: 14px;
             color: #fff;
-            background-color: #007bff;
+            background-color: #28a745; /* Màu xanh lá để đồng bộ với nút "Tạo Work Order" trong form */
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .create-work-order-btn:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
 
         @media (max-width: 768px) {
@@ -247,8 +250,8 @@
                             </div>
                             <div th:unless="${order.hasWorkOrder}">
                                 <button class="create-work-order-btn"
-                                        th:onclick="|window.location.href='/technical/create-work-order/${order.id}'|">
-                                    Create Work Order
+                                        th:onclick="|window.location.href='/technical/create-work-order?productionOrderId=${order.id}'|">
+                                    <i class="fas fa-plus"></i> Tạo Work Order
                                 </button>
                             </div>
                         </div>
@@ -295,7 +298,7 @@
     $(document).ready(function () {
         // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút "Create Work Order"
         $('.card').on('click', function (event) {
-            if (!$(event.target).hasClass('create-work-order-btn')) {
+            if (!$(event.target).closest('.create-work-order-btn').length) {
                 var orderId = $(this).data('order-id');
                 window.location.href = '/technical/production-order-details/' + orderId;
             }

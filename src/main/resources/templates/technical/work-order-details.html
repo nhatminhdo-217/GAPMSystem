@@ -54,89 +54,13 @@
             padding-bottom: 10px;
         }
 
-        .stage-table {
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .stage-table .table {
-            margin-bottom: 0;
-            border-collapse: collapse;
-        }
-
-        .stage-table th, .stage-table td {
-            vertical-align: middle;
-            text-align: center;
-            padding: 12px;
-            font-size: 14px;
-            border: 1px solid #e9ecef;
-        }
-
-        .stage-table thead th {
-            font-weight: 600;
-            color: #495057;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        /* Màu sắc và kiểu dáng cho từng stage */
-        .general-table thead th {
-            background-color: #f1f3f5;
-        }
-
-        .detail-table thead th {
-            background-color: #e9ecef;
-        }
-
-        .dye-stage-table thead th {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .winding-stage-table thead th {
-            background-color: #e0f7fa;
-            color: #00796b;
-        }
-
-        .packaging-stage-table thead th {
-            background-color: #f1f8e9;
-            color: #388e3c;
-        }
-
-        .stage-table tbody tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .work-order-info, .detail-table {
+        .work-order-info, .detail-container {
             margin-top: 20px;
             padding: 20px;
             background-color: #ffffff;
             border: 1px solid #e9ecef;
             border-radius: 8px;
             cursor: default;
-        }
-
-        .btn-container {
-            margin-top: 20px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary, .btn-secondary {
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover, .btn-secondary:hover {
-            opacity: 0.9;
         }
 
         .work-order-info .row {
@@ -160,6 +84,172 @@
         .work-order-info span {
             font-size: 15px;
             color: #212529;
+        }
+
+        /* Tabstrip Styles */
+        .nav-tabs {
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 20px;
+            color: #495057;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #1976d2;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #1976d2;
+            border-bottom: 2px solid #1976d2;
+            background-color: #f8f9fc;
+        }
+
+        .tab-content {
+            padding: 15px;
+            background-color: #f9fafc;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e9ecef;
+            border-top: none;
+        }
+
+        /* Collapsible Detail Section */
+        .detail-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .detail-header {
+            padding: 12px 15px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .detail-header h6 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-btn i {
+            font-size: 14px;
+        }
+
+        .toggle-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .detail-content {
+            padding: 15px;
+            background-color: #f9fafc;
+            border-top: 1px solid #e2e7f0;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .detail-content table {
+            width: 100%;
+            border-collapse: collapse;
+            display: table; /* Đảm bảo bảng hiển thị dưới dạng table */
+        }
+
+        .detail-content th, .detail-content td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            vertical-align: middle;
+            white-space: normal; /* Cho phép xuống dòng */
+            word-wrap: break-word; /* Đảm bảo nội dung xuống dòng nếu quá dài */
+        }
+
+        .detail-content thead th {
+            font-weight: 600;
+            color: #495057;
+            background-color: #f1f3f5;
+        }
+
+        .detail-content tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+
+        .dye-stage-tab .detail-content thead th {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .winding-stage-tab .detail-content thead th {
+            background-color: #e0f7fa;
+            color: #00796b;
+        }
+
+        .packaging-stage-tab .detail-content thead th {
+            background-color: #f1f8e9;
+            color: #388e3c;
+        }
+
+        /* Định dạng trạng thái công việc */
+        .status-not-started {
+            color: red;
+        }
+
+        .status-finished {
+            color: green;
+        }
+
+        .status-in-progress {
+            color: #d4a017; /* Màu vàng đậm */
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
         }
 
         .success-message {
@@ -214,13 +304,41 @@
                 width: 100%;
             }
 
-            .stage-table {
+            .detail-content table {
+                display: block;
                 overflow-x: auto;
+                white-space: normal; /* Cho phép xuống dòng */
             }
 
-            .stage-table th, .stage-table td {
+            .detail-content th, .detail-content td {
                 font-size: 12px;
                 padding: 8px;
+                display: block; /* Chuyển thành block để xuống dòng */
+                width: 100%; /* Đảm bảo mỗi ô chiếm toàn bộ chiều rộng */
+                box-sizing: border-box;
+            }
+
+            .detail-content thead, .detail-content tbody, .detail-content tr {
+                display: block;
+            }
+
+            .detail-content th {
+                background-color: #f1f3f5; /* Giữ màu nền cho tiêu đề */
+            }
+
+            .nav-tabs .nav-link {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toggle-btn {
+                margin-top: 10px;
+                align-self: flex-end;
             }
         }
     </style>
@@ -308,134 +426,278 @@
                                 </div>
                             </div>
 
-                            <!-- Product and Stages Tables -->
-                            <div class="detail-table">
+                            <!-- Tabstrip for Details and Stages -->
+                            <div class="detail-container">
                                 <h3 class="section-title">Danh sách sản phẩm và giai đoạn</h3>
 
-                                <!-- General Info Table -->
-                                <div class="stage-table detail-table">
-                                    <table class="table">
-                                        <thead>
-                                        <tr class="text-dark">
-                                            <th>Số thứ tự</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Loại chỉ</th>
-                                            <th>Brand + Category</th>
-                                            <th>Số lượng</th>
-                                            <th>Tên màu</th>
-                                            <th>Khối lượng sợi</th>
-                                            <th>Khối lượng sợi thực tế</th>
-                                            <th>Tổng khối lượng</th>
-                                            <th>Môi trường ánh sáng</th>
-                                            <th>Work Order Detail ID</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
-                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td th:text="${iterStat.count}"></td>
-                                            <td th:text="${detail?.purchaseOrderDetail?.product?.name ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.name ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.purchaseOrderDetail?.brand?.name != null and detail?.purchaseOrderDetail?.category?.name != null ? detail.purchaseOrderDetail.brand.name + ' - ' + detail.purchaseOrderDetail.category.name : 'N/A'}"></td>
-                                            <td th:text="${detail?.purchaseOrderDetail?.quantity ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.purchaseOrderDetail?.note_color ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.thread_mass != null ? detail.thread_mass + ' kg' : 'N/A'}"></td>
-                                            <td th:text="${detail?.thread_mass != null ? (detail.thread_mass + 0.4) + ' kg' : 'N/A'}"></td>
-                                            <td th:text="${detail?.totalWeight != null ? detail.totalWeight + ' kg' : 'N/A'}"></td>
-                                            <td th:text="${detail?.productionOrderDetail?.light_env != null ? (detail.productionOrderDetail.light_env ? 'Ánh sáng tự nhiên (TN)' : 'Ánh đèn (AD)') : 'N/A'}"></td>
-                                            <td th:text="${detail?.id ?: 'N/A'}"></td>
-                                        </tr>
-                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td colspan="11">Không có sản phẩm nào.</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <ul class="nav nav-tabs" id="stageTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="general-tab" data-bs-toggle="tab" href="#general"
+                                           role="tab" aria-controls="general" aria-selected="true">Thông tin chung</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="dye-tab" data-bs-toggle="tab" href="#dye" role="tab"
+                                           aria-controls="dye" aria-selected="false">Giai đoạn nhuộm</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="winding-tab" data-bs-toggle="tab" href="#winding"
+                                           role="tab" aria-controls="winding" aria-selected="false">Giai đoạn cuốn</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="packaging-tab" data-bs-toggle="tab" href="#packaging"
+                                           role="tab" aria-controls="packaging" aria-selected="false">Giai đoạn đóng
+                                            gói</a>
+                                    </li>
+                                </ul>
 
-                                <!-- Dye Stage Table -->
-                                <div class="stage-table dye-stage-table">
-                                    <table class="table">
-                                        <thead>
-                                        <tr class="text-dark">
-                                            <th>Dye Stage ID</th>
-                                            <th>Lít tối thiểu</th>
-                                            <th>Lít</th>
-                                            <th>Khối lượng côn</th>
-                                            <th>Số lượng côn</th>
-                                            <th>Hạn chót</th>
-                                            <th>Người phụ trách</th>
-                                            <th>Máy Nhuộm ID</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
-                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.liters_min != null ? detail.dyeStage.liters_min + ' lít' : 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.liters != null ? detail.dyeStage.liters + ' lít' : 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.cone_weight != null ? detail.dyeStage.cone_weight + ' kg' : 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.cone_quantity ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.deadline != null ? #temporals.format(detail.dyeStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.leader?.username ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.dyeStage?.dyeMachine?.id ?: 'N/A'}"></td>
-                                        </tr>
-                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td colspan="8">Không có giai đoạn nhuộm nào.</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <div class="tab-content" id="stageTabContent">
+                                    <!-- General Info Tab -->
+                                    <div class="tab-pane fade show active" id="general" role="tabpanel"
+                                         aria-labelledby="general-tab">
+                                        <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                             class="detail-section"
+                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <div class="detail-header" data-bs-toggle="collapse"
+                                                 th:data-bs-target="'#general-detail-' + ${iterStat.count}">
+                                                <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                <button class="toggle-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse" th:id="'general-detail-' + ${iterStat.count}">
+                                                <div class="detail-content">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Số thứ tự</th>
+                                                            <th>Tên sản phẩm</th>
+                                                            <th>Danh mục</th>
+                                                            <th>Thương hiệu</th>
+                                                            <th>Thời gian bắt đầu</th>
+                                                            <th>Thời gian hoàn thành</th>
+                                                            <th>Thời gian bắt đầu dự kiến</th>
+                                                            <th>Thời gian kết thúc dự kiến</th>
+                                                            <th>Trạng thái công việc</th>
+                                                            <th>Dye Stage ID</th>
+                                                            <th>Winding Stage ID</th>
+                                                            <th>Packaging Stage ID</th>
+                                                            <th>Production Order Detail ID</th>
+                                                            <th>Purchase Order Detail ID</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td th:text="${iterStat.count}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.product?.name ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.category?.name ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.brand?.name ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.startAt != null ? #temporals.format(detail.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
+                                                            <td th:text="${detail?.completeAt != null ? #temporals.format(detail.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
+                                                            <td th:text="${detail?.plannedStartAt != null ? #temporals.format(detail.plannedStartAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:text="${detail?.plannedEndAt != null ? #temporals.format(detail.plannedEndAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:classappend="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
+                                                                th:text="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.workStatus?.name() ?: 'N/A'})))"></td>
+                                                            <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.productionOrderDetail?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.id ?: 'N/A'}"></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
+                                             class="detail-section">
+                                            <div class="detail-content">
+                                                <p>Không có sản phẩm nào.</p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <!-- Winding Stage Table -->
-                                <div class="stage-table winding-stage-table">
-                                    <table class="table">
-                                        <thead>
-                                        <tr class="text-dark">
-                                            <th>Winding Stage ID</th>
-                                            <th>Thời gian nhận côn</th>
-                                            <th>Hạn chót</th>
-                                            <th>Người phụ trách</th>
-                                            <th>Máy Cuốn ID</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
-                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.windingStage?.receivedConeAt != null ? #temporals.format(detail.windingStage.receivedConeAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
-                                            <td th:text="${detail?.windingStage?.deadline != null ? #temporals.format(detail.windingStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
-                                            <td th:text="${detail?.windingStage?.leader?.username ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
-                                        </tr>
-                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td colspan="5">Không có giai đoạn cuốn nào.</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    <!-- Dye Stage Tab -->
+                                    <div class="tab-pane fade dye-stage-tab" id="dye" role="tabpanel"
+                                         aria-labelledby="dye-tab">
+                                        <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                             class="detail-section"
+                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <div class="detail-header" data-bs-toggle="collapse"
+                                                 th:data-bs-target="'#dye-detail-' + ${iterStat.count}">
+                                                <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                <button class="toggle-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse" th:id="'dye-detail-' + ${iterStat.count}">
+                                                <div class="detail-content">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Work Order Detail ID</th>
+                                                            <th>Dye Stage ID</th>
+                                                            <th>Lít tối thiểu</th>
+                                                            <th>Khối lượng nước tổng</th>
+                                                            <th>Khối lượng tổng</th>
+                                                            <th>Khối lượng tối đa của mẻ</th>
+                                                            <th>Số quả</th>
+                                                            <th>Số mẻ nhuộm</th>
+                                                            <th>Thời gian bắt đầu</th>
+                                                            <th>Thời gian hoàn thành</th>
+                                                            <th>Thời gian bắt đầu dự kiến</th>
+                                                            <th>Hạn chót</th>
+                                                            <th>Trạng thái công việc</th>
+                                                            <th>Máy Nhuộm ID</th>
+                                                            <th>Mức keo</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td th:text="${detail?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.dyeMachine?.littersMin != null ? detail.dyeStage.dyeMachine.littersMin + ' lít' : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.liters != null ? detail.dyeStage.liters + ' lít' : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.cone_weight != null ? detail.dyeStage.cone_weight + ' kg' : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.cone_batch_weight != null ? detail.dyeStage.cone_batch_weight + ' kg' : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.cone_quantity ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.dyebatches != null ? detail.dyeStage.dyebatches.size() : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.startAt != null ? #temporals.format(detail.dyeStage.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.completeAt != null ? #temporals.format(detail.dyeStage.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.plannedStart != null ? #temporals.format(detail.dyeStage.plannedStart, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:text="${detail?.dyeStage?.deadline != null ? #temporals.format(detail.dyeStage.deadline, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:classappend="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
+                                                                th:text="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.dyeStage?.workStatus?.name() ?: 'N/A'})))"></td>
+                                                            <td th:text="${detail?.dyeStage?.dyeMachine.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail.product.thread.process.glue_level != null ? (detail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
+                                             class="detail-section">
+                                            <div class="detail-content">
+                                                <p>Không có giai đoạn nhuộm nào.</p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <!-- Packaging Stage Table -->
-                                <div class="stage-table packaging-stage-table">
-                                    <table class="table">
-                                        <thead>
-                                        <tr class="text-dark">
-                                            <th>Packaging Stage ID</th>
-                                            <th>Hạn chót</th>
-                                            <th>Người phụ trách</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="detail : ${workOrder?.workOrderDetails}"
-                                            th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
-                                            <td th:text="${detail?.packagingStage?.deadline != null ? #temporals.format(detail.packagingStage.deadline, 'yyyy-MM-dd') : 'N/A'}"></td>
-                                            <td th:text="${detail?.packagingStage?.leader?.username ?: 'N/A'}"></td>
-                                        </tr>
-                                        <tr th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <td colspan="3">Không có giai đoạn đóng gói nào.</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                    <!-- Winding Stage Tab -->
+                                    <div class="tab-pane fade winding-stage-tab" id="winding" role="tabpanel"
+                                         aria-labelledby="winding-tab">
+                                        <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                             class="detail-section"
+                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <div class="detail-header" data-bs-toggle="collapse"
+                                                 th:data-bs-target="'#winding-detail-' + ${iterStat.count}">
+                                                <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                <button class="toggle-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse" th:id="'winding-detail-' + ${iterStat.count}">
+                                                <div class="detail-content">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Work Order Detail ID</th>
+                                                            <th>Winding Stage ID</th>
+                                                            <th>Số mẻ cuốn</th>
+                                                            <th>Thời gian bắt đầu</th>
+                                                            <th>Thời gian hoàn thành</th>
+                                                            <th>Thời gian bắt đầu dự kiến</th>
+                                                            <th>Hạn chót</th>
+                                                            <th>Trạng thái công việc</th>
+                                                            <th>Máy Cuốn ID</th>
+                                                            <th>Tốc độ máy</th>
+                                                            <th>Tốc độ bánh vót</th>
+                                                            <th>Mức keo</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td th:text="${detail?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.windingStage?.windingbatches != null ? detail.windingStage.windingbatches.size() : 'N/A'}"></td>
+                                                            <td th:text="${detail?.windingStage?.startAt != null ? #temporals.format(detail.windingStage.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
+                                                            <td th:text="${detail?.windingStage?.completeAt != null ? #temporals.format(detail.windingStage.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
+                                                            <td th:text="${detail?.windingStage?.plannedStart != null ? #temporals.format(detail.windingStage.plannedStart, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:text="${detail?.windingStage?.deadline != null ? #temporals.format(detail.windingStage.deadline, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:classappend="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
+                                                                th:text="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.windingStage?.workStatus?.name() ?: 'N/A'})))"></td>
+                                                            <td th:text="${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.machine_speed ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.tocdo_banhvot != null ? detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.tocdo_banhvot + ' m/phút' : 'N/A'}"></td>
+                                                            <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.glue_level != null ? (detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
+                                             class="detail-section">
+                                            <div class="detail-content">
+                                                <p>Không có giai đoạn cuốn nào.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Packaging Stage Tab -->
+                                    <div class="tab-pane fade packaging-stage-tab" id="packaging" role="tabpanel"
+                                         aria-labelledby="packaging-tab">
+                                        <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                             class="detail-section"
+                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <div class="detail-header" data-bs-toggle="collapse"
+                                                 th:data-bs-target="'#packaging-detail-' + ${iterStat.count}">
+                                                <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                <button class="toggle-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse" th:id="'packaging-detail-' + ${iterStat.count}">
+                                                <div class="detail-content">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Work Order Detail ID</th>
+                                                            <th>Packaging Stage ID</th>
+                                                            <th>Winding Stage ID</th>
+                                                            <th>Số mẻ đóng gói</th>
+                                                            <th>Thời gian bắt đầu</th>
+                                                            <th>Thời gian hoàn thành</th>
+                                                            <th>Thời gian bắt đầu dự kiến</th>
+                                                            <th>Hạn chót</th>
+                                                            <th>Trạng thái công việc</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td th:text="${detail?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.windingStage?.id ?: 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.packagingBatches != null ? detail.packagingStage.packagingBatches.size() : 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.startAt != null ? #temporals.format(detail.packagingStage.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.completeAt != null ? #temporals.format(detail.packagingStage.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.plannedStart != null ? #temporals.format(detail.packagingStage.plannedStart, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:text="${detail?.packagingStage?.deadline != null ? #temporals.format(detail.packagingStage.deadline, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                            <td th:classappend="${detail?.packagingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.packagingStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.packagingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
+                                                                th:text="${detail?.packagingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.packagingStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.packagingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.packagingStage?.workStatus?.name() ?: 'N/A'})))"></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
+                                             class="detail-section">
+                                            <div class="detail-content">
+                                                <p>Không có giai đoạn đóng gói nào.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -514,6 +776,22 @@
             successToast.show();
             setTimeout(() => successToast.hide(), 3000);
         }
+
+        // Toggle collapse for detail sections
+        $('.detail-header').click(function () {
+            var target = $(this).data('bs-target');
+            var icon = $(this).find('.toggle-btn i');
+            $(target).collapse('toggle');
+            if ($(target).hasClass('show')) {
+                if (icon.hasClass('fa-plus')) {
+                    icon.removeClass('fa-plus').addClass('fa-minus');
+                }
+            } else {
+                if (icon.hasClass('fa-minus')) {
+                    icon.removeClass('fa-minus').addClass('fa-plus');
+                }
+            }
+        });
     });
 </script>
 </body>

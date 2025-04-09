@@ -26,7 +26,10 @@ public class DyeBatch extends BaseEntity {
     private BigDecimal cone_batch_weight; // khối lượng chỉ riêng của từng mẻ
 
     @NotNull
-    private LocalDate deadline;
+    private LocalDateTime deadline;
+
+    @NotNull
+    private LocalDateTime plannedStart;
 
 
     private LocalDate plannedStart;
@@ -53,6 +56,10 @@ public class DyeBatch extends BaseEntity {
     @JoinColumn(name = "leader_end_id")
     private User leaderEnd;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qa_id")
+    private User qa;
+
     @OneToOne(mappedBy = "dyeBatch")
     private WindingBatch windingBatch;
 
@@ -60,7 +67,7 @@ public class DyeBatch extends BaseEntity {
     @JoinColumn(name = "dye_stage_id")
     private DyeStage dyeStage;
 
-    @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DyeRiskAssessment> dyeRiskAssessments;
 
     private Boolean isPass;
@@ -70,7 +77,7 @@ public class DyeBatch extends BaseEntity {
 
     ;
 
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDate deadline, LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, Boolean isPass) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments) {
         super(id, createAt, updateAt);
         this.liters_min = liters_min;
         this.liters = liters;
@@ -84,6 +91,7 @@ public class DyeBatch extends BaseEntity {
         this.dyePhoto = dyePhoto;
         this.leaderStart = leaderStart;
         this.leaderEnd = leaderEnd;
+        this.qa = qa;
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
@@ -95,6 +103,22 @@ public class DyeBatch extends BaseEntity {
     }
 
     public void setPlannedStart(LocalDate plannedStart) {
+        this.plannedStart = plannedStart;
+    }
+
+    public User getQa() {
+        return qa;
+    }
+
+    public void setQa(User qa) {
+        this.qa = qa;
+    }
+
+    public LocalDateTime getPlannedStart() {
+        return plannedStart;
+    }
+
+    public void setPlannedStart(LocalDateTime plannedStart) {
         this.plannedStart = plannedStart;
     }
 
@@ -138,11 +162,11 @@ public class DyeBatch extends BaseEntity {
         this.liters = liters;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

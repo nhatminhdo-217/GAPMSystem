@@ -51,11 +51,13 @@ public class MachineController {
                     if ("dye".equals(tab)) {
                         try {
                             DyeMachine dyeMachine = machineService.getDyeMachinesById(searchId);
-                            model.addAttribute("dyeMachines", Collections.singletonList(dyeMachine));
-                            model.addAttribute("dyePage", new PageImplWrapper<>(Collections.singletonList(dyeMachine), dyePageable, 1));
+                            Page<DyeMachine> dyePage = new PageImplWrapper<>(Collections.singletonList(dyeMachine), dyePageable, 1);
+                            model.addAttribute("dyeMachines", dyePage.getContent());
+                            model.addAttribute("dyePage", dyePage);
                         } catch (RuntimeException e) {
+                            Page<DyeMachine> dyePage = new PageImplWrapper<>(Collections.emptyList(), dyePageable, 0);
                             model.addAttribute("dyeMachines", Collections.emptyList());
-                            model.addAttribute("dyePage", new PageImplWrapper<>(Collections.emptyList(), dyePageable, 0));
+                            model.addAttribute("dyePage", dyePage);
                         }
                         Page<WindingMachine> windingPage = machineService.getAllWindingMachines(windingPageable);
                         model.addAttribute("windingMachines", windingPage.getContent());
@@ -63,11 +65,13 @@ public class MachineController {
                     } else {
                         try {
                             WindingMachine windingMachine = machineService.getWindingMachinesById(searchId);
-                            model.addAttribute("windingMachines", Collections.singletonList(windingMachine));
-                            model.addAttribute("windingPage", new PageImplWrapper<>(Collections.singletonList(windingMachine), windingPageable, 1));
+                            Page<WindingMachine> windingPage = new PageImplWrapper<>(Collections.singletonList(windingMachine), windingPageable, 1);
+                            model.addAttribute("windingMachines", windingPage.getContent());
+                            model.addAttribute("windingPage", windingPage);
                         } catch (RuntimeException e) {
+                            Page<WindingMachine> windingPage = new PageImplWrapper<>(Collections.emptyList(), windingPageable, 0);
                             model.addAttribute("windingMachines", Collections.emptyList());
-                            model.addAttribute("windingPage", new PageImplWrapper<>(Collections.emptyList(), windingPageable, 0));
+                            model.addAttribute("windingPage", windingPage);
                         }
                         Page<DyeMachine> dyePage = machineService.getAllDyeMachines(dyePageable);
                         model.addAttribute("dyeMachines", dyePage.getContent());
@@ -93,6 +97,7 @@ public class MachineController {
             }
 
             model.addAttribute("tab", tab);
+            model.addAttribute("search", search);
             return "technical/view-all-machine";
         }
         return "redirect:/login";
@@ -167,11 +172,17 @@ public class MachineController {
                             dyeMachine.getCapacity() == null || dyeMachine.getCapacity() <= 0) {
                         throw new IllegalArgumentException("Thông tin máy nhuộm không hợp lệ. Các giá trị phải lớn hơn 0.");
                     }
+                    if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) <= 0
+                            || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) <= 0) {
+                        throw new IllegalArgumentException("Giá trị của litter max phải lớn hơn litters min " +
+                                "và giá trị của cone max phải lớn hơn cone min");
+                    }
+                    ;
                     DyeMachine savedDyeMachine = machineService.addDyeMachine(dyeMachine);
-                    model.addAttribute("dyeMachine", savedDyeMachine); // Truyền máy vừa tạo vào model
-                    model.addAttribute("success", "Tạo máy nhuộm thành công!"); // Thêm thông báo success
+                    model.addAttribute("dyeMachine", savedDyeMachine);
+                    model.addAttribute("success", "Tạo máy nhuộm thành công!");
                     System.err.println("Rendering dye-machine-details with success: " + model.containsAttribute("success"));
-                    return "technical/dye-machine-details"; // Trả về view chi tiết trực tiếp
+                    return "technical/dye-machine-details";
                 } else if ("winding".equals(machineType)) {
                     if (windingMachine.getMotor_speed() == null || windingMachine.getMotor_speed() <= 0 ||
                             windingMachine.getSpindle() == null || windingMachine.getSpindle() <= 0 ||
@@ -179,10 +190,10 @@ public class MachineController {
                         throw new IllegalArgumentException("Thông tin máy cuốn không hợp lệ. Các giá trị phải lớn hơn 0.");
                     }
                     WindingMachine savedWindingMachine = machineService.addWindingMachine(windingMachine);
-                    model.addAttribute("windingMachine", savedWindingMachine); // Truyền máy vừa tạo vào model
-                    model.addAttribute("success", "Tạo máy cuốn thành công!"); // Thêm thông báo success
-                    System.err.println("Rendering dye-machine-details with success: " + model.containsAttribute("success"));
-                    return "technical/winding-machine-details"; // Trả về view chi tiết trực tiếp
+                    model.addAttribute("windingMachine", savedWindingMachine);
+                    model.addAttribute("success", "Tạo máy cuốn thành công!");
+                    System.err.println("Rendering winding-machine-details with success: " + model.containsAttribute("success"));
+                    return "technical/winding-machine-details";
                 } else {
                     model.addAttribute("error", "Loại máy không hợp lệ.");
                     return "technical/view-all-machine";
@@ -261,6 +272,12 @@ public class MachineController {
                         dyeMachine.getCapacity() == null || dyeMachine.getCapacity() <= 0) {
                     throw new IllegalArgumentException("Thông tin máy nhuộm không hợp lệ. Các giá trị phải lớn hơn 0.");
                 }
+                if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) <= 0
+                        || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) <= 0) {
+                    throw new IllegalArgumentException("Giá trị của litter max phải lớn hơn litters min " +
+                            "và giá trị của cone max phải lớn hơn cone min");
+                }
+                ;
                 DyeMachine updatedDyeMachine = machineService.updateDyeMachine(id, dyeMachine);
                 model.addAttribute("dyeMachine", updatedDyeMachine);
                 model.addAttribute("success", "Cập nhật máy nhuộm thành công!");
