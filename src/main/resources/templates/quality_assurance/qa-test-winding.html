@@ -678,6 +678,22 @@
                                                th:value="false">
                                         <label class="btn btn-outline-danger" for="fail">False</label>
                                     </div>
+
+                                    <!-- Khu vực nhập liệu khi chọn "False" -->
+                                    <div id="failNoteSection" class="note-section" style="display: none;">
+                                        <label>Ghi Chú Lỗi:</label>
+                                        <textarea name="errorDetails" rows="3" th:field="*{errorDetails}"
+                                                  class="form-control" placeholder="Nhập ghi chú nếu có lỗi" oninvalid="this.setCustomValidity('Trường này không được bỏ trống')"
+                                                  oninput="this.setCustomValidity('')"></textarea>
+
+                                        <label style="margin-top: 10px;">Cấp độ lỗi:</label>
+                                        <select name="errorLevel" th:field="*{errorLevel}" oninvalid="this.setCustomValidity('Trường này không được bỏ trống')"
+                                                onchange="this.setCustomValidity('')">
+                                            <option th:value="${null}" th:selected="${windingRiskAssessment.errorLevel == null}">Mức độ lỗi</option>
+                                            <option th:value="true">Lỗi nặng</option>
+                                            <option th:value="false">Lỗi nhẹ</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <!-- Nút hành động -->
@@ -926,6 +942,42 @@
                 currentStream.getTracks().forEach(track => track.stop());
             }
         });
+    });
+
+
+
+    // nhập thông tin nếu false
+    document.addEventListener("DOMContentLoaded", function () {
+        const passRadio = document.getElementById('pass');
+        const failRadio = document.getElementById('fail');
+        const failNoteSection = document.getElementById('failNoteSection');
+        const failNoteTextarea = failNoteSection.querySelector('textarea[name="errorDetails"]');
+        const errorLevelSelect = failNoteSection.querySelector('select[name="errorLevel"]');
+
+        // Hàm hiển thị/ẩn khu vực nhập liệu và quản lý required
+        function toggleFailNoteSection() {
+            if (failRadio.checked) {
+                failNoteSection.style.display = 'block';
+                // Bật required khi chọn "False"
+                failNoteTextarea.setAttribute('required', 'required');
+                errorLevelSelect.setAttribute('required', 'required');
+            } else {
+                failNoteSection.style.display = 'none';
+                // Tắt required khi chọn "Pass"
+                failNoteTextarea.removeAttribute('required');
+                errorLevelSelect.removeAttribute('required');
+                // Xóa giá trị khi ẩn
+                failNoteTextarea.value = '';
+                errorLevelSelect.value = '';
+            }
+        }
+
+        // Lắng nghe sự kiện thay đổi của radio button
+        passRadio.addEventListener('change', toggleFailNoteSection);
+        failRadio.addEventListener('change', toggleFailNoteSection);
+
+        // Kiểm tra trạng thái ban đầu
+        toggleFailNoteSection();
     });
 </script>
 <script>

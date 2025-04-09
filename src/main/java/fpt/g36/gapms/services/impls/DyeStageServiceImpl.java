@@ -5,13 +5,11 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.repositories.DyeBatchRepository;
-import fpt.g36.gapms.repositories.DyeRiskAssessmentRepository;
-import fpt.g36.gapms.repositories.DyeStageRepository;
-import fpt.g36.gapms.repositories.PhotoStageRepository;
+import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.DyeStageService;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.PhotoStageService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,12 +32,16 @@ public class DyeStageServiceImpl implements DyeStageService {
 
     @Autowired
     private PhotoStageService photoStageService;
-
+    @Autowired
+    private UserUtils userUtils;
     @Autowired
     private ImageService imageService;
 
     @Autowired
     private DyeRiskAssessmentRepository dyeRiskAssessmentRepository;
+
+    @Autowired
+    private RiskSolutionRepository riskSolutionRepository;
 
     @Override
     public List<DyeStage> getAllDyeStageForDyeLead(Long woId) {
@@ -131,7 +133,14 @@ public class DyeStageServiceImpl implements DyeStageService {
             if(dyeRiskAssessment.getPass()) {
                 dyeRiskAssessment_save.getDyeBatch().setPass(true);
             }else {
+                dyeRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(dyeRiskAssessment.getErrorDetails()));
+                dyeRiskAssessment_save.setErrorLevel(dyeRiskAssessment.getErrorLevel());
                 dyeRiskAssessment_save.getDyeBatch().setPass(false);
+
+                RiskSolution riskSolution = new RiskSolution();
+                riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
+                riskSolution.setDyeRiskAssessment(dyeRiskAssessment);
+                riskSolutionRepository.save(riskSolution);
 
             }
             List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
@@ -139,6 +148,8 @@ public class DyeStageServiceImpl implements DyeStageService {
                         .allMatch(dyeBatch -> dyeBatch.getTestStatus() == TestEnum.TESTED && dyeBatch.getPass());
                 if (allTested) {
                     dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
+                }else{
+                    dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
                 }
         }
         dyeRiskAssessmentRepository.save(dyeRiskAssessment_save);

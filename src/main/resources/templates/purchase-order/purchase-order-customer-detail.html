@@ -473,11 +473,20 @@
                         <p>
                             <i class="fas fa-spinner me-1"></i>
                             <strong>Trạng thái:</strong>
-                            <span th:switch="${purchaseOrder.productionOrder.workOrder.isProduction}">
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang sản xuất'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                <span th:case="*" th:text="'Chờ sản xuất'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
-                            </span>
+                            <span th:switch="${purchaseOrder.productionOrder?.workOrder?.isProduction}">
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+          th:text="'Đang sản xuất'"
+          class="badge"
+          style="background-color: #ffcc00; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+          th:text="'Hoàn thành'"
+          class="badge"
+          style="background-color: #34c759; color: white;"></span>
+    <span th:case="*"
+          th:text="'Chờ sản xuất'"
+          class="badge"
+          style="background-color: #ff3b30; color: white;"></span>
+</span>
                         </p>
                         <p>
                             <i class="fas fa-truck me-1"></i>
@@ -519,7 +528,7 @@
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-    <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+    <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>
                                 <div class="process-step in-progress">
@@ -529,7 +538,7 @@
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-    <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+    <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>
                                 <div class="process-step not-started">
@@ -539,7 +548,7 @@
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-    <span th:case="*" th:text="'Đang chờ lệnh'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+    <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </div>
                                 <!-- <div class="process-step not-started">

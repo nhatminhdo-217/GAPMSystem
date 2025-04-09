@@ -1,15 +1,14 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.repositories.PhotoStageRepository;
-import fpt.g36.gapms.repositories.WindingBatchRepository;
-import fpt.g36.gapms.repositories.WindingRiskAssessmentRepository;
-import fpt.g36.gapms.repositories.WindingStageRepository;
+import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.PhotoStageService;
 import fpt.g36.gapms.services.WindingStageService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +25,10 @@ public class WindingStageServiceImpl implements WindingStageService {
     private WindingRiskAssessmentRepository windingRiskAssessmentRepository;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private RiskSolutionRepository riskSolutionRepository;
+    @Autowired
+    private UserUtils userUtils;
 
     @Autowired
     private WindingBatchRepository windingBatchRepository;
@@ -90,7 +93,14 @@ public class WindingStageServiceImpl implements WindingStageService {
             if(windingRiskAssessment.getPass()) {
                 windingRiskAssessment_save.getWindingBatch().setPass(true);
             }else {
+                windingRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(windingRiskAssessment.getErrorDetails()));
+                windingRiskAssessment_save.setErrorLevel(windingRiskAssessment.getErrorLevel());
                 windingRiskAssessment_save.getWindingBatch().setPass(false);
+
+                RiskSolution riskSolution = new RiskSolution();
+                riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
+                riskSolution.setWindingRiskAssessment(windingRiskAssessment);
+                riskSolutionRepository.save(riskSolution);
 
             }
             List<WindingBatch> windingBatches = windingBatchRepository.getAllWindingBatchByWindingStageId(windingRiskAssessment.getWindingBatch().getWindingStage().getId());
@@ -98,6 +108,8 @@ public class WindingStageServiceImpl implements WindingStageService {
                     .allMatch(windingBatch -> windingBatch.getTestStatus() == TestEnum.TESTED && windingBatch.getPass());
             if (allTested) {
                 windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.FINISHED);
+            }else {
+                windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.IN_PROGRESS);
             }
         }
         windingRiskAssessmentRepository.save(windingRiskAssessment_save);

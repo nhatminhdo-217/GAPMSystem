@@ -61,7 +61,6 @@ public class PackagingBatch extends BaseEntity {
     public PackagingBatch() {
     }
 
-    ;
 
     public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime receivedProductAt, LocalDate deadline,LocalDate plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, Boolean isPass) {
         super(id, createAt, updateAt);
@@ -74,7 +73,7 @@ public class PackagingBatch extends BaseEntity {
         this.testStatus = testStatus;
         this.leaderStart = leaderStart;
         this.leaderEnd = leaderEnd;
-        PackagingPhoto = packagingPhoto;
+        this.PackagingPhoto = packagingPhoto;
         this.packagingStage = packagingStage;
         this.windingBatch = windingBatch;
         this.packagingRiskAssessments = packagingRiskAssessments;

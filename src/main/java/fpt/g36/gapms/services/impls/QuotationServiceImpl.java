@@ -129,10 +129,23 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public QuotationInforCustomerDTO getQuotationCustomer(long rfqId) {
-        List<QuotationInforCustomerProjection> quotationDetail = quotationRepository.findQuotationCustomer(rfqId);
+        List<QuotationInforCustomerProjection> quotationDetail = new ArrayList<>();
 
-        if (quotationDetail.isEmpty()) {
-            throw new RuntimeException("Quotation not found");
+        /*List<QuotationInforCustomerProjection> quotationDetail = quotationRepository.findQuotationCustomer(rfqId);*/
+         Rfq rfq = rfqService.getRfqById(rfqId);
+        for (RfqDetail rfqDetail: rfq.getRfqDetails()) {
+            Boolean color;
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            if(checkColor) {
+                color = false;
+                QuotationInforCustomerProjection quotationDetail_set = quotationRepository.findQuotationCustomers(rfqDetail.getId(), rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }else {
+                color = true;
+                QuotationInforCustomerProjection quotationDetail_set = quotationRepository.findQuotationCustomers(rfqDetail.getId(),rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }
+
         }
 
         QuotationInforCustomerDTO quotationInforCustomerDTO = new QuotationInforCustomerDTO();
@@ -156,6 +169,7 @@ public class QuotationServiceImpl implements QuotationService {
                     product.setBrandName(p.getBrandName());
                     product.setCategoryName(p.getCategoryName());
                     product.setColor(p.getIsColor());
+                    /*product.setColor(p.getIsColor());*/
                     product.setPrice(p.getPrice());
                     product.setQuantity(p.getQuantity());
                     product.setNoteColor(p.getNoteColor());
@@ -192,9 +206,16 @@ public class QuotationServiceImpl implements QuotationService {
             purchaseOrderDetail.setProduct(rfqDetail.getProduct());
             purchaseOrderDetail.setPurchaseOrder(purchaseOrderSaved);
             purchaseOrderDetail.setNote_color(rfqDetail.getNoteColor());
-            boolean checkColor = rfqDetail.getNoteColor().equals("#FFFFFF");
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            BigDecimal unitPrice;
+            if(checkColor) {
 
-            BigDecimal unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),checkColor);
+                 unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),false);
+            }else {
+                 unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),true);
+            }
+
+            /*BigDecimal unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),checkColor);*/
             purchaseOrderDetail.setUnitPrice(unitPrice);
             purchaseOrderDetail.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(rfqDetail.getQuantity())));
             purchaseOrderDetailRepository.save(purchaseOrderDetail);
