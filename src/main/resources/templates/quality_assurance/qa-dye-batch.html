@@ -391,6 +391,12 @@
             .captured-image, .video-preview { max-width: 100%; }
             .status-btn { font-size: 12px; padding: 8px; }
         }
+
+        .btn-dye-stage {
+            background: #FFD700;
+            border: none;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -418,16 +424,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Lệnh Nhuộm Hàng-WD-<span th:text="${dyeBatches.get(0).dyeStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WD-<span th:text="${stageId}"></span></h2>
+                        <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Trạng thái Test</th>
-                                <th>Trạng thái</th>
-                                <th>Mã Work Order Con</th>
+                                <th>Trạng thái kiểm tra</th>
+                                <th>Trạng thái nhuộm</th>
+                                <th>Thứ tự mẻ nhuộm</th>
                                 <th>Thời Gian Kết thúc</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
@@ -438,17 +444,17 @@
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
-                            <tr th:each="dy : ${dyeBatches}" th:attr="data-id=${dy.id}">
+                            <tr th:each="dy, iterStat  : ${dyeBatches}" th:attr="data-id=${dy.id}">
                                 <td>
-                                    <span th:switch="${dy.testStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đã Kiểm tra
+                                    <span th:switch="${dy.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
                                         </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đang kiểm tra
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
                                         </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
                                         </span>
                                     </span>
                                 </td>
@@ -465,7 +471,7 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>DB-<span th:text="${dy.id}"></span></td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
@@ -474,8 +480,8 @@
                                 <td th:text="${dy.dyeStage.cone_quantity}"></td>
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/test-form/dye/{id}(id=${dy.id})}"
-                                       class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                       class="btn btn-dye-stage btn-action">
+                                        <i class="fas fa-clipboard-check"></i> Kiểm Tra
                                     </a>
                                 </td>
                             </tr>

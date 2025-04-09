@@ -38,6 +38,8 @@ public class WorkOrderController {
     private DyeStageService dyeStageService;
 
     @Autowired
+    private PhotoStageService photoStageService;
+    @Autowired
     private DyeBatchService dyeBatchService;
     @Autowired
     private WindingBatchService windingBatchService;
@@ -133,17 +135,26 @@ public class WorkOrderController {
         if (role.equalsIgnoreCase("LEAD_DYE")) {
             userUtils.getOptionalUser(model);
             List<DyeBatch> dyeBatches = dyeBatchService.getAllDyeBatchForDyeLead(id);
+            Long woId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("dyeBatches", dyeBatches);
+            model.addAttribute("StageId", id);
+            model.addAttribute("woId", woId);
             return "team-leader/dye-batch";
         } else if (role.equalsIgnoreCase("LEAD_WINDING")) {
             userUtils.getOptionalUser(model);
             List<WindingBatch> windingBatches = windingBatchService.getAllWindingBatchForWindingLead(id);
+            Long woId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("windingBatches",windingBatches);
+            model.addAttribute("StageId", id);
+            model.addAttribute("woId", woId);
             return "team-leader/winding-batch";
         } else {
             userUtils.getOptionalUser(model);
             List<PackagingBatch> packagingBatches = packagingBatchService.getAllPackagingBatchForPackagingLead(id);
+            Long woId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("packagingBatches", packagingBatches);
+            model.addAttribute("woId", woId);
+            model.addAttribute("StageId", id);
             return "team-leader/packaging-batch";
         }
     }
@@ -360,16 +371,19 @@ public class WorkOrderController {
             userUtils.getOptionalUser(model);
             List<DyeStage> dyeStages = dyeStageService.getAllDyeStageForDyeLead(id);
             model.addAttribute("dyeStages", dyeStages);
+            model.addAttribute("woId", id);
             return "quality_assurance/qa-dye-stage";
         } else if (role.equalsIgnoreCase("QA_WINDING")) {
             userUtils.getOptionalUser(model);
             List<WindingStage> windingStages = windingStageService.getAllWindingStageForWindingLead(id);
             model.addAttribute("windingStages",windingStages);
+            model.addAttribute("woId", id);
             return "quality_assurance/qa-winding-stage";
         } else {
             userUtils.getOptionalUser(model);
             List<PackagingStage> packagingStages = packagingStageService.getAllPackagingStageForPackagingLead(id);
             model.addAttribute("packagingStages", packagingStages);
+            model.addAttribute("woId", id);
             return "quality_assurance/qa-packaging-stage";
         }
     }
@@ -386,17 +400,26 @@ public class WorkOrderController {
         if (role.equalsIgnoreCase("QA_DYE")) {
             userUtils.getOptionalUser(model);
             List<DyeBatch> dyeBatches = dyeBatchService.getAllDyeBatchForDyeLead(id);
+            Long woId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("dyeBatches", dyeBatches);
+            model.addAttribute("stageId", id);
+            model.addAttribute("woId", woId);
             return "quality_assurance/qa-dye-batch";
         } else if (role.equalsIgnoreCase("QA_WINDING")) {
             userUtils.getOptionalUser(model);
             List<WindingBatch> windingBatches = windingBatchService.getAllWindingBatchForWindingLead(id);
+            Long woId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("windingBatches",windingBatches);
+            model.addAttribute("stageId", id);
+            model.addAttribute("woId", woId);
             return "quality_assurance/qa-winding-batch";
         } else {
             userUtils.getOptionalUser(model);
             List<PackagingBatch> packagingBatches = packagingBatchService.getAllPackagingBatchForPackagingLead(id);
+            Long woId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getId();
             model.addAttribute("packagingBatches", packagingBatches);
+            model.addAttribute("stageId", id);
+            model.addAttribute("woId", woId);
             return "quality_assurance/qa-packaging-batch";
         }
     }
@@ -446,6 +469,7 @@ public class WorkOrderController {
 
         }
 
+
         /*String uploadDir = "/uploads";
 
         List<String> existingPhotoList = existingPhotos != null && !existingPhotos.isEmpty()
@@ -465,9 +489,14 @@ public class WorkOrderController {
                 }
             }
         }*/
-        DyeRiskAssessment dyeRiskAssessment_save = dyeStageService.saveTestDye(id, dyeRiskAssessment, optionalUser.get(), photos);
-        redirectAttributes.addFlashAttribute("save_dye", "Đã lưu thông tin kiểm tra");
-        return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment_save.getDyeBatch().getId() ;
+        try {
+            DyeRiskAssessment dyeRiskAssessment_save = dyeStageService.saveTestDye(id, dyeRiskAssessment, optionalUser.get(), photos);
+            redirectAttributes.addFlashAttribute("save_dye", "Đã lưu thông tin kiểm tra");
+            return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment_save.getDyeBatch().getId();
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("check_photo", e.getMessage());
+            return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment.getDyeBatch().getId();
+        }
     }
 
 
@@ -534,9 +563,14 @@ public class WorkOrderController {
                 }
             }
         }*/
+        try {
         WindingRiskAssessment windingRiskAssessment_save = windingStageService.saveTestWingding(id, windingRiskAssessment, optionalUser.get(), photos);
         redirectAttributes.addFlashAttribute("save_winding", "Đã lưu thông tin kiểm tra");
         return "redirect:/work-order/quality_assurance/test-form/winding/" + windingRiskAssessment_save.getWindingBatch().getId() ;
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("check_photo_winding", e.getMessage());
+            return "redirect:/work-order/quality_assurance/test-form/winding/" + windingRiskAssessment.getWindingBatch().getId();
+        }
     }
 
 
@@ -603,8 +637,13 @@ public class WorkOrderController {
                 }
             }
         }*/
+        try {
         PackagingRiskAssessment packagingRiskAssessment_save = packagingStageService.saveTestPackaging(id, packagingRiskAssessment, optionalUser.get(), photos);
         redirectAttributes.addFlashAttribute("save_packaging", "Đã lưu thông tin kiểm tra");
         return "redirect:/work-order/quality_assurance/test-form/packaging/" + packagingRiskAssessment_save.getPackagingBatch().getId() ;
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("check_photo_packaging", e.getMessage());
+            return "redirect:/work-order/quality_assurance/test-form/packaging/" + packagingRiskAssessment.getPackagingBatch().getId();
+        }
     }
 }

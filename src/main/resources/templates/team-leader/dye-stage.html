@@ -97,7 +97,7 @@
             z-index: 1;
         }
         .table td {
-            padding: 15px;
+            padding: 7px;
             vertical-align: middle;
             background: #fff;
             font-size: 14px;
@@ -391,6 +391,13 @@
             .captured-image, .video-preview { max-width: 100%; }
             .status-btn { font-size: 12px; padding: 8px; }
         }
+
+
+        .btn-dye-stage {
+            background: #FFD700;
+            border: none;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -426,7 +433,7 @@
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã Work Order Con</th>
+                                <th>Mã sản phẩm nhuộm</th>
                                 <th>Thiết bị</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
@@ -451,14 +458,14 @@
                                             <i class="fas fa-spinner"></i> Đang Nhuộm
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                            <i class="fas fa-check-circle"></i> Hoàn Thành
                                         </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Nhuộm
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${dy.workOrderDetail.id}"></span></td>
+                                <td>WD-<span th:text="${dy.id}"></span></td>
                                 <td>MB-<span th:text="${dy.dyeMachine.id}"></span></td>
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
@@ -474,7 +481,7 @@
                                 <td>na</td>
                                 <td>
                                     <a th:href="@{/work-order/team-leader/Batch/{id}(id=${dy.id})}"
-                                       class="btn btn-primary btn-action">
+                                       class="btn btn-dye-stage btn-action">
                                         <i class="fas fa-eye"></i> Mẻ Nhuộm
                                     </a>
                                 </td>

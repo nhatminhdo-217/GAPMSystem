@@ -97,7 +97,7 @@
             z-index: 1;
         }
         .table td {
-            padding: 15px;
+            padding: 7px;
             vertical-align: middle;
             background: #fff;
             font-size: 14px;
@@ -418,15 +418,16 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Lệnh Nhuộm Hàng-WD-<span th:text="${dyeBatches.get(0).dyeStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WD-<span th:text="${StageId}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã Mẻ</th>
+                                <th>Trạng thái kiểm tra </th>
+                                <th>Thứ tự mẻ nhuộm</th>
                                 <th>Thiết bị</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
@@ -443,7 +444,7 @@
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
-                            <tr th:each="dy : ${dyeBatches}" th:attr="data-id=${dy.id}">
+                            <tr th:each="dy, iterStat : ${dyeBatches}" th:attr="data-id=${dy.id}">
                                 <td>
                                     <span th:switch="${dy.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -457,7 +458,20 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>DB-<span th:text="${dy.id}"></span></td>
+                                <td>
+                                    <span th:switch="${dy.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
+                                        </span>
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
+                                        </span>
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td>MB-<span th:text="${dy.dyeStage.dyeMachine.id}"></span></td>
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
