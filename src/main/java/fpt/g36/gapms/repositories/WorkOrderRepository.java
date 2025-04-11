@@ -1,6 +1,7 @@
 package fpt.g36.gapms.repositories;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.entities.ProductionOrder;
 import fpt.g36.gapms.models.entities.WorkOrder;
 import jakarta.validation.constraints.NotNull;
@@ -24,4 +25,14 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     Page<WorkOrder> findByStatus(@NotNull BaseEnum status, Pageable pageable);
 
     Page<WorkOrder> findAllByOrderByCreateAt(Pageable pageable);
+
+    Page<WorkOrder> findAllByStatus(@NotNull BaseEnum status, Pageable pageable);
+
+    WorkOrder findByIdAndStatus(Long id, @NotNull BaseEnum status);
+
+    Page<WorkOrder> findAllBySendStatus(@NotNull SendEnum sendStatus, Pageable pageable);
+
+    WorkOrder findByIdAndSendStatus(Long id, @NotNull SendEnum sendStatus);
+
+    Page<WorkOrder> findByStatusAndSendStatus(@NotNull BaseEnum status, @NotNull SendEnum sendStatus, Pageable pageable);
 }

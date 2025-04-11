@@ -39,7 +39,6 @@ public class DyeStage extends BaseEntity {
     private LocalDateTime plannedStart;
 
 
-
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -55,7 +54,7 @@ public class DyeStage extends BaseEntity {
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 
-    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DyeBatch> dyebatches;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -76,7 +75,7 @@ public class DyeStage extends BaseEntity {
 
     public DyeStage() {
     }
-  
+
     public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;

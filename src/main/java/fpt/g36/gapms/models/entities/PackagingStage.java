@@ -37,7 +37,7 @@ public class PackagingStage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToMany(mappedBy = "packagingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "packagingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackagingBatch> packagingBatches;
 
     @ManyToMany(fetch = FetchType.LAZY)
