@@ -96,11 +96,11 @@ public class RiskSolutionController {
         return "risk-solution/view-list-technical-risk-solution";
     }
 
-    @GetMapping("/technical/detail/{id}")
-    public String getDetailPm(@PathVariable("id") Long riskSolutionId, Model model) {
-        RiskSolution riskSolution = riskSolutionService.getRiskSolutionById(riskSolutionId);
-        model.addAttribute("riskSolution", riskSolution);
-        userUtils.getOptionalUser(model);
-        return "risk-solution/view-detail-technical-risk-solution";
-    }
+//    @GetMapping("/technical/detail/{id}")
+//    public String getDetailPm(@PathVariable("id") Long riskSolutionId, Model model) {
+//        RiskSolution riskSolution = riskSolutionService.getRiskSolutionById(riskSolutionId);
+//        model.addAttribute("riskSolution", riskSolution);
+//        userUtils.getOptionalUser(model);
+//        return "risk-solution/view-detail-technical-risk-solution";
+//    }
 }

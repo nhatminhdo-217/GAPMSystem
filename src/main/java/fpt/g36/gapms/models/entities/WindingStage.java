@@ -44,7 +44,7 @@ public class WindingStage extends BaseEntity{
     @OneToOne(mappedBy = "windingStage")
     private PackagingStage packagingStage;
 
-    @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WindingBatch> windingbatches;
 
     @ManyToMany(fetch = FetchType.LAZY)
