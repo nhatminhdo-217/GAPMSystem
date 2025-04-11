@@ -11,7 +11,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
   # Security configuration
   security:

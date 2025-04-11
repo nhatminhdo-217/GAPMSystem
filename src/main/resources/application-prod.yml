@@ -47,16 +47,7 @@ spring:
   # Thymeleaf cache bật trong môi trường production để tăng hiệu suất
   thymeleaf:
     cache: true
-
   # Flyway configuration
-  #flyway:
-    #enabled: false
-    #baseline-on-migrate: false
-    #locations: classpath:db/migration
-    #validate-on-migrate: true
-    #url: jdbc:mysql://${DB_HOST_LOCAL}:${DB_PORT_LOCAL}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
-    #user: ${DB_USER}
-    #password: ${DB_PASSWORD}
 
 logging:
   level:

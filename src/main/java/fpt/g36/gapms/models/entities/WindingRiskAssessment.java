@@ -25,7 +25,6 @@ public class WindingRiskAssessment extends BaseEntity {
 
     private Boolean isPass;
 
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
@@ -34,7 +33,16 @@ public class WindingRiskAssessment extends BaseEntity {
     @JoinColumn(name = "winding_batch_id")
     private WindingBatch windingBatch;
 
-    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Integer trueCone, Integer falseCone, Boolean isColorUniformity, Boolean isColorFading, List<PhotoStage> photo, Boolean isPass, User createBy, WindingBatch windingBatch) {
+    @Column(columnDefinition = "TEXT")
+    private String errorDetails;
+
+    //0 là nhẹ 1 là nặng
+    private Boolean errorLevel;
+
+    @OneToOne(mappedBy = "windingRiskAssessment")
+    private RiskSolution riskSolution;
+
+    public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Integer trueCone, Integer falseCone, Boolean isColorUniformity, Boolean isColorFading, List<PhotoStage> photo, Boolean isPass, User createBy, WindingBatch windingBatch, String errorDetails, Boolean errorLevel, RiskSolution riskSolution) {
         super(id, createAt, updateAt);
         this.trueCone = trueCone;
         this.falseCone = falseCone;
@@ -44,6 +52,9 @@ public class WindingRiskAssessment extends BaseEntity {
         this.isPass = isPass;
         this.createBy = createBy;
         this.windingBatch = windingBatch;
+        this.errorDetails = errorDetails;
+        this.errorLevel = errorLevel;
+        this.riskSolution = riskSolution;
     }
 
     public WindingRiskAssessment() {
@@ -111,5 +122,29 @@ public class WindingRiskAssessment extends BaseEntity {
 
     public void setPass(Boolean pass) {
         isPass = pass;
+    }
+
+    public String getErrorDetails() {
+        return errorDetails;
+    }
+
+    public void setErrorDetails(String errorDetails) {
+        this.errorDetails = errorDetails;
+    }
+
+    public Boolean getErrorLevel() {
+        return errorLevel;
+    }
+
+    public void setErrorLevel(Boolean errorLevel) {
+        this.errorLevel = errorLevel;
+    }
+
+    public RiskSolution getRiskSolution() {
+        return riskSolution;
+    }
+
+    public void setRiskSolution(RiskSolution riskSolution) {
+        this.riskSolution = riskSolution;
     }
 }

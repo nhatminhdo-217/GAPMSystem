@@ -121,9 +121,18 @@
             font-size: 14px;
             border-radius: 20px;
             font-weight: 500;
-            display: inline-block;
-            min-width: 100px; /* Đảm bảo badge không quá nhỏ */
+            min-width: 100px;
             text-align: center;
+            display: inline-flex; /* Đảm bảo căn giữa nội dung */
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+            transition: all 0.3s ease; /* Hiệu ứng mượt mà */
+        }
+
+
+        .badge:hover {
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
         }
 
         .btn-action {
@@ -173,7 +182,8 @@
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -201,10 +211,12 @@
                             <label for="yearFilter" class="me-2">Lọc theo năm:</label>
                             <select id="yearFilter" class="form-select w-auto" onchange="filterByYear(this.value)">
                                 <!-- Option mặc định "-năm-" -->
-                                <option value="" th:selected="${selectedYear == null || selectedYear == ''}" th:text="'-năm-'"></option>
+                                <option value="" th:selected="${selectedYear == null || selectedYear == ''}"
+                                        th:text="'-năm-'"></option>
                                 <!-- Danh sách các năm -->
                                 <th:block th:each="year : ${#numbers.sequence(2025, 2035)}">
-                                    <option th:value="${year}" th:text="${year}" th:selected="${year == selectedYear}"></option>
+                                    <option th:value="${year}" th:text="${year}"
+                                            th:selected="${year == selectedYear}"></option>
                                 </th:block>
                             </select>
                         </div>
@@ -226,17 +238,28 @@
                             <tr th:each="po : ${purchaseOrders}">
                                 <td th:text="'PO-' + ${po.id}"></td>
                                 <td>Công ty TNHH ABC</td>
-                                <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025</td>
+                                <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025
+                                </td>
                                 <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
-                                     <span th:switch="${po.productionOrder.workOrder.isProduction}">
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang sản xuất'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
-                                <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                <span th:case="*" th:text="'Chờ sản xuất'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
-                            </span>
+                                    <span th:switch="${po.productionOrder?.workOrder?.isProduction}">
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+          th:text="'Đang sản xuất'"
+          class="badge"
+          style="background-color: #ffcc00; color: #333;"></span>
+    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+          th:text="'Hoàn thành'"
+          class="badge"
+          style="background-color: #34c759; color: white;"></span>
+    <span th:case="*"
+          th:text="'Chờ sản xuất'"
+          class="badge"
+          style="background-color: #ff3b30; color: white;"></span>
+</span>
                                 </td>
                                 <td>
-                                    <a th:href="@{/purchase-order/customer/detail/{id}(id=${po.id})}" class="btn btn-primary btn-action">
+                                    <a th:href="@{/purchase-order/customer/detail/{id}(id=${po.id})}"
+                                       class="btn btn-primary btn-action">
                                         <i class="fas fa-eye"></i> Xem
                                     </a>
                                 </td>
@@ -255,16 +278,20 @@
                 <ul class="pagination justify-content-center">
                     <!-- Nút Previous -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/purchase-order/customer/list(page=${currentPage - 1}, size=${pageSize}, year=${selectedYear})}">Previous</a>
+                        <a class="page-link"
+                           th:href="@{/purchase-order/customer/list(page=${currentPage - 1}, size=${pageSize}, year=${selectedYear})}">Previous</a>
                     </li>
                     <!-- Các trang -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/purchase-order/customer/list(page=${i}, size=${pageSize}, year=${selectedYear})}" th:text="${i + 1}"></a>
+                        <a class="page-link"
+                           th:href="@{/purchase-order/customer/list(page=${i}, size=${pageSize}, year=${selectedYear})}"
+                           th:text="${i + 1}"></a>
                     </li>
                     <!-- Nút Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/purchase-order/customer/list(page=${currentPage + 1}, size=${pageSize}, year=${selectedYear})}">Next</a>
+                        <a class="page-link"
+                           th:href="@{/purchase-order/customer/list(page=${currentPage + 1}, size=${pageSize}, year=${selectedYear})}">Next</a>
                     </li>
                 </ul>
             </nav>

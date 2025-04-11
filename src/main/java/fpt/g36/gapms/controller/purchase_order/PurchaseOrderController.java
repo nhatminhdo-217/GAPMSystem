@@ -224,6 +224,7 @@ public class PurchaseOrderController {
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("error", "Tạo hợp đồng thất bại");
+            System.err.println(e.getMessage());
             return "redirect:/purchase-order/detail/" + id + "/contract/upload";
         }
     }
