@@ -5,12 +5,11 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.TestEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.repositories.DyeBatchRepository;
-import fpt.g36.gapms.repositories.DyeRiskAssessmentRepository;
-import fpt.g36.gapms.repositories.DyeStageRepository;
-import fpt.g36.gapms.repositories.PhotoStageRepository;
+import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.DyeStageService;
 import fpt.g36.gapms.services.ImageService;
+import fpt.g36.gapms.services.PhotoStageService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,10 +31,17 @@ public class DyeStageServiceImpl implements DyeStageService {
     private PhotoStageRepository photoStageRepository;
 
     @Autowired
+    private PhotoStageService photoStageService;
+    @Autowired
+    private UserUtils userUtils;
+    @Autowired
     private ImageService imageService;
 
     @Autowired
     private DyeRiskAssessmentRepository dyeRiskAssessmentRepository;
+
+    @Autowired
+    private RiskSolutionRepository riskSolutionRepository;
 
     @Override
     public List<DyeStage> getAllDyeStageForDyeLead(Long woId) {
@@ -90,6 +96,27 @@ public class DyeStageServiceImpl implements DyeStageService {
     @Override
     public DyeRiskAssessment saveTestDye(Long id, DyeRiskAssessment dyeRiskAssessment, User qaDye, MultipartFile[] photos) throws IOException {
 
+
+        List<PhotoStage> photoStages = new ArrayList<>();
+        if(photos != null) {
+            List<String> images = imageService.saveListImageMultiFile(photos);
+            for (String photoUrl : images) {
+                PhotoStage photoStage = new PhotoStage();
+                photoStage.setPhoto(photoUrl);
+                photoStage.setDyeRiskAssessment(dyeRiskAssessment);// Lưu từng ảnh riêng biệt
+                photoStages.add(photoStage);
+            }
+            photoStageRepository.saveAll(photoStages);
+        }
+
+        List<PhotoStage> photo_exist = photoStageService.getAllPhotoStageByDraId(id);
+        if(dyeRiskAssessment.getPass() != null){
+            if(photo_exist.isEmpty()) {
+                throw new IllegalStateException("Chưa có Ảnh Kiểm Tra được tải lên");
+            }
+            }
+
+
         DyeRiskAssessment dyeRiskAssessment_save = dyeRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("draId not found"));
         dyeRiskAssessment_save.setColorTrue(dyeRiskAssessment.getColorTrue());
         dyeRiskAssessment_save.setColorTrue(dyeRiskAssessment.getColorTrue());
@@ -106,7 +133,14 @@ public class DyeStageServiceImpl implements DyeStageService {
             if(dyeRiskAssessment.getPass()) {
                 dyeRiskAssessment_save.getDyeBatch().setPass(true);
             }else {
+                dyeRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(dyeRiskAssessment.getErrorDetails()));
+                dyeRiskAssessment_save.setErrorLevel(dyeRiskAssessment.getErrorLevel());
                 dyeRiskAssessment_save.getDyeBatch().setPass(false);
+
+                RiskSolution riskSolution = new RiskSolution();
+                riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
+                riskSolution.setDyeRiskAssessment(dyeRiskAssessment);
+                riskSolutionRepository.save(riskSolution);
 
             }
             List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
@@ -114,10 +148,12 @@ public class DyeStageServiceImpl implements DyeStageService {
                         .allMatch(dyeBatch -> dyeBatch.getTestStatus() == TestEnum.TESTED && dyeBatch.getPass());
                 if (allTested) {
                     dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
+                }else{
+                    dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
                 }
         }
         dyeRiskAssessmentRepository.save(dyeRiskAssessment_save);
-        List<PhotoStage> photoStages = new ArrayList<>();
+        /*List<PhotoStage> photoStages = new ArrayList<>();
         List<String> images = imageService.saveListImageMultiFile(photos);
         for (String photoUrl : images) {
             PhotoStage photoStage = new PhotoStage();
@@ -125,7 +161,7 @@ public class DyeStageServiceImpl implements DyeStageService {
             photoStage.setDyeRiskAssessment(dyeRiskAssessment_save);// Lưu từng ảnh riêng biệt
             photoStages.add(photoStage);
         }
-        photoStageRepository.saveAll(photoStages);
+        photoStageRepository.saveAll(photoStages);*/
 
 
 

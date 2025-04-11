@@ -656,6 +656,18 @@
                                                     <p><strong>Khối lượng tối đa:</strong>
                                                         <span th:text="${machine.maxWeight}"></span>
                                                     </p>
+                                                    <p><strong>Lít nước tối thiểu:</strong>
+                                                        <span th:text="${machine.littersMin}"></span>
+                                                    </p>
+                                                    <p><strong>Lít nước tối đa:</strong>
+                                                        <span th:text="${machine.littersMax}"></span>
+                                                    </p>
+                                                    <p><strong>Số quả tối thiểu:</strong>
+                                                        <span th:text="${machine.coneMin}"></span>
+                                                    </p>
+                                                    <p><strong>Số quả tối đa:</strong>
+                                                        <span th:text="${machine.coneMax}"></span>
+                                                    </p>
                                                     <p><strong>Mô tả:</strong>
                                                         <span th:text="${machine.description != null ? machine.description : 'N/A'}"></span>
                                                     </p>
@@ -677,7 +689,7 @@
                             </div>
                         </div>
                         <!-- Pagination for Dye Machines, ẩn khi tìm kiếm -->
-                        <nav th:if="${dyePage.totalPages > 1 and (param.search == null or param.search.isEmpty())}">
+                        <nav th:if="${dyePage != null and dyePage.totalPages > 1 and (param?.search == null or param?.search.isEmpty())}">
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${dyePage.first} ? 'disabled'">
                                     <a class="page-link"
@@ -771,7 +783,7 @@
                             </div>
                         </div>
                         <!-- Pagination for Winding Machines, ẩn khi tìm kiếm -->
-                        <nav th:if="${windingPage.totalPages > 1 and (param.search == null or param.search.isEmpty())}">
+                        <nav th:if="${windingPage != null and windingPage.totalPages > 1 and (param?.search == null or param?.search.isEmpty())}">
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${windingPage.first} ? 'disabled'">
                                     <a class="page-link"
@@ -849,6 +861,26 @@
                                     <label for="maxWeight" class="form-label">Khối lượng tối đa</label>
                                     <input type="number" class="form-control" id="maxWeight" name="maxWeight"
                                            step="0.01" required>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="littersMin" class="form-label">Lít nước tối thiểu</label>
+                                    <input type="number" class="form-control" id="littersMin" name="littersMin"
+                                           step="0.01" required>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="littersMax" class="form-label">Lít nước tối đa</label>
+                                    <input type="number" class="form-control" id="littersMax" name="littersMax"
+                                           step="0.01" required>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="coneMin" class="form-label">Số quả tối thiểu</label>
+                                    <input type="number" class="form-control" id="coneMin" name="coneMin"
+                                           required>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="coneMax" class="form-label">Số quả tối đa</label>
+                                    <input type="number" class="form-control" id="coneMax" name="coneMax"
+                                           required>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="description" class="form-label">Mô tả</label>
@@ -1059,8 +1091,22 @@
             const conePerPile = $('#conePerPile').val();
             const maxWeight = $('#maxWeight').val();
             const capacity = $('#capacity').val();
+            const littersMin = $('#littersMin').val();
+            const littersMax = $('#littersMax').val();
+            const coneMin = $('#coneMin').val();
+            const coneMax = $('#coneMax').val();
 
-            console.log("Validating dye form:", {diameter, pile, conePerPile, maxWeight, capacity});
+            console.log("Validating dye form:", {
+                diameter,
+                pile,
+                conePerPile,
+                maxWeight,
+                capacity,
+                littersMin,
+                littersMax,
+                coneMin,
+                coneMax
+            });
 
             if (!diameter || diameter <= 0) {
                 e.preventDefault();
@@ -1077,6 +1123,18 @@
             } else if (!capacity || capacity <= 0) {
                 e.preventDefault();
                 showErrorToast('Công suất phải lớn hơn 0.');
+            } else if (!littersMin || littersMin <= 0) {
+                e.preventDefault();
+                showErrorToast('Lít nước tối thiểu phải lớn hơn 0.');
+            } else if (!littersMax || littersMax <= 0 || littersMax < littersMin) {
+                e.preventDefault();
+                showErrorToast('Lít nước tối đa phải lớn hơn 0 và lớn hơn lít nước tối thiểu.');
+            } else if (!coneMin || coneMin <= 0) {
+                e.preventDefault();
+                showErrorToast('Số quả tối thiểu phải lớn hơn 0.');
+            } else if (!coneMax || coneMax <= 0 || coneMax < coneMin) {
+                e.preventDefault();
+                showErrorToast('Số quả tối đa phải lớn hơn 0 và lớn hơn số quả tối thiểu.');
             }
         });
 

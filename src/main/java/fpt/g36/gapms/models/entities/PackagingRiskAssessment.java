@@ -36,11 +36,20 @@ public class PackagingRiskAssessment extends BaseEntity {
     @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
 
+    @Column(columnDefinition = "TEXT")
+    private String errorDetails;
+
+    private Boolean errorLevel;
+
+
+    @OneToOne(mappedBy = "packagingRiskAssessment")
+    private RiskSolution riskSolution;
+
     public PackagingRiskAssessment() {
     }
 
 
-    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean firstStamp, Boolean coreStamp, Boolean dozenStamp, Boolean kcsStamp, Boolean isPass, PackagingBatch packagingBatch, List<PhotoStage> photo, User createBy) {
+    public PackagingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean firstStamp, Boolean coreStamp, Boolean dozenStamp, Boolean kcsStamp, Boolean isPass, PackagingBatch packagingBatch, List<PhotoStage> photo, User createBy, String errorDetails, Boolean errorLevel, RiskSolution riskSolution) {
         super(id, createAt, updateAt);
         this.firstStamp = firstStamp;
         this.coreStamp = coreStamp;
@@ -50,6 +59,9 @@ public class PackagingRiskAssessment extends BaseEntity {
         this.packagingBatch = packagingBatch;
         this.photo = photo;
         this.createBy = createBy;
+        this.errorDetails = errorDetails;
+        this.errorLevel = errorLevel;
+        this.riskSolution = riskSolution;
     }
 
     public Boolean getFirstStamp() {
@@ -114,5 +126,29 @@ public class PackagingRiskAssessment extends BaseEntity {
 
     public void setCreateBy(User createBy) {
         this.createBy = createBy;
+    }
+
+    public String getErrorDetails() {
+        return errorDetails;
+    }
+
+    public void setErrorDetails(String errorDetails) {
+        this.errorDetails = errorDetails;
+    }
+
+    public Boolean getErrorLevel() {
+        return errorLevel;
+    }
+
+    public void setErrorLevel(Boolean errorLevel) {
+        this.errorLevel = errorLevel;
+    }
+
+    public RiskSolution getRiskSolution() {
+        return riskSolution;
+    }
+
+    public void setRiskSolution(RiskSolution riskSolution) {
+        this.riskSolution = riskSolution;
     }
 }

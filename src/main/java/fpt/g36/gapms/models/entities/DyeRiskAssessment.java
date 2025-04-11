@@ -46,21 +46,32 @@ public class DyeRiskAssessment extends BaseEntity{
       @JoinColumn(name = "create_by")
       private User createBy;
 
+     @Column(columnDefinition = "TEXT")
+      private String errorDetails;
 
-      public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeStage dyeStage, List<PhotoStage> photo, User createBy, DyeBatch dyeBatch) {
-            super(id, createAt, updateAt);
-            this.isHumidity = isHumidity;
-            this.isColorTrue = isColorTrue;
-            this.isLightTrue = isLightTrue;
-            this.isColorFading = isColorFading;
-            this.isMedication = isMedication;
-            this.isMedicineSafe = isMedicineSafe;
-            this.isIndustrialCleaningStains = isIndustrialCleaningStains;
-            this.isPass = isPass;
-            this.dyeBatch = dyeBatch;
-            this.photo = photo;
-            this.createBy = createBy;
-      }
+      private Boolean errorLevel;
+
+    @OneToOne(mappedBy = "dyeRiskAssessment")
+    private RiskSolution riskSolution;
+
+
+    public DyeRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isHumidity, Boolean isColorTrue, Boolean isLightTrue, Boolean isColorFading, Boolean isMedication, Boolean isMedicineSafe, Boolean isIndustrialCleaningStains, Boolean isPass, DyeBatch dyeBatch, List<PhotoStage> photo, User createBy, String errorDetails, Boolean errorLevel, RiskSolution riskSolution) {
+        super(id, createAt, updateAt);
+        this.isHumidity = isHumidity;
+        this.isColorTrue = isColorTrue;
+        this.isLightTrue = isLightTrue;
+        this.isColorFading = isColorFading;
+        this.isMedication = isMedication;
+        this.isMedicineSafe = isMedicineSafe;
+        this.isIndustrialCleaningStains = isIndustrialCleaningStains;
+        this.isPass = isPass;
+        this.dyeBatch = dyeBatch;
+        this.photo = photo;
+        this.createBy = createBy;
+        this.errorDetails = errorDetails;
+        this.errorLevel = errorLevel;
+        this.riskSolution = riskSolution;
+    }
 
     public DyeRiskAssessment() {
 
@@ -154,4 +165,28 @@ public class DyeRiskAssessment extends BaseEntity{
       public void setPass(Boolean pass) {
             isPass = pass;
       }
+
+    public String getErrorDetails() {
+        return errorDetails;
+    }
+
+    public void setErrorDetails(String errorDetails) {
+        this.errorDetails = errorDetails;
+    }
+
+    public Boolean getErrorLevel() {
+        return errorLevel;
+    }
+
+    public void setErrorLevel(Boolean errorLevel) {
+        this.errorLevel = errorLevel;
+    }
+
+    public RiskSolution getRiskSolution() {
+        return riskSolution;
+    }
+
+    public void setRiskSolution(RiskSolution riskSolution) {
+        this.riskSolution = riskSolution;
+    }
 }
