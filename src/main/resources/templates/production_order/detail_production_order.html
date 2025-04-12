@@ -200,9 +200,10 @@
                           th:action="@{'/production-order/detail/' + ${productionOrder.id} + '/cancel'}" method="post">
                         <button type="submit" class="btn btn-danger">Cancel</button>
                     </form>
-                    <a th:href="@{/purchase-order/list}" th:if="${productionOrder.status.name() == 'CANCELED'}" class="btn">Back</a>
+                    <a th:href="@{/production-order/list}" th:if="${productionOrder.status.name() == 'CANCELED'}" class="btn">Back</a>
+                    <a th:href="@{/production-order/list}" class="btn">Back</a>
                 </div>
-                <a th:href="@{/purchase-order/list}" class="btn">Back</a>
+
             </div>
         </div>
     </div>

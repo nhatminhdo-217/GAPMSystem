@@ -14,5 +14,7 @@ public interface RiskSolutionService {
 
     RiskSolution saveRiskSolution(Long rsId, RiskSolution riskSolution, User user);
 
+    Page<RiskSolution> getAllRiskSolutionManager(Pageable pageable);
 
+    RiskSolution approveRiskSolution(Long rsId);
 }

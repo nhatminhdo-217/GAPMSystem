@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     @Query("SELECT wo FROM WorkOrder wo " +
-            "WHERE (:workOrderId IS NULL OR wo.id = :workOrderId) " +
-            "ORDER BY wo.createAt DESC")
+            "WHERE  wo.isProduction != fpt.g36.gapms.enums.WorkEnum.FINISHED and (:workOrderId IS NULL OR wo.id = :workOrderId) " +
+            "ORDER BY wo.createAt DESC, CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 ELSE 1 END")
     Page<WorkOrder> getAllWorkOrderTeamLeader(@Param("workOrderId") Long workOrderId, Pageable pageable);
 
 

@@ -71,6 +71,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setPath(uploadedFileName);
         }
 
+
         return contractRepository.save(contract);
     }
 

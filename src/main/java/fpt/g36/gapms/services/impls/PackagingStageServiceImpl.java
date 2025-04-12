@@ -107,12 +107,13 @@ public class PackagingStageServiceImpl implements PackagingStageService {
                 packagingRiskAssessment_save.setErrorLevel(packagingRiskAssessment.getErrorLevel());
                 packagingRiskAssessment_save.getPackagingBatch().setPass(false);
 
-                RiskSolution riskSolution = new RiskSolution();
+              /*  RiskSolution riskSolution = new RiskSolution();
                 riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
                 riskSolution.setPackagingRiskAssessment(packagingRiskAssessment);
-                riskSolutionRepository.save(riskSolution);
+                riskSolutionRepository.save(riskSolution);*/
 
             }
+
             List<PackagingBatch> packagingBatches = packagingBatchRepository.getAllWindingBatchByPackagingStageId(packagingRiskAssessment.getPackagingBatch().getPackagingStage().getId());
             boolean allTested = packagingBatches.stream()
                     .allMatch(packagingBatch -> packagingBatch.getTestStatus() == TestEnum.TESTED && packagingBatch.getPass());
