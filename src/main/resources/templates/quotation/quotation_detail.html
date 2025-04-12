@@ -51,82 +51,176 @@
     <div th:replace="~{shared/navbar.html :: navbar}"></div>
     <!-- Navbar End -->
 
-    <div class="container-fluid row mt-3">
+    <div class="container-fluid pt-4 px-4">
       <!-- Main Content -->
-      <div>
-        <ul class="breadcrumb mt-3">
-          <li class="breadcrumb-item"><a href="/quotation/list">Báo giá</a></li>
-          <li class="breadcrumb-item active">Chi tiết</li>
-        </ul>
+      <div class="content-wrapper">
+        <ol class="breadcrumb mb-4">
+          <li class="breadcrumb-item"><a href="/quotation/list" class="text-decoration-none"><i class="fas fa-list me-2"></i>Danh sách báo giá</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Chi tiết báo giá</li>
+        </ol>
 
-        <h3 class="header mt-3">Chi tiết báo giá</h3>
-
-        <h5 class="mt-3">Thông tin</h5>
+        <div class="page-header">
+          <h3><i class="fas fa-file-invoice-dollar me-2"></i>Chi tiết báo giá</h3>
+        </div>
 
         <!-- Form Quotation -->
         <form th:action="@{'/quotation/detail/' + ${quotation_detail.getQuotationId()}}" th:object="${quotation_detail}" method="post">
 
-          <!-- Thông tin khách hàng, công ty, MST -->
-          <div id="quotation-info" class="row">
-            <div class="col m-3">
-              <p><strong>Tên khách hàng: </strong> <span th:text="${quotation_detail.userName}"></span></p>
-              <p><strong>Công ty: </strong> <span th:text="${quotation_detail.companyName}"></span></p>
-              <p><strong>Mã số thuế: </strong> <span th:text="${quotation_detail.taxNumber}"></span></p>
-              <p><strong>Địa chỉ: </strong> <span th:text="${quotation_detail.companyAddress}"></span></p>
+          <!-- Thông tin khách hàng và báo giá cards -->
+          <div class="row mb-4">
+            <!-- Thông tin khách hàng -->
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+              <div class="info-card">
+                <div class="card-header">
+                  <i class="fas fa-user me-2"></i>Thông tin khách hàng
+                </div>
+                <div class="card-body">
+                  <div class="info-item">
+                    <div class="info-label">Tên khách hàng:</div>
+                    <div class="info-value" th:text="${quotation_detail.userName}">-</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Công ty:</div>
+                    <div class="info-value" th:text="${quotation_detail.companyName}">-</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Mã số thuế:</div>
+                    <div class="info-value" th:text="${quotation_detail.taxNumber}">-</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Địa chỉ:</div>
+                    <div class="info-value" th:text="${quotation_detail.companyAddress}">-</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="col m-3">
-              <p><strong>Trạng thái: </strong> <span th:text="${quotation_detail.isAccepted}"
-                                                     th:classappend="${quotation_detail.isAccepted == 'APPROVED' ? 'text-green' :
-                                                                      (quotation_detail.isAccepted == 'NOT_APPROVED' ? 'text-yellow' : 'text-gray')}">
-                                                </span>
-              </p>
-              <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(quotation_detail.expectedDate, 'dd-MM-yyy')}"></span> </p>
-              <p><b>Ngày giao đề xuất: </b> <span th:text="${#temporals.format(quotation_detail.actualDate, 'dd-MM-yyy')}"></span></p>
-              <p><b>Giải pháp: </b> <a th:href="@{'/quotation/detail/contract/' + ${quotation_detail.solutionId}}">Ấn để xem</a></p>
+
+            <!-- Thông tin báo giá -->
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+              <div class="info-card">
+                <div class="card-header">
+                  <i class="fas fa-info-circle me-2"></i>Thông tin báo giá
+                </div>
+                <div class="card-body">
+                  <div class="info-item">
+                    <div class="info-label">Trạng thái:</div>
+                    <div class="info-value">
+                      <span th:if="${quotation_detail.isAccepted == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
+                      <span th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}" class="status-badge status-pending">Chờ duyệt</span>
+                      <span th:if="${quotation_detail.isAccepted == 'DRAFT'}" class="status-badge status-draft">Bản nháp</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Ngày giao mong muốn:</div>
+                    <div class="info-value" th:text="${#temporals.format(quotation_detail.expectedDate, 'dd-MM-yyyy')}">-</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Ngày giao đề xuất:</div>
+                    <div class="info-value" th:text="${#temporals.format(quotation_detail.actualDate, 'dd-MM-yyyy')}">-</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Giải pháp:</div>
+                    <div class="info-value">
+                      <a th:href="@{'/quotation/detail/contract/' + ${quotation_detail.solutionId}}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i>Xem chi tiết
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <hr>
 
           <!-- Phần Product -->
-          <h5 class="mb-3">Các sản phẩm</h5>
-          <div>
-            <table class="table table-hover mt-3 text-center">
-              <!-- Hiển thị danh sách sản phẩm -->
-              <thead>
-              <tr>
-                <th>STT</th>
-                <th>Sản phẩm</th>
-                <th>Ghi chú</th>
-                <th>Số lượng</th>
-                <th>Giá theo cuộn</th>
+          <div class="mt-4">
+            <h5 class="section-title mb-3">Danh sách sản phẩm</h5>
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered product-table table-responsive-stack">
+                <thead>
+                <tr>
+                  <th class="text-center" style="width: 5%">STT</th>
+                  <th class="text-center" style="width: 45%">Sản phẩm</th>
+                  <th class="text-center" style="width: 15%">Ghi chú</th>
+                  <th class="text-center" style="width: 15%">Số lượng</th>
+                  <th class="text-center" style="width: 20%">Giá theo cuộn</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product, productIter : ${quotation_detail.products}">
+                  <td class="text-center" data-label="STT" th:text="${productIter.count}">1</td>
+                  <td data-label="Sản phẩm">
+                    <div class="d-flex align-items-center">
+                      <span th:text="${product.productName}">Sản phẩm</span>
+                      <span class="mx-1">-</span>
+                      <span class="fw-bold" th:text="${product.brandName}">Thương hiệu</span>
+                      <span class="mx-1">-</span>
+                      <span class="fst-italic" th:text="${product.categoryName}">Danh mục</span>
+                    </div>
+                  </td>
+                  <td data-label="Ghi chú">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <div class="color-box" th:style="'background-color:' + ${product.noteColor}"></div>
+                      <span th:text="${product.noteColor}">#FFFFFF</span>
+                    </div>
+                  </td>
+                  <td class="text-center" data-label="Số lượng" th:text="${product.quantity}"></td>
+                  <td class="text-end" data-label="Giá theo cuộn" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
 
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="product, productIter : ${quotation_detail.products}">
-                <td th:text="${productIter.count}"></td>
-                <td th:text="${product.productName} + ' - ' + ${product.brandName} + ' - ' + ${product.categoryName}"></td>
-                <td th:text="${product.noteColor}"></td>
-                <td th:text="${product.quantity}"></td>
-                <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></td>
-              </tr>
-              </tbody>
-            </table>
+            <!-- No products message -->
+            <div th:if="${quotation_detail.products.isEmpty()}" class="alert alert-info text-center">
+              <i class="fas fa-info-circle me-2"></i>Không có sản phẩm nào trong báo giá này.
+            </div>
           </div>
 
-          <hr>
+          <!-- Action Buttons - Desktop version -->
+          <div class="mt-4 d-flex justify-content-between d-none d-md-flex">
+            <div>
+              <a href="/quotation/list" class="btn btn-secondary btn-action">
+                <i class="fas fa-arrow-left me-2"></i>Quay lại
+              </a>
+            </div>
+            <div class="d-flex">
+              <div th:if="${quotation_detail.isAccepted == 'DRAFT'}">
+                <button type="submit" class="btn btn-primary btn-action">
+                  <i class="fas fa-check-circle me-2"></i>Xác nhận
+                </button>
+              </div>
+              <div th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}">
+                <button type="submit" class="btn btn-primary btn-action">
+                  <i class="fas fa-paper-plane me-2"></i>Gửi
+                </button>
+              </div>
+              <a th:if="${quotation_detail.isAccepted == 'APPROVED'}" href="#" onclick="printQuotation()" class="btn btn-success btn-action">
+                <i class="fas fa-print me-2"></i>In báo giá
+              </a>
+            </div>
+          </div>
 
-          <div class="mt-4 d-flex">
+          <!-- Action Buttons - Mobile version (fixed at bottom) -->
+          <div class="d-block d-md-none action-buttons-fixed">
             <div th:if="${quotation_detail.isAccepted == 'DRAFT'}">
-              <button type="submit" class="btn btn-primary">Xác Nhận</button>
+              <button type="submit" class="btn btn-primary btn-action">
+                <i class="fas fa-check-circle me-2"></i>Xác nhận
+              </button>
             </div>
             <div th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}">
-              <button type="submit" class="btn btn-primary">Gửi</button>
+              <button type="submit" class="btn btn-primary btn-action">
+                <i class="fas fa-paper-plane me-2"></i>Gửi
+              </button>
             </div>
-            <a href="/quotation/list" class="btn">Back</a>
+            <a th:if="${quotation_detail.isAccepted == 'APPROVED'}" href="#" onclick="printQuotation()" class="btn btn-success btn-action">
+              <i class="fas fa-print me-2"></i>In báo giá
+            </a>
+            <a href="/quotation/list" class="btn btn-secondary btn-action">
+              <i class="fas fa-arrow-left me-2"></i>Quay lại
+            </a>
           </div>
         </form>
+
       </div>
     </div>
 
@@ -147,5 +241,39 @@
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="/assert/js/main.js"></script>
+<!-- Responsive Table Script -->
+<script>
+  $(document).ready(function() {
+    // Function to handle responsive table on small screens
+    function handleResponsiveTable() {
+      if (window.innerWidth < 768) {
+        // Apply responsive table behavior
+        $('.table-responsive-stack td').each(function() {
+          var label = $(this).closest('table').find('thead th').eq($(this).index()).text();
+          $(this).attr('data-label', label);
+        });
+      }
+    }
+
+    // Call on page load
+    handleResponsiveTable();
+
+    // Call on window resize
+    $(window).resize(function() {
+      handleResponsiveTable();
+    });
+
+    // Tooltips initialization
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+  });
+
+  // Print quotation function
+  function printQuotation() {
+    window.print();
+  }
+</script>
 </body>
 </html>
