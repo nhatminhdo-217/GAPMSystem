@@ -16,12 +16,10 @@
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">-->
-    <!-- FontAwesome 6 (Cần thiết để hiển thị icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- SweetAlert2 (Cần để hiển thị thông báo lỗi) -->
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Libraries Stylesheet -->
@@ -52,7 +50,7 @@
         }
 
         .form-select, .form-control {
-            border: 2px solid #dc3545; /* Viền đỏ như nút xóa trong hình */
+            border: 2px solid #dc3545;
             border-radius: 5px;
             padding: 8px;
             font-size: 14px;
@@ -74,7 +72,7 @@
         }
 
         .add-row-btn {
-            background-color: #ffc107; /* Màu vàng như trong hình */
+            background-color: #ffc107;
             border: none;
             color: #fff;
             padding: 10px 20px;
@@ -89,7 +87,7 @@
         }
 
         .remove-row-btn {
-            background-color: #dc3545; /* Màu đỏ như trong hình */
+            background-color: #dc3545;
             border: none;
             color: #fff;
             padding: 5px 10px;
@@ -104,7 +102,7 @@
         }
 
         .btn-success {
-            background-color: #28a745; /* Màu xanh lá như trong hình */
+            background-color: #28a745;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
@@ -114,6 +112,89 @@
         .btn-success:hover {
             background-color: #218838;
             color: #fff;
+        }
+
+        /* Responsive cho màn hình nhỏ hơn 768px (điện thoại) */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .label {
+                font-size: 16px;
+            }
+
+            .form-select, .form-control {
+                font-size: 16px;
+                padding: 10px;
+                height: 45px;
+            }
+
+            .form-group:first-child {
+                flex: 0 0 auto;
+                width: 60px;
+            }
+
+            .remove-row-btn {
+                padding: 8px 15px;
+                font-size: 16px;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .add-row-btn, .btn-success {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .form-container {
+                padding: 10px;
+            }
+
+            .bg-light {
+                padding: 15px;
+            }
+
+            .text-center h4 {
+                font-size: 20px;
+            }
+
+            .text-center p {
+                font-size: 14px;
+            }
+
+            .back-to-top {
+                display: none;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+
+        /* Responsive cho màn hình nhỏ hơn 576px (điện thoại rất nhỏ) */
+        @media (max-width: 576px) {
+            .form-select, .form-control {
+                font-size: 14px;
+                height: 40px;
+            }
+
+            .label {
+                font-size: 14px;
+            }
+
+            .add-row-btn, .btn-success {
+                font-size: 14px;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -151,8 +232,8 @@
                     <h6 class="mb-0">RFQ (Request for Quotation)</h6>
                 </div>
                 <div class="form-container p-3">
-                    <form id="lotForm" method="post" action="/request-for-quotation/save" th:object="${rfqForm}" >
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <form id="lotForm" method="post" action="/request-for-quotation/save" th:object="${rfqForm}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div id="productRows">
                             <!-- Dòng đầu tiên -->
                             <div class="form-row" id="row-1">
@@ -181,7 +262,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="label" for="color-1">Màu</label>
-                                    <input type="color" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu"  required>
+                                    <input type="color" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="label" for="quantity-1">Số lượng</label>
@@ -193,7 +274,6 @@
                             </div>
                         </div>
                         <button type="button" class="add-row-btn" id="addRowBtn"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
-                        <!-- Ô nhập ngày giao hàng mong muốn đặt ở dưới cùng, trước nút Lưu lô hàng -->
                         <div class="form-group mt-3">
                             <label class="label" for="desiredDeliveryDate">Ngày giao hàng mong muốn</label>
                             <input type="date" class="form-control" id="desiredDeliveryDate" name="desiredDeliveryDate" th:field="*{desiredDeliveryDate}" min="" required>
@@ -231,7 +311,6 @@
 <script>
     let rowCount = 1;
 
-    console.log('Nút + được click');
     $('#addRowBtn').click(function() {
         rowCount++;
         $.ajax({
@@ -271,7 +350,7 @@
                 }
                 const oldName = $(this).attr('name');
                 if (oldName) {
-                    const newName = oldName.replace(/\[\d+\]/, `[${index}]`); // Bắt đầu từ 0
+                    const newName = oldName.replace(/\[\d+\]/, `[${index}]`);
                     $(this).attr('name', newName);
                 }
             });
@@ -280,17 +359,14 @@
         rowCount = $('#productRows .form-row').length;
     }
 
-    // Hàm AJAX để tải thương hiệu dựa trên sản phẩm
     function loadBrands(rowNumber) {
         const productId = $('#product-' + rowNumber).val();
-        console.log("Loading brands for productId: " + productId); // Debug
         if (productId) {
             $.ajax({
                 url: '/request-for-quotation/brands?productId=' + productId,
                 type: 'GET',
-                dataType: 'json', // Xác định rõ response là JSON
+                dataType: 'json',
                 success: function(response) {
-                    console.log("Brands response: ", response); // Debug response
                     const brandSelect = $('#brand-' + rowNumber);
                     brandSelect.empty();
                     brandSelect.append('<option value="">Chọn thương hiệu</option>');
@@ -298,22 +374,15 @@
                         response.forEach(function(brand) {
                             brandSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
                         });
-                    } else {
-                        console.warn("No brands found for productId: " + productId + ", Response: ", response);
                     }
-                    // Reset danh mục khi thay đổi thương hiệu
                     loadCategories(rowNumber);
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải thương hiệu:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText || 'No response text'); // Xem chi tiết lỗi từ server
                     const brandSelect = $('#brand-' + rowNumber);
                     brandSelect.empty();
                     brandSelect.append('<option value="">Chọn thương hiệu</option>');
-                    // Reset danh mục khi có lỗi
                     loadCategories(rowNumber);
-                    // Hiển thị thông báo lỗi cho người dùng
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi',
@@ -334,9 +403,8 @@
             $.ajax({
                 url: '/request-for-quotation/categories?brandId=' + brandId,
                 type: 'GET',
-                dataType: 'json', // Xác định rõ response là JSON
+                dataType: 'json',
                 success: function(response) {
-                    console.log("Categories response: ", response); // Debug response
                     const categorySelect = $('#category-' + rowNumber);
                     categorySelect.empty();
                     categorySelect.append('<option value="">Chọn danh mục</option>');
@@ -344,18 +412,13 @@
                         response.forEach(function(category) {
                             categorySelect.append('<option value="' + category.id + '">' + category.name + '</option>');
                         });
-                    } else {
-                        console.warn("No categories found for brandId: " + brandId + ", Response: ", response);
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Lỗi khi tải danh mục:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText || 'No response text'); // Xem chi tiết lỗi từ server
                     const categorySelect = $('#category-' + rowNumber);
                     categorySelect.empty();
                     categorySelect.append('<option value="">Chọn danh mục</option>');
-                    // Hiển thị thông báo lỗi cho người dùng (tùy chọn)
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi',
@@ -369,22 +432,12 @@
         }
     }
 
-    // Ẩn nút xóa của dòng đầu tiên ban đầu
     $('.remove-row-btn').hide();
 
-    // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
-    // Tạo đối tượng Date cho hôm nay
     const today = new Date();
-
-    // Thêm 3 ngày vào ngày hiện tại
     today.setDate(today.getDate() + 3);
-
-    // Chuyển ngày mới thành định dạng yyyy-mm-dd
     const threeDaysLater = today.toISOString().split("T")[0];
-
-    // Gán giá trị min cho input
     document.getElementById("desiredDeliveryDate").setAttribute("min", threeDaysLater);
-
 </script>
 </body>
 </html>

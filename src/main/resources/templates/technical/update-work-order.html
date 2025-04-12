@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Cập nhật Work Order</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        /* Card Styles */
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Search Container */
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container h6 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Production Order Info */
+        .production-info {
+            background-color: #f8f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e7f0;
+        }
+
+        .production-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .production-info-table th, .production-info-table td {
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            text-align: center;
+            color: #495057;
+        }
+
+        .production-info-table th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Work Order Detail */
+        .detail-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+
+        .detail-header {
+            padding: 12px 15px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .detail-header h6 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-btn i {
+            font-size: 14px;
+        }
+
+        .toggle-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .toggle-btn.success i {
+            color: #28a745;
+        }
+
+        .toggle-btn.error i {
+            color: #dc3545;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .detail-content {
+            padding: 15px;
+            background-color: #f9fafc;
+            border-top: 1px solid #e2e7f0;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .detail-table th, .detail-table td {
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            text-align: center;
+            color: #495057;
+        }
+
+        .detail-table th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Stage Section */
+        .stage-section {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .machine-selection-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            border-color: #007bff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-success:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .availability-message {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #dc3545;
+            white-space: pre-wrap;
+        }
+
+        .availability-message.success {
+            color: #28a745;
+        }
+
+        .dye-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .dye-info-table th, .dye-info-table td {
+            border: 1px solid #e9ecef;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .dye-info-table th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stage-deadline {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .stage-deadline.error {
+            color: #dc3545;
+        }
+
+        .stage-deadline strong {
+            font-weight: 600;
+        }
+
+        .alert {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .hidden-option {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .production-info-table th, .production-info-table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .detail-table th, .detail-table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .dye-info-table th, .dye-info-table td {
+                font-size: 10px;
+                padding: 5px;
+            }
+
+            .machine-selection-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toggle-btn {
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+
+            .production-info-table, .detail-table, .dye-info-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .btn-success {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="search-container">
+                    <h6>Cập nhật Work Order</h6>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Thông tin Production Order và WorkOrder -->
+                                <div class="production-info">
+                                    <table class="production-info-table">
+                                        <tr>
+                                            <th>Mã Work Order</th>
+                                            <th>Mã lô</th>
+                                            <th>Ngày tạo đơn</th>
+                                            <th>Ngày giao hàng dự kiến</th>
+                                            <th>Thời gian bắt đầu dự kiến</th>
+                                            <th>Thời gian kết thúc dự kiến</th>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="${workOrder?.id ?: 'N/A'}"></td>
+                                            <td th:text="${productionOrderId}"></td>
+                                            <td th:text="${#temporals.format(productionOrder.createAt, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#temporals.format(productionOrder.purchaseOrder.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#temporals.format(plannedStartAt, 'dd-MM-yyyy HH:mm')}"></td>
+                                            <td th:text="${#temporals.format(plannedEndAt, 'dd-MM-yyyy HH:mm')}"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Form cập nhật Work Order -->
+                                <form id="updateWorkOrderForm"
+                                      th:action="@{/technical/update-work-order/{workOrderId}(workOrderId=${workOrder?.id})}"
+                                      method="post">
+                                    <input type="hidden" name="productionOrderId" th:value="${productionOrderId}">
+
+                                    <!-- Danh sách WorkOrderDetail -->
+                                    <div th:each="detail, iterStat : ${productionOrder.productionOrderDetails}"
+                                         class="detail-section" th:data-detail-id="${detail.id}"
+                                         th:data-index="${iterStat.index}">
+                                        <div class="detail-header" data-toggle="collapse"
+                                             th:data-target="'#detail-' + ${iterStat.count}">
+                                            <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                            <button class="toggle-btn" th:id="'toggle-btn-' + ${iterStat.index}">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="collapse" th:id="'detail-' + ${iterStat.count}">
+                                            <div class="detail-content">
+                                                <table class="detail-table">
+                                                    <tr>
+                                                        <th>Mã đơn hàng</th>
+                                                        <th>Sản phẩm</th>
+                                                        <th>Màu</th>
+                                                        <th>Số lượng</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td th:text="${detail.id}"></td>
+                                                        <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
+                                                        <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
+                                                        <td th:text="${detail.purchaseOrderDetail.quantity}"></td>
+                                                    </tr>
+                                                </table>
+
+                                                <!-- Dye Stage -->
+                                                <div class="stage-section">
+                                                    <div class="machine-selection-row">
+                                                        <div class="form-group" th:if="${!freeDyeMachines.isEmpty()}">
+                                                            <label th:for="'freeDyeMachine-' + ${iterStat.index}">Máy
+                                                                nhuộm rảnh:</label>
+                                                            <select class="form-control dye-machine-select free-dye-machine"
+                                                                    th:id="'freeDyeMachine-' + ${iterStat.index}"
+                                                                    th:name="'selectedDyeMachineIds[' + ${iterStat.index} + ']'">
+                                                                <option value="">-- Chọn máy nhuộm rảnh --</option>
+                                                                <option th:each="machine : ${freeDyeMachines}"
+                                                                        th:value="${machine.id}"
+                                                                        th:text="'Máy nhuộm ' + ${machine.id} + ' (Tối đa: ' + ${machine.maxWeight} + 'kg)'"
+                                                                        th:selected="${selectedDyeMachineIds[iterStat.index] != null and selectedDyeMachineIds[iterStat.index] == machine.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group" th:if="${!queuedDyeMachines.isEmpty()}">
+                                                            <label th:for="'queuedDyeMachine-' + ${iterStat.index}">Máy
+                                                                nhuộm trong hàng chờ:</label>
+                                                            <select class="form-control dye-machine-select queued-dye-machine"
+                                                                    th:id="'queuedDyeMachine-' + ${iterStat.index}"
+                                                                    th:name="'selectedDyeMachineIds[' + ${iterStat.index} + ']'">
+                                                                <option value="">-- Chọn máy trong hàng chờ --</option>
+                                                                <option th:each="machine : ${queuedDyeMachines}"
+                                                                        th:value="${machine.id}"
+                                                                        th:text="'Máy nhuộm ' + ${machine.id} + ' (Tối đa: ' + ${machine.maxWeight} + 'kg)'"
+                                                                        th:selected="${selectedDyeMachineIds[iterStat.index] != null and selectedDyeMachineIds[iterStat.index] == machine.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="machine-details"
+                                                         th:id="'dyeDetails-' + ${iterStat.index}"></div>
+                                                    <div class="stage-deadline"
+                                                         th:id="'dyeDeadline-' + ${iterStat.index}"></div>
+                                                    <div class="availability-message"
+                                                         th:id="'dyeAvailability-' + ${iterStat.index}"></div>
+                                                </div>
+
+                                                <!-- Winding Stage -->
+                                                <div class="stage-section">
+                                                    <div class="machine-selection-row">
+                                                        <div class="form-group"
+                                                             th:if="${!freeWindingMachines.isEmpty()}">
+                                                            <label th:for="'freeWindingMachine-' + ${iterStat.index}">Máy
+                                                                cuốn rảnh:</label>
+                                                            <select class="form-control winding-machine-select free-winding-machine"
+                                                                    th:id="'freeWindingMachine-' + ${iterStat.index}"
+                                                                    th:name="'selectedWindingMachineIds[' + ${iterStat.index} + ']'">
+                                                                <option value="">-- Chọn máy cuốn rảnh --</option>
+                                                                <option th:each="machine : ${freeWindingMachines}"
+                                                                        th:value="${machine.id}"
+                                                                        th:text="'Máy cuốn ' + ${machine.id}"
+                                                                        th:selected="${selectedWindingMachineIds[iterStat.index] != null and selectedWindingMachineIds[iterStat.index] == machine.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group"
+                                                             th:if="${!queuedWindingMachines.isEmpty()}">
+                                                            <label th:for="'queuedWindingMachine-' + ${iterStat.index}">Máy
+                                                                cuốn trong hàng chờ:</label>
+                                                            <select class="form-control winding-machine-select queued-winding-machine"
+                                                                    th:id="'queuedWindingMachine-' + ${iterStat.index}"
+                                                                    th:name="'selectedWindingMachineIds[' + ${iterStat.index} + ']'">
+                                                                <option value="">-- Chọn máy trong hàng chờ --</option>
+                                                                <option th:each="machine : ${queuedWindingMachines}"
+                                                                        th:value="${machine.id}"
+                                                                        th:text="'Máy cuốn ' + ${machine.id}"
+                                                                        th:selected="${selectedWindingMachineIds[iterStat.index] != null and selectedWindingMachineIds[iterStat.index] == machine.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="stage-deadline"
+                                                         th:id="'windingDeadline-' + ${iterStat.index}"></div>
+                                                    <div class="availability-message"
+                                                         th:id="'windingAvailability-' + ${iterStat.index}"></div>
+                                                </div>
+
+                                                <!-- Packaging Stage -->
+                                                <div class="stage-section">
+                                                    <p><strong>Giai đoạn đóng gói:</strong>
+                                                        <span>Không cần chọn máy (tự động tính dựa trên Dye và Winding)</span>
+                                                    </p>
+                                                    <div class="stage-deadline"
+                                                         th:id="'packagingDeadline-' + ${iterStat.index}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thông báo lỗi hoặc hàng chờ -->
+                                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                                    <div th:if="${queueMessage}" class="alert alert-warning"
+                                         th:text="${queueMessage}"></div>
+
+                                    <!-- Nút cập nhật -->
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success" id="submitBtn" disabled>Cập nhật
+                                            Work Order
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // Toggle collapse for detail sections
+        $('.detail-header').click(function () {
+            var target = $(this).data('target');
+            var icon = $(this).find('.toggle-btn i');
+            $(target).collapse('toggle');
+            if ($(target).hasClass('show')) {
+                if (icon.hasClass('fa-plus')) {
+                    icon.removeClass('fa-plus').addClass('fa-minus');
+                }
+            } else {
+                if (icon.hasClass('fa-minus')) {
+                    icon.removeClass('fa-minus').addClass('fa-plus');
+                }
+            }
+        });
+
+        // Hàm kiểm tra trạng thái toàn bộ form để bật/tắt nút submit
+        function updateSubmitButton() {
+            var allValid = true;
+            $('.detail-section').each(function () {
+                var index = $(this).data('index'); // Lấy index từ data-index
+                var dyeSelected = $('#freeDyeMachine-' + index).val() || $('#queuedDyeMachine-' + index).val();
+                var windingSelected = $('#freeWindingMachine-' + index).val() || $('#queuedWindingMachine-' + index).val();
+                var dyeDeadlineError = $('#dyeDeadline-' + index).hasClass('error');
+                var windingDeadlineError = $('#windingDeadline-' + index).hasClass('error');
+                var dyeAvailabilityError = $('#dyeAvailability-' + index).hasClass('error');
+                var windingAvailabilityError = $('#windingAvailability-' + index).hasClass('error');
+
+                console.log(`Detail ${index + 2}: ` +
+                    `dyeSelected=${dyeSelected}, ` +
+                    `windingSelected=${windingSelected}, ` +
+                    `dyeDeadlineError=${dyeDeadlineError}, ` +
+                    `windingDeadlineError=${windingDeadlineError}, ` +
+                    `dyeAvailabilityError=${dyeAvailabilityError}, ` +
+                    `windingAvailabilityError=${windingAvailabilityError}`);
+
+                if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError) {
+                    allValid = false;
+                }
+            });
+            $('#submitBtn').prop('disabled', !allValid);
+            console.log("Submit button enabled: " + allValid);
+        }
+
+        // Hàm cập nhật biểu tượng toggle
+        function updateToggleIcon(detailIndex) {
+            var dyeSelected = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
+            var windingSelected = $('#freeWindingMachine-' + detailIndex).val() || $('#queuedWindingMachine-' + detailIndex).val();
+            var toggleBtn = $('#toggle-btn-' + detailIndex);
+            var icon = toggleBtn.find('i');
+            var dyeDeadlineError = $('#dyeDeadline-' + detailIndex).hasClass('error');
+            var windingDeadlineError = $('#windingDeadline-' + detailIndex).hasClass('error');
+            var dyeAvailabilityError = $('#dyeAvailability-' + detailIndex).hasClass('error');
+            var windingAvailabilityError = $('#windingAvailability-' + detailIndex).hasClass('error');
+
+            if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError) {
+                toggleBtn.removeClass('success').addClass('error');
+                icon.removeClass('fa-plus fa-minus fa-check').addClass('fa-times');
+            } else {
+                toggleBtn.removeClass('error').addClass('success');
+                icon.removeClass('fa-plus fa-minus fa-times').addClass('fa-check');
+            }
+            updateSubmitButton();
+        }
+
+        // Hàm kiểm tra tính khả dụng cho máy nhuộm
+        function checkDyeMachineAvailability(detailIndex, dyeMachineId) {
+            var productionOrderId = $('input[name="productionOrderId"]').val();
+            var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            if (!dyeMachineId) {
+                $('#dyeAvailability-' + detailIndex).text('Vui lòng chọn máy nhuộm.').addClass('error').removeClass('success');
+                $('#dyeDetails-' + detailIndex).html('');
+                $('#dyeDeadline-' + detailIndex).html('');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
+            $.ajax({
+                url: '/technical/check-machine-availability',
+                type: 'POST',
+                data: {
+                    productionOrderId: productionOrderId,
+                    detailId: detailId,
+                    dyeMachineId: dyeMachineId,
+                    _csrf: $('input[name="_csrf"]').val()
+                },
+                success: function (response) {
+                    var dyeMessageDiv = $('#dyeAvailability-' + detailIndex);
+                    var dyeDetailsDiv = $('#dyeDetails-' + detailIndex);
+                    var dyeDeadlineDiv = $('#dyeDeadline-' + detailIndex);
+                    var windingDeadlineDiv = $('#windingDeadline-' + detailIndex);
+                    var packagingDeadlineDiv = $('#packagingDeadline-' + detailIndex);
+
+                    if (response.success) {
+                        dyeMessageDiv.text('Máy nhuộm khả dụng').addClass('success').removeClass('error');
+                        dyeDetailsDiv.html(
+                            '<table class="dye-info-table">' +
+                            '<tr>' +
+                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
+                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
+                            '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
+                            '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
+                            '<td>' + response.dyeMachine.coneMin + ' quả</td>' +
+                            '<td>' + response.dyeMachine.coneMax + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.dyeBatches + '</td>' +
+                            '</tr>' +
+                            '</table>'
+                        );
+                        if (response.deadlines && response.deadlines.dyeDeadline) {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
+                        } else {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong>').addClass('error');
+                        }
+                    } else {
+                        var errorMessage = response.message.includes('Litters Batch') ?
+                            'Máy nhuộm không hợp lệ:\n' +
+                            'Litters Batch (' + response.dyeCalculations.littersBatch + ') không nằm trong khoảng [' +
+                            response.dyeMachine.littersMin + ', ' + response.dyeMachine.littersMax + '].\n' +
+                            'Cone Batch Quantity (' + response.dyeCalculations.coneBatchQuantity + ') không nằm trong khoảng [' +
+                            response.dyeMachine.coneMin + ', ' + response.dyeMachine.coneMax + '].' :
+                            response.message || 'Máy nhuộm không phù hợp do deadline vượt quá giới hạn.';
+                        dyeMessageDiv.text(errorMessage).addClass('error').removeClass('success');
+                        dyeDetailsDiv.html(
+                            '<table class="dye-info-table">' +
+                            '<tr>' +
+                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
+                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
+                            '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
+                            '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
+                            '<td>' + response.dyeMachine.coneMin + ' quả</td>' +
+                            '<td>' + response.dyeMachine.coneMax + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.dyeBatches + '</td>' +
+                            '</tr>' +
+                            '</table>'
+                        );
+                        if (response.deadlines && response.deadlines.dyeDeadline) {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
+                        } else {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                        }
+                    }
+                    windingDeadlineDiv.html('');
+                    packagingDeadlineDiv.html('');
+                    updateToggleIcon(detailIndex);
+                },
+                error: function () {
+                    $('#dyeAvailability-' + detailIndex).text('Lỗi khi kiểm tra máy nhuộm.').addClass('error');
+                    $('#dyeDetails-' + detailIndex).html('');
+                    $('#dyeDeadline-' + detailIndex).html('');
+                    $('#windingDeadline-' + detailIndex).html('');
+                    $('#packagingDeadline-' + detailIndex).html('');
+                    updateToggleIcon(detailIndex);
+                }
+            });
+        }
+
+        // Hàm kiểm tra tính khả dụng cho máy cuốn
+        function checkWindingMachineAvailability(detailIndex, windingMachineId) {
+            var productionOrderId = $('input[name="productionOrderId"]').val();
+            var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            if (!windingMachineId) {
+                $('#windingAvailability-' + detailIndex).text('Vui lòng chọn máy cuốn.').addClass('error').removeClass('success');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
+            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
+            if (!dyeMachineId) {
+                $('#windingAvailability-' + detailIndex).text('Vui lòng chọn máy nhuộm trước.').addClass('error');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
+            $.ajax({
+                url: '/technical/check-machine-availability',
+                type: 'POST',
+                data: {
+                    productionOrderId: productionOrderId,
+                    detailId: detailId,
+                    dyeMachineId: dyeMachineId,
+                    windingMachineId: windingMachineId,
+                    _csrf: $('input[name="_csrf"]').val()
+                },
+                success: function (response) {
+                    var dyeMessageDiv = $('#dyeAvailability-' + detailIndex);
+                    var windingMessageDiv = $('#windingAvailability-' + detailIndex);
+                    var dyeDetailsDiv = $('#dyeDetails-' + detailIndex);
+                    var dyeDeadlineDiv = $('#dyeDeadline-' + detailIndex);
+                    var windingDeadlineDiv = $('#windingDeadline-' + detailIndex);
+                    var packagingDeadlineDiv = $('#packagingDeadline-' + detailIndex);
+
+                    if (response.success) {
+                        dyeMessageDiv.text('Máy nhuộm khả dụng').addClass('success').removeClass('error');
+                        windingMessageDiv.text('Máy cuốn khả dụng').addClass('success').removeClass('error');
+                        dyeDetailsDiv.html(
+                            '<table class="dye-info-table">' +
+                            '<tr>' +
+                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
+                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
+                            '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
+                            '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
+                            '<td>' + response.dyeMachine.coneMin + ' quả</td>' +
+                            '<td>' + response.dyeMachine.coneMax + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.dyeBatches + '</td>' +
+                            '</tr>' +
+                            '</table>'
+                        );
+                        if (response.deadlines && response.deadlines.dyeDeadline) {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
+                        } else {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong>').addClass('error');
+                        }
+                        if (response.deadlines && response.deadlines.windingDeadline) {
+                            windingDeadlineDiv.html('Winding Deadline: <strong>' + response.deadlines.windingDeadline + '</strong>').removeClass('error');
+                        } else {
+                            windingDeadlineDiv.html('Winding Deadline: <strong>Không xác định</strong>').addClass('error');
+                        }
+                        if (response.deadlines && response.deadlines.packagingDeadline) {
+                            packagingDeadlineDiv.html('Packaging Deadline: <strong>' + response.deadlines.packagingDeadline + '</strong>').removeClass('error');
+                        } else {
+                            packagingDeadlineDiv.html('Packaging Deadline: <strong>Không xác định</strong>').addClass('error');
+                        }
+                    } else {
+                        dyeMessageDiv.text(response.message || 'Máy nhuộm không phù hợp do deadline vượt quá giới hạn.').addClass('error').removeClass('success');
+                        windingMessageDiv.text(response.message || 'Máy cuốn không phù hợp do deadline vượt quá giới hạn.').addClass('error').removeClass('success');
+                        dyeDetailsDiv.html(
+                            '<table class="dye-info-table">' +
+                            '<tr>' +
+                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
+                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
+                            '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
+                            '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
+                            '<td>' + response.dyeMachine.coneMin + ' quả</td>' +
+                            '<td>' + response.dyeMachine.coneMax + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchQuantity + ' quả</td>' +
+                            '<td>' + response.dyeCalculations.dyeBatches + '</td>' +
+                            '</tr>' +
+                            '</table>'
+                        );
+                        if (response.deadlines && response.deadlines.dyeDeadline) {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
+                        } else {
+                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                        }
+                        if (response.deadlines && response.deadlines.windingDeadline) {
+                            windingDeadlineDiv.html('Winding Deadline: <strong>' + response.deadlines.windingDeadline + '</strong> (Quá hạn)').addClass('error');
+                        } else {
+                            windingDeadlineDiv.html('Winding Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                        }
+                        if (response.deadlines && response.deadlines.packagingDeadline) {
+                            packagingDeadlineDiv.html('Packaging Deadline: <strong>' + response.deadlines.packagingDeadline + '</strong> (Quá hạn)').addClass('error');
+                        } else {
+                            packagingDeadlineDiv.html('Packaging Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                        }
+                    }
+                    updateToggleIcon(detailIndex);
+                },
+                error: function () {
+                    $('#windingAvailability-' + detailIndex).text('Lỗi khi kiểm tra máy cuốn.').addClass('error');
+                    $('#windingDeadline-' + detailIndex).html('');
+                    $('#packagingDeadline-' + detailIndex).html('');
+                    updateToggleIcon(detailIndex);
+                }
+            });
+        }
+
+        // Cập nhật tùy chọn máy đã chọn
+        function updateMachineOptions(selectedMachineId, machineType, currentDetailIndex) {
+            $('.' + machineType + '-machine-select').each(function () {
+                var detailIndex = $(this).attr('id').split('-')[1];
+                if (detailIndex !== currentDetailIndex) {
+                    var $option = $(this).find('option[value="' + selectedMachineId + '"]');
+                    if ($option.length && !$option.hasClass('hidden-option')) {
+                        $option.addClass('hidden-option');
+                    }
+                }
+            });
+        }
+
+        // Khôi phục tất cả tùy chọn máy khi thay đổi
+        function restoreMachineOptions(machineType) {
+            $('.' + machineType + '-machine-select').each(function () {
+                var detailIndex = $(this).attr('id').split('-')[1];
+                var selectedValue = $(this).val();
+                $(this).find('option').removeClass('hidden-option');
+                // Ẩn lại các tùy chọn đã được chọn ở các detail khác
+                $('.' + machineType + '-machine-select').each(function () {
+                    var otherIndex = $(this).attr('id').split('-')[1];
+                    if (otherIndex !== detailIndex) {
+                        var otherSelected = $(this).val();
+                        if (otherSelected) {
+                            $(this).find('option[value="' + otherSelected + '"]').addClass('hidden-option');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Ràng buộc chọn máy nhuộm
+        $('.free-dye-machine').change(function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            var queuedDye = $('#queuedDyeMachine-' + detailIndex);
+            var dyeMachineId = $(this).val();
+
+            restoreMachineOptions('dye'); // Khôi phục trước khi áp dụng thay đổi
+            if (dyeMachineId) {
+                queuedDye.val('').prop('disabled', true);
+                updateMachineOptions(dyeMachineId, 'dye', detailIndex);
+            } else {
+                queuedDye.prop('disabled', false);
+            }
+
+            checkDyeMachineAvailability(detailIndex, dyeMachineId);
+        });
+
+        $('.queued-dye-machine').change(function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            var freeDye = $('#freeDyeMachine-' + detailIndex);
+            var dyeMachineId = $(this).val();
+
+            restoreMachineOptions('dye'); // Khôi phục trước khi áp dụng thay đổi
+            if (dyeMachineId) {
+                freeDye.val('').prop('disabled', true);
+                updateMachineOptions(dyeMachineId, 'dye', detailIndex);
+            } else {
+                freeDye.prop('disabled', false);
+            }
+
+            checkDyeMachineAvailability(detailIndex, dyeMachineId);
+        });
+
+        // Ràng buộc chọn máy cuốn
+        $('.free-winding-machine').change(function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            var queuedWinding = $('#queuedWindingMachine-' + detailIndex);
+            var windingMachineId = $(this).val();
+
+            restoreMachineOptions('winding'); // Khôi phục trước khi áp dụng thay đổi
+            if (windingMachineId) {
+                queuedWinding.val('').prop('disabled', true);
+                updateMachineOptions(windingMachineId, 'winding', detailIndex);
+            } else {
+                queuedWinding.prop('disabled', false);
+            }
+
+            checkWindingMachineAvailability(detailIndex, windingMachineId);
+        });
+
+        $('.queued-winding-machine').change(function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            var freeWinding = $('#freeWindingMachine-' + detailIndex);
+            var windingMachineId = $(this).val();
+
+            restoreMachineOptions('winding'); // Khôi phục trước khi áp dụng thay đổi
+            if (windingMachineId) {
+                freeWinding.val('').prop('disabled', true);
+                updateMachineOptions(windingMachineId, 'winding', detailIndex);
+            } else {
+                freeWinding.prop('disabled', false);
+            }
+
+            checkWindingMachineAvailability(detailIndex, windingMachineId);
+        });
+
+        // Xử lý form submit
+        $('#updateWorkOrderForm').submit(function (event) {
+            if ($('#submitBtn').prop('disabled')) {
+                event.preventDefault();
+                alert('Vui lòng chọn đầy đủ máy và đảm bảo deadline hợp lệ.');
+            }
+        });
+
+        // Khởi tạo trạng thái ban đầu: Kiểm tra tính khả dụng của các máy đã chọn
+        $('.detail-section').each(function () {
+            var detailIndex = $(this).data('index');
+            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
+            var windingMachineId = $('#freeWindingMachine-' + detailIndex).val() || $('#queuedWindingMachine-' + detailIndex).val();
+
+            if (dyeMachineId) {
+                checkDyeMachineAvailability(detailIndex, dyeMachineId);
+            }
+            if (windingMachineId) {
+                checkWindingMachineAvailability(detailIndex, windingMachineId);
+            }
+        });
+
+        // Khởi tạo trạng thái ban đầu
+        updateSubmitButton();
+    });
+</script>
+</body>
+</html>

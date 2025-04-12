@@ -51,3 +51,5 @@ public abstract class TimestampEntity{
         this.updateAt = updateAt;
     }
 }
+
+

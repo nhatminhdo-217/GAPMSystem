@@ -396,7 +396,7 @@
                                     <h3 class="section-title">Thông tin khách hàng</h3>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Tên khách hàng:</strong> <span th:text="${rfq.createBy.getUsername()}"></span>
+                                            <strong>Tên khách hàng:</strong> <span th:text="${rfq.createBy.username}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số điện thoại cá nhân:</strong> <span
@@ -404,20 +404,20 @@
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Email cá nhân:</strong> <span
-                                                th:text="${rfq.createBy.getEmail()}"></span>
+                                                th:text="${rfq.createBy.email}"></span>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Tên công ty khách hàng:</strong> <span th:text="${company.getName()}"></span>
+                                            <strong>Tên công ty khách hàng:</strong> <span th:text="${company.name}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số điện thoại công ty:</strong> <span
-                                                th:text="${company.getPhoneNumber()}"></span>
+                                                th:text="${company.phoneNumber}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Email công ty:</strong> <span
-                                                th:text="${company.getEmail()}"></span>
+                                                th:text="${company.email}"></span>
                                         </div>
                                     </div>
                                 </div>

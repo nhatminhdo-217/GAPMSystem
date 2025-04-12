@@ -55,6 +55,10 @@
     <!-- Navbar End -->
 
     <div class="container-fluid d-flex flex-column m-2">
+      <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <span th:text="${success}"></span>
+      </div>
       <ul class="breadcrumb">
         <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
         <li class="breadcrumb-item"><a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId}}">Chi tiết</a></li>
@@ -70,7 +74,7 @@
         </div>
 
         <div class="mt-3">
-          <a th:if="${currUser.role.name == 'SALE_STAFF'}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${contract.id} + '/edit'}" class="btn btn-primary">Chỉnh sửa</a>
+          <a th:if="${currUser.role.name == 'SALE_STAFF'} and ${contract.status == 'NOT_APPROVED'}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${contract.id} + '/edit'}" class="btn btn-primary">Chỉnh sửa</a>
           <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId}}" class="btn btn-secondary">Quay lại</a>
         </div>
       </div>

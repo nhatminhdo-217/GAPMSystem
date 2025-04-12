@@ -23,7 +23,7 @@ public class ProductionOrderMapper {
     dto.setCreateAt(po.getCreateAt());
     dto.setUpdateAt(po.getUpdateAt());
     dto.setPurchaseOrderId(po.getPurchaseOrder().getId());
-    dto.setCreatedBy(po.getCreatedBy().getUsername());
+    dto.setCreatedBy(po.getCreatedBy() != null ? po.getCreatedBy().getUsername() : null);
 
     System.err.println("DTO: " + dto.getStatus());
 

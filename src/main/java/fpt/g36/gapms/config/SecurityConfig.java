@@ -32,8 +32,9 @@ public class SecurityConfig {
                                   "/purchase-order/customer/detail/**")
                         .hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/risk-solution/production-manager/**", "/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
-                        .requestMatchers("/technical/**").hasRole("TECHNICAL")
+                        .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")
                         .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
                         .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .anyRequest().authenticated())
@@ -106,7 +107,7 @@ public class SecurityConfig {
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("mySecretKey") // Key để mã hóa token
-                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
+                        .tokenValiditySeconds(24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
                         .alwaysRemember(false))
                 .exceptionHandling(ex -> ex

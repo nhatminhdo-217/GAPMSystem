@@ -48,6 +48,7 @@
             background-color: #ffffff;
             padding: 12px 15px;
             border-radius: 8px 8px 0 0;
+            width: 100%; /* Đảm bảo phần thông tin chính chiếm toàn bộ chiều rộng */
         }
 
         .collapse {
@@ -89,7 +90,6 @@
 
         .text-start span {
             font-weight: 400;
-            color: #666;
             font-size: 14px;
             text-align: center;
             line-height: 1.4;
@@ -175,6 +175,7 @@
             background-color: #ffffff;
             border-radius: 0 0 8px 8px;
             padding: 0;
+            width: 100%; /* Đảm bảo phần collapse có chiều rộng bằng phần thông tin chính */
         }
 
         .card-body.detail-table {
@@ -182,6 +183,7 @@
             padding: 15px;
             border-top: 1px solid #e9ecef;
             border-radius: 0 0 8px 8px;
+            width: 100%; /* Đảm bảo phần collapse có chiều rộng bằng phần thông tin chính */
         }
 
         .solution-details {
@@ -190,29 +192,28 @@
             border-radius: 6px;
             border: 1px solid #e2e7f0;
             margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            width: 100%; /* Đảm bảo phần chi tiết bên trong collapse có chiều rộng bằng phần thông tin chính */
+            display: flex; /* Sử dụng flex để hiển thị ngang */
+            flex-wrap: wrap; /* Cho phép các cột xuống dòng nếu không đủ chỗ */
+            justify-content: space-between; /* Căn đều các cột */
+            gap: 10px; /* Khoảng cách giữa các cột */
         }
 
-        .solution-details p {
-            margin: 0;
-            font-size: 14px;
-            color: #495057;
-            display: flex;
-            justify-content: space-between;
+        .solution-details .detail-item {
+            flex: 1; /* Mỗi cột chiếm đều không gian */
+            text-align: center; /* Căn giữa nội dung */
+            min-width: 0; /* Đảm bảo không bị tràn */
         }
 
         .solution-details strong {
             color: #333;
             font-weight: 600;
-            flex: 0 0 50%;
+            display: block; /* Đặt strong và span trên hai dòng */
         }
 
         .solution-details span {
             color: #212529;
-            text-align: right;
-            flex: 0 0 50%;
+            display: block; /* Đặt strong và span trên hai dòng */
         }
 
         .nav-tabs .nav-link {
@@ -432,6 +433,28 @@
             bottom: 80px;
         }
 
+        /* Định dạng màu cho Send Status */
+        .send-status-not-sent {
+            color: red;
+        }
+
+        .send-status-sent {
+            color: green;
+        }
+
+        /* Định dạng màu cho Status */
+        .status-not-approve {
+            color: red;
+        }
+
+        .status-draft, .status-wait-for-approval {
+            color: #d4a017; /* Màu vàng đậm */
+        }
+
+        .status-approve {
+            color: #28a745; /* Màu xanh lá */
+        }
+
         @media (max-width: 768px) {
             .content-section {
                 flex-direction: column;
@@ -483,19 +506,15 @@
                 width: 100%;
             }
 
-            .solution-details p {
-                flex-direction: column;
-                text-align: left;
-                gap: 5px;
+            .solution-details {
+                flex-direction: column; /* Trên thiết bị di động, hiển thị dọc */
+                align-items: flex-start;
             }
 
-            .solution-details strong, .solution-details span {
-                flex: none;
-                width: 100%;
-            }
-
-            .solution-details span {
-                text-align: left;
+            .solution-details .detail-item {
+                width: 100%; /* Trên thiết bị di động, mỗi cột chiếm toàn bộ chiều rộng */
+                text-align: left; /* Căn trái trên thiết bị di động */
+                margin-bottom: 10px;
             }
 
             .create-machine-btn {
@@ -619,11 +638,13 @@
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Status</strong><br>
-                                            <span th:text="${workOrder.status}"></span>
+                                            <span th:classappend="${workOrder.status.name() == 'NOT_APPROVE'} ? 'status-not-approve' : (${workOrder.status.name() == 'DRAFT'} ? 'status-draft' : (${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : (${workOrder.status.name() == 'APPROVE'} ? 'status-approve' : '')))"
+                                                  th:text="${workOrder.status.name() == 'NOT_APPROVE'} ? 'Từ Chối' : (${workOrder.status.name() == 'DRAFT'} ? 'Bản Nháp' : (${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : (${workOrder.status.name() == 'APPROVE'} ? 'Đồng Ý' : ${workOrder.status.name()})))"></span>
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Send Status</strong><br>
-                                            <span th:text="${workOrder.sendStatus}"></span>
+                                            <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                  th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -631,18 +652,22 @@
                                      th:id="'workorder-details-' + ${iterStat.count + workOrderPage.number * workOrderPage.size}">
                                     <div class="card-body detail-table">
                                         <div class="solution-details">
-                                            <p><strong>Created By:</strong>
+                                            <div class="detail-item">
+                                                <strong>Created By</strong>
                                                 <span th:text="${workOrder.createdBy != null ? workOrder.createdBy.username : 'N/A'}"></span>
-                                            </p>
-                                            <p><strong>Approved By:</strong>
+                                            </div>
+                                            <div class="detail-item">
+                                                <strong>Approved By</strong>
                                                 <span th:text="${workOrder.approvedBy != null ? workOrder.approvedBy.username : 'N/A'}"></span>
-                                            </p>
-                                            <p><strong>Create At:</strong>
+                                            </div>
+                                            <div class="detail-item">
+                                                <strong>Create At</strong>
                                                 <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy HH:mm')}"></span>
-                                            </p>
-                                            <p><strong>Update At:</strong>
+                                            </div>
+                                            <div class="detail-item">
+                                                <strong>Update At</strong>
                                                 <span th:text="${#temporals.format(workOrder.updateAt, 'dd/MM/yyyy HH:mm')}"></span>
-                                            </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

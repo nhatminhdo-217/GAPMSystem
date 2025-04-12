@@ -238,7 +238,7 @@
                 </div>-->
                 <div class="detail-row">
                     <span class="detail-label">Trạng thái:</span>
-                    <span class="detail-value" th:if="*{accepted == 'NOT_APPROVED'}" style="color:yellow;">Chưa duyệt</span>
+                    <span class="detail-value" th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" style="color:yellow;">Chưa duyệt</span>
                     <span class="detail-value" th:if="*{accepted == 'APPROVED'}" style="color:green;">Đã duyệt</span>
                     <span class="detail-value" th:if="*{accepted == 'CANCELED'}" style="color:red;">Đã Hủy</span>
                 </div>
@@ -294,9 +294,9 @@
             </div>-->
 
             <div class="quotation-footer">
-               <!-- <p>Lưu ý: Báo giá có hiệu lực trong 7 ngày kể từ ngày phát hành.</p>-->
-                <button th:if="*{accepted == 'NOT_APPROVED'}" class="btn btn-success" th:onclick="|approveOrder('${quotation_customer.rfqId}')|">Duyệt Đơn <i class="fas fa-check"></i></button>
-                <button th:if="*{accepted == 'NOT_APPROVED'}" class="btn btn-danger" th:onclick="|cancelOrder('${quotation_customer.rfqId}')|">Hủy Đơn <i class="fas fa-times"></i></button>
+
+                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-success" th:onclick="|approveOrder('${quotation_customer.rfqId}')|">Duyệt Đơn <i class="fas fa-check"></i></button>
+                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-danger" th:onclick="|cancelOrder('${quotation_customer.rfqId}')|">Hủy Đơn <i class="fas fa-times"></i></button>
                 <!--<button class="btn btn-primary" onclick="printQuotation()">In báo giá <i class="fas fa-print"></i></button>-->
                 <button class="btn btn-secondary" onclick="window.location.href='/request-for-quotation/view-list'">Quay lại <i class="fas fa-arrow-left"></i></button>
             </div>

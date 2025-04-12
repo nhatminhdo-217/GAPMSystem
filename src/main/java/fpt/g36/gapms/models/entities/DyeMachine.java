@@ -3,6 +3,7 @@ package fpt.g36.gapms.models.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,6 +26,18 @@ public class DyeMachine extends BaseEntity {
     private Integer maxWeight; // Khối lượng tối đa
 
     @NotNull
+    private BigDecimal littersMin;
+
+    @NotNull
+    private BigDecimal littersMax;
+
+    @NotNull
+    private BigDecimal coneMin;
+
+    @NotNull
+    private BigDecimal coneMax;
+
+    @NotNull
     private Integer capacity; // Công suất (quả/h)
 
     @Lob
@@ -37,16 +50,52 @@ public class DyeMachine extends BaseEntity {
     public DyeMachine() {
     }
 
-    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, boolean isActive, String description, Integer capacity, Integer maxWeight, Integer conePerPile, Integer pile, Integer diameter) {
+    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, Integer diameter, Integer pile, Integer conePerPile, Integer maxWeight, BigDecimal littersMin, BigDecimal littersMax, BigDecimal coneMin, BigDecimal coneMax, Integer capacity, String description, boolean isActive) {
         super(id, createAt, updateAt);
         this.dyeStage = dyeStage;
-        this.isActive = isActive;
-        this.description = description;
-        this.capacity = capacity;
-        this.maxWeight = maxWeight;
-        this.conePerPile = conePerPile;
-        this.pile = pile;
         this.diameter = diameter;
+        this.pile = pile;
+        this.conePerPile = conePerPile;
+        this.maxWeight = maxWeight;
+        this.littersMin = littersMin;
+        this.littersMax = littersMax;
+        this.coneMin = coneMin;
+        this.coneMax = coneMax;
+        this.capacity = capacity;
+        this.description = description;
+        this.isActive = isActive;
+    }
+
+    public BigDecimal getLittersMin() {
+        return littersMin;
+    }
+
+    public void setLittersMin(BigDecimal littersMin) {
+        this.littersMin = littersMin;
+    }
+
+    public BigDecimal getLittersMax() {
+        return littersMax;
+    }
+
+    public void setLittersMax(BigDecimal littersMax) {
+        this.littersMax = littersMax;
+    }
+
+    public BigDecimal getConeMin() {
+        return coneMin;
+    }
+
+    public void setConeMin(BigDecimal coneMin) {
+        this.coneMin = coneMin;
+    }
+
+    public BigDecimal getConeMax() {
+        return coneMax;
+    }
+
+    public void setConeMax(BigDecimal coneMax) {
+        this.coneMax = coneMax;
     }
 
     public boolean isActive() {

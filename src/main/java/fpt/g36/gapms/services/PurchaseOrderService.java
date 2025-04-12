@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,10 @@ public interface PurchaseOrderService {
     Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year);
 
     PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id);
+
+    boolean checkContractWithStatus(BaseEnum status, Long id);
+
+    boolean cancelPurchaseOrder(Long id);
+
+    PurchaseOrderDetail getPurchaseOrderDetailById(Long id);
 }

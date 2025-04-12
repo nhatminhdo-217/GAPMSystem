@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -72,4 +73,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     @Query("select po from PurchaseOrder po where po.id = :poi")
     PurchaseOrder getPurchaseOrderCustomerDetail(Long poi);
+
+    @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.id = :id")
+    Optional<PurchaseOrderDetail> getPurchaseOrderDetailById(Long id);
 }

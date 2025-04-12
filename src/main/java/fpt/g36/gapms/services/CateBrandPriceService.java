@@ -6,5 +6,5 @@ public interface CateBrandPriceService {
 
     BigDecimal getPrice(Long categoryId, Long brandId, boolean isColor);
 
-    BigDecimal getPriceByBrandIdAndCateIdAndIsColor(Long brandId, Long cateId, boolean isColor);
+    BigDecimal getPriceByBrandIdAndCateIdAndIsColor(Long brandId, Long cateId, Boolean isColor);
 }

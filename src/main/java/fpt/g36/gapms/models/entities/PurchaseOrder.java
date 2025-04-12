@@ -30,7 +30,8 @@ public class PurchaseOrder extends BaseEntity {
     @JoinColumn(name = "quotation_id", nullable = false)
     private Quotation quotation;
 
-    @OneToOne(mappedBy = "purchaseOrder")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_id")
     private Contract contract;
 
     @ManyToOne(fetch = FetchType.LAZY)

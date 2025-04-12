@@ -31,7 +31,7 @@ public class DyeBatchServiceImpl implements DyeBatchService {
     @Override
     public void changeStatusDyeBatchInProcess(Long dbId, User leader) {
         DyeBatch dyeBatch = dyeBatchRepository.findById(dbId).orElseThrow(() -> new RuntimeException("dbId not found"));
-
+        dyeBatch.setPass(null);
         dyeBatch.setWorkStatus(WorkEnum.IN_PROGRESS);
         dyeBatch.getDyeStage().getWorkOrderDetail().getWorkOrder().setIsProduction(WorkEnum.IN_PROGRESS);
         dyeBatch.getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);

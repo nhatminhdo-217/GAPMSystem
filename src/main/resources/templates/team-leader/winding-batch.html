@@ -415,27 +415,26 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-yarn me-2"></i> Lệnh Đánh Côn-WD-<span th:text="${windingBatches.get(0).windingStage.id}"></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-yarn me-2"></i> Mẻ Côn-WD-<span th:text="${StageId}"></span></h2>
+                        <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã MẺ</th>
+                                <th>Trạng thái kiểm tra</th>
+                                <th>Thứ Tự Mẻ Côn</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
                                 <th>Số lượng</th>
-                                <th>LOẠI HÀNG</th>
+                                <th>Loại hàng</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <!-- Work Order Con 1 -->
-                            <tr data-id="WOC-001-1" th:each="ws : ${windingBatches}">
-
-
+                            <tr data-id="WOC-001-1" th:each="ws, iterStat : ${windingBatches}">
                                 <td>
                                     <span th:switch="${ws.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -444,12 +443,28 @@
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
                                             <i class="fas fa-check-circle"></i> Đã Côn
                                         </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Sửa
+                                        </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Côn
                                         </span>
                                     </span>
                                 </td>
-                                <td>WB-<span th:text="${ws.id}"></span></td>
+                                <td>
+                                    <span th:switch="${ws.pass}">
+                                        <span th:case="true" class="status status-completed">
+                                            <i class="fas fa-check-circle"></i> Đã đạt
+                                        </span>
+                                        <span th:case="false" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Không đạt
+                                        </span>
+                                        <span th:case="*" class="status status-in-progress">
+                                            <i class="fas fa-spinner"></i> Chờ Kiểm
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
                                 <td th:text="${#temporals.format(ws.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>
                                 <td th:text="${ws.windingStage.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
@@ -485,15 +500,15 @@
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
                             <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${ws.id})}"
-                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.pass != true } ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
                             </a>
                             <button type="button"
                                     class="status-btn completed"
                                     th:onclick="'submitFormWithPhoto(\'form-' + ${ws.id} + '\')'"
-                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>

@@ -619,6 +619,12 @@
                 padding: 15px;
             }
         }
+
+        .btn-dye-stage {
+            background: #FFD700;
+            border: none;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -646,16 +652,15 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<!--<span th:text="${dyeStages.first.workOrderDetail.workOrder.id}">--></span></h2>
-                        <a th:href="@{/work-order/team-leader/list}" class="btn btn-light">Quay lại</a>
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${woId}"></span></h2>
+                        <a th:href="@{/work-order/quality_assurance/list}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <!--<th>Trạng Thái Kiểm Tra</th>-->
-                                <th>Trạng Thái Nhuộm</th>
-                                <th>Mã Work Order Con</th>
+                                <th>Trạng Thái</th>
+                                <th>Mã sản phẩm nhuộm</th>
                                 <th>Thời Gian Kết thúc</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
@@ -667,26 +672,13 @@
                             </thead>
                             <tbody id="workOrderChildTableBody">
                             <tr th:each="dy : ${dyeStages}" th:attr="data-id=${dy.id}">
-                                <!--<td>
-                                    <span th:switch="${dy.}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTED}" class="status status-in-progress">
-                                            <i class="fas fa-spinner"></i> Đã Kiểm tra
-                                        </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).TESTING}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đang kiểm tra
-                                        </span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.TestEnum).NOT_STARTED}" class="status status-not-started">
-                                            <i class="fas fa-times-circle"></i> Chờ Kiểm Tra
-                                        </span>
-                                    </span>
-                                </td>-->
                                 <td>
                                     <span th:switch="${dy.workStatus}">
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
                                             <i class="fas fa-spinner"></i> Đang Nhuộm
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                            <i class="fas fa-check-circle"></i> Hoàn thành
                                         </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Nhuộm
@@ -694,8 +686,6 @@
                                     </span>
                                 </td>
                                 <td>WD-<span th:text="${dy.id}"></span></td>
-                                <!--<td th:text="${dy.leaderStart.getUsername()}"></td>
-                                <td th:text="${dy.leaderEnd.getUsername()}"></td>-->
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
@@ -704,8 +694,8 @@
                                 <td th:text="${dy.cone_quantity}"></td>
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"
-                                       class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Kiểm tra chất lượng đơn hàng
+                                       class="btn btn-dye-stage btn-action">
+                                        <i class="fas fa-eye"></i> Mẻ Nhuộm
                                     </a>
                                 </td>
                             </tr>

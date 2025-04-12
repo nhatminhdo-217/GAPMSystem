@@ -4,6 +4,7 @@ package fpt.g36.gapms.services;
 import fpt.g36.gapms.models.dto.contract.ContractDTO;
 import fpt.g36.gapms.models.dto.contract.ContractUpdateDTO;
 import fpt.g36.gapms.models.entities.Contract;
+import fpt.g36.gapms.models.entities.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,4 +19,8 @@ public interface ContractService{
     Contract createContract(Long purchaseOrderId, ContractDTO contractDTO, MultipartFile file) throws IOException;
 
     Contract updateContract(String id, ContractDTO contractDTO, MultipartFile file) throws IOException;
+
+    boolean updateContractToPurchaseOrder(Long id, Contract contract);
+
+    void updateContractStatus(Long id, User currUser);
 }

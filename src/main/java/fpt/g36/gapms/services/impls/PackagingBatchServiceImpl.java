@@ -33,6 +33,7 @@ public class PackagingBatchServiceImpl implements PackagingBatchService {
     public void changeStatusPackagingBatchInProcess(Long pbId, User leader) {
         PackagingBatch packagingBatch = packagingBatchRepository.findById(pbId).orElseThrow(() -> new RuntimeException("pbId not found"));
         packagingBatch.setWorkStatus(WorkEnum.IN_PROGRESS);
+        packagingBatch.getPackagingStage().setWorkStatus(WorkEnum.IN_PROGRESS);
         packagingBatch.setLeaderStart(leader);
         packagingBatchRepository.save(packagingBatch);
     }

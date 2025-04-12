@@ -388,6 +388,12 @@
             .captured-image, .video-preview { max-width: 100%; }
             .status-btn { font-size: 12px; padding: 8px; }
         }
+
+        .btn-dye-stage {
+            background: #FFD700;
+            border: none;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -423,7 +429,7 @@
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã Work Order Con</th>
+                                <th>Mã sản phẩm đóng gói</th>
                                 <th>Mã Khách Hàng</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Số lượng</th>
@@ -441,14 +447,14 @@
                                             <i class="fas fa-spinner"></i> Đang Đóng Gói
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                            <i class="fas fa-check-circle"></i> Đã Đóng Gói
+                                            <i class="fas fa-check-circle"></i> Hoàn Thành
                                         </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Đóng Gói
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${ps.workOrderDetail.id}"></span></td>
+                                <td>WD-<span th:text="${ps.id}"></span></td>
                                 <td>KH-<span th:text="${ps.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                 <td th:text="${#temporals.format(ps.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ps.workOrderDetail.purchaseOrderDetail.quantity}">40</td>
@@ -456,8 +462,8 @@
                                 <td th:text="${ps.workOrderDetail.purchaseOrderDetail.category.name}">30/3-2000M</td>
                                 <td>
                                     <a th:href="@{/work-order/team-leader/Batch/{id}(id=${ps.id})}"
-                                       class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Xem Quy Trình Đơn Hàng
+                                       class="btn btn-dye-stage btn-action">
+                                        <i class="fas fa-eye"></i> Mẻ Đóng Hàng
                                     </a>
                                 </td>
                             </tr>

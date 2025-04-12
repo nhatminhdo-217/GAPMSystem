@@ -88,11 +88,16 @@ public class CusRfqController {
         }
 
         model.addAttribute("rfq", rfq);
-
+        Company company = companyService.getCompanyByUserId(rfq.getCreateBy().getId());
+        model.addAttribute("company", company);
+        System.err.println("Company" + company);
         try {
             Rfq submittedRfq = rfqService.submitRfq(id, currentUser.getId());
-            model.addAttribute("rfq", submittedRfq); // Cập nhật RFQ sau khi gửi
+            Company currentCompany = companyService.getCompanyByUserId(submittedRfq.getCreateBy().getId());
+            System.err.println(currentCompany);
+            model.addAttribute("rfq", submittedRfq);
             model.addAttribute("success", "Gửi RFQ thành công!");
+            model.addAttribute("company", currentCompany);
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         } catch (Exception e) {

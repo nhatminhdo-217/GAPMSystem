@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết RFQ</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            background-color: #4A90E2;
+        }
+
+        /* Container cho 2 phần thông tin khách hàng và RFQ */
+        .info-container {
+            display: flex;
+            gap: 20px; /* Khoảng cách giữa 2 phần */
+            margin-bottom: 30px;
+        }
+
+        /* Phần Thông tin khách hàng */
+        .customer-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1; /* Chia đều không gian */
+        }
+
+        /* Phần Thông tin RFQ */
+        .rfq-info {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1; /* Chia đều không gian */
+        }
+
+        .row {
+            margin-bottom: 15px;
+        }
+
+        .row > div {
+            padding: 10px;
+        }
+
+        strong {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        span {
+            font-size: 15px;
+            color: #212529;
+            word-break: break-word;
+        }
+
+        .product-details {
+            margin-bottom: 30px;
+        }
+
+        .product-details table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .product-details th, .product-details td {
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .product-details th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .product-details td {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .btn-container {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            min-width: 180px;
+            height: 45px;
+            padding: 0 20px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-custom:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+
+        .detail-info {
+            margin-bottom: 30px;
+        }
+
+        .detail-info .solution-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal-body p {
+            font-size: 15px;
+            color: #495057;
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .modal-footer {
+            padding: 15px 0;
+            border-top: 1px solid #e9ecef;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .toast {
+            opacity: 0.9;
+            border-radius: 5px;
+        }
+
+        .success-toast {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.9;
+        }
+
+        .success-toast .toast-header {
+            background-color: #c3e6cb;
+            color: #155724;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .success-toast .toast-body {
+            color: #155724;
+            padding: 15px;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+            padding: 15px;
+        }
+
+        #toastSuccess, #toastError {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            border-radius: 5px;
+        }
+
+        #toastError {
+            bottom: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .info-container {
+                flex-direction: column; /* Xếp chồng trên mobile */
+                gap: 15px; /* Giảm khoảng cách giữa 2 phần */
+            }
+
+            .customer-info, .rfq-info {
+                padding: 15px; /* Giảm padding trên mobile */
+            }
+
+            .card-body {
+                padding: 15px 20px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+
+            .row > div {
+                padding: 8px;
+            }
+
+            .product-details th, .product-details td {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .btn-custom {
+                min-width: 150px;
+                height: 40px;
+                font-size: 13px;
+            }
+
+            .detail-info .solution-info {
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 15px;
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .modal-header {
+                margin-bottom: 15px;
+            }
+
+            .modal-body {
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .modal-footer {
+                padding: 10px 0;
+                gap: 10px;
+            }
+        }
+
+        .modal-footer {
+            padding: 15px 0;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn-confirm {
+            width: 100%; /* Đặt chiều rộng bằng với ô nhập */
+            max-width: 100%; /* Đảm bảo không vượt quá chiều rộng của modal */
+            height: 45px;
+            padding: 0 20px;
+            text-align: center;
+            background-color: #4A90E2 !important;
+            color: white !important;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-confirm:hover {
+            background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-confirm {
+                height: 40px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Hidden data -->
+<div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main content -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="container-fluid">
+                    <div class="card" th:data-rfq-id="${riskSolution.id}">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4" th:if="${riskSolution.dyeRiskAssessment == null && riskSolution.windingRiskAssessment == null} ">Xưởng Đóng Gói</h2>
+                            <h2 class="text-center mb-4" th:if="${riskSolution.packagingRiskAssessment == null && riskSolution.windingRiskAssessment == null} ">Xưởng Nhuộm</h2>
+                            <h2 class="text-center mb-4" th:if="${riskSolution.dyeRiskAssessment == null && riskSolution.packagingRiskAssessment == null} ">Xưởng Côn Chỉ</h2>
+
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null}">
+                                <h3 class="section-title">Thông tin phiếu yêu cầu cấp sợi</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Mã phiếu:</strong> <span th:text="${riskSolution.id}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Loại sợi:</strong>
+                                            <span th:if="${riskSolution.dyeRiskAssessment != null}"  th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.windingRiskAssessment != null}"  th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.packagingRiskAssessment != null}"  th:text="${riskSolution.packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Khối lượng:</strong> <span
+                                                th:text="${riskSolution.weightNeed}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:switch="${riskSolution.getApproveStatus()}">
+                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Chờ Duyệt'" class="badge" style="background-color: #ffcc00; color: #333;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa Duyệt'" class="badge" style="background-color: #ff3b30; color: white;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã Duyệt'" class="badge" style="background-color: #34c759; color: white;"></span>
+                                             <span th:case="*" th:text="'N/A'" class="badge" style="background-color: #ff3b30; color: white;"></span></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú phòng kế hoạch:</strong>
+                                            <span th:text="${riskSolution.note != null ? riskSolution.note : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${riskSolution.createdBy != null ? riskSolution.createdBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người Duyệt:</strong>
+                                            <span th:text="${riskSolution.approvedBy != null ? riskSolution.approvedBy.username : 'N/A'}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Container cho Thông tin khách hàng và RFQ -->
+                            <div class="info-container">
+                                <!-- Cus Info -->
+                                <div class="customer-info" th:if="${riskSolution.dyeRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin mẻ lỗi</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Tên màu:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Loại sợi:</strong> <span
+                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Khối Lượng:</strong> <span
+                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.cone_batch_weight}">na</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Ánh Sáng:</strong> <span >na</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số lít nước tối thiểu:</strong> <span
+                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.liters_min}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số lít nước:</strong> <span
+                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.liters}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Số quả:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.cone_quantity}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Nhãn hiệu:</strong> <span
+                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.brand.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Quy trình đánh hồ:</strong> <span
+                                        >na</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú kế hoạch:</strong> <span>na</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="customer-info" th:if="${riskSolution.windingRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin mẻ lỗi</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Tên màu:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>loại hàng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>số lượng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- RFQ Info -->
+                                <div class="rfq-info" th:if="${riskSolution.dyeRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin sau kiểm tra</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Màu nhuộm </strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.colorTrue} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.colorTrue} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ánh sáng:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.lightTrue} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.lightTrue} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Độ ẩm sợi sau sấy:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.humidity} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.humidity} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Lỗi loang màu:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.colorFading} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.colorFading} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Lỗi bám thuốc:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.medication} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.medication} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Lỗi kết thuốc:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.medicineSafe} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.medicineSafe} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Lỗi bám VSCN:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.industrialCleaningStains} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.dyeRiskAssessment.industrialCleaningStains} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Mức độ lỗi:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.errorLevel} ? 'Nặng' : 'Nhẹ'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.errorDetails}">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Người Kiểm tra:</strong>
+                                            <span th:text="${riskSolution.dyeRiskAssessment.createBy.username}">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="rfq-info" th:if="${riskSolution.windingRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin sau kiểm tra</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Số cuộn chỉ đạt </strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.trueCone}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số cuộn chỉ lỗi:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.falseCone}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Độ đồng đều ánh màu của các cuộn chỉ:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.colorUniformity} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.windingRiskAssessment.colorUniformity} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Loang màu của cuộn chỉ sau côn:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.colorFading} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.windingRiskAssessment.colorFading} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Mức độ lỗi:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.errorLevel} ? 'Nặng' : 'Nhẹ'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.errorDetails}">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Người Kiểm tra:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.createBy.username}">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="btn-container">
+                                <!-- Nút "Tạo phiếu yêu cầu cấp sợi" -->
+                                <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}"
+                                        class="btn btn-custom"
+                                        id="submitRfqBtn"
+                                        th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}"
+                                        th:onclick="|approveOrder('${riskSolution.id}')|">
+                                    Ký duyệt
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+</div>
+
+<div th:if="${approved}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${approved}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script th:inline="javascript">
+    function approveOrder(rsId) {
+        Swal.fire({
+            title: "Xác nhận Ký duyệt",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/risk-solution/production-manage/risk-solution-approved/" + rsId;
+            }
+        });
+    }
+</script>
+</body>
+</html>

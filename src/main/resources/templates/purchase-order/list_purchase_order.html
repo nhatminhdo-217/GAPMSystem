@@ -139,6 +139,9 @@
                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"
                                                 style="color: #ffc107;">
                                           </span>
+                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'"
+                                                style="color: #ffc107;">
+                                          </span>
                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
                                            <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
                                     </span>

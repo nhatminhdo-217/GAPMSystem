@@ -60,8 +60,12 @@ public class RfqSolutionController {
     @GetMapping("/rfq-solution-details/{id}")
     public String getSolutionDetailsView(@PathVariable Long id, Model model) {
         Solution solution = solutionService.getSolutionById(id);
-        Company company = companyService.getCompanyByUserId(solution.getCreateBy().getId());
+        Company company = companyService.getCompanyByUserId(solution.getRfq().getCreateBy().getId());
         if (solution == null) {
+            return "redirect:/error";
+        }
+        if (company == null) {
+            System.err.println("Company not found");
             return "redirect:/error";
         }
         userUtils.getOptionalUser(model);
