@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Camera Demo</title>
+    <link rel="stylesheet" href="/assert/css/style/camera/style.css">
+</head>
+<body>
+    <div class="container" th:fragment="camera">
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+
+            <div class="camera-controls">
+                <button id="switchCamera" class="btn">Đổi camera</button>
+                <button id="captureBtn" class="btn primary">Chụp ảnh</button>
+            </div>
+        </div>
+
+        <div class="preview-container" style="display: none;">
+            <h2>Ảnh đã chụp</h2>
+            <img id="preview" src="" alt="Preview">
+
+            <div class="preview-controls">
+                <button id="retakeBtn" class="btn">Chụp lại</button>
+                <button id="saveBtn" class="btn primary">Lưu ảnh</button>
+            </div>
+        </div>
+
+        <div id="savedImages" class="saved-images">
+            <h2>Ảnh đã lưu</h2>
+            <div id="imagesList" class="images-list">
+                <!-- Các ảnh đã lưu sẽ được hiển thị ở đây -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/assert/js/camera.js"></script>
+</body>
+</html>

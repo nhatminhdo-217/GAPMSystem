@@ -33,7 +33,7 @@
         <div class="col-2"> <!-- Cột cho Màu -->
             <div class="form-group">
                 <label class="label" th:for="'color-' + ${rowNumber}">Màu</label>
-                <input type="text" class="form-control w-100" th:id="'color-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].noteColor'" placeholder="Nhập màu" required>
+                <input type="color" class="form-control w-100" th:id="'color-' + ${rowNumber}" th:name="'rfqDetails[' + (${rowNumber}-1) + '].noteColor'" placeholder="Nhập màu" required>
             </div>
         </div>
         <div class="col-2"> <!-- Cột cho Số lượng -->

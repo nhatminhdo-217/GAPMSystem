@@ -1,26 +1,19 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.models.dto.CreateAccountDTO;
-import fpt.g36.gapms.models.dto.UserDTO;
-import fpt.g36.gapms.models.entities.Role;
-import fpt.g36.gapms.models.entities.User;
-import fpt.g36.gapms.repositories.RoleRepository;
-import fpt.g36.gapms.repositories.UserRepository;
+import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,11 +22,15 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
     @Autowired
     private UserServiceImpl userServiceImpl;
-
+   @Autowired
+   private CompanyUserRepository companyUserRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepository;
+
 
     @Override
     public Page<User> getAccounts(Pageable pageable) {
@@ -64,18 +61,20 @@ public class AccountServiceImpl implements AccountService {
         // Lấy thông tin người dùng đang đăng nhập
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName(); // Email của người dùng đang đăng nhập
-
+        Optional<User> user = userRepository.findByEmailOrPhoneNumber(currentEmail, currentEmail);
 
         // Tìm kiếm tài khoản mà không hiển thị tài khoản có email trùng với người dùng
         // hiện tại
 
-        return userRepository.findByKeywordExcludingCurrentUserEmail(keyword, currentEmail);
+        return userRepository.findByKeywordExcludingCurrentUserEmail(keyword, user.get().getEmail(), user.get().getPhoneNumber());
     }
 
     @Override
     public List<User> getAllAccountExcept() {
         String currentAdminEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findAllExceptCurrentUser(currentAdminEmail);
+        Optional<User> user = userRepository.findByEmailOrPhoneNumber(currentAdminEmail, currentAdminEmail);
+        return userRepository.findAllByEmailNotAndPhoneNumberNot(user.get().getEmail(), user.get().getPhoneNumber());
+        /*return userRepository.findAllExceptCurrentUser(currentAdminEmail);*/
     }
 
 
@@ -96,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
         System.err.println("DEBUG_Service: " + user.getUsername());
         user.setEmail(createAccountDTO.getEmail());
         user.setPhoneNumber(createAccountDTO.getPhoneNumber());
-        user.setAvatar("default_avatar.png");
+        user.setAvatar("default-avatar.png");
         user.setPassword(encodedPassword);
         user.setVerified(true);
         user.setActive(true);
@@ -104,8 +103,23 @@ public class AccountServiceImpl implements AccountService {
         Role role = roleRepository.findById( createAccountDTO.getRole().getId())
                 .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ"));
         user.setRole(role);
+        user = userRepository.save(user);
+        if(!Objects.equals(user.getRole().getName(), "CUSTOMER")) {
+            Company company = companyRepository.getCompanyByEmail("dntndungdong@gmail.com");
+            // ✅ Tạo đối tượng CompanyUserId
+            CompanyUserId companyUserId = new CompanyUserId();
+            companyUserId.setCompanyId(company.getId());  // Đảm bảo company không null
+            companyUserId.setUserId(user.getId());        // Lưu user trước để có ID
 
-       return userRepository.save(user);
+
+            CompanyUser companyUser = new CompanyUser();
+            companyUser.setId(companyUserId);  // Gán khóa chính
+            companyUser.setUser(user);
+            companyUser.setCompany(company);
+
+            companyUserRepository.save(companyUser);
+        }
+        return user;
     }
 
 

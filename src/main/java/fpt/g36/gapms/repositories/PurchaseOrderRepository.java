@@ -1,9 +1,14 @@
 package fpt.g36.gapms.repositories;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,7 +35,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
        )
        FROM PurchaseOrder po
          JOIN po.quotation q
-         JOIN po.contract con
+         LEFT JOIN po.contract con
          JOIN q.rfq r
          JOIN r.solution s
          JOIN r.createBy u
@@ -57,4 +62,18 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
             "JOIN cate_brand_price cbp ON c.id = cbp.cate_id " +
             "WHERE po.id = :id AND cbp.is_color = 1", nativeQuery = true)
     List<Object[]> getPurchaseOrderItemsDTOById(@Param("id") Long id);
+
+    List<PurchaseOrder> getAllByStatus(BaseEnum status, Pageable pageable);
+
+    @Query("select po from PurchaseOrder po where po.customer.id = :userId order by po.createAt desc")
+    Page<PurchaseOrder> getAllPurchaseOrdersByUserId(Long userId, Pageable pageable);
+
+    @Query("SELECT po FROM PurchaseOrder po WHERE po.customer.id = :userId AND YEAR(po.createAt) = :year ORDER BY po.createAt DESC")
+    Page<PurchaseOrder> getAllPurchaseOrdersByUserIdAndYear(@Param("userId") Long userId, @Param("year") Integer year, Pageable pageable);
+
+    @Query("select po from PurchaseOrder po where po.id = :poi")
+    PurchaseOrder getPurchaseOrderCustomerDetail(Long poi);
+
+    @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.id = :id")
+    Optional<PurchaseOrderDetail> getPurchaseOrderDetailById(Long id);
 }

@@ -37,14 +37,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.email <> :email")
+    @Query("SELECT u FROM User u WHERE u.email <> :email Or u.phoneNumber <> :phone")
+    List<User> findAllByEmailNotAndPhoneNumberNot(@Param("email") String email, @Param("phone") String phone);
+
+
+    @Query("SELECT u FROM User u WHERE u.email <> :email ")
     List<User> findAllExceptCurrentUser(@Param("email") String email);
 
     @Query("SELECT u FROM User u WHERE (u.username LIKE %:keyword% " +
             "OR u.email LIKE %:keyword% OR u.phoneNumber LIKE %:keyword%) " +
-            "AND u.email != :currentEmail")
+            "AND u.email != :email or u.phoneNumber != :phone")
     List<User> findByKeywordExcludingCurrentUserEmail
-            (@Param("keyword") String keyword, @Param("currentEmail") String currentEmail);
+            (@Param("keyword") String keyword, @Param("email") String email, @Param("phone") String phone);
 
     @Query("SELECT u from Rfq r JOIN r.createBy u WHERE r.id = :rfqId")
     Optional<User> findUsersByRfqId(long rfqId);

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     // Xử lý lỗi 404
-    @ExceptionHandler(RuntimeException.class)
+    /*@ExceptionHandler(RuntimeException.class)
     public String runTimeException(Model model) {
         // Thêm thông điệp lỗi vào model (nếu cần)
         model.addAttribute("message", "Page not found");
@@ -30,5 +30,5 @@ public class GlobalExceptionHandler {
         // Thêm thông điệp lỗi vào model (nếu cần)
         model.addAttribute("message", "Internal Server Error");
         return "error-500"; // Trả về trang lỗi 500
-    }
+    }*/
 }

@@ -27,6 +27,10 @@ public class Quotation extends BaseEntity {
     @Column(name = "is_accepted")
     private BaseEnum isAccepted;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "rfq_id", nullable = false)
@@ -35,30 +39,27 @@ public class Quotation extends BaseEntity {
     @OneToOne(mappedBy = "quotation")
     private PurchaseOrder purchaseOrder;
 
-    @OneToMany(mappedBy = "quotation")
-    private Set<PurchaseOrderPrice> purchaseOrderPrices = new LinkedHashSet<>();
-
     @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuotationDetail> quotationDetails = new ArrayList<>();
 
     public Quotation() {
     }
 
-    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, Rfq rfq, PurchaseOrder purchaseOrder, Set<PurchaseOrderPrice> purchaseOrderPrices, List<QuotationDetail> quotationDetails) {
+    public Quotation(Long id, LocalDateTime createAt, LocalDateTime updateAt, Boolean isCanceled, BaseEnum isAccepted, User createdBy, Rfq rfq, PurchaseOrder purchaseOrder, List<QuotationDetail> quotationDetails) {
         super(id, createAt, updateAt);
         this.isCanceled = isCanceled;
         this.isAccepted = isAccepted;
+        this.createdBy = createdBy;
         this.rfq = rfq;
         this.purchaseOrder = purchaseOrder;
-        this.purchaseOrderPrices = purchaseOrderPrices;
         this.quotationDetails = quotationDetails;
     }
 
-    public Boolean getCanceled() {
+    public Boolean getIsCanceled() {
         return isCanceled;
     }
 
-    public void setCanceled(Boolean canceled) {
+    public void setIsCanceled(Boolean canceled) {
         isCanceled = canceled;
     }
 
@@ -68,6 +69,14 @@ public class Quotation extends BaseEntity {
 
     public void setAccepted(BaseEnum accepted) {
         isAccepted = accepted;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Rfq getRfq() {
@@ -86,19 +95,19 @@ public class Quotation extends BaseEntity {
         this.purchaseOrder = purchaseOrder;
     }
 
-    public Set<PurchaseOrderPrice> getPurchaseOrderPrices() {
-        return purchaseOrderPrices;
-    }
-
-    public void setPurchaseOrderPrices(Set<PurchaseOrderPrice> purchaseOrderPrices) {
-        this.purchaseOrderPrices = purchaseOrderPrices;
-    }
-
     public BaseEnum getIsAccepted() {
         return isAccepted;
     }
 
     public void setIsAccepted(BaseEnum isAccepted) {
         this.isAccepted = isAccepted;
+    }
+
+    public List<QuotationDetail> getQuotationDetails() {
+        return quotationDetails;
+    }
+
+    public void setQuotationDetails(List<QuotationDetail> quotationDetails) {
+        this.quotationDetails = quotationDetails;
     }
 }

@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -62,4 +64,35 @@ public class ImageServiceImpl implements ImageService {
 
         return fileNameUnique;
     }
+
+
+    // truyền nhiều ảnh vô
+    public List<String> saveListImageMultiFile(MultipartFile[] files) throws IOException {
+        List<String> fileNames = new ArrayList<>();
+
+        if (files == null || files.length == 0) {
+            throw new IllegalArgumentException("Danh sách file ảnh không hợp lệ");
+        }
+
+        Path pathDir = Paths.get("uploads");
+        if (!Files.exists(pathDir)) {
+            Files.createDirectories(pathDir);
+        }
+
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+                Path destination = pathDir.resolve(fileNameUnique);
+
+                try (InputStream inputStream = file.getInputStream()) {
+                    Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                fileNames.add(fileNameUnique);
+            }
+        }
+
+        return fileNames;
+    }
+
 }

@@ -17,4 +17,6 @@ public interface RfqDetailService {
 
     void editRfqDetail(Rfq rfq);
 
+    List<RfqDetail> getAllRfqDetailByRfqId(Long rfqId);
+
 }

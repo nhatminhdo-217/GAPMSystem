@@ -4,5 +4,6 @@ public enum BaseEnum {
     NOT_APPROVED,
     APPROVED,
     CANCELED,
-    DRAFT
+    DRAFT,
+    WAIT_FOR_APPROVAL
 }

@@ -26,10 +26,17 @@ public class SecurityConfig {
                                 "/login_form", "/forgot-password", "/reset-password", "/login-error", "/verify-code")
                         .permitAll() // Cho phép truy cập trang login
                         .requestMatchers("/profile").authenticated()
-                        .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**","/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**").hasRole("CUSTOMER")
+                        .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**",
+                                "/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**",
+                                "/purchase-order/customer/list",
+                                  "/purchase-order/customer/detail/**")
+                        .hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/risk-solution/production-manager/**", "/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
-                        .requestMatchers("/technical/**").hasRole("TECHNICAL")
+                        .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")
+                        .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
+                        .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")
@@ -100,7 +107,7 @@ public class SecurityConfig {
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("mySecretKey") // Key để mã hóa token
-                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
+                        .tokenValiditySeconds(24 * 60 * 60) // 7 ngày
                         .rememberMeParameter("remember") // Tên tham số trên form
                         .alwaysRemember(false))
                 .exceptionHandling(ex -> ex

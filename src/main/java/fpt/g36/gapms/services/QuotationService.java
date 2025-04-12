@@ -3,6 +3,7 @@ package fpt.g36.gapms.services;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 
 public interface QuotationService {
@@ -20,4 +21,6 @@ public interface QuotationService {
     void createQuotationByRfqId(long rfqId);
 
     Long getQuotationIdByRfqId(long rfqId);
+
+    void updateQuotationStatus(Long id, User currentUser);
 }

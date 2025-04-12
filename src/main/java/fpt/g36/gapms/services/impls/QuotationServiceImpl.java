@@ -3,14 +3,11 @@ package fpt.g36.gapms.services.impls;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.quotation.*;
-import fpt.g36.gapms.models.entities.PurchaseOrder;
-import fpt.g36.gapms.models.entities.Quotation;
-import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.RfqDetail;
-import fpt.g36.gapms.models.entities.Solution;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.CateBrandPriceService;
 import fpt.g36.gapms.services.QuotationService;
+import fpt.g36.gapms.services.RfqDetailService;
 import fpt.g36.gapms.services.RfqService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class QuotationServiceImpl implements QuotationService {
@@ -33,23 +30,22 @@ public class QuotationServiceImpl implements QuotationService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final CateBrandPriceService cateBrandPriceService;
-
-    private PurchaseOrderRepository purchaseOrderRepository;
-
     private final RfqService rfqService;
+    private final RfqDetailService rfqDetailService;
+    private PurchaseOrderRepository purchaseOrderRepository;
+    private PurchaseOrderDetailRepository purchaseOrderDetailRepository;
 
-    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService) {
+    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService, RfqDetailService rfqDetailService,PurchaseOrderDetailRepository purchaseOrderDetailRepository) {
 
         this.quotationRepository = quotationRepository;
         this.brandRepository = brandRepository;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.cateBrandPriceService = cateBrandPriceService;
-
-        this.purchaseOrderRepository  = purchaseOrderRepository;
-
         this.rfqService = rfqService;
-
+        this.purchaseOrderRepository  = purchaseOrderRepository;
+        this.rfqDetailService = rfqDetailService;
+        this.purchaseOrderDetailRepository  = purchaseOrderDetailRepository;
     }
 
     @Override
@@ -133,10 +129,23 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public QuotationInforCustomerDTO getQuotationCustomer(long rfqId) {
-        List<QuotationInforCustomerProjection> quotationDetail = quotationRepository.findQuotationCustomer(rfqId);
+        List<QuotationInforCustomerProjection> quotationDetail = new ArrayList<>();
 
-        if (quotationDetail.isEmpty()) {
-            throw new RuntimeException("Quotation not found");
+        /*List<QuotationInforCustomerProjection> quotationDetail = quotationRepository.findQuotationCustomer(rfqId);*/
+         Rfq rfq = rfqService.getRfqById(rfqId);
+        for (RfqDetail rfqDetail: rfq.getRfqDetails()) {
+            Boolean color;
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            if(checkColor) {
+                color = false;
+                QuotationInforCustomerProjection quotationDetail_set = quotationRepository.findQuotationCustomers(rfqDetail.getId(), rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }else {
+                color = true;
+                QuotationInforCustomerProjection quotationDetail_set = quotationRepository.findQuotationCustomers(rfqDetail.getId(),rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }
+
         }
 
         QuotationInforCustomerDTO quotationInforCustomerDTO = new QuotationInforCustomerDTO();
@@ -160,6 +169,7 @@ public class QuotationServiceImpl implements QuotationService {
                     product.setBrandName(p.getBrandName());
                     product.setCategoryName(p.getCategoryName());
                     product.setColor(p.getIsColor());
+                    /*product.setColor(p.getIsColor());*/
                     product.setPrice(p.getPrice());
                     product.setQuantity(p.getQuantity());
                     product.setNoteColor(p.getNoteColor());
@@ -173,17 +183,45 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public void approvedQuotation(long rfqId) {
-          Quotation quotation = quotationRepository.findByRfqId(rfqId);
+        Quotation quotation = quotationRepository.findByRfqId(rfqId);
         if (quotation == null) {
             throw new RuntimeException("Quotation not found");
         }
-          quotation.setIsAccepted(BaseEnum.APPROVED);
-          quotationRepository.save(quotation);
+        quotation.setIsAccepted(BaseEnum.APPROVED);
+        quotationRepository.save(quotation);
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
-        purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
-        purchaseOrderRepository.save(purchaseOrder);
+        purchaseOrder.setStatus(BaseEnum.DRAFT);
+        purchaseOrder.setCustomer(quotation.getRfq().getCreateBy());
+       PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
+
+        List<RfqDetail> rfqDetails = rfqDetailService.getAllRfqDetailByRfqId(rfqId);
+
+        for(RfqDetail rfqDetail : rfqDetails){
+            PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
+            purchaseOrderDetail.setQuantity(rfqDetail.getQuantity());
+            purchaseOrderDetail.setBrand(rfqDetail.getBrand());
+            purchaseOrderDetail.setCategory(rfqDetail.getCate());
+            purchaseOrderDetail.setProduct(rfqDetail.getProduct());
+            purchaseOrderDetail.setPurchaseOrder(purchaseOrderSaved);
+            purchaseOrderDetail.setNote_color(rfqDetail.getNoteColor());
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            BigDecimal unitPrice;
+            if(checkColor) {
+
+                 unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),false);
+            }else {
+                 unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),true);
+            }
+
+            /*BigDecimal unitPrice = cateBrandPriceService.getPriceByBrandIdAndCateIdAndIsColor(rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(),checkColor);*/
+            purchaseOrderDetail.setUnitPrice(unitPrice);
+            purchaseOrderDetail.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(rfqDetail.getQuantity())));
+            purchaseOrderDetailRepository.save(purchaseOrderDetail);
+
+        }
+
 
     }
 
@@ -213,7 +251,7 @@ public class QuotationServiceImpl implements QuotationService {
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
+        quotation.setIsAccepted(BaseEnum.DRAFT);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -222,5 +260,28 @@ public class QuotationServiceImpl implements QuotationService {
     @Override
     public Long getQuotationIdByRfqId(long rfqId) {
         return quotationRepository.findQuotationIdByRfqId(rfqId);
+    }
+
+    @Override
+    public void updateQuotationStatus(Long id, User currentUser) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+
+        if (getStatusByQuotationId(id) == BaseEnum.DRAFT) {
+            quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
+            quotation.setUpdateAt(LocalDateTime.now());
+            quotation.setCreatedBy(currentUser);
+        }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
+            quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
+            quotation.setUpdateAt(LocalDateTime.now());
+        }else {
+            throw new RuntimeException("Quotation status cannot valid");
+        }
+        quotationRepository.save(quotation);
+    }
+
+    private BaseEnum getStatusByQuotationId(Long id) {
+        Optional<Quotation> quotation = quotationRepository.findById(id);
+        return quotation.map(Quotation::getIsAccepted).orElse(null);
     }
 }

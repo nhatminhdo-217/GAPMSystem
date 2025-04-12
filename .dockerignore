@@ -1,0 +1,60 @@
+# Maven
+target/
+!target/*.jar
+*.class
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle nếu có
+.gradle/
+build/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.apt_generated/
+
+# Git
+.git/
+.gitignore
+
+# Thư mục Node.js nếu bạn có sử dụng
+node_modules/
+npm-debug.log
+
+# File môi trường và cấu hình cục bộ
+src/main/resources/application-dev.yml
+src/main/resources/application-dev.properties
+.env
+*.env
+
+# File tạm
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Logs
+logs/
+
+# File hệ thống
+.DS_Store
+Thumbs.db
+
+# Compiled JavaScript
+src/main/resources/static/**/*.min.js
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Test files
+src/test/
