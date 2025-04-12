@@ -24,7 +24,6 @@ public class WindingStage extends BaseEntity{
     @NotNull
     private LocalDateTime receivedConeAt; //Thời gian sợi về
 
-    @NotNull
     private LocalDate plannedStart;
 
     @NotNull
@@ -72,7 +71,7 @@ public class WindingStage extends BaseEntity{
     }
 
     public void setPlannedStart(LocalDate plannedStart) {
-        this.plannedStart = plannedStart
+        this.plannedStart = plannedStart;
     }
 
     public WorkOrderDetail getWorkOrderDetail() {

@@ -192,7 +192,7 @@ public class AccountServiceImplTest {
 
 
     @Test
-    void createAccount_Success_CustomerRole() {
+    void createAccount() {
         // Giả lập CreateAccountDTO đầu vào
         CreateAccountDTO createAccountDTO = new CreateAccountDTO();
         createAccountDTO.setUsername("newuser");
@@ -232,7 +232,7 @@ public class AccountServiceImplTest {
         assertEquals(encodedPassword, result.getPassword(), "Mật khẩu không được mã hóa đúng");
         assertTrue(result.isVerified(), "User phải được xác thực");
         assertTrue(result.isActive(), "User phải active");
-        assertEquals("CUSTOMER", result.getRole().getName(), "Vai trò không đúng");
+        assertEquals("CUSTOMER", result.getRole().getName(), "Không cho phép");
 
         // Kiểm tra các phương thức mock được gọi đúng số lần
         verify(userRepository, times(1)).existsByEmail(createAccountDTO.getEmail());

@@ -50,10 +50,10 @@ public class BrandServiceImplTest {
         Brand brand_2 = new Brand();
 
         brand_1.setId(1L);
-        brand_1.setName("Brand 1");
+        brand_1.setName("NORATEX");
 
         brand_2.setId(2L);
-        brand_2.setName("Brand 2");
+        brand_2.setName("DELYCA");
 
         // Giả lập danh sách brand trong database
         List<Brand> expectedBrands = Arrays.asList(
@@ -67,9 +67,9 @@ public class BrandServiceImplTest {
         List<Brand> result = brandService.getAllBrands();
 
         // Kiểm tra kết quả
-        assertNotNull(result, "Danh sách brand không được trả về null");
+        assertNotNull(result, "Không có danh sách thương hiệu");
         assertEquals(2, result.size(), "Số lượng brand không đúng");
-        assertEquals("Brand 1", result.get(0).getName(), "Brand đầu tiên không đúng");
+        assertEquals("NORATEX", result.get(0).getName(), "Brand đầu tiên không đúng");
 
         // Kiểm tra brandRepository.findAll() được gọi đúng một lần
         verify(brandRepository, times(1)).findAll();
@@ -84,10 +84,10 @@ public class BrandServiceImplTest {
         Brand brand_2 = new Brand();
 
         brand_1.setId(1L);
-        brand_1.setName("Brand 1");
+        brand_1.setName("NORATEX");
 
         brand_2.setId(2L);
-        brand_2.setName("Brand 2");
+        brand_2.setName("DELYCA");
         product.setBrands(new HashSet<>(Arrays.asList(brand_1, brand_2)));
 
 
@@ -99,7 +99,7 @@ public class BrandServiceImplTest {
         // Kiểm tra kết quả
         assertNotNull(result, "Danh sách brand không được trả về null");
         assertEquals(2, result.size(), "Số lượng brand không đúng");
-        assertEquals("Brand 1", result.get(0).getName(), "Brand đầu tiên không đúng");
+        assertEquals("NORATEX", result.get(0).getName(), "Brand đầu tiên không đúng");
 
         // Kiểm tra productService.getProductById() được gọi đúng một lần
         verify(productService, times(1)).getProductById(productId);
@@ -144,9 +144,9 @@ public class BrandServiceImplTest {
     }
 
     @Test
-    void getAllBrandNames_Success() {
+    void getAllBrands() {
         // Giả lập danh sách tên brand từ database
-        List<String> expectedBrandNames = Arrays.asList("Brand A", "Brand B", "Brand C");
+        List<String> expectedBrandNames = Arrays.asList("NORATEX", "DELYCA", "FILCO");
 
         when(brandRepository.findAllBrandNames()).thenReturn(expectedBrandNames);
 
@@ -154,21 +154,21 @@ public class BrandServiceImplTest {
         List<String> result = brandService.getAllBrandNames();
 
         // Kiểm tra kết quả
-        assertNotNull(result, "Danh sách tên brand không được trả về null");
+        assertNotNull(result, "Không có danh sách thương hiệu");
         assertEquals(3, result.size(), "Số lượng tên brand không đúng");
-        assertEquals("Brand A", result.get(0), "Tên brand đầu tiên không đúng");
+        assertEquals("NORATEX", result.get(0), "Tên brand đầu tiên không đúng");
 
         // Kiểm tra brandRepository.findAllBrandNames() được gọi đúng một lần
         verify(brandRepository, times(1)).findAllBrandNames();
     }
 
     @Test
-    void getBrandById_BrandExists_ReturnsBrand() {
+    void getBrandById() {
         // Giả lập brand tồn tại trong database
         Long brandId = 1L;
         Brand expectedBrand = new Brand();
         expectedBrand.setId(brandId);
-        expectedBrand.setName("Brand A");
+        expectedBrand.setName("NORATEX");
 
         when(brandRepository.findById(brandId)).thenReturn(Optional.of(expectedBrand));
 
@@ -177,7 +177,7 @@ public class BrandServiceImplTest {
 
         // Kiểm tra kết quả
         assertNotNull(result, "Brand không được trả về null");
-        assertEquals("Brand A", result.getName(), "Tên brand không đúng");
+        assertEquals("NORATEX", result.getName(), "Tên brand không đúng");
 
         // Kiểm tra brandRepository.findById() được gọi đúng một lần
         verify(brandRepository, times(1)).findById(brandId);

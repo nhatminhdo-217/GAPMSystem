@@ -43,8 +43,8 @@ class CompanyServiceImplTest {
 
         companyDTO = new CompanyDTO();
         companyDTO.setName("Test Company");
-        companyDTO.setEmail("testcompany@example.com");
-        companyDTO.setPhoneNumber("123456789");
+        companyDTO.setEmail("testcompany@gmail.com");
+        companyDTO.setPhoneNumber("0933666888");
         companyDTO.setAddress("123 Test Street");
         companyDTO.setTaxNumber("TAX12345");
 
@@ -89,7 +89,7 @@ class CompanyServiceImplTest {
 
 
     @Test
-    void addCompany_Success() {
+    void addNewCompany() {
         // Giả lập việc tìm thấy user
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
@@ -102,7 +102,7 @@ class CompanyServiceImplTest {
         Company result = companyService.addCompany(1L, companyDTO);
 
         // Kiểm tra kết quả
-        assertNotNull(result, "Company không được trả về null");
+        assertNotNull(result, "Công ty không được trả về null");
         assertEquals(1L, result.getId(), "ID công ty không đúng");
 
         // Kiểm tra các phương thức được gọi
@@ -124,11 +124,11 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void updateCompany_Success() {
+    void updateCompany() {
         // Giả lập việc tìm thấy công ty theo userId
         Company mockCompany = new Company();
         mockCompany.setId(1L);
-        mockCompany.setEmail("longaacc@gmail.com");
+        mockCompany.setEmail("hailamgno28@gmail.com");
         when(companyRepository.findCompanyByUserId(1L)).thenReturn(Optional.of(mockCompany));
 
         // Giả lập việc lưu công ty
@@ -164,7 +164,7 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void getCompanyByUserId_Success() {
+    void getCompanyByUserId() {
 
         Company mockCompany = new Company();
         mockCompany.setId(1L);
@@ -174,8 +174,58 @@ class CompanyServiceImplTest {
         Company result = companyService.getCompanyByUserId(1L);
 
         assertNotNull(result, "Công ty không được trả về null");
-        assertEquals(1L, result.getId(), "ID công ty không đúng");
+        assertEquals(1L, result.getId(), "Không tìm thấy công ty nào cho người dùng này");
 
         verify(companyRepository, times(1)).getCompanyByUserId(1L);
     }
+
+    @Test
+    void autoGenCompany() {
+        Long userId = 1L;
+
+        // Mock user
+        User mockUser = new User();
+        mockUser.setId(userId);
+        mockUser.setUsername("Sale staff");
+        mockUser.setEmail("hailamngo28@gmail.com");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+
+        // Mock save: gán ID để không bị null
+        when(companyRepository.save(any(Company.class))).thenAnswer(invocation -> {
+            Company company = invocation.getArgument(0);
+            company.setId(userId); // Giả sử ID trùng userId để dễ kiểm tra
+            return company;
+        });
+
+        // Tạo DTO
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setName("AutoGen Company for Sale staff");
+        companyDTO.setEmail("hailamngo28@gmail.com");
+        companyDTO.setPhoneNumber("0243 552 0488");
+        companyDTO.setAddress("Xã Tân Triều, Thanh Trì, Hà Nội");
+        companyDTO.setTaxNumber("01011965991");
+
+        // Gọi service
+        Company result = companyService.addCompany(userId, companyDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(userId, result.getId()); // ID không còn null
+        assertEquals(companyDTO.getName(), result.getName());
+        assertEquals(companyDTO.getEmail(), result.getEmail());
+        assertEquals(companyDTO.getPhoneNumber(), result.getPhoneNumber());
+        assertEquals(companyDTO.getAddress(), result.getAddress());
+        assertEquals(companyDTO.getTaxNumber(), result.getTaxNumber());
+        assertEquals(1, result.getUsers().size());
+        assertTrue(result.getUsers().contains(mockUser));
+
+        // Verify
+        verify(userRepository, times(1)).findById(userId);
+        verify(companyRepository, times(1)).save(any(Company.class));
+    }
+
+
+
+
 }

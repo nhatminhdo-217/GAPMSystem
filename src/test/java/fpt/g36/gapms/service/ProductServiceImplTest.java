@@ -43,7 +43,7 @@ class ProductServiceImplTest {
 
         List<Product> result = productService.getAllProducts();
 
-        assertNotNull(result, "Danh sách sản phẩm không được trả về null");
+        assertNotNull(result, "Không có danh sách sản phẩm");
         assertEquals(1, result.size(), "Số lượng sản phẩm không đúng");
         assertEquals("Test Product", result.get(0).getName(), "Tên sản phẩm không đúng");
 
@@ -51,14 +51,14 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getAllProductNames_Success() {
+    void getAllProducts() {
 
         List<String> productNames = Arrays.asList("Test Product");
         when(productRepository.findAllProductName()).thenReturn(productNames);
 
         List<String> result = productService.getAllProductNames();
 
-        assertNotNull(result, "Danh sách tên sản phẩm không được trả về null");
+        assertNotNull(result, "Không có danh sách sản phẩm");
         assertEquals(1, result.size(), "Số lượng tên sản phẩm không đúng");
         assertEquals("Test Product", result.get(0), "Tên sản phẩm không đúng");
 
@@ -66,14 +66,14 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getProductById_Success() {
+    void getProductById() {
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
         Product result = productService.getProductById(1L);
 
         assertNotNull(result, "Sản phẩm không được trả về null");
-        assertEquals(1L, result.getId(), "ID sản phẩm không đúng");
+        assertEquals(1L, result.getId(), "Không tìm thấy sản phẩm");
         assertEquals("Test Product", result.getName(), "Tên sản phẩm không đúng");
 
         verify(productRepository, times(1)).findById(1L);

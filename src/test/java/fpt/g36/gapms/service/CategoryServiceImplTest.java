@@ -110,7 +110,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
-    void getAllCategoryNames_Success() {
+    void getAllCategorys() {
         // Giả lập danh sách tên category từ database
         List<String> expectedCategoryNames = Arrays.asList("Category A", "Category B", "Category C");
 
@@ -120,7 +120,7 @@ public class CategoryServiceImplTest {
         List<String> result = categoryService.getAllCategoryNames();
 
         // Kiểm tra kết quả
-        assertNotNull(result, "Danh sách tên category không được trả về null");
+        assertNotNull(result, "Không có danh sách danh mục");
         assertEquals(3, result.size(), "Số lượng tên category không đúng");
         assertEquals("Category A", result.get(0), "Tên category đầu tiên không đúng");
 
@@ -129,7 +129,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
-    void getCategoryById_CategoryExists_ReturnsCategory() {
+    void getCategoryById() {
         // Giả lập category tồn tại trong database
         Long categoryId = 1L;
         Category expectedCategory = new Category();

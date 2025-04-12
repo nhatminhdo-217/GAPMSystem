@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.entities.Rfq;
+import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.Solution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RfqRepository;
@@ -65,7 +66,7 @@ class SolutionServiceImplTest {
     }
 
     @Test
-    void addSolution_Success() {
+    void addSolution() {
         // Giả lập việc tìm thấy Rfq và User
         when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
@@ -113,7 +114,7 @@ class SolutionServiceImplTest {
     }
 
     @Test
-    void updateSolution_Success() {
+    void updateSolution() {
         // Giả lập rằng Solution đã tồn tại và không có trạng thái SENT
         when(solutionRepository.findById(1L)).thenReturn(Optional.of(solution));
 
@@ -160,7 +161,7 @@ class SolutionServiceImplTest {
     }
 
     @Test
-    void submitSolution_Success() {
+    void createSolution() {
         // Giả lập việc tìm thấy Solution
         when(solutionRepository.findById(1L)).thenReturn(Optional.of(solution));
 
@@ -178,6 +179,7 @@ class SolutionServiceImplTest {
         verify(solutionRepository, times(1)).save(any(Solution.class));
     }
 
+
     @Test
     void submitSolution_AlreadySubmitted() {
         // Giả lập đã gửi Solution
@@ -190,7 +192,7 @@ class SolutionServiceImplTest {
     }
 
     @Test
-    void getSolutionsByCreabyID_Success() {
+    void getSolutionById() {
         // Giả lập việc tìm thấy Solutions theo createById
         when(solutionRepository.findAllByCreateBy_Id(1L)).thenReturn(List.of(solution));
 
@@ -198,7 +200,7 @@ class SolutionServiceImplTest {
         List<Solution> result = solutionService.getSolutionsByCreabyID(1L);
 
         // Kiểm tra kết quả
-        assertNotNull(result, "Danh sách Solutions không được trả về null");
+        assertNotNull(result, "Không tìm thấy giải pháp");
         assertEquals(1, result.size(), "Số lượng Solutions không đúng");
 
         // Kiểm tra phương thức của repository được gọi đúng

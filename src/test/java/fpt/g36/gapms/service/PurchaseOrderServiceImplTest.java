@@ -61,7 +61,7 @@ class PurchaseOrderServiceImplTest {
     }
 
     @Test
-    void getPurchaseOrderInfoDTOById_NotFound() {
+    void getPurchaseOrderById() {
         // Giả lập không có kết quả
         when(purchaseOrderRepository.getPurchaseOrderInfoDTOById(1L)).thenReturn(Optional.empty());
 
@@ -69,7 +69,7 @@ class PurchaseOrderServiceImplTest {
         Optional<PurchaseOrderInfoDTO> result = purchaseOrderService.getPurchaseOrderInfoDTOById(1L);
 
         // Kiểm tra kết quả
-        assertFalse(result.isPresent(), "Kết quả không được có thông tin");
+        assertFalse(result.isPresent(), "Không tìm thấy đơn đặt hàng");
 
         // Kiểm tra phương thức của repository được gọi đúng
         verify(purchaseOrderRepository, times(1)).getPurchaseOrderInfoDTOById(1L);

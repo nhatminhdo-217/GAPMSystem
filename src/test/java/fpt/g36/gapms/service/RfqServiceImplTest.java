@@ -68,7 +68,7 @@ class RfqServiceImplTest {
     }
 
     @Test
-    void getRfqById_Success() {
+    void getRfqById() {
         // Giả lập tìm thấy Rfq
         when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
 
@@ -127,7 +127,7 @@ class RfqServiceImplTest {
     }
 
     @Test
-    void editRfq_Success() {
+    void editRfq() {
         // Giả lập việc tìm thấy Rfq
         when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
 
