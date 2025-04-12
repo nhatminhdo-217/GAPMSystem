@@ -1,8 +1,7 @@
 package fpt.g36.gapms.controller;
 
-import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
-import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
-import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.models.dto.quotation.*;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/quotation")
@@ -36,28 +37,48 @@ public class QuotationController {
 
     @GetMapping("/list")
     public String getListQuotation(
-            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(required = false) String product,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) BaseEnum status,
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "createAt", required = false) String sortField,
+            @RequestParam(defaultValue = "desc", required = false) String sortDir,
             Model model) {
 
         userUtils.getOptionalUser(model);
 
-        Page<QuotationListDTO> quotations = quotationService.getAllQuotations(search, product, brand, category, page);
+        Page<QuotationDTO> quotations = quotationService.getAllQuotation(search, status, page, size, sortField, sortDir);
 
         model.addAttribute("quotations", quotations);
         model.addAttribute("search", search);
         model.addAttribute("selectedProduct", product);
         model.addAttribute("selectedBrand", brand);
         model.addAttribute("selectedCategory", category);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", quotations.getTotalPages());
+        model.addAttribute("totalItems", quotations.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        int totalPages = quotations.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = java.util.stream.IntStream.rangeClosed(0, totalPages - 1)
+                    .boxed()
+                    .collect(java.util.stream.Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
 
         // Gửi danh sách filter options
         model.addAttribute("products", productService.getAllProductNames());
         model.addAttribute("brands", brandService.getAllBrandNames());
         model.addAttribute("categories", categoryService.getAllCategoryNames());
-
+        model.addAttribute("statuses", quotationService.getAllQuotationStatuses());
 
         return "quotation/list_quotation";
     }
