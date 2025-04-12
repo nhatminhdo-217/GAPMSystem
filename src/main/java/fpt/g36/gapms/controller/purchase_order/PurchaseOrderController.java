@@ -10,6 +10,7 @@ import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.ContractService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
@@ -43,14 +44,16 @@ public class PurchaseOrderController {
 
     private final UserUtils userUtils;
     private final PurchaseOrderService purchaseOrderService;
+    private final PurchaseOrderRepository purchaseOrderRepository;
     private final ContractService contractService;
     private final UserService userService;
     private static String latestImagePath = null;
     private final ProductionOrderService productionOrderService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
+        this.purchaseOrderRepository = purchaseOrderRepository;
         this.contractService = contractService;
         this.userService = userService;
         this.productionOrderService = productionOrderService;
@@ -220,6 +223,11 @@ public class PurchaseOrderController {
         }
         try {
             Contract contract = contractService.createContract(id, contractDTO, file);
+
+            PurchaseOrder purchaseOrder =  purchaseOrderService.getPurchaseOrderById(id).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+            purchaseOrder.setContracts(contract);
+            purchaseOrderRepository.save(purchaseOrder);
+
             redirectAttributes.addFlashAttribute("success", "Tạo hợp đồng thành công");
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){

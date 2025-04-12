@@ -591,7 +591,16 @@
                         <p><strong>Ngày giao hàng:</strong> <span th:text="${purchaseOrder.contract?.createAt} ?: 'chờ hợp đồng'"></span></p>
                     </div>
                     <div class="col-md-6 text-center">
-                        <img src="/assert/images/meme-loopy-30.jpg" alt="Ảnh hợp đồng" class="contract-img">
+                        <!-- Hiển thị tiêu đề "Ảnh Hợp Đồng" -->
+                        <h5>Ảnh Hợp Đồng</h5>
+
+                        <!-- Kiểm tra nếu contract.path không null thì hiển thị ảnh, ngược lại hiển thị "Chờ hợp đồng" -->
+                        <div th:if="${purchaseOrder.contract != null}">
+                            <img th:src="@{'/uploads/contracts/' + ${purchaseOrder.contract.path}}" alt="Ảnh hợp đồng" class="contract-img">
+                        </div>
+                        <div th:if="${purchaseOrder.contract == null}" class="contract-placeholder">
+                            Chờ hợp đồng
+                        </div>
                     </div>
                 </div>
             </div>

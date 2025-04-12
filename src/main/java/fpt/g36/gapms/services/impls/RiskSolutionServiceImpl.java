@@ -1,6 +1,7 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.RiskSolution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RiskSolutionRepository;
@@ -35,6 +36,35 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
         riskSolution_save.setCreatedBy(user);
         riskSolutionRepository.save(riskSolution_save);
         return riskSolution_save;
+    }
+
+    @Override
+    public Page<RiskSolution> getAllRiskSolutionManager(Pageable pageable) {
+        Page<RiskSolution> riskSolutions = riskSolutionRepository.getAllRiskSolutionManager(pageable);
+        return riskSolutions;
+    }
+
+    @Override
+    public RiskSolution approveRiskSolution(Long rsId) {
+        RiskSolution riskSolution = riskSolutionRepository.findById(rsId).orElseThrow(() -> new RuntimeException("RiskSolution not found"));
+        riskSolution.setApproveStatus(BaseEnum.APPROVED);
+        if(riskSolution.getDyeRiskAssessment() != null){
+            riskSolution.getDyeRiskAssessment().getDyeBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
+            riskSolutionRepository.save(riskSolution);
+        }
+
+        if(riskSolution.getWindingRiskAssessment() != null){
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setDyePhoto(null);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setPass(null);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().setWindingPhoto(null);
+            riskSolutionRepository.save(riskSolution);
+        }
+
+        return riskSolution;
     }
 
 

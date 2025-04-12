@@ -544,25 +544,6 @@ public class WorkOrderController {
 
         }
 
-        /*String uploadDir = "/uploads";
-
-        List<String> existingPhotoList = existingPhotos != null && !existingPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(existingPhotos.split(",")))
-                : new ArrayList<>();
-        List<String> deletedPhotoList = deletedPhotos != null && !deletedPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(deletedPhotos.split(",")))
-                : new ArrayList<>();
-
-        // Xóa các ảnh trong deletedPhotoList
-        for (String deletedPhoto : deletedPhotoList) {
-            if (existingPhotoList.contains(deletedPhoto)) {
-                existingPhotoList.remove(deletedPhoto);
-                File fileToDelete = new File(uploadDir + deletedPhoto);
-                if (fileToDelete.exists()) {
-                    fileToDelete.delete();
-                }
-            }
-        }*/
         try {
         WindingRiskAssessment windingRiskAssessment_save = windingStageService.saveTestWingding(id, windingRiskAssessment, optionalUser.get(), photos);
         redirectAttributes.addFlashAttribute("save_winding", "Đã lưu thông tin kiểm tra");

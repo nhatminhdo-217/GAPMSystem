@@ -143,6 +143,7 @@ public class DyeStageServiceImpl implements DyeStageService {
                 riskSolutionRepository.save(riskSolution);
 
             }
+
             List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
                 boolean allTested = dyeBatches.stream()
                         .allMatch(dyeBatch -> dyeBatch.getTestStatus() == TestEnum.TESTED && dyeBatch.getPass());
