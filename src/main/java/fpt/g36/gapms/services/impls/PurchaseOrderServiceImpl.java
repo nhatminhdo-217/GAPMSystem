@@ -4,9 +4,11 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
+import fpt.g36.gapms.models.dto.quotation.QuotationDTO;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
 import org.springframework.data.domain.PageRequest;
@@ -16,17 +18,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderMapper purchaseOrderMapper;
 
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper) {
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.purchaseOrderMapper = purchaseOrderMapper;
     }
 
     @Override
@@ -157,8 +160,58 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
     }
 
+    @Override
+    public Page<PurchaseOrderDTO> getAllPurchaseOrderWithSearchFilter(String search, BaseEnum status, int page, int size, String sortField, String sortDir) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
+
+        Page<PurchaseOrder> purchaseOrders = purchaseOrderRepository.searchAndFilter(search, status, pageable);
+
+        List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
+
+        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
+        return null;
+    }
+
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();
+    }
+
+    private void sortPurchaseOrderDTOs(List<PurchaseOrderDTO> content, String sortDir) {
+        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // and then by createAt
+        content.sort((q1, q2) -> {
+            int statusCompare = compareStatus(q1.getStatus(), q2.getStatus());
+            if (statusCompare != 0) {
+                return statusCompare;
+            }
+
+            // Then sort by createAt (ascending or descending based on sortDir)
+            if ("asc".equals(sortDir)) {
+                return q1.getCreateAt().compareTo(q2.getCreateAt());
+            } else {
+                return q2.getCreateAt().compareTo(q1.getCreateAt());
+            }
+        });
+    }
+
+    private int compareStatus(BaseEnum status1, BaseEnum status2) {
+        if (status1 == status2) return 0;
+        if (status1 == null) return -1;
+        if (status2 == null) return 1;
+
+        // Define priority order
+        Map<BaseEnum, Integer> priorityMap = new HashMap<>();
+        priorityMap.put(BaseEnum.DRAFT, 1);
+        priorityMap.put(BaseEnum.NOT_APPROVED, 2);
+        priorityMap.put(BaseEnum.WAIT_FOR_APPROVAL, 3);
+        priorityMap.put(BaseEnum.APPROVED, 4);
+        priorityMap.put(BaseEnum.CANCELED, 5);
+
+        Integer priority1 = priorityMap.getOrDefault(status1, 99);
+        Integer priority2 = priorityMap.getOrDefault(status2, 99);
+
+        return priority1.compareTo(priority2);
     }
 }

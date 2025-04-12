@@ -329,18 +329,8 @@ public class QuotationServiceImpl implements QuotationService {
     @Override
     public Page<QuotationDTO> getAllQuotation(String search,  BaseEnum status, int page, int size, String sortField, String sortDir) {
 
-        List<Sort.Order> orders = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size);
 
-        if (sortField == null || sortField.isEmpty()) {
-            orders.add(new Sort.Order(Sort.Direction.ASC, "status"));
-            orders.add(new Sort.Order(Sort.Direction.DESC, "createAt"));
-        }else {
-            Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            orders.add(new Sort.Order(direction, sortField));
-        }
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-        System.err.println(pageable);
         Page<Quotation> rawResults = quotationRepository.searchAndFilter(search, status, pageable);
 
         List<QuotationDTO> quotationDTOs = new ArrayList<>(quotationMapper.toListDTO(rawResults));

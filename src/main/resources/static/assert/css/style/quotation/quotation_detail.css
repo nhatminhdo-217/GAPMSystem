@@ -126,6 +126,11 @@ body {
     color: #41464b;
 }
 
+.status-wait {
+    background-color: #b8daff;
+    color: #004085;
+}
+
 /* Table Enhancements */
 .product-table {
     box-shadow: var(--box-shadow);

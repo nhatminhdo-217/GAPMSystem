@@ -106,7 +106,8 @@
                     <div class="info-label">Trạng thái:</div>
                     <div class="info-value">
                       <span th:if="${quotation_detail.isAccepted == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
-                      <span th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}" class="status-badge status-pending">Chờ duyệt</span>
+                      <span th:if="${quotation_detail.isAccepted == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Chờ duyệt</span>
+                      <span th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}" class="status-badge status-pending">Chưa duyệt</span>
                       <span th:if="${quotation_detail.isAccepted == 'DRAFT'}" class="status-badge status-draft">Bản nháp</span>
                     </div>
                   </div>
