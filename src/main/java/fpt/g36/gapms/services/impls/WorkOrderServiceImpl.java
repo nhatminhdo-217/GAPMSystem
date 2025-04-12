@@ -2,11 +2,7 @@ package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.*;
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.repositories.DyeMachineRepository;
-import fpt.g36.gapms.repositories.WindingMachineRepository;
-import fpt.g36.gapms.repositories.ProductionOrderRepository;
-import fpt.g36.gapms.repositories.ShiftRepository;
-import fpt.g36.gapms.repositories.WorkOrderRepository;
+import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.WorkOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +52,16 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         return workOrderRepository.findAllByOrderByCreateAt(pageable);
     }
 
+    @Override
+    public Page<WorkOrder> getAllSubmittedWorkOrders(Pageable pageable) {
+        return workOrderRepository.findAllBySendStatus(SendEnum.SENT, pageable);
+    }
+
+    @Override
+    public WorkOrder getSubmittedWorkOrderById(Long id) {
+        return workOrderRepository.findByIdAndSendStatus(id, SendEnum.SENT);
+    }
+
     @Transactional
     @Override
     public WorkOrder getWorkOrderById(Long id) {
@@ -70,6 +76,46 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Override
     public Page<WorkOrder> getWorkOrdersByStatus(BaseEnum status, Pageable pageable) {
         return workOrderRepository.findByStatus(status, pageable);
+    }
+
+    @Override
+    public Page<WorkOrder> getSubmittedWorkOrdersByStatus(BaseEnum status, Pageable pageable) {
+        return workOrderRepository.findByStatusAndSendStatus(status, SendEnum.SENT, pageable);
+    }
+
+    @Override
+    public WorkOrder submitWorkOrder(Long workOrderId) {
+        WorkOrder workOrder = workOrderRepository.findById(workOrderId).orElseThrow(() -> new RuntimeException("Rfq not found with id: " + workOrderId));
+
+        // Kiểm tra nếu đã gửi thì không cần làm gì thêm
+        if (workOrder.getSendStatus() == SendEnum.SENT) {
+            throw new RuntimeException("Work Order đã được gửi trước đó.");
+        }
+        // Cập nhật trạng thái thành SENT
+        workOrder.setSendStatus(SendEnum.SENT);
+        workOrder.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
+        //
+        return workOrderRepository.save(workOrder);
+    }
+
+    public WorkOrder approveWorkOrder(Long id) {
+        WorkOrder workOrder = getWorkOrderById(id);
+        if (workOrder.getStatus() != BaseEnum.WAIT_FOR_APPROVAL) {
+            throw new RuntimeException("Work Order không ở trạng thái chờ phê duyệt!");
+        }
+        workOrder.setStatus(BaseEnum.APPROVED);
+        workOrder.setUpdateAt(LocalDateTime.now());
+        return workOrderRepository.save(workOrder);
+    }
+
+    public WorkOrder rejectWorkOrder(Long id) {
+        WorkOrder workOrder = getWorkOrderById(id);
+        if (workOrder.getStatus() != BaseEnum.WAIT_FOR_APPROVAL) {
+            throw new RuntimeException("Work Order không ở trạng thái chờ phê duyệt!");
+        }
+        workOrder.setStatus(BaseEnum.NOT_APPROVED);
+        workOrder.setUpdateAt(LocalDateTime.now());
+        return workOrderRepository.save(workOrder);
     }
 
     @Override
@@ -122,11 +168,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 // Kiểm tra máy nhuộm
                 if (i < selectedDyeMachineIds.size()) {
                     Long dyeMachineId = selectedDyeMachineIds.get(i);
-                    List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(
-                            tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
                     if (availableDyeMachines.stream().noneMatch(m -> m.getId().equals(dyeMachineId))) {
-                        System.err.println("Error: Selected Dye Machine ID " + dyeMachineId + " is not available for ProductionOrderDetail ID: " +
-                                tempWorkOrderDetail.getProductionOrderDetail().getId());
+                        System.err.println("Error: Selected Dye Machine ID " + dyeMachineId + " is not available for ProductionOrderDetail ID: " + tempWorkOrderDetail.getProductionOrderDetail().getId());
                         throw new IllegalArgumentException("Selected Dye Machine ID " + dyeMachineId + " is not available");
                     }
                 }
@@ -134,11 +178,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 // Kiểm tra máy cuốn
                 if (i < selectedWindingMachineIds.size()) {
                     Long windingMachineId = selectedWindingMachineIds.get(i);
-                    List<WindingMachine> availableWindingMachines = machineService.findAvailableWindingMachines(
-                            tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    List<WindingMachine> availableWindingMachines = machineService.findAvailableWindingMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
                     if (availableWindingMachines.stream().noneMatch(m -> m.getId().equals(windingMachineId))) {
-                        System.err.println("Error: Selected Winding Machine ID " + windingMachineId + " is not available for ProductionOrderDetail ID: " +
-                                tempWorkOrderDetail.getProductionOrderDetail().getId());
+                        System.err.println("Error: Selected Winding Machine ID " + windingMachineId + " is not available for ProductionOrderDetail ID: " + tempWorkOrderDetail.getProductionOrderDetail().getId());
                         throw new IllegalArgumentException("Selected Winding Machine ID " + windingMachineId + " is not available");
                     }
                 }
@@ -149,8 +191,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
             return workOrderRepository.save(newWorkOrder);
         } catch (Exception e) {
-            System.err.println("Error creating WorkOrder for ProductionOrder ID: " +
-                    (productionOrder != null ? productionOrder.getId() : "null") + " - " + e.getMessage());
+            System.err.println("Error creating WorkOrder for ProductionOrder ID: " + (productionOrder != null ? productionOrder.getId() : "null") + " - " + e.getMessage());
             throw e;
         }
     }
@@ -163,10 +204,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             System.err.println("Error: ProductionOrder or createBy is null");
             throw new IllegalArgumentException("ProductionOrder is null or createBy is null");
         }
-        if (productionOrder.getPurchaseOrder() == null || productionOrder.getPurchaseOrder().getSolution() == null
-                || productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate() == null) {
-            System.err.println("Error: ActualDeliveryDate is null in ProductionOrder ID: " +
-                    (productionOrder != null ? productionOrder.getId() : "null"));
+        if (productionOrder.getPurchaseOrder() == null || productionOrder.getPurchaseOrder().getSolution() == null || productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate() == null) {
+            System.err.println("Error: ActualDeliveryDate is null in ProductionOrder ID: " + (productionOrder != null ? productionOrder.getId() : "null"));
             throw new IllegalArgumentException("ActualDeliveryDate is null");
         }
         if (dyeMachineIds == null || windingMachineIds == null) {
@@ -206,9 +245,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 addWindingStage(workOrderDetail, windingMachineIds, windingMachineIndex++);
                 addPackagingStage(workOrderDetail);
                 workOrder.getWorkOrderDetails().add(workOrderDetail);
-                System.err.println("Added WorkOrderDetail: " + workOrderDetail.getId() +
-                        " for ProductionOrderDetail ID: " + detail.getId() +
-                        " and PurchaseOrderDetail ID: " + workOrderDetail.getPurchaseOrderDetail().getId());
+                System.err.println("Added WorkOrderDetail: " + workOrderDetail.getId() + " for ProductionOrderDetail ID: " + detail.getId() + " and PurchaseOrderDetail ID: " + workOrderDetail.getPurchaseOrderDetail().getId());
             } catch (Exception e) {
                 System.err.println("Error adding WorkOrderDetail for ProductionOrderDetail ID: " + detail.getId() + " - " + e.getMessage());
                 throw e;
@@ -256,8 +293,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         dyeStage.setCone_batch_weight(coneBatchWeight);
 
         LocalDateTime dyeDeadline = calculateDyeDeadline(dyeStage.getPlannedStart(), dyeBatches);
-        validateDeadline(dyeDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Dye Stage",
-                workOrderDetail.getProductionOrderDetail().getId());
+        validateDeadline(dyeDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Dye Stage", workOrderDetail.getProductionOrderDetail().getId());
 
         dyeStage.setDeadline(dyeDeadline);
         dyeStage.setDyeMachine(dyeMachine);
@@ -285,16 +321,13 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      */
     private DyeMachine selectDyeMachine(WorkOrderDetail workOrderDetail, List<Long> dyeMachineIds, int index) {
         if (index >= dyeMachineIds.size()) {
-            System.err.println("Error: Not enough Dye Machines selected for ProductionOrderDetail ID: " +
-                    workOrderDetail.getProductionOrderDetail().getId());
+            System.err.println("Error: Not enough Dye Machines selected for ProductionOrderDetail ID: " + workOrderDetail.getProductionOrderDetail().getId());
             throw new IllegalArgumentException("Not enough Dye Machines selected for all WorkOrderDetails");
         }
         Long dyeMachineId = dyeMachineIds.get(index);
         //
-        DyeMachine selectedMachine = dyeMachineRepository.findById(dyeMachineId)
-                .orElseThrow(() -> new IllegalArgumentException("Dye Machine ID " + dyeMachineId + " not found"));
-        System.err.println("Selected DyeMachine ID: " + dyeMachineId + " for ProductionOrderDetail ID: " +
-                workOrderDetail.getProductionOrderDetail().getId());
+        DyeMachine selectedMachine = dyeMachineRepository.findById(dyeMachineId).orElseThrow(() -> new IllegalArgumentException("Dye Machine ID " + dyeMachineId + " not found"));
+        System.err.println("Selected DyeMachine ID: " + dyeMachineId + " for ProductionOrderDetail ID: " + workOrderDetail.getProductionOrderDetail().getId());
         return selectedMachine;
     }
 
@@ -305,10 +338,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private BigDecimal[] calculateDyeStageValues(WorkOrderDetail workOrderDetail, DyeMachine dyeMachine) {
         BigDecimal threadMass = workOrderDetail.getProductionOrderDetail().getThread_mass();
         if (threadMass == null || threadMass.equals(BigDecimal.ZERO)) {
-            threadMass = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate()
-                    .multiply(BigDecimal.valueOf(workOrderDetail.getPurchaseOrderDetail().getQuantity()));
-            System.err.println("ThreadMass in production order is error or zero, recalculated: " + threadMass +
-                    " for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
+            threadMass = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate().multiply(BigDecimal.valueOf(workOrderDetail.getPurchaseOrderDetail().getQuantity()));
+            System.err.println("ThreadMass in production order is error or zero, recalculated: " + threadMass + " for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
         }
         BigDecimal coneWeight = threadMass.add(BigDecimal.valueOf(0.4));
         BigDecimal maxWeight = BigDecimal.valueOf(dyeMachine.getMaxWeight());
@@ -331,8 +362,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         BigDecimal coneQuantity = coneWeight.divide(BigDecimal.valueOf(1.25), 2, BigDecimal.ROUND_HALF_UP);
         BigDecimal litters = coneWeight.multiply(BigDecimal.valueOf(6));
 
-        System.err.println("Calculated DyeStage values for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null") +
-                " - coneWeight: " + coneWeight + ", coneBatchWeight: " + coneBatchWeight + ", dyeBatches: " + dyeBatches);
+        System.err.println("Calculated DyeStage values for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null") + " - coneWeight: " + coneWeight + ", coneBatchWeight: " + coneBatchWeight + ", dyeBatches: " + dyeBatches);
         return new BigDecimal[]{coneWeight, coneBatchWeight, dyeBatches, littersBatch, coneBatchQuantity, coneQuantity, litters};
     }
 
@@ -351,12 +381,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         if (!isLittersBatchValid || !isConeBatchQuantityValid) {
             StringBuilder errorMessage = new StringBuilder("Máy nhuộm không hợp lệ: ");
             if (!isLittersBatchValid) {
-                errorMessage.append("Litters Batch (").append(littersBatch).append(") không nằm trong khoảng [")
-                        .append(littersMin).append(", ").append(littersMax).append("]. ");
+                errorMessage.append("Litters Batch (").append(littersBatch).append(") không nằm trong khoảng [").append(littersMin).append(", ").append(littersMax).append("]. ");
             }
             if (!isConeBatchQuantityValid) {
-                errorMessage.append("Cone Batch Quantity (").append(coneBatchQuantity).append(") không nằm trong khoảng [")
-                        .append(coneMin).append(", ").append(coneMax).append("].");
+                errorMessage.append("Cone Batch Quantity (").append(coneBatchQuantity).append(") không nằm trong khoảng [").append(coneMin).append(", ").append(coneMax).append("].");
             }
             System.err.println("Error validating DyeStage for ProductionOrderDetail ID: " + detailId + " - " + errorMessage);
             throw new IllegalStateException(errorMessage.toString());
@@ -378,8 +406,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      */
     private void validateDeadline(LocalDateTime stageDeadline, LocalDate workOrderDeadline, String stageName, Long detailId) {
         if (stageDeadline.isAfter(workOrderDeadline.atTime(LocalTime.MAX))) {
-            System.err.println("Error: " + stageName + " deadline " + stageDeadline +
-                    " exceeds WorkOrder deadline " + workOrderDeadline + " for ProductionOrderDetail ID: " + detailId);
+            System.err.println("Error: " + stageName + " deadline " + stageDeadline + " exceeds WorkOrder deadline " + workOrderDeadline + " for ProductionOrderDetail ID: " + detailId);
             throw new IllegalStateException(stageName + " deadline exceeds actual delivery date for detail " + detailId);
         }
     }
@@ -387,8 +414,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     /**
      * Creates DyeBatches for the DyeStage.
      */
-    private List<DyeBatch> createDyeBatches(DyeStage dyeStage, DyeMachine dyeMachine, int dyeBatches,
-                                            BigDecimal coneWeight, BigDecimal coneBatchWeight) {
+    private List<DyeBatch> createDyeBatches(DyeStage dyeStage, DyeMachine dyeMachine, int dyeBatches, BigDecimal coneWeight, BigDecimal coneBatchWeight) {
         List<DyeBatch> dyeBatchList = new ArrayList<>();
         BigDecimal remainingConeWeight = coneWeight;
         for (int i = 0; i < dyeBatches; i++) {
@@ -396,8 +422,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             dyeBatch.setWorkStatus(WorkEnum.NOT_STARTED);
             dyeBatch.setTestStatus(TestEnum.NOT_STARTED);
             dyeBatch.setCreateAt(LocalDateTime.now());
-            BigDecimal currentConeBatchWeight = (i == dyeBatches - 1 && remainingConeWeight.compareTo(coneBatchWeight) < 0)
-                    ? remainingConeWeight : coneBatchWeight;
+            BigDecimal currentConeBatchWeight = (i == dyeBatches - 1 && remainingConeWeight.compareTo(coneBatchWeight) < 0) ? remainingConeWeight : coneBatchWeight;
             dyeBatch.setCone_batch_weight(currentConeBatchWeight);
             dyeBatch.setLiters_min(dyeMachine.getLittersMin());
             dyeBatch.setLiters(currentConeBatchWeight.multiply(BigDecimal.valueOf(6)));
@@ -407,8 +432,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             assignTeamLeaderAndQAForDyeBatch(dyeBatch);
             dyeBatchList.add(dyeBatch);
             remainingConeWeight = remainingConeWeight.subtract(currentConeBatchWeight);
-            System.err.println("Created DyeBatch with cone_batch_weight: " + currentConeBatchWeight +
-                    " for WorkOrderDetail ID: " + (dyeStage.getWorkOrderDetail().getId() != null ? dyeStage.getWorkOrderDetail().getId() : "null"));
+            System.err.println("Created DyeBatch with cone_batch_weight: " + currentConeBatchWeight + " for WorkOrderDetail ID: " + (dyeStage.getWorkOrderDetail().getId() != null ? dyeStage.getWorkOrderDetail().getId() : "null"));
         }
         return dyeBatchList;
     }
@@ -422,8 +446,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
         int windingBatches = workOrderDetail.getDyeStage().getDyebatches().size();
         LocalDateTime windingDeadline = calculateWindingDeadline(windingStage.getPlannedStart(), windingBatches);
-        validateDeadline(windingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Winding Stage",
-                workOrderDetail.getProductionOrderDetail().getId());
+        validateDeadline(windingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Winding Stage", workOrderDetail.getProductionOrderDetail().getId());
 
         windingStage.setDeadline(windingDeadline);
         windingStage.setWindingMachine(windingMachine);
@@ -442,8 +465,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         windingStage.setWorkOrderDetail(workOrderDetail);
         windingStage.setDyeStage(workOrderDetail.getDyeStage());
         int dyeBatches = workOrderDetail.getDyeStage().getDyebatches().size();
-        windingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getDyeStage().getPlannedStart().plusMinutes(270)
-                : workOrderDetail.getDyeStage().getDeadline());
+        windingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getDyeStage().getPlannedStart().plusMinutes(270) : workOrderDetail.getDyeStage().getDeadline());
         windingStage.setWorkStatus(WorkEnum.NOT_STARTED);
         System.err.println("Initialized WindingStage for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
         return windingStage;
@@ -454,16 +476,13 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      */
     private WindingMachine selectWindingMachine(WorkOrderDetail workOrderDetail, List<Long> windingMachineIds, int index) {
         if (index >= windingMachineIds.size()) {
-            System.err.println("Error: Not enough Winding Machines selected for ProductionOrderDetail ID: " +
-                    workOrderDetail.getProductionOrderDetail().getId());
+            System.err.println("Error: Not enough Winding Machines selected for ProductionOrderDetail ID: " + workOrderDetail.getProductionOrderDetail().getId());
             throw new IllegalArgumentException("Not enough Winding machines selected for all WorkOrderDetails");
         }
         Long windingMachineId = windingMachineIds.get(index);
         // Không cần kiểm tra lại tính khả dụng, vì đã kiểm tra trong createWorkOrder
-        WindingMachine selectedMachine = windingMachineRepository.findById(windingMachineId)
-                .orElseThrow(() -> new IllegalArgumentException("Winding Machine ID " + windingMachineId + " not found"));
-        System.err.println("Selected WindingMachine ID: " + windingMachineId + " for ProductionOrderDetail ID: " +
-                workOrderDetail.getProductionOrderDetail().getId());
+        WindingMachine selectedMachine = windingMachineRepository.findById(windingMachineId).orElseThrow(() -> new IllegalArgumentException("Winding Machine ID " + windingMachineId + " not found"));
+        System.err.println("Selected WindingMachine ID: " + windingMachineId + " for ProductionOrderDetail ID: " + workOrderDetail.getProductionOrderDetail().getId());
         return selectedMachine;
     }
 
@@ -511,8 +530,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
         BigDecimal totalPackagingDurationMinutes = calculatePackagingDuration(workOrderDetail, packagingBatches);
         LocalDateTime packagingDeadline = packagingStage.getPlannedStart().plusMinutes(totalPackagingDurationMinutes.longValue());
-        validateDeadline(packagingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Packaging Stage",
-                workOrderDetail.getProductionOrderDetail().getId());
+        validateDeadline(packagingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Packaging Stage", workOrderDetail.getProductionOrderDetail().getId());
 
         packagingStage.setDeadline(packagingDeadline);
         packagingStage.setPackagingBatches(createPackagingBatches(packagingStage, packagingBatches));
@@ -530,8 +548,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         packagingStage.setWorkOrderDetail(workOrderDetail);
         packagingStage.setWindingStage(workOrderDetail.getWindingStage());
         int dyeBatches = workOrderDetail.getDyeStage().getDyebatches().size();
-        packagingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getWindingStage().getPlannedStart().plusMinutes(150)
-                : workOrderDetail.getWindingStage().getDeadline());
+        packagingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getWindingStage().getPlannedStart().plusMinutes(150) : workOrderDetail.getWindingStage().getDeadline());
         packagingStage.setWorkStatus(WorkEnum.NOT_STARTED);
         System.err.println("Initialized PackagingStage for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
         return packagingStage;
@@ -548,8 +565,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             BigDecimal productsInBatch = dyeBatch.getCone_batch_weight().multiply(convertRate);
             totalPackagingDurationMinutes = totalPackagingDurationMinutes.add(productsInBatch.multiply(packagingTimePerProduct));
         }
-        System.err.println("Calculated PackagingStage duration: " + totalPackagingDurationMinutes +
-                " minutes for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
+        System.err.println("Calculated PackagingStage duration: " + totalPackagingDurationMinutes + " minutes for WorkOrderDetail ID: " + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
         return totalPackagingDurationMinutes;
     }
 
@@ -573,11 +589,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             packagingBatch.setPackagingStage(packagingStage);
             packagingBatch.setWorkStatus(WorkEnum.NOT_STARTED);
             packagingBatch.setTestStatus(TestEnum.NOT_STARTED);
-            BigDecimal productsInBatch = packagingStage.getWorkOrderDetail().getDyeStage().getDyebatches().get(i)
-                    .getCone_batch_weight().multiply(convertRate);
+            BigDecimal productsInBatch = packagingStage.getWorkOrderDetail().getDyeStage().getDyebatches().get(i).getCone_batch_weight().multiply(convertRate);
             long batchDurationMinutes = productsInBatch.multiply(packagingTimePerProduct).longValue();
-            packagingBatch.setPlannedStart(i == 0 ? packagingStage.getPlannedStart()
-                    : packagingBatchList.get(i - 1).getDeadline());
+            packagingBatch.setPlannedStart(i == 0 ? packagingStage.getPlannedStart() : packagingBatchList.get(i - 1).getDeadline());
             packagingBatch.setDeadline(packagingBatch.getPlannedStart().plusMinutes(batchDurationMinutes));
             assignTeamLeaderAndQAForPackagingBatch(packagingBatch);
             packagingBatchList.add(packagingBatch);
@@ -610,9 +624,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     }
 
     private User findQAForShift(Shift shift) {
-        return shift.getUserShifts().stream().map(UserShift::getUser).
-                filter(user -> user.getRole().getName().equals("QA")).findFirst().orElseThrow(()
-                        -> new IllegalStateException("No QA found in shift " + shift.getShiftName()));
+        return shift.getUserShifts().stream().map(UserShift::getUser).filter(user -> user.getRole().getName().equals("QA")).findFirst().orElseThrow(() -> new IllegalStateException("No QA found in shift " + shift.getShiftName()));
     }
 
     private Shift findShiftForTime(LocalTime time, LocalDate date) {
@@ -621,12 +633,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             LocalTime shiftStart = shift.getShiftStart();
             LocalTime shiftEnd = shift.getShiftEnd();
             if (shiftEnd.isBefore(shiftStart)) { // Qua ngày, ví dụ: 0h-8h
-                return (time.isAfter(shiftStart) && time.isBefore(LocalTime.MAX))
-                        || (time.isBefore(shiftEnd) && time.isAfter(LocalTime.MIN));
+                return (time.isAfter(shiftStart) && time.isBefore(LocalTime.MAX)) || (time.isBefore(shiftEnd) && time.isAfter(LocalTime.MIN));
             }
             return time.isAfter(shiftStart) && time.isBefore(shiftEnd);
-        }).findFirst().orElseThrow(()
-                -> new IllegalStateException("No shift found for time: " + time + " on " + date));
+        }).findFirst().orElseThrow(() -> new IllegalStateException("No shift found for time: " + time + " on " + date));
     }
 
     private void assignTeamLeadersAndQAForDyeStage(DyeStage dyeStage) {
@@ -757,4 +767,116 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             batch.setQa(findQAForShift(shift));
         }
     }
+
+    /**
+     * Clears existing stages and their batches from the work order
+     */
+    private void clearExistingStages(WorkOrder workOrder) {
+        workOrder.getWorkOrderDetails().clear();
+        System.err.println("Clearing existing stages and batches for work order id: " + workOrder.getId());
+    }
+
+    @Override
+    @Transactional
+    public WorkOrder updateWorkOrder(Long workOrderId, List<Long> selectedDyeMachineIds, List<Long> selectedWindingMachineIds) {
+        try {
+            //Find existing work order
+            WorkOrder existingWorkOrder = workOrderRepository.findById(workOrderId).orElseThrow(() -> new RuntimeException("WorkOrder not found"));
+            //
+            LocalDateTime originCreateAt = existingWorkOrder.getCreateAt();
+
+            //Check work order status. Only can update when status is NOT_APPROVAL or DRAFT
+            if (existingWorkOrder.getIsProduction() != WorkEnum.NOT_STARTED) {
+                throw new IllegalStateException("Cannot update work order if work order is already in production process");
+            }
+
+            if (existingWorkOrder.getStatus() != BaseEnum.NOT_APPROVED && existingWorkOrder.getStatus() != BaseEnum.DRAFT) {
+                throw new IllegalStateException("Cannot update work order if work order status is not NOT_APPROVED or DRAFT");
+            }
+
+            //
+            ProductionOrder productionOrder = existingWorkOrder.getProductionOrder();
+            User createdBy = productionOrder.getCreatedBy();
+
+            //Validate input
+            validateInput(productionOrder, createdBy, selectedDyeMachineIds, selectedWindingMachineIds);
+
+            //Clear full work order for update
+            clearExistingStages(existingWorkOrder);
+
+            //Lock machine
+            List<DyeMachine> lockedDyeMachines = new ArrayList<>();
+            List<WindingMachine> lockedWindingMachines = new ArrayList<>();
+
+            //Lock dye machine
+            for (Long dyeMachineId : selectedDyeMachineIds) {
+                DyeMachine dyeMachine = dyeMachineRepository.findByIdWithLock(dyeMachineId);
+                if (dyeMachine == null) {
+                    System.err.println("Cannot find dye machine with id: " + dyeMachineId);
+                    throw new IllegalStateException("Cannot find dye machine with id: " + dyeMachineId);
+                }
+                lockedDyeMachines.add(dyeMachine);
+            }
+
+            //Lock winding machine
+            for (Long windingMachineId : selectedWindingMachineIds) {
+                WindingMachine windingMachine = windingMachineRepository.findByIdWithLock(windingMachineId);
+                if (windingMachine == null) {
+                    System.err.println("Cannot find winding machine with id: " + windingMachineId);
+                    throw new IllegalStateException("Cannot find winding machine with id: " + windingMachineId);
+                }
+                lockedWindingMachines.add(windingMachine);
+            }
+
+            //Check if machine availability
+            LocalDateTime plannedStartAt = LocalDateTime.now().plusHours(2);
+            LocalDateTime plannedEndAt = existingWorkOrder.getDeadline().atTime(LocalTime.MAX);
+
+            for (int i = 0; i < productionOrder.getProductionOrderDetails().size(); i++) {
+                WorkOrderDetail tempWorkOrderDetail = new WorkOrderDetail();
+                tempWorkOrderDetail.setWorkOrder(existingWorkOrder);
+                tempWorkOrderDetail.setProductionOrderDetail(productionOrder.getProductionOrderDetails().get(i));
+                tempWorkOrderDetail.setPurchaseOrderDetail(productionOrder.getProductionOrderDetails().get(i).getPurchaseOrderDetail());
+                tempWorkOrderDetail.setPlannedStartAt(plannedStartAt);
+                tempWorkOrderDetail.setPlannedEndAt(plannedEndAt);
+
+                //check dye machine
+                if (i < selectedDyeMachineIds.size()) {
+                    Long dyeMachineId = selectedDyeMachineIds.get(i);
+                    List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    if (availableDyeMachines.stream().noneMatch(m -> m.getId().equals(dyeMachineId))) {
+                        System.err.println("Selected dye machine with id: " + dyeMachineId + " is not available");
+                        throw new IllegalArgumentException("Selected dye machine with id: " + dyeMachineId + " is not available");
+                    }
+                }
+
+                //check winding machine
+                if (i < selectedWindingMachineIds.size()) {
+                    Long windingMachineId = selectedWindingMachineIds.get(i);
+                    List<WindingMachine> availableWindingMachines = machineService.findAvailableWindingMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    if (availableWindingMachines.stream().noneMatch(m -> m.getId().equals(windingMachineId))) {
+                        System.err.println("Selected winding machine with id: " + windingMachineId + " is not available");
+                        throw new IllegalArgumentException("Selected winding machine with id: " + windingMachineId + " is not available");
+                    }
+                }
+            }
+
+            //Create work order details
+            existingWorkOrder.setWorkOrderDetails(new ArrayList<>());
+            addWorkOrderDetails(existingWorkOrder, productionOrder, selectedDyeMachineIds, selectedWindingMachineIds);
+
+            //
+            existingWorkOrder.setCreateAt(originCreateAt);
+            existingWorkOrder.setUpdateAt(LocalDateTime.now());
+            existingWorkOrder.setSendStatus(SendEnum.NOT_SENT);
+            existingWorkOrder.setStatus(BaseEnum.DRAFT);
+
+            //save new work order
+            return workOrderRepository.save(existingWorkOrder);
+        } catch (Exception e) {
+            System.err.println("Error updating work order ID: " + workOrderId + " - " + e.getMessage());
+            throw e;
+        }
+    }
+
 }

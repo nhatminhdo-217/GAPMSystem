@@ -822,6 +822,7 @@
                                 </button>
                                 <a  th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
                                    class="cancel-btn">Hủy</a>
+
                             </div>
                         </form>
                     </div>
@@ -1120,6 +1121,7 @@
         toggleFailNoteSection();
     });
 </script>
+
 <!-- Hiển thị thông báo nếu có -->
 <div th:if="${successMessage}">
     <script th:inline="javascript">

@@ -238,21 +238,20 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Đảm bảo các nút không xuống dòng */
+            align-items: center; /* Căn giữa theo chiều dọc */
         }
 
-        .btn-primary, .btn-secondary, .btn-custom {
+        .btn-primary, .btn-secondary, .btn-custom, .btn-reject {
             padding: 8px 16px;
             font-size: 14px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            flex: 0 1 auto; /* Đảm bảo các nút không bị co giãn quá mức */
+            white-space: nowrap; /* Ngăn text trong nút xuống dòng */
         }
 
-        .btn-primary:hover, .btn-secondary:hover, .btn-custom:hover {
-            opacity: 0.9;
-        }
-
-        /* Thêm style cho nút Gửi Work Order */
+        /* Style cho nút Đồng Ý */
         .btn-custom {
             min-width: 180px;
             height: 45px;
@@ -273,6 +272,30 @@
 
         .btn-custom:hover {
             background-color: #357ABD !important;
+            opacity: 0.9;
+        }
+
+        /* Style cho nút Từ Chối */
+        .btn-reject {
+            min-width: 180px;
+            height: 45px;
+            padding: 0 20px;
+            text-align: center;
+            background-color: #dc3545 !important;
+            color: white !important;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-reject:hover {
+            background-color: #c82333 !important;
             opacity: 0.9;
         }
 
@@ -321,16 +344,33 @@
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 25px;
-            border-radius: 10px;
+            border-radius: 12px; /* Bo góc mềm mại hơn */
             width: 80%;
             max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Bóng đổ sâu hơn */
+            border: none; /* Bỏ viền mặc định */
+            animation: fadeIn 0.3s ease-in-out; /* Hiệu ứng xuất hiện */
+        }
+
+        /* Hiệu ứng fade-in cho modal */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
         }
 
         .modal-header {
             border-bottom: 1px solid #e9ecef;
             padding-bottom: 15px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .modal-title {
@@ -348,6 +388,7 @@
             font-size: 15px;
             color: #495057;
             margin-bottom: 0;
+            line-height: 1.6; /* Tăng khoảng cách dòng cho dễ đọc */
         }
 
         .modal-footer {
@@ -357,6 +398,50 @@
             gap: 15px;
         }
 
+        /* Style cho nút trong modal */
+        .modal-footer .btn {
+            padding: 8px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Nút Hủy */
+        .modal-footer .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px); /* Hiệu ứng nâng nhẹ khi hover */
+        }
+
+        /* Nút Đồng Ý (đổi sang xanh lá) */
+        .modal-footer .btn-primary {
+            background-color: #28a745 !important; /* Xanh lá */
+            color: white !important;
+            border: none;
+        }
+
+        .modal-footer .btn-primary:hover {
+            background-color: #218838 !important; /* Xanh lá đậm hơn khi hover */
+            transform: translateY(-1px); /* Hiệu ứng nâng nhẹ khi hover */
+        }
+
+        /* Nút Từ Chối */
+        .modal-footer .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .modal-footer .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-1px); /* Hiệu ứng nâng nhẹ khi hover */
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .work-order-info .col-md-4 {
@@ -364,12 +449,12 @@
             }
 
             .btn-container {
-                flex-direction: column;
+                flex-direction: column; /* Chuyển sang cột trên màn hình nhỏ */
                 gap: 10px;
             }
 
-            .btn-primary, .btn-secondary, .btn-custom {
-                width: 100%;
+            .btn-primary, .btn-secondary, .btn-custom, .btn-reject {
+                width: 100%; /* Chiếm toàn bộ chiều rộng trên màn hình nhỏ */
             }
 
             .detail-content table {
@@ -426,6 +511,11 @@
             .modal-footer {
                 padding: 10px 0;
                 gap: 10px;
+                flex-direction: column; /* Chuyển nút thành cột trên màn hình nhỏ */
+            }
+
+            .modal-footer .btn {
+                width: 100%; /* Nút chiếm toàn bộ chiều rộng trên màn hình nhỏ */
             }
         }
     </style>
@@ -505,10 +595,6 @@
                                     <div class="col-md-4">
                                         <strong>Trạng thái:</strong> <span
                                             th:text="${workOrder?.status ?: 'N/A'}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Trạng thái gửi:</strong> <span
-                                            th:text="${workOrder?.sendStatus ?: 'N/A'}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -790,17 +876,17 @@
 
                             <!-- Buttons -->
                             <div class="btn-container">
-                                <a href="/technical/view-all-work-order" class="btn btn-secondary">Quay lại danh sách</a>
-
-                                <!-- Nút Chỉnh sửa kế hoạch -->
-                                <div th:if="${workOrder?.status != null and (workOrder.status.name() == 'DRAFT' or workOrder.status.name() == 'NOT_APPROVED')}">
-                                    <a th:href="@{/technical/update-work-order/{workOrderId}(workOrderId=${workOrder?.id})}" class="btn btn-primary">Chỉnh sửa kế hoạch</a>
-                                </div>
-
-                                <!-- Nút Gửi Work Order -->
-                                <div th:if="${workOrder?.sendStatus != null and workOrder.sendStatus.name() == 'NOT_SENT'}">
-                                    <button class="btn btn-custom" id="submitWorkOrderBtn" data-bs-toggle="modal" data-bs-target="#submitWorkOrderModal">Gửi Work Order</button>
-                                </div>
+                                <a href="/production-manager/view-all-submitted-work-order" class="btn btn-secondary">Quay
+                                    lại danh sách</a>
+                                <!-- Hiển thị nút Đồng Ý và Từ Chối khi status là WAIT_FOR_APPROVAL -->
+                                <button th:if="${workOrder?.status != null and workOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                        class="btn btn-custom" id="approveWorkOrderBtn" data-bs-toggle="modal"
+                                        data-bs-target="#approveWorkOrderModal">Đồng Ý
+                                </button>
+                                <button th:if="${workOrder?.status != null and workOrder.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                        class="btn btn-reject" id="rejectWorkOrderBtn" data-bs-toggle="modal"
+                                        data-bs-target="#rejectWorkOrderModal">Từ Chối
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -811,25 +897,51 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-    <!-- Modal để gửi Work Order -->
-    <div class="modal fade" id="submitWorkOrderModal" tabindex="-1" aria-labelledby="submitWorkOrderModalLabel"
+    <!-- Modal để Đồng Ý Work Order -->
+    <div class="modal fade" id="approveWorkOrderModal" tabindex="-1" aria-labelledby="approveWorkOrderModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="submitWorkOrderModalLabel">Gửi Work Order</h5>
+                    <h5 class="modal-title" id="approveWorkOrderModalLabel">Đồng Ý Work Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="submitWorkOrderForm" th:action="@{/technical/submit-work-order/{id}(id=${workOrder?.id})}"
+                    <form id="approveWorkOrderForm"
+                          th:action="@{/production-manager/approve-work-order/{id}(id=${workOrder?.id})}"
                           method="post">
                         <input type="hidden" name="workOrderId" th:value="${workOrder?.id}">
-                        <p>Bạn có chắc chắn muốn gửi Work Order này không?</p>
+                        <p>Bạn có chắc chắn muốn đồng ý Work Order này không?</p>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" form="submitWorkOrderForm" class="btn btn-primary">Gửi Work Order</button>
+                    <button type="submit" form="approveWorkOrderForm" class="btn btn-primary">Đồng Ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal để Từ Chối Work Order -->
+    <div class="modal fade" id="rejectWorkOrderModal" tabindex="-1" aria-labelledby="rejectWorkOrderModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectWorkOrderModalLabel">Từ Chối Work Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rejectWorkOrderForm"
+                          th:action="@{/production-manager/reject-work-order/{id}(id=${workOrder?.id})}"
+                          method="post">
+                        <input type="hidden" name="workOrderId" th:value="${workOrder?.id}">
+                        <p>Bạn có chắc chắn muốn từ chối Work Order này không?</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="rejectWorkOrderForm" class="btn btn-danger">Từ Chối</button>
                 </div>
             </div>
         </div>
@@ -879,14 +991,20 @@
             return false;
         });
 
-        // Open modal for submitting Work Order
-        $('#submitWorkOrderBtn').click(function () {
-            $('#submitWorkOrderModal').modal('show');
+        // Open modal for approving Work Order
+        $('#approveWorkOrderBtn').click(function () {
+            $('#approveWorkOrderModal').modal('show');
+        });
+
+        // Open modal for rejecting Work Order
+        $('#rejectWorkOrderBtn').click(function () {
+            $('#rejectWorkOrderModal').modal('show');
         });
 
         // Close modal
         $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
-            $('#submitWorkOrderModal').modal('hide');
+            $('#approveWorkOrderModal').modal('hide');
+            $('#rejectWorkOrderModal').modal('hide');
         });
 
         // Toast error
