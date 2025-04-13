@@ -11,10 +11,7 @@ import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -170,7 +167,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
 
         sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
-        return null;
+
+        return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
+    }
+
+    @Override
+    public Page<PurchaseOrderDTO> getAllByRole(User currUser, String search, BaseEnum status, int page, int size, String sortField, String sortDir) {;
+
+        if (Objects.equals(currUser.getRole().getName(), "SALE_STAFF")){
+            return getAllPurchaseOrderWithSearchFilter(search, status, page, size, sortField, sortDir);
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending().and(Sort.by("status").ascending()));
+
+        Page<PurchaseOrder> purchaseOrders = purchaseOrderRepository.searchAndFilter(search, BaseEnum.WAIT_FOR_APPROVAL, pageable);
+
+        List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
+        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
+
+        return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
     }
 
     private boolean isPurchaseOrderContract(Long id){
