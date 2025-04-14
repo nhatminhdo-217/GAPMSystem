@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main-layout}" lang="vi">
+<head>
+    <title>Thông báo</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Thông báo của bạn</h5>
+                        <button id="mark-all-as-read-btn" class="btn btn-sm btn-outline-primary">
+                            Đánh dấu tất cả đã đọc
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="notifications-list" class="list-group">
+                            <!-- Notification items will be loaded here -->
+                        </div>
+                        <div class="mt-3">
+                            <nav aria-label="Page navigation">
+                                <ul id="notifications-pagination" class="pagination justify-content-center">
+                                    <!-- Pagination will be generated here -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

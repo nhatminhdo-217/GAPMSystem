@@ -14,7 +14,7 @@ public class UserUtilsTest {
     @BeforeEach
     public void setUp() {
         // Khởi tạo UserUtils mà không cần mock UserService vì chỉ test cleanSpaces
-        userUtils = new UserUtils(null); // Truyền null vì cleanSpaces không dùng userService
+//        userUtils = new UserUtils(); // Truyền null vì cleanSpaces không dùng userService
     }
 
     @Test
