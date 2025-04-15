@@ -157,6 +157,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
     }
 
+    @Override
+    public PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderByQuotationId(Id);
+        return purchaseOrder;
+    }
+
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();

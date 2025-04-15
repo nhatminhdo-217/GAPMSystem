@@ -27,13 +27,15 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "JOIN product p ON rd.product_id = p.id " +
             "JOIN brand b ON rd.brand_id = b.id " +
             "JOIN category cate ON rd.cate_id = cate.id " +
-            "JOIN cate_brand_price cbp ON cbp.cate_id = cate.id " +
+            "JOIN cate_brand_price cbp ON cbp.cate_id = :cate_id \n" +
+            "        AND cbp.brand_id = :brand_id \n" +
+            "        AND cbp.is_color = :color\n" +
             "JOIN user u ON r.create_by = u.id " +
             "JOIN company_user cu ON u.id = cu.user_id " +
             "JOIN company c ON cu.company_id = c.id " +
             "JOIN solution s ON r.id = s.rfq_id " +
-            "WHERE q.id = :quotationId and cbp.is_color = 1", nativeQuery = true)
-    List<QuotationInfoProjection> findQuotationDetail(@Param("quotationId") long id);
+            "WHERE rd.id = :rfqDetailId", nativeQuery = true)
+    QuotationInfoProjection findQuotationDetail(@Param("rfqDetailId") long rfqDetailId, Long brand_id, Long cate_id,@Param("color") Boolean color);
 
     @Query(value = "SELECT " +
             "q.id AS quotationId, " +
@@ -60,7 +62,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "   (:search IS NULL OR :search = '' OR u.name LIKE %:search% OR p.name LIKE %:search% OR b.name LIKE %:search%) " +
             "   AND (:product IS NULL OR :product = '' OR p.name = :product) " +
             "   AND (:brand IS NULL OR :brand = '' OR b.name = :brand) " +
-            "   AND (:category IS NULL OR :category = '' OR cate.name = :category)",
+            "   AND (:category IS NULL OR :category = '' OR cate.name = :category) ORDER BY q.create_at DESC",
             countQuery = "SELECT COUNT(DISTINCT q.id) FROM quotation q " +
                     "JOIN rfq r ON q.rfq_id = r.id " +
                     "JOIN user u ON r.create_by = u.id " +

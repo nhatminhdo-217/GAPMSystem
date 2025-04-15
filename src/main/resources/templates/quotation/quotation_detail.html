@@ -80,8 +80,8 @@
                                                                       (quotation_detail.isAccepted == 'NOT_APPROVED' ? 'text-yellow' : 'text-gray')}">
                                                 </span>
               </p>
-              <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(quotation_detail.expectedDate, 'dd-MM-yyy')}"></span> </p>
-              <p><b>Ngày giao đề xuất: </b> <span th:text="${#temporals.format(quotation_detail.actualDate, 'dd-MM-yyy')}"></span></p>
+              <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(quotation_detail.expectedDate, 'dd/MM/yyyy')}"></span> </p>
+              <p><b>Ngày giao đề xuất: </b> <span th:text="${#temporals.format(quotation_detail.actualDate, 'dd/MM/yyyy')}"></span></p>
               <p><b>Giải pháp: </b> <a th:href="@{'/quotation/detail/contract/' + ${quotation_detail.solutionId}}">Ấn để xem</a></p>
             </div>
           </div>
@@ -135,7 +135,19 @@
     <!-- Footer End -->
   </div>
 </div>
-
+<div th:if="${quotation_submit}">
+  <script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: /*[[${quotation_submit}]]*/ "Default message",
+        showConfirmButton: false,
+        timer: 2000
+      });
+    });
+  </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -147,5 +159,6 @@
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="/assert/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>

@@ -38,4 +38,7 @@ public interface PurchaseOrderService {
     boolean cancelPurchaseOrder(Long id);
 
     PurchaseOrderDetail getPurchaseOrderDetailById(Long id);
+
+
+    PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id);
 }

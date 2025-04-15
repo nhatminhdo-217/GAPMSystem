@@ -45,11 +45,12 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
     }
 
     @Override
-    public RiskSolution approveRiskSolution(Long rsId) {
+    public RiskSolution approveRiskSolution(Long rsId, User user) {
         RiskSolution riskSolution = riskSolutionRepository.findById(rsId).orElseThrow(() -> new RuntimeException("RiskSolution not found"));
         riskSolution.setApproveStatus(BaseEnum.APPROVED);
         if(riskSolution.getDyeRiskAssessment() != null){
             riskSolution.getDyeRiskAssessment().getDyeBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
             riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
             riskSolutionRepository.save(riskSolution);
         }
@@ -61,6 +62,35 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
             riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
             riskSolution.getWindingRiskAssessment().getWindingBatch().setWorkStatus(WorkEnum.FIX);
             riskSolution.getWindingRiskAssessment().getWindingBatch().setWindingPhoto(null);
+            riskSolutionRepository.save(riskSolution);
+        }
+
+        return riskSolution;
+    }
+
+    @Override
+    public RiskSolution approveEasyRiskSolution(Long rsId, User user) {
+        RiskSolution riskSolution = riskSolutionRepository.findById(rsId).orElseThrow(() -> new RuntimeException("RiskSolution not found"));
+        riskSolution.setApproveStatus(BaseEnum.APPROVED);
+        if(riskSolution.getDyeRiskAssessment() != null){
+            riskSolution.getDyeRiskAssessment().getDyeBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
+            riskSolution.setCreatedBy(user);
+            riskSolution.setCreatedBy(user);
+            riskSolution.setNote(riskSolution.getNote());
+            riskSolutionRepository.save(riskSolution);
+        }
+
+        if(riskSolution.getWindingRiskAssessment() != null){
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setDyePhoto(null);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().setPass(null);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().setWorkStatus(WorkEnum.FIX);
+            riskSolution.getWindingRiskAssessment().getWindingBatch().setWindingPhoto(null);
+            riskSolution.setCreatedBy(user);
+            riskSolution.setCreatedBy(user);
+            riskSolution.setNote(riskSolution.getNote());
             riskSolutionRepository.save(riskSolution);
         }
 

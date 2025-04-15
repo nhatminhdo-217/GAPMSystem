@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Ngày tạo đơn</strong><br>
-                                    <span th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></span>
+                                    <span th:text="${#temporals.format(quotation.createAt, 'dd/MM/yyyy')}"></span>
                                 </div>
                                 <div class="text-start me-3">
                                     <strong>Trạng thái đơn hàng</strong><br>
@@ -130,11 +130,11 @@
                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
                                                style="color: green;">
                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
+                                          <span th:case="*" th:text="'Đang chờ phê duyệt'"
                                                 style="color: #ffc107;">
                                           </span>
                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
-                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
+                                           <!--<span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>-->
                                     </span>
                                 </div>
                             </div>

@@ -76,4 +76,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.id = :id")
     Optional<PurchaseOrderDetail> getPurchaseOrderDetailById(Long id);
+
+    @Query("select po from PurchaseOrder po where po.quotation.id = :id")
+    PurchaseOrder getPurchaseOrderByQuotationId(Long id);
 }

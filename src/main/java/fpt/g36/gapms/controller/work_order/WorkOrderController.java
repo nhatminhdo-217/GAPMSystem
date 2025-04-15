@@ -318,7 +318,11 @@ public class WorkOrderController {
         return "redirect:/work-order/team-leader/Batch/" + packagingBatch.getPackagingStage().getId();
     }
 
-
+    @GetMapping("/team-leader/test")
+     public String getTest(Model model){
+        userUtils.getOptionalUser(model);
+        return "team-leader/test";
+    }
 
     /*----------------------------------------------QA----------------------------------------------------*/
 
@@ -463,32 +467,13 @@ public class WorkOrderController {
                     dyeRiskAssessment.getMedication() == null ||
                     dyeRiskAssessment.getMedicineSafe() == null))
             {
+
                 redirectAttributes.addFlashAttribute("check_pass", "Chỉ có thể đánh pass/false khi các trường đã được đánh giá đủ");
                 return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment.getDyeBatch().getId();
             }
 
         }
 
-
-        /*String uploadDir = "/uploads";
-
-        List<String> existingPhotoList = existingPhotos != null && !existingPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(existingPhotos.split(",")))
-                : new ArrayList<>();
-        List<String> deletedPhotoList = deletedPhotos != null && !deletedPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(deletedPhotos.split(",")))
-                : new ArrayList<>();
-
-        // Xóa các ảnh trong deletedPhotoList
-        for (String deletedPhoto : deletedPhotoList) {
-            if (existingPhotoList.contains(deletedPhoto)) {
-                existingPhotoList.remove(deletedPhoto);
-                File fileToDelete = new File(uploadDir + deletedPhoto);
-                if (fileToDelete.exists()) {
-                    fileToDelete.delete();
-                }
-            }
-        }*/
         try {
             DyeRiskAssessment dyeRiskAssessment_save = dyeStageService.saveTestDye(id, dyeRiskAssessment, optionalUser.get(), photos);
             redirectAttributes.addFlashAttribute("save_dye", "Đã lưu thông tin kiểm tra");

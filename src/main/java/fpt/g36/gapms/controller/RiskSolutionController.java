@@ -73,7 +73,18 @@ public class RiskSolutionController {
     }
 
 
-
+    @PostMapping("/technical/risk-solution-approved/{id}")
+    public String approveSolutionEasy(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+        RiskSolution riskSolution = riskSolutionService.approveEasyRiskSolution(rsId, optionalUser.get());
+        redirectAttributes.addFlashAttribute("approve_easy", "Đã xác nhận làm lại công đoạn");
+        return "redirect:/risk-solution/technical/detail/" +riskSolution.getId();
+    }
 
 
     /*-------------------------Production Manager--------------------------------------------*/
@@ -105,8 +116,14 @@ public class RiskSolutionController {
     }
 
     @GetMapping("/production-manage/risk-solution-approved/{id}")
-    public String getQuotationCustomerApproved(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
-        RiskSolution riskSolution = riskSolutionService.approveRiskSolution(rsId);
+    public String approveSolution(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+        RiskSolution riskSolution = riskSolutionService.approveRiskSolution(rsId, optionalUser.get());
         redirectAttributes.addFlashAttribute("approved", "Phiếu cấp sợi đã được duyệt");
         return "redirect:/risk-solution/production-manage/detail/" +riskSolution.getId();
     }

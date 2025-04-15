@@ -112,8 +112,8 @@
                                            <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
                             </span>
                         </p>
-                        <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyy')}"></span> </p>
-                        <p><b>Ngày thực giao: </b> <span th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyy')}"></span></p>
+                        <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd/MM/yyyy')}"></span> </p>
+                        <p><b>Ngày thực giao: </b> <span th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></span></p>
                         <p><b>Giải pháp: </b> <a th:href="@{'/purchase-order/detail/solution/' + ${orderInfo.solutionId}}">Ấn để xem</a></p>
                     </div>
                 </div>
@@ -130,21 +130,21 @@
                             <th>Sản phẩm</th>
                             <th>Thương hiệu</th>
                             <th>Danh mục</th>
-                            <th>Ghi chú</th>
+                            <th>Tên màu</th>
                             <th>Số lượng</th>
                             <th>Giá theo màu</th>
                             <th>Thành tiền (VND)</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item : ${items}">
-                            <td th:text="${item.productName}"></td>
-                            <td th:text="${item.brandName}"></td>
-                            <td th:text="${item.categoryName}"></td>
-                            <td th:text="${item.noteColor}"></td>
-                            <td th:text="${item.quantity}"></td>
-                            <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></td>
-                            <td th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')}"></td>
+                        <tr th:each="purchaseOrderDetail : ${purchaseOrder.purchaseOrderDetails}">
+                            <td th:text="${purchaseOrderDetail.product.name}"></td>
+                            <td th:text="${purchaseOrderDetail.brand.name}"></td>
+                            <td th:text="${purchaseOrderDetail.category.name}"></td>
+                            <td th:text="${purchaseOrderDetail.note_color}"></td>
+                            <td th:text="${purchaseOrderDetail.quantity}"></td>
+                            <td th:text="${#numbers.formatDecimal(purchaseOrderDetail.unitPrice * 100, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(purchaseOrderDetail.totalPrice * 100, 0, 'COMMA', 0, 'POINT')}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -156,7 +156,7 @@
                     <p><strong>Ngày thực giao: </strong> 11-02-2025</p>
                     <div class="d-flex">
                         <p style="margin-right: 10px"><strong>Tổng tiền: </strong></p>
-                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT')}" style="margin-right: 3px"></span> VND
+                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'" style="margin-right: 3px"></span> VND
                     </div>
                 </div>
 
