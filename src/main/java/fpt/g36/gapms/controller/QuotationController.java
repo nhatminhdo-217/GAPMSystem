@@ -1,8 +1,11 @@
 package fpt.g36.gapms.controller;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.PurchaseOrder;
+import fpt.g36.gapms.models.entities.Quotation;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.*;
@@ -23,14 +26,19 @@ public class QuotationController {
     private final BrandService brandService;
     private final CategoryService categoryService;
     private final RfqService rfqService;
+   private final MailService mailService;
+   private final PurchaseOrderService purchaseOrderService;
 
-    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService) {
+
+    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService, MailService mailService, PurchaseOrderService purchaseOrderService) {
         this.quotationService = quotationService;
         this.userUtils = userUtils;
         this.productService = productService;
         this.brandService = brandService;
         this.categoryService = categoryService;
         this.rfqService = rfqService;
+        this.mailService = mailService;
+        this.purchaseOrderService = purchaseOrderService;
     }
 
     @GetMapping("/list")
@@ -76,12 +84,15 @@ public class QuotationController {
     }
 
     @PostMapping("/detail/{id}")
-    public String postQuotationDetail(@PathVariable("id") Long id, Model model) {
+    public String postQuotationDetail(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
 
         User currentUser = userUtils.getOptionalUserInfo();
-
+        Quotation quotation = quotationService.getQuotationById(id);
         quotationService.updateQuotationStatus(id, currentUser);
-
+        mailService.sendQuotationEmail(quotation.getRfq().getCreateBy().getEmail(), quotation.getRfq().getCreateBy().getUsername(), quotation.getRfq().getId());
+         if(quotation.getAccepted() == BaseEnum.WAIT_FOR_APPROVAL) {
+             redirectAttributes.addFlashAttribute("quotation_submit", "Báo giá đã được xác nhận và gửi cho khách");
+         }
         return "redirect:/quotation/detail/" + id;
     }
 
@@ -100,13 +111,13 @@ public class QuotationController {
     @GetMapping("/quotation-customer-approved/{rfq-id}")
     public String getQuotationCustomerApproved(@PathVariable("rfq-id") int rfqId,Model model, RedirectAttributes redirectAttributes) {
 
-        quotationService.approvedQuotation(rfqId);
+          Quotation quotation = quotationService.approvedQuotation(rfqId);
         QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
-
+         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderDetailByQuotationId(quotation.getId());
         userUtils.getOptionalUser(model);
         model.addAttribute("quotation_customer", quotationCustomer);
         redirectAttributes.addFlashAttribute("approved", "Bạn đã chấp nhận đơn báo giá");
-        return "redirect:/purchase-order/customer/list";
+        return "redirect:/purchase-order/customer/detail/" +purchaseOrder.getId();
     }
     @GetMapping("/quotation-customer-cancel/{rfq-id}")
     public String getQuotationCustomerCancel(@PathVariable("rfq-id") int rfqId, Model model, RedirectAttributes redirectAttributes) {
