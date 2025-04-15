@@ -11,6 +11,7 @@ import fpt.g36.gapms.repositories.RfqRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.NotificationService;
 import fpt.g36.gapms.services.RfqService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,8 @@ public class RfqServiceImpl implements RfqService {
     private UserRepository userRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Override
     public Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable) {
@@ -118,18 +121,7 @@ public class RfqServiceImpl implements RfqService {
         Rfq submittedRfq = rfqRepository.save(rfq);
         rfqRepository.flush();
 
-        List<User> technicalUsers = userRepository.findAllByRole("TECHNICAL");
-        for (User technicalUser : technicalUsers) {
-            NotificationDTO notification = new NotificationDTO();
-            notification.setMessage("Một RFQ mới (#" + rfqId + ") đã được chấp nhận và đang chờ xử lý.");
-            notification.setType(NotificationEnum.SUCCESS);
-            notification.setTargetUrl("/technical/rfq-details/" + rfqId);
-            notification.setTargetUserId(technicalUser.getId());
-            notification.setSource("Quản lý RFQ");
-            notification.setTimestamp(LocalDateTime.now());
-
-            notificationService.saveAndSendNotification(notification);
-        }
+        notificationUtils.sendRfqApproveToTechnical(rfqId);
 
         entityManager.refresh(submittedRfq.getRfqDetails());
 
