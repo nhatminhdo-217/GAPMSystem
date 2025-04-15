@@ -3,6 +3,7 @@ package fpt.g36.gapms.models.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,13 +14,13 @@ public class WindingMachine extends BaseEntity {
     private WindingStage windingStage;
 
     @NotNull
-    private Integer motor_speed;
+    private BigDecimal motor_speed;
 
     @NotNull
-    private Integer spindle; // Số trục
+    private BigDecimal spindle; // Số trục
 
     @NotNull
-    private Integer capacity; // Công suất (vòng/phút)
+    private BigDecimal capacity; // Công suất (vòng/phút)
 
     @Lob
     private String description;
@@ -38,14 +39,14 @@ public class WindingMachine extends BaseEntity {
     public WindingMachine() {
     }
 
-    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, WindingStage windingStage, Integer motor_speed, Integer spindle, boolean isActive, String description, Integer capacity) {
+    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, WindingStage windingStage, BigDecimal motor_speed, BigDecimal spindle, BigDecimal capacity, String description, boolean isActive) {
         super(id, createAt, updateAt);
         this.windingStage = windingStage;
         this.motor_speed = motor_speed;
         this.spindle = spindle;
-        this.isActive = isActive;
-        this.description = description;
         this.capacity = capacity;
+        this.description = description;
+        this.isActive = isActive;
     }
 
     public WindingStage getWindingStage() {
@@ -56,27 +57,27 @@ public class WindingMachine extends BaseEntity {
         this.windingStage = windingStage;
     }
 
-    public Integer getMotor_speed() {
+    public BigDecimal getMotor_speed() {
         return motor_speed;
     }
 
-    public void setMotor_speed(Integer motor_speed) {
+    public void setMotor_speed(BigDecimal motor_speed) {
         this.motor_speed = motor_speed;
     }
 
-    public Integer getSpindle() {
+    public BigDecimal getSpindle() {
         return spindle;
     }
 
-    public void setSpindle(Integer spindle) {
+    public void setSpindle(BigDecimal spindle) {
         this.spindle = spindle;
     }
 
-    public Integer getCapacity() {
+    public BigDecimal getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(Integer capacity) {
+    public void setCapacity(BigDecimal capacity) {
         this.capacity = capacity;
     }
 

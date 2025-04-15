@@ -32,7 +32,6 @@ public class DyeBatch extends BaseEntity {
     private LocalDateTime plannedStart;
 
 
-
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -62,20 +61,22 @@ public class DyeBatch extends BaseEntity {
     @OneToOne(mappedBy = "dyeBatch")
     private WindingBatch windingBatch;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_stage_id")
     private DyeStage dyeStage;
 
     @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DyeRiskAssessment> dyeRiskAssessments;
 
+    @OneToOne(mappedBy = "dyeBatch")
+    private TechnologyProcess technologyProcess;
+
     private Boolean isPass;
 
     public DyeBatch() {
     }
 
-
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, Boolean isPass) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, TechnologyProcess technologyProcess, Boolean isPass) {
         super(id, createAt, updateAt);
         this.liters_min = liters_min;
         this.liters = liters;
@@ -93,7 +94,16 @@ public class DyeBatch extends BaseEntity {
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
+        this.technologyProcess = technologyProcess;
         this.isPass = isPass;
+    }
+
+    public TechnologyProcess getTechnologyProcess() {
+        return technologyProcess;
+    }
+
+    public void setTechnologyProcess(TechnologyProcess technologyProcess) {
+        this.technologyProcess = technologyProcess;
     }
 
     public BigDecimal getLiters_min() {

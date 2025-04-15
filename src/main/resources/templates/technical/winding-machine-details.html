@@ -17,9 +17,11 @@
             background-color: #f5f7fa;
             font-family: 'Heebo', sans-serif;
         }
+
         .container-fluid {
             padding: 20px;
         }
+
         .card {
             border: 1px solid #e9ecef;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -28,9 +30,11 @@
             margin-bottom: 20px;
             cursor: default;
         }
+
         .card-body {
             padding: 20px;
         }
+
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -39,6 +43,7 @@
             border-bottom: 1px solid #e9ecef;
             padding-bottom: 10px;
         }
+
         .detail-section {
             padding: 20px;
             background-color: #f8f9fc;
@@ -46,26 +51,32 @@
             border: 1px solid #e2e7f0;
             margin-top: 20px;
         }
-        .detail-section .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+
+        .detail-section table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .detail-section .col-md-4 {
-            flex: 1 1 300px;
+
+        .detail-section th, .detail-section td {
             padding: 10px;
-            cursor: default;
-        }
-        .detail-section strong {
-            font-size: 14px;
-            color: #495057;
-            font-weight: 600;
-            display: block;
-        }
-        .detail-section span {
+            border: 1px solid #e2e7f0;
+            text-align: left;
             font-size: 15px;
             color: #212529;
         }
+
+        .detail-section th {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+            background-color: #f1f3f9;
+            width: 25%;
+        }
+
+        .detail-section td {
+            width: 25%;
+        }
+
         .btn-container {
             margin-top: 20px;
             text-align: center;
@@ -74,6 +85,7 @@
             gap: 15px;
             flex-wrap: wrap;
         }
+
         .btn-custom {
             min-width: 180px;
             height: 45px;
@@ -89,41 +101,51 @@
             transition: background-color 0.3s ease;
             cursor: pointer;
         }
+
         .btn-custom:hover {
             background-color: #357ABD !important;
             opacity: 0.9;
         }
+
         .btn-custom:disabled {
             background-color: #b0c4de !important;
             cursor: not-allowed;
         }
+
         .toast {
             opacity: 0.9;
         }
+
         .success-toast {
             background-color: #d4edda;
             border-color: #c3e6cb;
             opacity: 0.9;
         }
+
         .success-toast .toast-header {
             background-color: #c3e6cb;
             color: #155724;
         }
+
         .success-toast .toast-body {
             color: #155724;
         }
+
         .error-toast {
             background-color: #f8d7da;
             border-color: #f5c6cb;
             opacity: 0.9;
         }
+
         .error-toast .toast-header {
             background-color: #f5c6cb;
             color: #721c24;
         }
+
         .error-toast .toast-body {
             color: #721c24;
         }
+
         #toastSuccess, #toastError {
             position: fixed;
             bottom: 20px;
@@ -131,9 +153,11 @@
             z-index: 1050;
             min-width: 300px;
         }
+
         #toastError {
             bottom: 80px;
         }
+
         /* Modal CSS */
         .modal-content {
             background-color: #fff;
@@ -147,16 +171,19 @@
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+
         .modal-header {
             border-bottom: 1px solid #e9ecef;
             padding-bottom: 15px;
             margin-bottom: 15px;
         }
+
         .modal-title {
             font-size: 18px;
             font-weight: 600;
             color: #333;
         }
+
         .close {
             position: absolute;
             right: 20px;
@@ -165,9 +192,11 @@
             cursor: pointer;
             color: #666;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-control {
             border-radius: 5px;
             border: 1px solid #ced4da;
@@ -175,16 +204,19 @@
             font-size: 14px;
             width: 100%;
         }
+
         .form-control:focus {
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
             border-color: #007bff;
         }
+
         .modal-footer {
             display: flex;
             justify-content: flex-end;
             gap: 15px;
             padding-top: 15px;
         }
+
         .modal-footer .btn-secondary {
             min-width: 120px;
             height: 40px;
@@ -201,11 +233,13 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
+
         .modal-footer .btn-secondary:hover {
             background-color: #ccc !important;
             color: #000 !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .modal-footer .btn-primary {
             min-width: 120px;
             height: 40px;
@@ -222,6 +256,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
+
         .modal-footer .btn-primary:hover {
             background-color: #45a049 !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -233,7 +268,8 @@
 <div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
 
 <div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -250,36 +286,41 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="detail-section">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <strong>Mã máy:</strong> <span th:text="'Máy côn ' + ${windingMachine.id}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Tốc độ động cơ:</strong> <span th:text="${windingMachine.motor_speed}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Số trục:</strong> <span th:text="${windingMachine.spindle}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Công suất:</strong> <span th:text="${windingMachine.capacity} + ' vòng/phút'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Mô tả:</strong> <span th:text="${windingMachine.description != null ? windingMachine.description : 'N/A'}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Ngày tạo:</strong> <span th:text="${#temporals.format(windingMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Trạng thái:</strong> <span th:text="${windingMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Ngày cập nhật:</strong> <span th:text="${#temporals.format(windingMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-                                </div>
-                            </div>
+                            <table>
+                                <tr>
+                                    <th>Mã máy:</th>
+                                    <td th:text="'Máy côn ' + ${windingMachine.id}"></td>
+                                    <th>Tốc độ động cơ:</th>
+                                    <td th:text="${windingMachine.motor_speed}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Số trục:</th>
+                                    <td th:text="${windingMachine.spindle}"></td>
+                                    <th>Công suất:</th>
+                                    <td th:text="${windingMachine.capacity} + ' vòng/phút'"></td>
+                                </tr>
+                                <tr>
+                                    <th>Mô tả:</th>
+                                    <td th:text="${windingMachine.description != null ? windingMachine.description : 'N/A'}"></td>
+                                    <th>Ngày tạo:</th>
+                                    <td th:text="${#temporals.format(windingMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái:</th>
+                                    <td th:text="${windingMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></td>
+                                    <th>Ngày cập nhật:</th>
+                                    <td th:text="${#temporals.format(windingMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="btn-container">
-                            <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editWindingMachineModal" th:disabled="${windingMachine.windingStage != null}">Chỉnh sửa</button>
-                            <a href="/technical/view-all-machine" class="btn btn-custom" style="background-color: #6c757d !important;">Quay lại</a>
+                            <button type="button" class="btn btn-custom" data-bs-toggle="modal"
+                                    data-bs-target="#editWindingMachineModal"
+                                    th:disabled="${windingMachine.windingStage != null}">
+                                Chỉnh sửa
+                            </button>
+                            <a href="/technical/view-all-machine" class="btn btn-custom"
+                               style="background-color: #6c757d !important;">Quay lại</a>
                         </div>
                     </div>
                 </div>
@@ -287,7 +328,9 @@
         </div>
 
         <!-- Modal chỉnh sửa -->
-        <div class="modal fade" id="editWindingMachineModal" tabindex="-1" aria-labelledby="editWindingMachineModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editWindingMachineModal" tabindex="-1"
+             aria-labelledby="editWindingMachineModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -299,25 +342,30 @@
                             <input type="hidden" name="id" th:value="${windingMachine.id}">
                             <div class="form-group">
                                 <label for="motor_speed">Tốc độ động cơ:</label>
-                                <input type="number" class="form-control" id="motor_speed" name="motor_speed" th:value="${windingMachine.motor_speed}" required min="1">
+                                <input type="number" class="form-control" id="motor_speed" name="motor_speed"
+                                       th:value="${windingMachine.motor_speed}" required min="1">
                             </div>
                             <div class="form-group">
                                 <label for="spindle">Số trục:</label>
-                                <input type="number" class="form-control" id="spindle" name="spindle" th:value="${windingMachine.spindle}" required min="1">
+                                <input type="number" class="form-control" id="spindle" name="spindle"
+                                       th:value="${windingMachine.spindle}" required min="1">
                             </div>
                             <div class="form-group">
                                 <label for="capacity">Công suất (vòng/phút):</label>
-                                <input type="number" class="form-control" id="capacity" name="capacity" th:value="${windingMachine.capacity}" required min="1">
+                                <input type="number" class="form-control" id="capacity" name="capacity"
+                                       th:value="${windingMachine.capacity}" required min="1">
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
-                                <textarea class="form-control" id="description" name="description" th:text="${windingMachine.description}"></textarea>
+                                <textarea class="form-control" id="description" name="description"
+                                          th:text="${windingMachine.description}"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="active">Trạng thái:</label>
                                 <select class="form-control" id="active" name="active" required>
                                     <option value="true" th:selected="${windingMachine.active}">Hoạt động</option>
-                                    <option value="false" th:selected="${!windingMachine.active}">Không hoạt động</option>
+                                    <option value="false" th:selected="${!windingMachine.active}">Không hoạt động
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -360,8 +408,13 @@
 <script src="/assert/js/main.js"></script>
 <script>
     $(document).ready(function () {
-        $(window).on('load', function () { $('#spinner').removeClass('show'); });
-        $('.back-to-top').click(function () { $('html, body').animate({scrollTop: 0}, 1000); return false; });
+        $(window).on('load', function () {
+            $('#spinner').removeClass('show');
+        });
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+            return false;
+        });
 
         const hiddenSuccess = document.getElementById('hiddenSuccess');
         if (hiddenSuccess && hiddenSuccess.textContent.trim()) {

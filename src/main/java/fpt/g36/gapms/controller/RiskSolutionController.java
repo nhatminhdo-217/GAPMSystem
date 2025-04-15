@@ -128,4 +128,5 @@ public class RiskSolutionController {
         redirectAttributes.addFlashAttribute("approved", "Phiếu cấp sợi đã được duyệt");
         return "redirect:/risk-solution/production-manage/detail/" +riskSolution.getId();
     }
+
 }
