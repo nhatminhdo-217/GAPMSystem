@@ -93,6 +93,7 @@ public class RiskSolutionController {
     public String getViewListPm(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
 
+
         Pageable pageable = PageRequest.of(page, size);
         Page<RiskSolution> riskSolutions = riskSolutionService.getAllRiskSolutionManager(pageable);
         model.addAttribute("riskSolutions", riskSolutions.getContent());

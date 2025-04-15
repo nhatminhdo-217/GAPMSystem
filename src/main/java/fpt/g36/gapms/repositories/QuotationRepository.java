@@ -1,9 +1,11 @@
 package fpt.g36.gapms.repositories;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.quotation.QuotationDetailDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationInfoProjection;
 import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerProjection;
 import fpt.g36.gapms.models.dto.quotation.QuotationListDTO;
+import fpt.g36.gapms.models.entities.Product;
 import fpt.g36.gapms.models.entities.Quotation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +64,8 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "   (:search IS NULL OR :search = '' OR u.name LIKE %:search% OR p.name LIKE %:search% OR b.name LIKE %:search%) " +
             "   AND (:product IS NULL OR :product = '' OR p.name = :product) " +
             "   AND (:brand IS NULL OR :brand = '' OR b.name = :brand) " +
-            "   AND (:category IS NULL OR :category = '' OR cate.name = :category) ORDER BY q.create_at DESC",
+            "   AND (:category IS NULL OR :category = '' OR cate.name = :category) " +
+            "   AND (:status IS NULL OR :status = '' OR q.is_accepted = :status)",
             countQuery = "SELECT COUNT(DISTINCT q.id) FROM quotation q " +
                     "JOIN rfq r ON q.rfq_id = r.id " +
                     "JOIN user u ON r.create_by = u.id " +
@@ -72,21 +75,48 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
                     "JOIN category cate ON rd.cate_id = cate.id " +
                     "JOIN cate_brand_price cbp " +
                     "ON cbp.cate_id = rd.cate_id " +
-                    "AND cbp.brand_id = rd.brand_id " + // Thêm điều kiện join cho has_color
+                    "AND cbp.brand_id = rd.brand_id " +
                     "WHERE " +
                     "   (:search IS NULL OR :search = '' OR u.name LIKE %:search% OR p.name LIKE %:search% OR b.name LIKE %:search%) " +
                     "   AND (:product IS NULL OR :product = '' OR p.name = :product) " +
                     "   AND (:brand IS NULL OR :brand = '' OR b.name = :brand) " +
-                    "   AND (:category IS NULL OR :category = '' OR cate.name = :category)",
+                    "   AND (:category IS NULL OR :category = '' OR cate.name = :category) " +
+                    "   AND (:status IS NULL OR :status = '' OR q.is_accepted = :status)",
             nativeQuery = true)
     Page<Object[]> findAllWithFilters(
             @Param("search") String search,
             @Param("product") String product,
             @Param("brand") String brand,
             @Param("category") String category,
+            @Param("status") String status,
             Pageable pageable
     );
 
+    @Query(value = """
+    select distinct q from Quotation q
+    join q.rfq r
+    join q.createdBy u
+    join r.rfqDetails rd
+    where (:search is null or lower(rd.product.name) like concat('%', lower(:search), '%')
+    or lower(r.createBy.username) like concat('%', lower(:search), '%')
+    or lower(q.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or q.isAccepted = :status)
+   """,
+            countQuery = """
+    select count(distinct q) from Quotation q
+    join q.rfq r
+    join q.createdBy u
+    join r.rfqDetails rd
+    where (:search is null or lower(rd.product.name) like concat('%', lower(:search), '%')
+    or lower(r.createBy.username) like concat('%', lower(:search), '%')
+    or lower(q.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or q.isAccepted = :status)
+   """)
+    Page<Quotation> searchAndFilter(
+            @Param("search") String search,
+            @Param("status") BaseEnum status,
+            Pageable pageable
+    );
 
    /// for customer
     @Query(value = "SELECT \n" +
