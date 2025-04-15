@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/risk-solution/production-manager/**", "/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")
+                        .requestMatchers("/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
                         .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .requestMatchers("/notifications/**").authenticated()
