@@ -484,6 +484,22 @@
                                     </div>
                                 </div>
 
+
+                                <div class="customer-info" th:if="${riskSolution.windingRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin mẻ lỗi</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Tên màu:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>loại hàng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>số lượng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- RFQ Info -->
                                 <div class="rfq-info" th:if="${riskSolution.dyeRiskAssessment != null}">
                                     <h3 class="section-title">Thông tin sau kiểm tra</h3>
@@ -554,7 +570,54 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="rfq-info" th:if="${riskSolution.windingRiskAssessment != null}">
+                                    <h3 class="section-title">Thông tin sau kiểm tra</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Số cuộn chỉ đạt </strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.trueCone}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số cuộn chỉ lỗi:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.falseCone}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Độ đồng đều ánh màu của các cuộn chỉ:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.colorUniformity} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.windingRiskAssessment.colorUniformity} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Loang màu của cuộn chỉ sau côn:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.colorFading} ? 'Đạt' : 'Không đạt'"
+                                                  th:style="${riskSolution.windingRiskAssessment.colorFading} ? 'color: green' : 'color: red'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Mức độ lỗi:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.errorLevel} ? 'Nặng' : 'Nhẹ'">
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.errorDetails}">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Người Kiểm tra:</strong>
+                                            <span th:text="${riskSolution.windingRiskAssessment.createBy.username}">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <!-- Solution Info -->
                             <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null}">
@@ -565,8 +628,10 @@
                                             <strong>Mã phiếu:</strong> <span th:text="${riskSolution.id}"></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <strong>Loại sợi:</strong> <span
-                                                th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <strong>Loại sợi:</strong>
+                                            <span th:if="${riskSolution.dyeRiskAssessment != null}"  th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.windingRiskAssessment != null}"  th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.packagingRiskAssessment != null}"  th:text="${riskSolution.packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Khối lượng:</strong> <span
@@ -640,10 +705,16 @@
                     <form id="submitRfqForm" th:action="@{/risk-solution/technical/save-solution/{id}(id=${riskSolution.id})}" th:object="${riskSolution}" method="post">
                         <input type="hidden" name="rfqId" th:value="${riskSolution.id}">
                         <div class="form-group">
-                            <label for="threadType" class="form-label"><strong>Loại sợi:</strong></label>
-                            <input type="text" class="form-control" id="threadType" name="threadType"
-                                   th:value="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"
-                                   readonly>
+                            <label for="threadTypeDye" th:if="${riskSolution.dyeRiskAssessment != null}" class="form-label"><strong>Loại sợi:</strong></label>
+                            <input type="text" class="form-control" id="threadTypeDye" name="threadType"
+                                   th:if="${riskSolution.dyeRiskAssessment != null}"
+                                   th:value="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}" readonly>
+
+                            <label for="threadTypeWinding" th:if="${riskSolution.windingRiskAssessment != null}" class="form-label"><strong>Loại sợi:</strong></label>
+                            <input type="text" class="form-control" id="threadTypeWinding" name="threadType"
+                                   th:if="${riskSolution.windingRiskAssessment != null}"
+                                   th:value="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}" readonly>
+
                         </div>
                         <div class="form-group">
                             <label for="weightNeed"  class="form-label"><strong>Khối lượng cần cấp (kg):</strong></label>

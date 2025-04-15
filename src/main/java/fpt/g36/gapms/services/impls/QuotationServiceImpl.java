@@ -4,15 +4,13 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.quotation.*;
 import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.models.mapper.QuotationMapper;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.CateBrandPriceService;
 import fpt.g36.gapms.services.QuotationService;
 import fpt.g36.gapms.services.RfqDetailService;
 import fpt.g36.gapms.services.RfqService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +30,11 @@ public class QuotationServiceImpl implements QuotationService {
     private final CateBrandPriceService cateBrandPriceService;
     private final RfqService rfqService;
     private final RfqDetailService rfqDetailService;
+    private final QuotationMapper quotationMapper;
     private PurchaseOrderRepository purchaseOrderRepository;
     private PurchaseOrderDetailRepository purchaseOrderDetailRepository;
 
-    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService, RfqDetailService rfqDetailService,PurchaseOrderDetailRepository purchaseOrderDetailRepository) {
+    public QuotationServiceImpl(QuotationRepository quotationRepository, BrandRepository brandRepository, CategoryRepository categoryRepository, ProductRepository productRepository, CateBrandPriceService cateBrandPriceService, PurchaseOrderRepository purchaseOrderRepository, RfqService rfqService, RfqDetailService rfqDetailService, PurchaseOrderDetailRepository purchaseOrderDetailRepository, QuotationMapper quotationMapper) {
 
         this.quotationRepository = quotationRepository;
         this.brandRepository = brandRepository;
@@ -46,6 +45,7 @@ public class QuotationServiceImpl implements QuotationService {
         this.purchaseOrderRepository  = purchaseOrderRepository;
         this.rfqDetailService = rfqDetailService;
         this.purchaseOrderDetailRepository  = purchaseOrderDetailRepository;
+        this.quotationMapper = quotationMapper;
     }
 
     @Override
@@ -85,15 +85,15 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public Page<QuotationListDTO> getAllQuotations(String search, String product, String brand, String category, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<Object[]> rawResults = quotationRepository.findAllWithFilters(search, product, brand, category, pageable);
+    public Page<QuotationListDTO> getAllQuotations(String search, String product, String brand, String category, String status, int page, int size, String sortField, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Object[]> rawResults = quotationRepository.findAllWithFilters(search, product, brand, category, status, pageable);
 
         Map<Long, QuotationListDTO> quotationMap = new HashMap<>();
         for (Object[] row : rawResults.getContent()) {
             Long quotationId = (Long) row[0];
             String userName = (String) row[1];
-            BaseEnum isAccepted = BaseEnum.valueOf((String) row[2]);
+            BaseEnum isAccepted = row[2] != null ? BaseEnum.valueOf((String) row[2]) : null;
             String productName = (String) row[3];
             String brandName = (String) row[4];
             String categoryName = (String) row[5];
@@ -123,8 +123,49 @@ public class QuotationServiceImpl implements QuotationService {
             quotationMap.get(quotationId).getProducts().add(productDetail);
         }
 
-        List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
+        List<QuotationListDTO> content = getListDTOS(sortDir, quotationMap);
+
         return new PageImpl<>(content, pageable, rawResults.getTotalElements());
+    }
+
+    private List<QuotationListDTO> getListDTOS(String sortDir, Map<Long, QuotationListDTO> quotationMap) {
+        List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
+
+        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // and then by createAt
+        content.sort((q1, q2) -> {
+            int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());
+            if (statusCompare != 0) {
+                return statusCompare;
+            }
+
+            // Then sort by createAt (ascending or descending based on sortDir)
+            if ("asc".equals(sortDir)) {
+                return q1.getCreateAt().compareTo(q2.getCreateAt());
+            } else {
+                return q2.getCreateAt().compareTo(q1.getCreateAt());
+            }
+        });
+        return content;
+    }
+
+    private int compareStatus(BaseEnum status1, BaseEnum status2) {
+        if (status1 == status2) return 0;
+        if (status1 == null) return -1;
+        if (status2 == null) return 1;
+
+        // Define priority order
+        Map<BaseEnum, Integer> priorityMap = new HashMap<>();
+        priorityMap.put(BaseEnum.DRAFT, 1);
+        priorityMap.put(BaseEnum.NOT_APPROVED, 2);
+        priorityMap.put(BaseEnum.WAIT_FOR_APPROVAL, 3);
+        priorityMap.put(BaseEnum.APPROVED, 4);
+        priorityMap.put(BaseEnum.CANCELED, 5);
+
+        Integer priority1 = priorityMap.getOrDefault(status1, 99);
+        Integer priority2 = priorityMap.getOrDefault(status2, 99);
+
+        return priority1.compareTo(priority2);
     }
 
     @Override
@@ -278,6 +319,45 @@ public class QuotationServiceImpl implements QuotationService {
             throw new RuntimeException("Quotation status cannot valid");
         }
         quotationRepository.save(quotation);
+    }
+
+    @Override
+    public List<BaseEnum> getAllQuotationStatuses() {
+        return Arrays.asList(BaseEnum.DRAFT, BaseEnum.NOT_APPROVED, BaseEnum.WAIT_FOR_APPROVAL, BaseEnum.APPROVED, BaseEnum.CANCELED);
+    }
+
+    @Override
+    public Page<QuotationDTO> getAllQuotation(String search,  BaseEnum status, int page, int size, String sortField, String sortDir) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Quotation> rawResults = quotationRepository.searchAndFilter(search, status, pageable);
+
+        List<QuotationDTO> quotationDTOs = new ArrayList<>(quotationMapper.toListDTO(rawResults));
+
+        System.err.println("quotationDTOs: " + quotationDTOs.size());
+
+        sortQuotationDTOs(quotationDTOs, sortDir);
+
+        return new PageImpl<>(quotationDTOs, pageable, rawResults.getTotalElements());
+    }
+
+    private void sortQuotationDTOs(List<QuotationDTO> content, String sortDir) {
+        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // and then by createAt
+        content.sort((q1, q2) -> {
+            int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());
+            if (statusCompare != 0) {
+                return statusCompare;
+            }
+
+            // Then sort by createAt (ascending or descending based on sortDir)
+            if ("asc".equals(sortDir)) {
+                return q1.getCreateAt().compareTo(q2.getCreateAt());
+            } else {
+                return q2.getCreateAt().compareTo(q1.getCreateAt());
+            }
+        });
     }
 
     private BaseEnum getStatusByQuotationId(Long id) {

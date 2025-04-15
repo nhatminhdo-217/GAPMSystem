@@ -466,6 +466,9 @@
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
                                             <i class="fas fa-check-circle"></i> Đã Nhuộm
                                         </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Sửa
+                                        </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Nhuộm
                                         </span>

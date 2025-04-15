@@ -197,6 +197,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 if (i < selectedDyeMachineIds.size()) {
                     Long dyeMachineId = selectedDyeMachineIds.get(i);
                     List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                  
                     //Quét trong list máy nhuộm khả dụng xem có rảnh thật khôgn
                     if (availableDyeMachines.stream().noneMatch(m -> m.getId().equals(dyeMachineId))) {
                         System.err.println("Lỗi: Máy nhuộm được chọn với ID " + dyeMachineId
@@ -364,6 +365,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
         // Tính toán deadline cho quá trình nhuộm
         LocalDateTime dyeDeadline = calculateDyeDeadline(dyeStage.getPlannedStart(), dyeBatches, workOrderDetail);
+
         validateDeadline(dyeDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Dye Stage", workOrderDetail.getProductionOrderDetail().getId());
 
         dyeStage.setDeadline(dyeDeadline);
@@ -506,6 +508,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 System.err.println("Lỗi: Cone Batch Quantity (" + coneBatchQuantity + ") " +
                         "không nằm trong khoảng [" + coneMin + ", " + coneMax + "] " +
                         "cho ProductionOrderDetail ID: " + detailId);
+
             }
             throw new IllegalStateException("Máy nhuộm không hợp lệ cho ProductionOrderDetail ID: " + detailId);
         }
@@ -555,6 +558,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                     + " cho ProductionOrderDetail ID: " + detailId);
             throw new IllegalStateException("Thời hạn của " + stageName
                     + " vượt quá ngày giao hàng thực tế cho chi tiết " + detailId);
+
         }
     }
 
@@ -609,6 +613,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         WindingMachine windingMachine = selectWindingMachine(workOrderDetail, windingMachineIds, windingMachineIndex);
 
         int windingBatches = workOrderDetail.getDyeStage().getDyebatches().size();
+
         LocalDateTime windingDeadline = calculateWindingDeadline(windingStage.getPlannedStart(), windingBatches, workOrderDetail);
         validateDeadline(windingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Winding Stage", workOrderDetail.getProductionOrderDetail().getId());
 
@@ -642,8 +647,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         windingStage.setWorkOrderDetail(workOrderDetail);
         windingStage.setDyeStage(workOrderDetail.getDyeStage());
         int dyeBatches = workOrderDetail.getDyeStage().getDyebatches().size();
-        windingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getDyeStage().getPlannedStart().plusMinutes(270)
-                : workOrderDetail.getDyeStage().getDeadline());
+        windingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getDyeStage().getPlannedStart().plusMinutes(270) : workOrderDetail.getDyeStage().getDeadline());
         windingStage.setWorkStatus(WorkEnum.NOT_STARTED);
         System.err.println("Đã khởi tạo WindingStage cho WorkOrderDetail ID: "
                 + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
@@ -736,7 +740,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         int packagingBatches = workOrderDetail.getDyeStage().getDyebatches().size();
 
         BigDecimal totalPackagingDurationMinutes = calculatePackagingDuration(workOrderDetail, packagingBatches);
+
         LocalDateTime packagingDeadline = calculatePackagingDeadline(packagingStage.getPlannedStart(), totalPackagingDurationMinutes, workOrderDetail);
+
         validateDeadline(packagingDeadline, workOrderDetail.getWorkOrder().getDeadline(), "Packaging Stage", workOrderDetail.getProductionOrderDetail().getId());
 
         packagingStage.setDeadline(packagingDeadline);
@@ -768,8 +774,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         packagingStage.setWorkOrderDetail(workOrderDetail);
         packagingStage.setWindingStage(workOrderDetail.getWindingStage());
         int dyeBatches = workOrderDetail.getDyeStage().getDyebatches().size();
-        packagingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getWindingStage().getPlannedStart().plusMinutes(150)
-                : workOrderDetail.getWindingStage().getDeadline());
+        packagingStage.setPlannedStart(dyeBatches > 1 ? workOrderDetail.getWindingStage().getPlannedStart().plusMinutes(150) : workOrderDetail.getWindingStage().getDeadline());
         packagingStage.setWorkStatus(WorkEnum.NOT_STARTED);
         System.err.println("Đã khởi tạo PackagingStage cho WorkOrderDetail ID: "
                 + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
@@ -790,9 +795,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             BigDecimal productsInBatch = dyeBatch.getCone_batch_weight().divide(convertRate);
             totalPackagingDurationMinutes = totalPackagingDurationMinutes.add(productsInBatch.multiply(packagingTimePerProduct));
         }
+
         System.err.println("Đã tính toán thời gian PackagingStage: "
                 + totalPackagingDurationMinutes + " phút cho WorkOrderDetail ID: "
                 + (workOrderDetail.getId() != null ? workOrderDetail.getId() : "null"));
+
         return totalPackagingDurationMinutes;
     }
 
@@ -850,6 +857,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             long batchDurationMinutes = productsInBatch.multiply(packagingTimePerProduct).longValue();
 
             //
+
             packagingBatch.setPlannedStart(i == 0 ? packagingStage.getPlannedStart() : packagingBatchList.get(i - 1).getDeadline());
             packagingBatch.setDeadline(packagingBatch.getPlannedStart().plusMinutes(batchDurationMinutes));
             assignTeamLeaderAndQAForPackagingBatch(packagingBatch);
@@ -890,6 +898,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy trưởng nhóm cho ca làm việc " + shift.getId()));
     }
 
+
     private User findQAForShift(Shift shift, StageType stageType) {
         String requiredRole;
         switch (stageType) {
@@ -911,6 +920,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 .filter(user -> user.getRole().getName().equals(requiredRole))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Không tìm thấy QA cho giai đoạn " + stageType + " trong ca làm việc " + shift.getShiftName()));
+
     }
 
     private Shift findShiftForTime(LocalTime time, LocalDate date) {
@@ -923,6 +933,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             }
             return time.isAfter(shiftStart) && time.isBefore(shiftEnd);
         }).findFirst().orElseThrow(() -> new IllegalStateException("Không tìm thấy ca làm việc cho thời gian: " + time + " vào ngày " + date));
+
     }
 
     private void assignTeamLeadersAndQAForDyeStage(DyeStage dyeStage) {

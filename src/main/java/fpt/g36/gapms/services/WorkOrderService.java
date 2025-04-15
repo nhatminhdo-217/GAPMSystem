@@ -49,4 +49,5 @@ public interface WorkOrderService {
 //                              List<BigDecimal> additionalWeight);
 
     void deleteWorkOrderDetails(Long workOrderId);
+
 }

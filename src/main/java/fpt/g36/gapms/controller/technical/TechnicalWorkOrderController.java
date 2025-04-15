@@ -432,8 +432,7 @@ public class TechnicalWorkOrderController {
                     return "technical/create-work-order";
                 }
 
-                if (form.getSelectedDyeMachineIds().size() != productionOrder.getProductionOrderDetails().size() ||
-                        form.getSelectedWindingMachineIds().size() != productionOrder.getProductionOrderDetails().size()) {
+                if (form.getSelectedDyeMachineIds().size() != productionOrder.getProductionOrderDetails().size() || form.getSelectedWindingMachineIds().size() != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Selected Dye machine ids " + form.getSelectedDyeMachineIds());
                     model.addAttribute("error", "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
                     return "technical/create-work-order";
@@ -551,7 +550,6 @@ public class TechnicalWorkOrderController {
                 List<WindingMachine> freeWindingMachines = machineService.findFreeWindingMachines(plannedStartAt, plannedEndAt);
                 List<DyeMachine> queuedDyeMachines = machineService.findQueuedDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
                 List<WindingMachine> queuedWindingMachines = machineService.findQueuedWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-
                 List<BigDecimal> additionalWeights = new ArrayList<>();
                 for (WorkOrderDetail detail : workOrder.getWorkOrderDetails()) {
                     additionalWeights.add(detail.getAdditionalWeight());
@@ -615,7 +613,6 @@ public class TechnicalWorkOrderController {
                 List<Long> selectedWindingMachineIds = new ArrayList<>();
 
                 Map<String, String[]> parameterMap = request.getParameterMap();
-
                 for (int i = 0; ; i++) {
                     String paramName = "selectedDyeMachineIds[" + i + "]";
                     if (!parameterMap.containsKey(paramName)) {
@@ -626,7 +623,6 @@ public class TechnicalWorkOrderController {
                         selectedDyeMachineIds.add(Long.parseLong(value));
                     }
                 }
-
                 for (int i = 0; ; i++) {
                     String paramName = "selectedWindingMachineIds[" + i + "]";
                     if (!parameterMap.containsKey(paramName)) {
@@ -662,7 +658,7 @@ public class TechnicalWorkOrderController {
                     model.addAttribute("error", "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
                     return "technical/update-work-order";
                 }
-
+              
                 if (additionalWeights == null || additionalWeights.isEmpty() ||
                         additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Additional Weights: " + additionalWeights);

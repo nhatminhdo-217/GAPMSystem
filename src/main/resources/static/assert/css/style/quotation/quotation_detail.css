@@ -1,37 +1,298 @@
-.product-name {
-    font-size: 20px;
+/* Custom Colors and Variables */
+:root {
+    --primary-color: #009CFF;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --border-radius: 0.5rem;
+    --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --transition: all 0.3s ease;
+}
+
+/* General Enhancements */
+body {
+    background-color: #f8f9fa;
+}
+
+.content-wrapper {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+.page-header h3 {
+    color: var(--primary-color);
     font-weight: 600;
 }
 
-.expected-date-header {
-    font-size: 20px;
+.section-title {
+    position: relative;
+    color: var(--dark-color);
     font-weight: 600;
-    color: black;
+    margin-bottom: 1.5rem;
+    padding-left: 0.75rem;
 }
 
-.actual-date-header {
-    font-size: 20px;
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* Card Styles */
+.info-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    height: 100%;
+    transition: var(--transition);
+}
+
+.info-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.info-card .card-header {
+    background-color: var(--primary-color);
+    color: white;
     font-weight: 600;
-    color: black;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
 
-.reason-header {
-    font-size: 20px;
+.info-card .card-body {
+    padding: 1.25rem;
+}
+
+.info-item {
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
     font-weight: 600;
-    color: black;
+    color: var(--secondary-color);
+    min-width: 140px;
 }
 
-.text-green {
-    color: green;
-    font-weight: bold;
+.info-value {
+    flex: 1;
+    color: var(--dark-color);
 }
 
-.text-yellow {
-    color: orange;
-    font-weight: bold;
+/* Status badges */
+.status-badge {
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
 }
 
-.text-gray {
-    color: gray;
-    font-weight: bold;
+.status-approved {
+    background-color: #d1e7dd;
+    color: #0a3622;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.status-draft {
+    background-color: #e2e3e5;
+    color: #41464b;
+}
+
+.status-wait {
+    background-color: #b8daff;
+    color: #004085;
+}
+
+/* Table Enhancements */
+.product-table {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.product-table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.product-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+.product-table tr:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.product-table td {
+    vertical-align: middle;
+}
+
+/* Button Styles */
+.btn-action {
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: var(--transition);
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0082d5;
+    border-color: #0082d5;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Color Box for Product Colors */
+.color-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+/* Responsive styles */
+@media (max-width: 767.98px) {
+    .container-fluid.row {
+        padding: 0;
+    }
+
+    .info-card .card-body {
+        padding: 1rem;
+    }
+
+    .info-label {
+        min-width: 100%;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        min-width: 100%;
+    }
+
+    /* Table responsive styles */
+    .table-responsive-stack thead {
+        display: none;
+    }
+
+    .table-responsive-stack tr {
+        display: block;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+
+    .table-responsive-stack td {
+        display: block;
+        text-align: right;
+        padding: 0.5rem 0;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table-responsive-stack td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        position: absolute;
+        left: 0;
+        width: 45%;
+        text-align: left;
+    }
+
+    .page-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+
+    /* Fixed action buttons at bottom for mobile */
+    .action-buttons-fixed {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        padding: 10px 15px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .action-buttons-fixed .btn-action {
+        margin-bottom: 0.5rem;
+        width: 100%;
+        display: block;
+    }
+
+    .action-buttons-fixed .btn-action:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Add padding at bottom to prevent content from being hidden behind fixed buttons */
+    .content-wrapper {
+        padding-bottom: 120px;
+    }
 }

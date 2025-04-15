@@ -31,6 +31,7 @@ public class WindingBatchServiceImpl implements WindingBatchService {
     public void changeStatusWindingBatchInProcess(Long wbId, User leader) {
         WindingBatch windingBatch = windingBatchRepository.findById(wbId).orElseThrow(() -> new RuntimeException("wbId not found"));
         windingBatch.setWorkStatus(WorkEnum.IN_PROGRESS);
+        windingBatch.setPass(null);
         windingBatch.getWindingStage().setWorkStatus(WorkEnum.IN_PROGRESS);
         windingBatch.setLeaderStart(leader);
         windingBatchRepository.save(windingBatch);

@@ -26,7 +26,7 @@ public class WindingRiskAssessment extends BaseEntity {
     private Boolean isPass;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "create_by", nullable = false)
+    @JoinColumn(name = "create_by")
     private User createBy;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -10,6 +10,7 @@ import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.ContractService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
@@ -43,21 +44,30 @@ public class PurchaseOrderController {
 
     private final UserUtils userUtils;
     private final PurchaseOrderService purchaseOrderService;
+    private final PurchaseOrderRepository purchaseOrderRepository;
     private final ContractService contractService;
     private final UserService userService;
     private static String latestImagePath = null;
     private final ProductionOrderService productionOrderService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
+        this.purchaseOrderRepository = purchaseOrderRepository;
         this.contractService = contractService;
         this.userService = userService;
         this.productionOrderService = productionOrderService;
     }
 
     @GetMapping("/list")
-    public String listPurchaseOrders(Model model) {
+    public String listPurchaseOrders(
+            @RequestParam(defaultValue = "", required = false) String search,
+            @RequestParam(required = false) BaseEnum status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "createAt", required = false) String sortField,
+            @RequestParam(defaultValue = "desc", required = false) String sortDir,
+            Model model) {
 
         userUtils.getOptionalUser(model);
 
@@ -65,7 +75,31 @@ public class PurchaseOrderController {
 
         List<PurchaseOrderDTO> ordersByRole = purchaseOrderService.getAllPurchaseOrderByRole(currUser);
 
-        model.addAttribute("orders", ordersByRole);
+        Page<PurchaseOrderDTO> purchaseOrderPage = purchaseOrderService.getAllByRole(currUser, search, status, page, size, sortField, sortDir);
+
+        model.addAttribute("purchaseOrderPage", purchaseOrderPage);
+        model.addAttribute("search", search);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", purchaseOrderPage.getTotalPages());
+        model.addAttribute("totalItems", purchaseOrderPage.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        // Lấy danh sách tất cả các trạng thái của PurchaseOrder
+        List<BaseEnum> statuses = new ArrayList<>();
+        Collections.addAll(statuses, BaseEnum.values());
+
+        int totalPages = purchaseOrderPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = java.util.stream.IntStream.rangeClosed(0, totalPages - 1)
+                    .boxed()
+                    .collect(java.util.stream.Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        model.addAttribute("statuses", statuses);
 
         return "purchase-order/list_purchase_order";
     }
@@ -220,6 +254,11 @@ public class PurchaseOrderController {
         }
         try {
             Contract contract = contractService.createContract(id, contractDTO, file);
+
+            PurchaseOrder purchaseOrder =  purchaseOrderService.getPurchaseOrderById(id).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+            purchaseOrder.setContracts(contract);
+            purchaseOrderRepository.save(purchaseOrder);
+
             redirectAttributes.addFlashAttribute("success", "Tạo hợp đồng thành công");
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){

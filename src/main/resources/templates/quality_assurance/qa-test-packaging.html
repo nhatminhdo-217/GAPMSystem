@@ -713,7 +713,7 @@
                                     </div>
 
                                     <!-- Khu vực nhập liệu khi chọn "False" -->
-                                    <div id="failNoteSection" class="note-section" style="display: none;">
+                                   <!-- <div id="failNoteSection" class="note-section" style="display: none;">
                                         <label>Ghi Chú Lỗi:</label>
                                         <textarea name="errorDetails" rows="3" th:field="*{errorDetails}"
                                                   class="form-control" placeholder="Nhập ghi chú nếu có lỗi" oninvalid="this.setCustomValidity('Trường này không được bỏ trống')"
@@ -726,14 +726,19 @@
                                             <option th:value="true">Lỗi nặng</option>
                                             <option th:value="false">Lỗi nhẹ</option>
                                         </select>
-                                    </div>
+                                    </div>-->
                                 </div>
 
 
 
                                 <!-- Nút hành động -->
                                 <div class="action-buttons">
-                                    <button type="submit" class="save-btn">Lưu</button>
+                                    <button type="submit" class="save-btn"
+                                            th:disabled="${packagingRiskAssessment.pass == true}"
+                                            th:style="${packagingRiskAssessment.pass == true} ? 'background-color: #6c757d; color: white; opacity: 0.6; cursor: not-allowed; border: 1px solid #5a6268; padding: 8px 16px; border-radius: 4px;' : 'background-color: #28a745; color: white; cursor: pointer; border: none; padding: 8px 16px; border-radius: 4px;'"
+                                    >
+                                        Lưu
+                                    </button>
                                     <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingRiskAssessment.packagingBatch.packagingStage.id})}"
                                        class="cancel-btn">Hủy</a>
 

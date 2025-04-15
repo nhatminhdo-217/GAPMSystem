@@ -26,11 +26,9 @@
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
-    <style>
-        a {
-            text-decoration: none;
-        }
-    </style>
+    <!-- Custom Stylesheet -->
+    <link href="/assert/css/style/purchase-order/purchase-order-detail.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -55,7 +53,8 @@
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
         <!-- Navbar End -->
 
-        <div class="container-fluid d-flex flex-column m-2">
+        <div class="container-fluid pt-4 px-4">
+            <!-- Alerts -->
             <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
                 <span th:text="${success}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -68,124 +67,300 @@
                 <span th:text="${error}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-                <ul class="breadcrumb">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/purchase-order/list}">Đơn đặt hàng</a></li>
                     <li class="breadcrumb-item active">Chi tiết</li>
-                </ul>
-                <div class="heading mt-3">
-                    <h3>Đơn đặt hàng</h3>
-                </div>
-                <div id="order-info" class="row">
-                    <div class="col m-3">
-                        <p><b>Tên khách hàng: </b> <span th:text="${orderInfo.customerName}"></span> </p>
-                        <p><b>Công ty: </b> <span th:text="${orderInfo.companyName}"></span></p>
-                        <p><b>Mã thuế: </b> <span th:text="${orderInfo.taxNumber}"></span></p>
-                        <p><b>Địa chỉ: </b> <span th:text="${orderInfo.companyAddress}"></span></p>
-                        <div th:if="${currUser.role.name == 'SALE_STAFF'}">
-                            <div th:if="${orderInfo.status.name() ==  'DRAFT'}">
-                                <p><b>Hợp đồng: </b> Hãy tạo đơn để tải ảnh lên</p>
+                </ol>
+            </nav>
+
+            <!-- Page Title -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="mb-0">Chi tiết đơn đặt hàng</h3>
+                <a th:href="@{/purchase-order/list}" class="btn btn-sm btn-outline-secondary d-md-none">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+            </div>
+
+            <!-- Order Information Cards -->
+            <div class="row">
+                <!-- Customer Information Card -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="order-info-card h-100">
+                        <div class="card-header">
+                            <h5 class="m-0">Thông tin khách hàng</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Tên khách hàng:</div>
+                                <div class="col-7 col-md-8 fw-bold" th:text="${orderInfo.customerName}"></div>
                             </div>
-                            <div th:unless="${orderInfo.status.name() ==  'DRAFT'}">
-                                <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
-                                <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}"> Tải ảnh lên</a> </p>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Công ty:</div>
+                                <div class="col-7 col-md-8" th:text="${orderInfo.companyName}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Mã thuế:</div>
+                                <div class="col-7 col-md-8" th:text="${orderInfo.taxNumber}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Địa chỉ:</div>
+                                <div class="col-7 col-md-8" th:text="${orderInfo.companyAddress}"></div>
+                            </div>
+
+                            <!-- Contract Information -->
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Hợp đồng:</div>
+                                <div class="col-7 col-md-8">
+                                    <div th:if="${currUser.role.name == 'SALE_STAFF'}">
+                                        <div th:if="${orderInfo.status.name() ==  'DRAFT'}">
+                                            <span class="text-muted">Hãy tạo đơn để tải ảnh lên</span>
+                                        </div>
+                                        <div th:unless="${orderInfo.status.name() ==  'DRAFT'}">
+                                            <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
+                                            </a>
+                                            <a th:unless="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-upload"></i> Tải ảnh lên
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
+                                        <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
+                                        </a>
+                                        <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi nhân viên tải ảnh lên</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
-                            <p th:if="${orderInfo.contractId != null}"><b>Hợp đồng: </b> <a th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}">Ấn để xem</a></p>
-                            <p th:unless="${orderInfo.contractId != null}"><b>Hợp đồng: </b> Hãy đợi nhân viên tải ảnh lên.</p>
+                    </div>
+                </div>
+
+                <!-- Order Status Card -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="order-info-card h-100">
+                        <div class="card-header">
+                            <h5 class="m-0">Trạng thái đơn hàng</h5>
                         </div>
-
-
-                    </div>
-                    <div class="col m-3">
-                        <p><b>Trạng thái: </b>
-                            <span th:switch="${orderInfo.status}">
-                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
-                                               style="color: green;">
-                                         </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
-                                                style="color: #ffc107;">
-                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'" style="color: #ffc107;"></span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'" style="color: #ffc107;"></span>
-                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
-                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
-                            </span>
-                        </p>
-                        <p><b>Ngày giao mong muốn: </b> <span th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyy')}"></span> </p>
-                        <p><b>Ngày thực giao: </b> <span th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyy')}"></span></p>
-                        <p><b>Giải pháp: </b> <a th:href="@{'/purchase-order/detail/solution/' + ${orderInfo.solutionId}}">Ấn để xem</a></p>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="mt-3">
-                    <h4>Chi tiết đơn hàng</h4>
-                </div>
-                <div>
-                    <table id="order-table" class="table table-hover mt-3">
-                        <thead>
-                        <tr>
-                            <th>Sản phẩm</th>
-                            <th>Thương hiệu</th>
-                            <th>Danh mục</th>
-                            <th>Ghi chú</th>
-                            <th>Số lượng</th>
-                            <th>Giá theo màu</th>
-                            <th>Thành tiền (VND)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="item : ${items}">
-                            <td th:text="${item.productName}"></td>
-                            <td th:text="${item.brandName}"></td>
-                            <td th:text="${item.categoryName}"></td>
-                            <td th:text="${item.noteColor}"></td>
-                            <td th:text="${item.quantity}"></td>
-                            <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></td>
-                            <td th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <hr>
-
-                <div class="d-flex flex-column mt-3">
-                    <p><strong>Ngày thực giao: </strong> 11-02-2025</p>
-                    <div class="d-flex">
-                        <p style="margin-right: 10px"><strong>Tổng tiền: </strong></p>
-                        <span th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT')}" style="margin-right: 3px"></span> VND
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Trạng thái:</div>
+                                <div class="col-7 col-md-8">
+                                    <span th:switch="${orderInfo.status}" class="status-badge"
+                                          th:classappend="${
+                                          orderInfo.status == T(fpt.g36.gapms.enums.BaseEnum).APPROVED ? 'status-approved' :
+                                          orderInfo.status == T(fpt.g36.gapms.enums.BaseEnum).CANCELED ? 'status-canceled' : 'status-pending'
+                                          }">
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'"></span>
+                                        <span th:case="*" th:text="'Trạng thái không xác định'"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Ngày giao mong muốn:</div>
+                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyyy')}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Ngày thực giao:</div>
+                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted">Giải pháp:</div>
+                                <div class="col-7 col-md-8">
+                                    <a th:href="@{'/purchase-order/detail/solution/' + ${orderInfo.solutionId}}" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-info-circle"></i> Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <hr>
+            <!-- Order Details -->
+            <div class="order-info-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">Chi tiết đơn hàng</h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary d-md-none" id="toggleViewBtn">
+                        <i class="bi bi-table"></i> Đổi chế độ xem
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Desktop Table View -->
+                    <div class="table-responsive desktop-table">
+                        <table class="table table-hover m-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Thương hiệu</th>
+                                <th>Danh mục</th>
+                                <th>Ghi chú</th>
+                                <th>Số lượng</th>
+                                <th>Giá (VND)</th>
+                                <th>Thành tiền (VND)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${items}">
+                                <td th:text="${item.productName}"></td>
+                                <td th:text="${item.brandName}"></td>
+                                <td th:text="${item.categoryName}"></td>
+                                <td th:text="${item.noteColor}"></td>
+                                <td th:text="${item.quantity}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <div class="mt-3 d-flex align-items-center">
-                    <div th:if="${currUser.role.name == 'SALE_STAFF'}" class="mt-3 d-flex align-items-center">
-                        <form th:if="${orderInfo.status.name() == 'DRAFT'}"
+                    <!-- Mobile Card View -->
+                    <div class="mobile-table">
+                        <div class="mobile-table-items">
+                            <div th:each="item : ${items}" class="mobile-table-card mb-3">
+                                <div class="card-body p-3">
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Sản phẩm:</div>
+                                        <div class="col-7" th:text="${item.productName}"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Thương hiệu:</div>
+                                        <div class="col-7" th:text="${item.brandName}"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Danh mục:</div>
+                                        <div class="col-7" th:text="${item.categoryName}"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Ghi chú:</div>
+                                        <div class="col-7" th:text="${item.noteColor}"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Số lượng:</div>
+                                        <div class="col-7" th:text="${item.quantity}"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 label">Giá (VND):</div>
+                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5 label">Thành tiền:</div>
+                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-info-card mb-4">
+                <div class="card-header">
+                    <h5 class="m-0">Tổng kết đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-5 col-md-3 text-muted">Ngày thực giao:</div>
+                        <div class="col-7 col-md-9 fw-bold" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5 col-md-3 text-muted">Tổng tiền:</div>
+                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT') + ' VND'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Desktop -->
+            <div class="action-buttons d-none d-md-flex mb-4">
+                <!-- SALE_STAFF Actions -->
+                <div th:if="${currUser.role.name == 'SALE_STAFF'}" class="d-flex gap-2">
+                    <form th:if="${orderInfo.status.name() == 'DRAFT'}"
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Xác nhận
+                        </button>
+                    </form>
+                    <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Gửi phê duyệt
+                        </button>
+                    </form>
+                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
+
+                <!-- SALE_MANAGER Actions -->
+                <div th:if="${currUser.role.name == 'SALE_MANAGER'}" class="d-flex gap-2">
+                    <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-lg me-1"></i> Phê duyệt
+                        </button>
+                    </form>
+                    <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-x-lg me-1"></i> Từ chối
+                        </button>
+                    </form>
+                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary" th:if="${orderInfo.status.name() == 'APPROVED' or orderInfo.status.name() == 'CANCELED'}">
+                        <i class="bi bi-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Action Bar -->
+            <div class="mobile-action-bar d-md-none">
+                <!-- SALE_STAFF Actions -->
+                <div th:if="${currUser.role.name == 'SALE_STAFF'}" class="d-flex w-100 justify-content-between">
+                    <a th:href="@{/purchase-order/list}" class="btn btn-sm btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <div>
+                        <form th:if="${orderInfo.status.name() == 'DRAFT'}" class="d-inline"
                               th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                            <button type="submit" class="btn btn-primary">Confirm</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-check-circle"></i> Xác nhận
+                            </button>
                         </form>
-                        <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}"
+                        <form th:if="${orderInfo.status.name() == 'NOT_APPROVED'}" class="d-inline"
                               th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-send"></i> Gửi phê duyệt
+                            </button>
                         </form>
-                        <a th:href="@{/purchase-order/list}" class="btn btn-secondary">Back</a>
-                    </div>
-                    <div th:if="${currUser.role.name == 'SALE_MANAGER'}" class="mt-3 d-flex align-items-center">
-                        <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
-                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
-                            <button type="submit" class="btn btn-primary">Approve</button>
-                        </form>
-                        <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
-                              th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post">
-                            <button type="submit" class="btn btn-danger">Cancel</button>
-                        </form>
-                        <a th:href="@{/purchase-order/list}" class="btn btn-secondary" th:if="${orderInfo.status.name() == 'APPROVED' or orderInfo.status.name() == 'CANCELED'}">Back</a>
                     </div>
                 </div>
+
+                <!-- SALE_MANAGER Actions -->
+                <div th:if="${currUser.role.name == 'SALE_MANAGER'}" class="d-flex w-100 justify-content-between">
+                    <a th:href="@{/purchase-order/list}" class="btn btn-sm btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <div th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}">
+                        <form th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="bi bi-x-lg"></i> Từ chối
+                            </button>
+                        </form>
+                        <form th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="bi bi-check-lg"></i> Phê duyệt
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Footer Start -->
@@ -211,5 +386,36 @@
     <!-- Template Javascript -->
     <script src="/assert/js/main.js"></script>
 
+<script>
+    // Toggle between table and card view on mobile
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleViewBtn = document.getElementById('toggleViewBtn');
+        const desktopTable = document.querySelector('.desktop-table');
+        const mobileTable = document.querySelector('.mobile-table');
+
+        if (toggleViewBtn) {
+            toggleViewBtn.addEventListener('click', function() {
+                if (desktopTable.style.display === 'none' || getComputedStyle(desktopTable).display === 'none') {
+                    desktopTable.style.display = 'table';
+                    mobileTable.style.display = 'none';
+                    toggleViewBtn.innerHTML = '<i class="bi bi-card-list"></i> Xem dạng thẻ';
+                } else {
+                    desktopTable.style.display = 'none';
+                    mobileTable.style.display = 'block';
+                    toggleViewBtn.innerHTML = '<i class="bi bi-table"></i> Xem dạng bảng';
+                }
+            });
+        }
+
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        });
+    });
+</script>
 </body>
 </html>

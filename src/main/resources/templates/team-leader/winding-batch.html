@@ -428,7 +428,7 @@
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
                                 <th>Số lượng</th>
-                                <th>LOẠI HÀNG</th>
+                                <th>Loại hàng</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
@@ -442,6 +442,9 @@
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
                                             <i class="fas fa-check-circle"></i> Đã Côn
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Sửa
                                         </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Côn
@@ -497,15 +500,15 @@
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
                             <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${ws.id})}"
-                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                               th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ws.dyeBatch.pass != true } ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
                             </a>
                             <button type="button"
                                     class="status-btn completed"
                                     th:onclick="'submitFormWithPhoto(\'form-' + ${ws.id} + '\')'"
-                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:classappend="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || ws.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>
