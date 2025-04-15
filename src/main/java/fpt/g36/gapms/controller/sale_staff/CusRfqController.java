@@ -2,11 +2,9 @@ package fpt.g36.gapms.controller.sale_staff;
 
 import fpt.g36.gapms.models.entities.Company;
 import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.Solution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.CompanyService;
 import fpt.g36.gapms.services.RfqService;
-import fpt.g36.gapms.services.SolutionService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
