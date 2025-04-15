@@ -180,6 +180,20 @@
             color: #333;
         }
 
+        /* Additional Weight Section (bên trong detail-content) */
+        .additional-weight-container {
+            margin-top: 15px; /* Giãn cách với bảng detail-table phía trên */
+            margin-bottom: 15px; /* Giãn cách với stage-section phía dưới */
+        }
+
+        .additional-weight-container label {
+            margin-bottom: 5px; /* Khoảng cách giữa nhãn và input */
+        }
+
+        .additional-weight-container .form-control {
+            padding: 8px 12px; /* Đảm bảo padding đồng đều với các input khác */
+        }
+
         /* Stage Section */
         .stage-section {
             margin-top: 15px;
@@ -213,6 +227,16 @@
             outline: none;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
             border-color: #007bff;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
         }
 
         .btn-success {
@@ -340,6 +364,11 @@
             .btn-success {
                 width: 100%;
             }
+
+            .additional-weight-container {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -421,14 +450,31 @@
                                                         <th>Sản phẩm</th>
                                                         <th>Màu</th>
                                                         <th>Số lượng</th>
+                                                        <th>Thread Mass (kg)</th>
                                                     </tr>
                                                     <tr>
                                                         <td th:text="${detail.id}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.quantity}"></td>
+                                                        <td th:text="${detail.thread_mass}"></td>
                                                     </tr>
                                                 </table>
+
+                                                <!-- Thêm trường nhập additionalWeight ngay trong detail-content -->
+                                                <div class="additional-weight-container">
+                                                    <label th:for="'additionalWeight-' + ${iterStat.index}">
+                                                        Trọng lượng bổ sung (kg):
+                                                    </label>
+                                                    <input type="number" step="0.01" min="0.4"
+                                                           class="form-control additional-weight"
+                                                           th:id="'additionalWeight-' + ${iterStat.index}"
+                                                           th:name="'additionalWeights[' + ${iterStat.index} + ']'"
+                                                           th:value="${workOrder.workOrderDetails[iterStat.index]?.additionalWeight}"
+                                                           required>
+                                                    <div class="invalid-feedback"
+                                                         th:id="'additionalWeightError-' + ${iterStat.index}"></div>
+                                                </div>
 
                                                 <!-- Dye Stage -->
                                                 <div class="stage-section">
@@ -443,7 +489,8 @@
                                                                 <option th:each="machine : ${freeDyeMachines}"
                                                                         th:value="${machine.id}"
                                                                         th:text="'Máy nhuộm ' + ${machine.id} + ' (Tối đa: ' + ${machine.maxWeight} + 'kg)'"
-                                                                        th:selected="${selectedDyeMachineIds[iterStat.index] != null and selectedDyeMachineIds[iterStat.index] == machine.id}"></option>
+                                                                        th:selected="${workOrder.workOrderDetails[iterStat.index]?.dyeStage?.dyeMachine?.id == machine.id}">
+                                                                </option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group" th:if="${!queuedDyeMachines.isEmpty()}">
@@ -456,7 +503,8 @@
                                                                 <option th:each="machine : ${queuedDyeMachines}"
                                                                         th:value="${machine.id}"
                                                                         th:text="'Máy nhuộm ' + ${machine.id} + ' (Tối đa: ' + ${machine.maxWeight} + 'kg)'"
-                                                                        th:selected="${selectedDyeMachineIds[iterStat.index] != null and selectedDyeMachineIds[iterStat.index] == machine.id}"></option>
+                                                                        th:selected="${workOrder.workOrderDetails[iterStat.index]?.dyeStage?.dyeMachine?.id == machine.id}">
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -482,7 +530,8 @@
                                                                 <option th:each="machine : ${freeWindingMachines}"
                                                                         th:value="${machine.id}"
                                                                         th:text="'Máy cuốn ' + ${machine.id}"
-                                                                        th:selected="${selectedWindingMachineIds[iterStat.index] != null and selectedWindingMachineIds[iterStat.index] == machine.id}"></option>
+                                                                        th:selected="${workOrder.workOrderDetails[iterStat.index]?.windingStage?.windingMachine?.id == machine.id}">
+                                                                </option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group"
@@ -496,7 +545,8 @@
                                                                 <option th:each="machine : ${queuedWindingMachines}"
                                                                         th:value="${machine.id}"
                                                                         th:text="'Máy cuốn ' + ${machine.id}"
-                                                                        th:selected="${selectedWindingMachineIds[iterStat.index] != null and selectedWindingMachineIds[iterStat.index] == machine.id}"></option>
+                                                                        th:selected="${workOrder.workOrderDetails[iterStat.index]?.windingStage?.windingMachine?.id == machine.id}">
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -566,9 +616,31 @@
             }
         });
 
+        // Hàm kiểm tra giá trị additionalWeights
+        function validateAdditionalWeights() {
+            var isValid = true;
+            $('.additional-weight').each(function (index) {
+                var value = parseFloat($(this).val());
+                var $input = $(this);
+                var $errorDiv = $('#additionalWeightError-' + index);
+
+                if (!value || value < 0.4) {
+                    $input.addClass('is-invalid');
+                    $errorDiv.text('Trọng lượng bổ sung phải lớn hơn hoặc bằng 0.4 kg.');
+                    isValid = false;
+                } else {
+                    $input.removeClass('is-invalid');
+                    $errorDiv.text('');
+                }
+            });
+            return isValid;
+        }
+
         // Hàm kiểm tra trạng thái toàn bộ form để bật/tắt nút submit
         function updateSubmitButton() {
             var allValid = true;
+            var additionalWeightsValid = validateAdditionalWeights();
+
             $('.detail-section').each(function () {
                 var index = $(this).data('index'); // Lấy index từ data-index
                 var dyeSelected = $('#freeDyeMachine-' + index).val() || $('#queuedDyeMachine-' + index).val();
@@ -578,7 +650,7 @@
                 var dyeAvailabilityError = $('#dyeAvailability-' + index).hasClass('error');
                 var windingAvailabilityError = $('#windingAvailability-' + index).hasClass('error');
 
-                console.log(`Detail ${index + 2}: ` +
+                console.log(`Detail ${index + 1}: ` +
                     `dyeSelected=${dyeSelected}, ` +
                     `windingSelected=${windingSelected}, ` +
                     `dyeDeadlineError=${dyeDeadlineError}, ` +
@@ -590,6 +662,8 @@
                     allValid = false;
                 }
             });
+
+            allValid = allValid && additionalWeightsValid;
             $('#submitBtn').prop('disabled', !allValid);
             console.log("Submit button enabled: " + allValid);
         }
@@ -619,6 +693,18 @@
         function checkDyeMachineAvailability(detailIndex, dyeMachineId) {
             var productionOrderId = $('input[name="productionOrderId"]').val();
             var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            var additionalWeight = $('#additionalWeight-' + detailIndex).val();
+
+            if (!validateAdditionalWeights()) {
+                $('#dyeAvailability-' + detailIndex).text('Vui lòng nhập trọng lượng bổ sung hợp lệ trước.').addClass('error').removeClass('success');
+                $('#dyeDetails-' + detailIndex).html('');
+                $('#dyeDeadline-' + detailIndex).html('');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
             if (!dyeMachineId) {
                 $('#dyeAvailability-' + detailIndex).text('Vui lòng chọn máy nhuộm.').addClass('error').removeClass('success');
                 $('#dyeDetails-' + detailIndex).html('');
@@ -636,6 +722,7 @@
                     productionOrderId: productionOrderId,
                     detailId: detailId,
                     dyeMachineId: dyeMachineId,
+                    additionalWeight: additionalWeight,
                     _csrf: $('input[name="_csrf"]').val()
                 },
                 success: function (response) {
@@ -726,6 +813,16 @@
         function checkWindingMachineAvailability(detailIndex, windingMachineId) {
             var productionOrderId = $('input[name="productionOrderId"]').val();
             var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            var additionalWeight = $('#additionalWeight-' + detailIndex).val();
+
+            if (!validateAdditionalWeights()) {
+                $('#windingAvailability-' + detailIndex).text('Vui lòng nhập trọng lượng bổ sung hợp lệ trước.').addClass('error').removeClass('success');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
             if (!windingMachineId) {
                 $('#windingAvailability-' + detailIndex).text('Vui lòng chọn máy cuốn.').addClass('error').removeClass('success');
                 $('#windingDeadline-' + detailIndex).html('');
@@ -749,6 +846,7 @@
                     detailId: detailId,
                     dyeMachineId: dyeMachineId,
                     windingMachineId: windingMachineId,
+                    additionalWeight: additionalWeight,
                     _csrf: $('input[name="_csrf"]').val()
                 },
                 success: function (response) {
@@ -945,11 +1043,27 @@
             checkWindingMachineAvailability(detailIndex, windingMachineId);
         });
 
+        // Xử lý thay đổi giá trị additionalWeights
+        $('.additional-weight').on('input', function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            validateAdditionalWeights();
+            // Khi thay đổi additionalWeight, cần kiểm tra lại các máy đã chọn cho detail này
+            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
+            var windingMachineId = $('#freeWindingMachine-' + detailIndex).val() || $('#queuedWindingMachine-' + detailIndex).val();
+
+            if (dyeMachineId) {
+                checkDyeMachineAvailability(detailIndex, dyeMachineId);
+            }
+            if (windingMachineId && dyeMachineId) {
+                checkWindingMachineAvailability(detailIndex, windingMachineId);
+            }
+        });
+
         // Xử lý form submit
         $('#updateWorkOrderForm').submit(function (event) {
             if ($('#submitBtn').prop('disabled')) {
                 event.preventDefault();
-                alert('Vui lòng chọn đầy đủ máy và đảm bảo deadline hợp lệ.');
+                alert('Vui lòng nhập đầy đủ thông tin và đảm bảo tất cả các giá trị hợp lệ.');
             }
         });
 

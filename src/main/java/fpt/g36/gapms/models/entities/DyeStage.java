@@ -57,7 +57,7 @@ public class DyeStage extends BaseEntity {
     @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DyeBatch> dyebatches;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "dye_stage_team_leaders",
             joinColumns = @JoinColumn(name = "dye_stage_id"),
@@ -65,7 +65,7 @@ public class DyeStage extends BaseEntity {
     )
     private List<User> teamLeaders; // Danh sách Team Leaders
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "dye_stage_qa",
             joinColumns = @JoinColumn(name = "dye_stage_id"),

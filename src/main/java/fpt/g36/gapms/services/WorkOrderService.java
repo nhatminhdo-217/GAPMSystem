@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -37,9 +38,15 @@ public interface WorkOrderService {
 
     WorkOrder createWorkOrder(ProductionOrder productionOrder, User createBy,
                               List<Long> selectedDyeMachineIds,
-                              List<Long> selectedWindingMachineIds);
+                              List<Long> selectedWindingMachineIds,
+                              List<BigDecimal> additionalWeight);
 
     WorkOrder findWorkOrderByProductionOrder(ProductionOrder productionOrder);
 
-    WorkOrder updateWorkOrder(Long workOrderId, List<Long> selectedDyeMachineIds, List<Long> selectedWindingMachineIds);
+//    WorkOrder updateWorkOrder(Long workOrderId,
+//                              List<Long> selectedDyeMachineIds,
+//                              List<Long> selectedWindingMachineIds,
+//                              List<BigDecimal> additionalWeight);
+
+    void deleteWorkOrderDetails(Long workOrderId);
 }

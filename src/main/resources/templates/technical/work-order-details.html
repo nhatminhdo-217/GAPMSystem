@@ -181,7 +181,7 @@
         .detail-content table {
             width: 100%;
             border-collapse: collapse;
-            display: table; /* Đảm bảo bảng hiển thị dưới dạng table */
+            display: table;
         }
 
         .detail-content th, .detail-content td {
@@ -190,8 +190,8 @@
             text-align: center;
             font-size: 14px;
             vertical-align: middle;
-            white-space: normal; /* Cho phép xuống dòng */
-            word-wrap: break-word; /* Đảm bảo nội dung xuống dòng nếu quá dài */
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         .detail-content thead th {
@@ -229,7 +229,7 @@
         }
 
         .status-in-progress {
-            color: #d4a017; /* Màu vàng đậm */
+            color: #d4a017;
         }
 
         .btn-container {
@@ -241,24 +241,22 @@
             flex-wrap: wrap;
         }
 
-        .btn-primary, .btn-secondary, .btn-custom {
+        .btn-primary, .btn-secondary, .btn-custom, .btn-danger {
             padding: 8px 16px;
             font-size: 14px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
 
-        .btn-primary:hover, .btn-secondary:hover, .btn-custom:hover {
+        .btn-primary:hover, .btn-secondary:hover, .btn-custom:hover, .btn-danger:hover {
             opacity: 0.9;
         }
 
-        /* Thêm style cho nút Gửi Work Order */
-        .btn-custom {
+        .btn-custom, .btn-danger {
             min-width: 180px;
             height: 45px;
             padding: 0 20px;
             text-align: center;
-            background-color: #4A90E2 !important;
             color: white !important;
             border: none;
             display: flex;
@@ -271,9 +269,20 @@
             font-weight: 500;
         }
 
+        .btn-custom {
+            background-color: #4A90E2 !important;
+        }
+
         .btn-custom:hover {
             background-color: #357ABD !important;
-            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333 !important;
         }
 
         .success-message {
@@ -305,7 +314,7 @@
             color: #721c24;
         }
 
-        #toastError {
+        #toastError, #toastSuccess {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -313,7 +322,6 @@
             min-width: 300px;
         }
 
-        /* Style cho modal */
         .modal-content {
             background-color: #fff;
             position: fixed;
@@ -357,7 +365,6 @@
             gap: 15px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .work-order-info .col-md-4 {
                 flex: 1 1 100%;
@@ -368,21 +375,21 @@
                 gap: 10px;
             }
 
-            .btn-primary, .btn-secondary, .btn-custom {
+            .btn-primary, .btn-secondary, .btn-custom, .btn-danger {
                 width: 100%;
             }
 
             .detail-content table {
                 display: block;
                 overflow-x: auto;
-                white-space: normal; /* Cho phép xuống dòng */
+                white-space: normal;
             }
 
             .detail-content th, .detail-content td {
                 font-size: 12px;
                 padding: 8px;
-                display: block; /* Chuyển thành block để xuống dòng */
-                width: 100%; /* Đảm bảo mỗi ô chiếm toàn bộ chiều rộng */
+                display: block;
+                width: 100%;
                 box-sizing: border-box;
             }
 
@@ -391,7 +398,7 @@
             }
 
             .detail-content th {
-                background-color: #f1f3f5; /* Giữ màu nền cho tiêu đề */
+                background-color: #f1f3f5;
             }
 
             .nav-tabs .nav-link {
@@ -522,15 +529,19 @@
                                         <a class="nav-link active" id="general-tab" data-bs-toggle="tab" href="#general"
                                            role="tab" aria-controls="general" aria-selected="true">Thông tin chung</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <!-- Chỉ hiển thị các tab Giai đoạn nếu danh sách workOrderDetails không rỗng -->
+                                    <li class="nav-item"
+                                        th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <a class="nav-link" id="dye-tab" data-bs-toggle="tab" href="#dye" role="tab"
                                            aria-controls="dye" aria-selected="false">Giai đoạn nhuộm</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item"
+                                        th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <a class="nav-link" id="winding-tab" data-bs-toggle="tab" href="#winding"
                                            role="tab" aria-controls="winding" aria-selected="false">Giai đoạn cuốn</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item"
+                                        th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <a class="nav-link" id="packaging-tab" data-bs-toggle="tab" href="#packaging"
                                            role="tab" aria-controls="packaging" aria-selected="false">Giai đoạn đóng
                                             gói</a>
@@ -541,74 +552,76 @@
                                     <!-- General Info Tab -->
                                     <div class="tab-pane fade show active" id="general" role="tabpanel"
                                          aria-labelledby="general-tab">
-                                        <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
-                                             class="detail-section"
-                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
-                                            <div class="detail-header" data-bs-toggle="collapse"
-                                                 th:data-bs-target="'#general-detail-' + ${iterStat.count}">
-                                                <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
-                                                <button class="toggle-btn">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="collapse" th:id="'general-detail-' + ${iterStat.count}">
-                                                <div class="detail-content">
-                                                    <table>
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Số thứ tự</th>
-                                                            <th>Tên sản phẩm</th>
-                                                            <th>Danh mục</th>
-                                                            <th>Thương hiệu</th>
-                                                            <th>Thời gian bắt đầu</th>
-                                                            <th>Thời gian hoàn thành</th>
-                                                            <th>Thời gian bắt đầu dự kiến</th>
-                                                            <th>Thời gian kết thúc dự kiến</th>
-                                                            <th>Trạng thái công việc</th>
-                                                            <th>Dye Stage ID</th>
-                                                            <th>Winding Stage ID</th>
-                                                            <th>Packaging Stage ID</th>
-                                                            <th>Production Order Detail ID</th>
-                                                            <th>Purchase Order Detail ID</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <tr>
-                                                            <td th:text="${iterStat.count}"></td>
-                                                            <td th:text="${detail?.purchaseOrderDetail?.product?.name ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.purchaseOrderDetail?.category?.name ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.purchaseOrderDetail?.brand?.name ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.startAt != null ? #temporals.format(detail.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
-                                                            <td th:text="${detail?.completeAt != null ? #temporals.format(detail.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
-                                                            <td th:text="${detail?.plannedStartAt != null ? #temporals.format(detail.plannedStartAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
-                                                            <td th:text="${detail?.plannedEndAt != null ? #temporals.format(detail.plannedEndAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
-                                                            <td th:classappend="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
-                                                                th:text="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.workStatus?.name() ?: 'N/A'})))"></td>
-                                                            <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.productionOrderDetail?.id ?: 'N/A'}"></td>
-                                                            <td th:text="${detail?.purchaseOrderDetail?.id ?: 'N/A'}"></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
+                                        <div th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                            <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
+                                                 class="detail-section">
+                                                <div class="detail-header" data-bs-toggle="collapse"
+                                                     th:data-bs-target="'#general-detail-' + ${iterStat.count}">
+                                                    <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                    <button class="toggle-btn">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="collapse" th:id="'general-detail-' + ${iterStat.count}">
+                                                    <div class="detail-content">
+                                                        <table>
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Số thứ tự</th>
+                                                                <th>Tên sản phẩm</th>
+                                                                <th>Danh mục</th>
+                                                                <th>Thương hiệu</th>
+                                                                <th>Thời gian bắt đầu</th>
+                                                                <th>Thời gian hoàn thành</th>
+                                                                <th>Thời gian bắt đầu dự kiến</th>
+                                                                <th>Thời gian kết thúc dự kiến</th>
+                                                                <th>Trạng thái công việc</th>
+                                                                <th>Dye Stage ID</th>
+                                                                <th>Winding Stage ID</th>
+                                                                <th>Packaging Stage ID</th>
+                                                                <th>Production Order Detail ID</th>
+                                                                <th>Purchase Order Detail ID</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td th:text="${iterStat.count}"></td>
+                                                                <td th:text="${detail?.purchaseOrderDetail?.product?.name ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.purchaseOrderDetail?.category?.name ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.purchaseOrderDetail?.brand?.name ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.startAt != null ? #temporals.format(detail.startAt, 'yyyy-MM-dd HH:mm') : 'Chưa bắt đầu'}"></td>
+                                                                <td th:text="${detail?.completeAt != null ? #temporals.format(detail.completeAt, 'yyyy-MM-dd HH:mm') : 'Chưa kết thúc'}"></td>
+                                                                <td th:text="${detail?.plannedStartAt != null ? #temporals.format(detail.plannedStartAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                                <td th:text="${detail?.plannedEndAt != null ? #temporals.format(detail.plannedEndAt, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+                                                                <td th:classappend="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
+                                                                    th:text="${detail?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.workStatus?.name() ?: 'N/A'})))"></td>
+                                                                <td th:text="${detail?.dyeStage?.id ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.windingStage?.id ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.packagingStage?.id ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.productionOrderDetail?.id ?: 'N/A'}"></td>
+                                                                <td th:text="${detail?.purchaseOrderDetail?.id ?: 'N/A'}"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
                                              class="detail-section">
                                             <div class="detail-content">
-                                                <p>Không có sản phẩm nào.</p>
+                                                <p>Work Order này hiện không có chi tiết nào. Vui lòng chỉnh sửa để thêm
+                                                    chi tiết mới.</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Dye Stage Tab -->
                                     <div class="tab-pane fade dye-stage-tab" id="dye" role="tabpanel"
-                                         aria-labelledby="dye-tab">
+                                         aria-labelledby="dye-tab"
+                                         th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
-                                             class="detail-section"
-                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                             class="detail-section">
                                             <div class="detail-header" data-bs-toggle="collapse"
                                                  th:data-bs-target="'#dye-detail-' + ${iterStat.count}">
                                                 <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
@@ -662,20 +675,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
-                                             class="detail-section">
-                                            <div class="detail-content">
-                                                <p>Không có giai đoạn nhuộm nào.</p>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <!-- Winding Stage Tab -->
                                     <div class="tab-pane fade winding-stage-tab" id="winding" role="tabpanel"
-                                         aria-labelledby="winding-tab">
+                                         aria-labelledby="winding-tab"
+                                         th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
-                                             class="detail-section"
-                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                             class="detail-section">
                                             <div class="detail-header" data-bs-toggle="collapse"
                                                  th:data-bs-target="'#winding-detail-' + ${iterStat.count}">
                                                 <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
@@ -723,20 +730,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
-                                             class="detail-section">
-                                            <div class="detail-content">
-                                                <p>Không có giai đoạn cuốn nào.</p>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <!-- Packaging Stage Tab -->
                                     <div class="tab-pane fade packaging-stage-tab" id="packaging" role="tabpanel"
-                                         aria-labelledby="packaging-tab">
+                                         aria-labelledby="packaging-tab"
+                                         th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
                                         <div th:each="detail, iterStat : ${workOrder?.workOrderDetails}"
-                                             class="detail-section"
-                                             th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}">
+                                             class="detail-section">
                                             <div class="detail-header" data-bs-toggle="collapse"
                                                  th:data-bs-target="'#packaging-detail-' + ${iterStat.count}">
                                                 <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
@@ -778,28 +779,33 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
-                                             class="detail-section">
-                                            <div class="detail-content">
-                                                <p>Không có giai đoạn đóng gói nào.</p>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Buttons -->
                             <div class="btn-container">
-                                <a href="/technical/view-all-work-order" class="btn btn-secondary">Quay lại danh sách</a>
+                                <a href="/technical/view-all-work-order" class="btn btn-secondary">Quay lại danh
+                                    sách</a>
 
                                 <!-- Nút Chỉnh sửa kế hoạch -->
-                                <div th:if="${workOrder?.status != null and (workOrder.status.name() == 'DRAFT' or workOrder.status.name() == 'NOT_APPROVED')}">
-                                    <a th:href="@{/technical/update-work-order/{workOrderId}(workOrderId=${workOrder?.id})}" class="btn btn-primary">Chỉnh sửa kế hoạch</a>
+                                <div th:if="${workOrder?.status != null and workOrder.status.name() == 'WAIT_FOR_UPDATE'}">
+                                    <a th:href="@{/technical/update-work-order/{workOrderId}(workOrderId=${workOrder?.id})}"
+                                       class="btn btn-primary">Chỉnh sửa kế hoạch</a>
                                 </div>
 
-                                <!-- Nút Gửi Work Order -->
-                                <div th:if="${workOrder?.sendStatus != null and workOrder.sendStatus.name() == 'NOT_SENT'}">
-                                    <button class="btn btn-custom" id="submitWorkOrderBtn" data-bs-toggle="modal" data-bs-target="#submitWorkOrderModal">Gửi Work Order</button>
+                                <!-- Nút Gửi Work Order (chỉ hiển thị khi có WorkOrderDetails và sendStatus là NOT_SENT) -->
+                                <div th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails) and workOrder?.sendStatus != null and workOrder.sendStatus.name() == 'NOT_SENT'}">
+                                    <button class="btn btn-custom" id="submitWorkOrderBtn" data-bs-toggle="modal"
+                                            data-bs-target="#submitWorkOrderModal">Gửi Work Order
+                                    </button>
+                                </div>
+
+                                <!-- Nút Xóa Work Order Details (chỉ hiển thị khi có WorkOrderDetails và trạng thái phù hợp) -->
+                                <div th:if="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails) and workOrder?.status != null and workOrder?.sendStatus != null and ((workOrder.status.name() == 'DRAFT' and workOrder.sendStatus.name() == 'NOT_SENT') or (workOrder.status.name() == 'NOT_APPROVED' and workOrder.sendStatus.name() == 'SENT'))}">
+                                    <button class="btn btn-danger" id="deleteWorkOrderDetailsBtn" data-bs-toggle="modal"
+                                            data-bs-target="#deleteWorkOrderDetailsModal">Xóa Work Order Details
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -830,6 +836,34 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" form="submitWorkOrderForm" class="btn btn-primary">Gửi Work Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal để xóa Work Order Details -->
+    <div class="modal fade" id="deleteWorkOrderDetailsModal" tabindex="-1"
+         aria-labelledby="deleteWorkOrderDetailsModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteWorkOrderDetailsModalLabel">Xóa Work Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteWorkOrderDetailsForm"
+                          th:action="@{/technical/delete-work-order-details/{id}(id=${workOrder?.id})}"
+                          method="post">
+                        <input type="hidden" name="workOrderId" th:value="${workOrder?.id}">
+                        <p>Bạn có chắc chắn muốn xóa tất cả Work Order Details của Work Order này không?</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" form="deleteWorkOrderDetailsForm" class="btn btn-danger">Xóa Work Order
+                        Details
+                    </button>
                 </div>
             </div>
         </div>
@@ -884,9 +918,15 @@
             $('#submitWorkOrderModal').modal('show');
         });
 
+        // Open modal for deleting Work Order Details
+        $('#deleteWorkOrderDetailsBtn').click(function () {
+            $('#deleteWorkOrderDetailsModal').modal('show');
+        });
+
         // Close modal
         $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
             $('#submitWorkOrderModal').modal('hide');
+            $('#deleteWorkOrderDetailsModal').modal('hide');
         });
 
         // Toast error

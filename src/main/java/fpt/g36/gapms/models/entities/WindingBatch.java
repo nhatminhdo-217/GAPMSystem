@@ -13,8 +13,6 @@ import java.util.List;
 @Table(name = "winding_batch")
 public class WindingBatch extends BaseEntity {
 
-
-
     @NotNull
     private LocalDateTime plannedStart;
 
@@ -45,14 +43,14 @@ public class WindingBatch extends BaseEntity {
 
     private String windingPhoto;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 
     private Boolean isPass;
 
     @OneToOne
-    @JoinColumn(name = "dye_batch_id", nullable = false)
+    @JoinColumn(name = "dye_batch_id")
     private DyeBatch dyeBatch;
 
     @OneToMany(mappedBy = "windingBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

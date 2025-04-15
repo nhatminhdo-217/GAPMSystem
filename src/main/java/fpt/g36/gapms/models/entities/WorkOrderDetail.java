@@ -4,6 +4,7 @@ import fpt.g36.gapms.enums.WorkEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -15,14 +16,17 @@ public class WorkOrderDetail extends BaseEntity {
     @JoinColumn(name = "work_order_id", nullable = false)
     private WorkOrder workOrder;
 
+    @NotNull
+    private BigDecimal additionalWeight;
+
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
 
-    /*@NotNull*/
+    @NotNull
     private LocalDateTime plannedStartAt;
 
-    /*@NotNull*/
+    @NotNull
     private LocalDateTime plannedEndAt;
 
     @NotNull
@@ -50,13 +54,14 @@ public class WorkOrderDetail extends BaseEntity {
     public WorkOrderDetail() {
     }
 
-    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedEndAt, WorkOrder workOrder, LocalDateTime startAt, LocalDateTime completeAt, LocalDateTime plannedStartAt, WorkEnum workStatus, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, ProductionOrderDetail productionOrderDetail, PurchaseOrderDetail purchaseOrderDetail) {
+    public WorkOrderDetail(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrder workOrder, BigDecimal additionalWeight, LocalDateTime startAt, LocalDateTime completeAt, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt, WorkEnum workStatus, DyeStage dyeStage, WindingStage windingStage, PackagingStage packagingStage, ProductionOrderDetail productionOrderDetail, PurchaseOrderDetail purchaseOrderDetail) {
         super(id, createAt, updateAt);
-        this.plannedEndAt = plannedEndAt;
         this.workOrder = workOrder;
+        this.additionalWeight = additionalWeight;
         this.startAt = startAt;
         this.completeAt = completeAt;
         this.plannedStartAt = plannedStartAt;
+        this.plannedEndAt = plannedEndAt;
         this.workStatus = workStatus;
         this.dyeStage = dyeStage;
         this.windingStage = windingStage;
@@ -71,6 +76,14 @@ public class WorkOrderDetail extends BaseEntity {
 
     public void setWorkOrder(WorkOrder workOrder) {
         this.workOrder = workOrder;
+    }
+
+    public BigDecimal getAdditionalWeight() {
+        return additionalWeight;
+    }
+
+    public void setAdditionalWeight(BigDecimal additionalWeight) {
+        this.additionalWeight = additionalWeight;
     }
 
     public LocalDateTime getStartAt() {

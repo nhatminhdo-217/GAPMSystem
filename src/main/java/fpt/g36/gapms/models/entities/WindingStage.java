@@ -18,7 +18,7 @@ public class WindingStage extends BaseEntity{
     private WorkOrderDetail workOrderDetail;
 
     @OneToOne
-    @JoinColumn(name = "dye_stage_id", nullable = false)
+    @JoinColumn(name = "dye_stage_id")
     private DyeStage dyeStage; //Lấy ngày kết thúc nhuộm và khối lượng nhuộm
 
     private LocalDateTime receivedConeAt; //Thời gian sợi về
@@ -38,7 +38,7 @@ public class WindingStage extends BaseEntity{
     private WorkEnum workStatus;
 
     @OneToOne
-    @JoinColumn(name = "winding_machine_id", nullable = false)
+    @JoinColumn(name = "winding_machine_id")
     private WindingMachine windingMachine;
 
     @OneToOne(mappedBy = "windingStage")

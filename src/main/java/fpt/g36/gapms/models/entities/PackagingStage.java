@@ -17,7 +17,7 @@ public class PackagingStage extends BaseEntity {
     private WorkOrderDetail workOrderDetail;
 
     @OneToOne
-    @JoinColumn(name = "winding_stage_id", nullable = false)
+    @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 
     private LocalDateTime receivedProductAt;
