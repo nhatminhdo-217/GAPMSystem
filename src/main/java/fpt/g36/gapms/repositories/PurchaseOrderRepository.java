@@ -76,4 +76,38 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     @Query("SELECT pod FROM PurchaseOrderDetail pod WHERE pod.id = :id")
     Optional<PurchaseOrderDetail> getPurchaseOrderDetailById(Long id);
+
+    @Query(value = """
+        select distinct po from PurchaseOrder po
+        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+        and (:status is null or po.status = :status)
+""",
+            countQuery = """
+        select count(distinct po) from PurchaseOrder po
+        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+        and (:status is null or po.status = :status)
+"""
+    )
+    Page<PurchaseOrder> searchAndFilter(
+            @Param("search") String search,
+            @Param("status") BaseEnum status,
+            Pageable pageable
+    );
+
+    @Query(value = """
+        select distinct po from PurchaseOrder po
+        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+        and (:status is null or po.status = :status)
+""",
+            countQuery = """
+        select count(distinct po) from PurchaseOrder po
+        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+        and po.status = :status
+"""
+    )
+    Page<PurchaseOrder> searchAndFilterByStatus(BaseEnum status, Pageable pageable);
 }

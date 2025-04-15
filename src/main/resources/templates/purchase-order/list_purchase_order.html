@@ -30,6 +30,8 @@
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/assert/css/style/quotation/list_quotation.css">
+
 
 </head>
 
@@ -67,180 +69,194 @@
                 <h3>Danh sách đơn hàng</h3>
             </div>
 
-            <!-- Filter Form -->
-<!--            <form class="row mb-4" th:action="@{/quotation/list}" method="get">-->
-<!--                <div class="col-md-3">-->
-<!--                    <input type="text" name="search" class="form-control"-->
-<!--                           placeholder="Tìm kiếm..." th:value="${search}">-->
-<!--                </div>-->
-<!--                <div class="col-md-3">-->
-<!--                    <select name="product" class="form-select">-->
-<!--                        <option value="">Tất cả sản phẩm</option>-->
-<!--                        <option th:each="prod : ${products}"-->
-<!--                                th:value="${prod}"-->
-<!--                                th:text="${prod}"-->
-<!--                                th:selected="${prod == selectedProduct}"></option>-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div class="col-md-3">-->
-<!--                    <select name="brand" class="form-select">-->
-<!--                        <option value="">Tất cả thương hiệu</option>-->
-<!--                        <option th:each="br : ${brands}"-->
-<!--                                th:value="${br}"-->
-<!--                                th:text="${br}"-->
-<!--                                th:selected="${br == selectedBrand}"></option>-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div class="col-md-3">-->
-<!--                    <select name="category" class="form-select">-->
-<!--                        <option value="">Tất cả danh mục</option>-->
-<!--                        <option th:each="cat : ${categories}"-->
-<!--                                th:value="${cat}"-->
-<!--                                th:text="${cat}"-->
-<!--                                th:selected="${cat == selectedCategory}"></option>-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div class="col-md-12 mt-3 text-end">-->
-<!--                    <button type="submit" class="btn btn-primary">Lọc</button>-->
-<!--                </div>-->
-<!--            </form>-->
-
-            <div class="row g-3">
-                <div class="col-12 d-flex align-items-center" th:each="order, orderIter : ${orders}" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
-                    <div class="me-3">
-                        <span class="fw-bold" style="font-size: 16px;" th:text="${orderIter.count}"></span>
-                    </div>
-                    <div class="card flex-grow-1 mb-3"
-                         style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
-                        <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
-                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
-                                 style="width: 80%; text-align-last: center">
-                                <div class="text-start me-3">
-                                    <strong>Mã đơn hàng</strong><br>
-                                    <span th:text="${order.purchaseOrderId}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Tên khách hàng</strong><br>
-                                    <span th:text="${order.customerName}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Mã báo giá</strong><br>
-                                    <span th:text="${order.quotationId}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Trạng thái đơn hàng</strong><br>
-                                    <span th:switch="${order.status}">
-                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
-                                               style="color: green;">
-                                         </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"
-                                                style="color: #ffc107;">
-                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"
-                                                style="color: #ffc107;">
-                                          </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'"
-                                                style="color: #ffc107;">
-                                          </span>
-                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
-                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
-                                    </span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Mã hợp đồng</strong><br>
-                                    <span th:text="${order.contractId != null ? order.contractId : 'N/A'}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Người duyệt</strong><br>
-                                    <span th:text="${order.approvedByUserName != null ? order.approvedByUserName : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div>
-                                <a th:href="@{'/purchase-order/detail/' + ${order.purchaseOrderId}}"
-                                   class="btn btn-primary" style="padding: 5px 10px;">
-                                    Xem chi tiết
-                                </a>
+            <!-- Search and Filter Box -->
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/purchase-order/list}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" th:value="${search}" placeholder="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="status">
+                                <option value="">Tất cả trạng thái</option>
+                                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}" th:selected="${statusOption == selectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-2">Lọc</button>
+                            <a th:href="@{/purchase-order/list}" class="btn btn-secondary">Làm mới</a>
+                        </div>
+                        <!-- Hidden sort fields -->
+                        <input type="hidden" name="sortField" th:value="${sortField}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+                        <input type="hidden" name="page" th:value="${currentPage}">
+                        <input type="hidden" name="size" th:value="${pageSize}">
+                    </form>
                 </div>
-                <div class="col-12 d-flex align-items-center" th:each="order, orderIter : ${orders}" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
-                    <div class="me-3">
-                        <span class="fw-bold" style="font-size: 16px;" th:text="${orderIter.count}"></span>
-                    </div>
-                    <div class="card flex-grow-1 mb-3"
-                         style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
-                        <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
-                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
-                                 style="width: 80%; text-align-last: center">
-                                <div class="text-start me-3">
-                                    <strong>Mã đơn hàng</strong><br>
-                                    <span th:text="${order.purchaseOrderId}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Mã báo giá</strong><br>
-                                    <span th:text="${order.quotationId}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Tên khách hàng</strong><br>
-                                    <span th:text="${order.customerName}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Người tạo đơn</strong><br>
-                                    <span th:text="${order.createByUserName}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Ngày tạo đơn</strong><br>
-                                    <span th:text="${#temporals.format(order.createAt, 'dd-MM-yyy')}"></span>
-                                </div>
-                            </div>
-                            <div>
-                                <a th:href="@{'/purchase-order/detail/' + ${order.purchaseOrderId}}"
-                                   class="btn btn-primary" style="padding: 5px 10px;">
-                                    Xem chi tiết
-                                </a>
-                            </div>
+            </div>
+
+            <div class="card mt-3 desktop-table">
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <div class="fade-scroll fade-scroll-left"></div>
+                        <div class="table-responsive" >
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Mã đơn hàng</th>
+                                        <th scope="col">Tên khách hàng</th>
+                                        <th scope="col">Mã hợp đồng</th>
+                                        <th scope="col">Người duyệt</th>
+                                        <th scope="col">Trạng thái đơn hàng</th>
+                                        <th scope="col">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${purchaseOrderPage.empty}">
+                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                    <tr th:each="po, iterStat : ${purchaseOrderPage.content}" >
+                                        <th scope="row" th:text="${iterStat.count + purchaseOrderPage.number * purchaseOrderPage.size}"></th>
+                                        <td th:text="${po.purchaseOrderId}"></td>
+                                        <td th:text="${po.customerName}"></td>
+                                        <td th:text="${po.contractId != null ? po.contractId : 'N/A'}"></td>
+                                        <td th:text="${po.approvedByUserName != null ? po.approvedByUserName : 'N/A'}"></td>
+                                        <td>
+                                            <span th:if="${po.status != null && po.status.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
+                                            <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
+                                            <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ duyệt</span>
+                                            <span th:if="${po.status != null && po.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
+                                            <span th:if="${po.status != null && po.status.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/purchase-order/detail/' + ${po.purchaseOrderId}}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${!purchaseOrderPage.empty}" class="d-flex justify-content-between align-items-center">
+                        <div>
+                            Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span th:text="${purchaseOrderPage.totalElements}"></span> kết quả
+                        </div>
+                        <nav th:if="${purchaseOrderPage.totalPages > 0}">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        Đầu
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        Trước
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="pageNum : ${pageNumbers}"
+                                    th:classappend="${pageNum == purchaseOrderPage.number ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${pageNum} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        <span th:text="${pageNum + 1}"></span>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        Sau
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        Cuối
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
 
-            <!-- Pagination -->
-<!--            <nav aria-label="Page navigation">-->
-<!--                <ul class="pagination">-->
-<!--                    <li class="page-item" th:classappend="${!quotations.hasPrevious()} ? 'disabled'">-->
-<!--                        <a class="page-link"-->
-<!--                           th:href="@{/quotations(-->
-<!--                       search=${search},-->
-<!--                       product=${selectedProduct},-->
-<!--                       brand=${selectedBrand},-->
-<!--                       category=${selectedCategory},-->
-<!--                       page=${quotations.number - 1}-->
-<!--                   )}">Previous</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item" th:each="i : ${#numbers.sequence(0, quotations.totalPages - 1)}"-->
-<!--                        th:classappend="${i == quotations.number} ? 'active'">-->
-<!--                        <a class="page-link"-->
-<!--                           th:href="@{/quotations(-->
-<!--                       search=${search},-->
-<!--                       product=${selectedProduct},-->
-<!--                       brand=${selectedBrand},-->
-<!--                       category=${selectedCategory},-->
-<!--                       page=${i}-->
-<!--                   )}" th:text="${i + 1}"></a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item" th:classappend="${!quotations.hasNext()} ? 'disabled'">-->
-<!--                        <a class="page-link"-->
-<!--                           th:href="@{/quotations(-->
-<!--                       search=${search},-->
-<!--                       product=${selectedProduct},-->
-<!--                       brand=${selectedBrand},-->
-<!--                       category=${selectedCategory},-->
-<!--                       page=${quotations.number + 1}-->
-<!--                   )}">Next</a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
+            <!-- Results Cards (Mobile) -->
+            <div class="mobile-cards mt-3">
+                <div th:if="${purchaseOrderPage.empty}" class="alert alert-info">
+                    Không có dữ liệu nào
+                </div>
+
+                <div th:each="po : ${purchaseOrderPage.content}" class="mobile-card">
+                    <div class="card-header">
+                        <div>
+                            <span class="fw-bold">Mã báo giá:</span>
+                            <span th:text="${po.purchaseOrderId}"></span>
+                        </div>
+                        <div>
+                            <span th:if="${po.status != null && po.status.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
+                            <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div class="info-label">Khách hàng:</div>
+                            <div th:text="${po.customerName}"></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Ngày tạo:</div>
+                            <div th:text="${#temporals.format(po.createAt, 'dd-MM-yyyy')}"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a th:href="@{'/purchase-order/detail/' + ${po.purchaseOrderId}}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile Pagination -->
+                <div th:if="${!purchaseOrderPage.empty}" class="d-flex flex-column align-items-center mt-3 mb-5">
+                    <div class="mb-2 text-center">
+                        Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span th:text="${purchaseOrderPage.totalElements}"></span> kết quả
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link" th:text="${currentPage + 1} + ' / ' + ${totalPages}"></span>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <!-- main content end -->
         <!-- Footer Start -->

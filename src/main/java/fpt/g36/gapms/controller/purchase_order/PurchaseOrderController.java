@@ -60,7 +60,14 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/list")
-    public String listPurchaseOrders(Model model) {
+    public String listPurchaseOrders(
+            @RequestParam(defaultValue = "", required = false) String search,
+            @RequestParam(required = false) BaseEnum status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "createAt", required = false) String sortField,
+            @RequestParam(defaultValue = "desc", required = false) String sortDir,
+            Model model) {
 
         userUtils.getOptionalUser(model);
 
@@ -68,7 +75,31 @@ public class PurchaseOrderController {
 
         List<PurchaseOrderDTO> ordersByRole = purchaseOrderService.getAllPurchaseOrderByRole(currUser);
 
-        model.addAttribute("orders", ordersByRole);
+        Page<PurchaseOrderDTO> purchaseOrderPage = purchaseOrderService.getAllByRole(currUser, search, status, page, size, sortField, sortDir);
+
+        model.addAttribute("purchaseOrderPage", purchaseOrderPage);
+        model.addAttribute("search", search);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", purchaseOrderPage.getTotalPages());
+        model.addAttribute("totalItems", purchaseOrderPage.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        // Lấy danh sách tất cả các trạng thái của PurchaseOrder
+        List<BaseEnum> statuses = new ArrayList<>();
+        Collections.addAll(statuses, BaseEnum.values());
+
+        int totalPages = purchaseOrderPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = java.util.stream.IntStream.rangeClosed(0, totalPages - 1)
+                    .boxed()
+                    .collect(java.util.stream.Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        model.addAttribute("statuses", statuses);
 
         return "purchase-order/list_purchase_order";
     }

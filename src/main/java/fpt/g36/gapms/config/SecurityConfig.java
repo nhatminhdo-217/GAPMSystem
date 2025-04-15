@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -37,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")
                         .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
                         .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
+                        .requestMatchers("/notifications/**").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login_form")
@@ -113,6 +115,11 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .accessDeniedPage("/error-403")
                         // Chuyển hướng đến controller xử lý trang lỗi
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .maximumSessions(10)  // Cho phép tối đa 10 session đồng thời
+                        .maxSessionsPreventsLogin(false) // Không ngăn người dùng đăng nhập nếu đã có session
                 )
         ;
 

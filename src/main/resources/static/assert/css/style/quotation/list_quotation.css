@@ -1,203 +1,204 @@
-.card {
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.search-box {
+    margin-bottom: 20px;
 }
-
-.parent-row {
-    background-color: #f8f9fa;
-    border-radius: 8px;
+.filter-box {
+    margin-bottom: 20px;
 }
-
-.collapse {
-    display: none;
+.pagination {
+    margin-top: 20px;
 }
-
-.collapse.show {
-    display: block;
-}
-
-.toggle-btn {
-    font-size: 16px;
-}
-
-.toggle-btn:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-.text-start strong {
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
     font-weight: bold;
-    color: #333;
-    display: block; /* Đảm bảo title hiển thị trên cùng */
-    text-align: center; /* Căn giữa tiêu đề theo chiều ngang */
+    display: inline-block;
+    width: fit-content;
 }
-
-.text-start span {
-    font-weight: normal;
-    color: #666;
-    display: block; /* Đảm bảo data hiển thị dưới title */
-    text-align: center; /* Căn giữa dữ liệu theo chiều ngang */
-    margin-top: 5px;
+.status-draft {
+    background-color: #f0f0f0;
+    color: #6c757d;
 }
-
-.d-flex.align-items-start .me-3 span {
-    font-size: 16px;
-    color: #000;
+.status-not-approved {
+    background-color: #ffecb5;
+    color: #856404;
 }
-
-.table {
-    margin-bottom: 0;
+.status-wait {
+    background-color: #b8daff;
+    color: #004085;
 }
-
+.status-approved {
+    background-color: #c3e6cb;
+    color: #155724;
+}
+.status-canceled {
+    background-color: #f5c6cb;
+    color: #721c24;
+}
+.table-responsive {
+    overflow-x: auto;
+}
 .table th, .table td {
-    vertical-align: middle; /* Căn giữa theo chiều dọc */
-    text-align: center; /* Căn giữa theo chiều ngang */
-    padding: 10px;
+    vertical-align: middle;
 }
-
-.table-bordered th, .table-bordered td {
-    border: 1px solid #dee2e6;
-}
-
-.text-success:hover {
-    color: #28a745 !important;
-}
-
-.text-danger:hover {
-    color: #dc3545 !important;
-}
-
-.d-flex.gap-2 a {
+.detail-link {
+    color: #007bff;
     text-decoration: none;
 }
-
-/* Thêm style cho phần thông tin chính để căn giữa cả title và data */
-.flex-grow-1.ms-3.d-flex.flex-wrap.justify-content-between {
-    align-items: center; /* Căn giữa theo chiều dọc */
-    justify-content: center; /* Căn giữa theo chiều ngang nếu cần, nhưng giữ flex-wrap để các phần tử không chồng lên nhau */
+.detail-link:hover {
+    text-decoration: underline;
 }
 
-.text-start.me-3 {
-    flex: 0 1 auto; /* Đảm bảo mỗi phần tử có thể co giãn nhưng giữ chiều rộng tương đối */
-    text-align: center; /* Căn giữa toàn bộ nội dung trong div */
-    width: 16%; /* Phân chia đều cho 6 cột (khoảng 16.67% mỗi cột, nhưng điều chỉnh nếu cần) */
+/* Custom styles for better responsiveness */
+@media (max-width: 992px) {
+    .filters-row {
+        flex-direction: column;
+    }
+    .filters-row > div {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    .action-buttons {
+        margin-top: 15px;
+    }
 }
 
 @media (max-width: 768px) {
-    .text-start.me-3 {
-        width: 100%; /* Cột chiếm toàn bộ chiều rộng trên mobile */
-        margin-bottom: 10px;
-        text-align: center;
+    .desktop-table {
+        display: none;
+    }
+    .mobile-cards {
+        display: block;
     }
 }
-.custom-popup {
-    position: fixed; /* Dùng fixed để giữ popup cố định trên màn hình */
-    z-index: 1000;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    display: none; /* Ẩn mặc định */
-    top: 50%; /* Đặt ở giữa theo chiều dọc */
-    left: 50%; /* Đặt ở giữa theo chiều ngang */
-    transform: translate(-50%, -50%); /* Dịch chuyển ngược lại nửa chiều rộng và cao để căn giữa */
-    width: 300px; /* Đặt chiều rộng cố định hoặc tùy chỉnh */
+
+@media (min-width: 769px) {
+    .mobile-cards {
+        display: none;
+    }
 }
 
-.popup-header {
+.mobile-card {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mobile-card .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0;
 }
 
-.popup-header h5 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
+.mobile-card .card-body {
+    padding: 15px;
 }
 
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #888;
-    transition: color 0.2s;
-}
-
-.close-btn:hover {
-    color: #333;
-}
-
-.popup-body {
-    padding: 10px 0;
-}
-
-.form-group label {
-    font-weight: bold;
-    color: #555;
-}
-
-.form-control {
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    padding: 8px;
-    transition: border-color 0.3s;
-}
-
-.form-control:focus {
-    border-color: #007bff; /* Màu xanh khi focus */
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-.popup-footer {
+.mobile-card .info-row {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #e9ecef;
+    padding-bottom: 8px;
 }
 
-.btn {
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
+.mobile-card .info-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.mobile-card .card-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 12px 15px;
+    text-align: right;
+    border-radius: 0 0 8px 8px;
+}
+
+.responsive-filters .filter-title {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.filter-chip {
+    display: inline-block;
+    padding: 5px 12px;
+    background-color: #e9ecef;
+    border-radius: 16px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.filter-chip .close {
+    margin-left: 8px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-.btn-primary {
+.filter-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     background-color: #007bff;
-    border: none;
     color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    cursor: pointer;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-}
-
-/* Hiệu ứng fadeIn */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
+@media (max-width: 768px) {
+    .filter-button {
+        display: flex;
     }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
+}
+
+.offcanvas-filter {
+    width: 280px;
+}
+
+/* Tối ưu hóa cho các thiết bị khác nhau */
+.table-wrapper {
+    position: relative;
+}
+
+.fade-scroll {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.fade-scroll-left {
+    left: 0;
+    background-image: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+.fade-scroll-right {
+    right: 0;
+    background-image: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+/* Pagination responsive */
+@media (max-width: 576px) {
+    .pagination-info {
+        display: block;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .pagination-container {
+        justify-content: center !important;
     }
 }
