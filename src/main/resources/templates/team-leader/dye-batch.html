@@ -453,6 +453,9 @@
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
                                             <i class="fas fa-check-circle"></i> Đã Nhuộm
                                         </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-not-started">
+                                            <i class="fas fa-times-circle"></i> Chờ Sửa
+                                        </span>
                                         <span th:case="*" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chưa Nhuộm
                                         </span>
@@ -522,8 +525,8 @@
                             <button type="button"
                                     class="status-btn completed"
                                     th:onclick="'submitFormWithPhoto(\'form-' + ${dy.id} + '\')'"
-                                    th:classappend="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:classappend="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || dy.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>

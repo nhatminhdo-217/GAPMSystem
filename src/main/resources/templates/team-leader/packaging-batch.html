@@ -499,7 +499,7 @@
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
                             <a th:href="@{/work-order/team-leader/packaging/change/in-process/{id}(id=${ps.id})}"
-                               th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ps.windingBatch.testStatus != T(fpt.g36.gapms.enums.TestEnum).TESTED} ? 'disabled-link' : ''"
+                               th:classappend="${ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || ps.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || ps.windingBatch.pass != true} ? 'disabled-link' : ''"
                                class="status-btn in-progress">
                                 <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
                             </a>

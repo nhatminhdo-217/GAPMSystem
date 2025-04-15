@@ -432,6 +432,53 @@
                             <h2 class="text-center mb-4" th:if="${riskSolution.dyeRiskAssessment == null && riskSolution.windingRiskAssessment == null} ">Xưởng Đóng Gói</h2>
                             <h2 class="text-center mb-4" th:if="${riskSolution.packagingRiskAssessment == null && riskSolution.windingRiskAssessment == null} ">Xưởng Nhuộm</h2>
                             <h2 class="text-center mb-4" th:if="${riskSolution.dyeRiskAssessment == null && riskSolution.packagingRiskAssessment == null} ">Xưởng Côn Chỉ</h2>
+
+                            <!-- Solution Info -->
+                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null}">
+                                <h3 class="section-title">Thông tin phiếu yêu cầu cấp sợi</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Mã phiếu:</strong> <span th:text="${riskSolution.id}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Loại sợi:</strong>
+                                            <span th:if="${riskSolution.dyeRiskAssessment != null}"  th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.windingRiskAssessment != null}"  th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                            <span th:if="${riskSolution.packagingRiskAssessment != null}"  th:text="${riskSolution.packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Khối lượng:</strong> <span
+                                                th:text="${riskSolution.weightNeed}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:switch="${riskSolution.getApproveStatus()}">
+                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Chờ Duyệt'" class="badge" style="background-color: #ffcc00; color: #333;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa Duyệt'" class="badge" style="background-color: #ff3b30; color: white;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã Duyệt'" class="badge" style="background-color: #34c759; color: white;"></span>
+                                             <span th:case="*" th:text="'N/A'" class="badge" style="background-color: #ff3b30; color: white;"></span></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú phòng kế hoạch:</strong>
+                                            <span th:text="${riskSolution.note != null ? riskSolution.note : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${riskSolution.createdBy != null ? riskSolution.createdBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người Duyệt:</strong>
+                                            <span th:text="${riskSolution.approvedBy != null ? riskSolution.approvedBy.username : 'N/A'}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Container cho Thông tin khách hàng và RFQ -->
                             <div class="info-container">
                                 <!-- Cus Info -->
@@ -474,7 +521,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Quy trình đánh hồ:</strong> <span
-                                                >na</span>
+                                        >na</span>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -483,7 +530,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="customer-info" th:if="${riskSolution.windingRiskAssessment != null}">
                                     <h3 class="section-title">Thông tin mẻ lỗi</h3>
@@ -499,6 +545,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <!-- RFQ Info -->
                                 <div class="rfq-info" th:if="${riskSolution.dyeRiskAssessment != null}">
@@ -571,6 +618,7 @@
                                     </div>
                                 </div>
 
+
                                 <div class="rfq-info" th:if="${riskSolution.windingRiskAssessment != null}">
                                     <h3 class="section-title">Thông tin sau kiểm tra</h3>
                                     <div class="row mb-3">
@@ -616,72 +664,21 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
 
-                            <!-- Solution Info -->
-                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null}">
-                                <h3 class="section-title">Thông tin phiếu yêu cầu cấp sợi</h3>
-                                <div class="solution-info">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <strong>Mã phiếu:</strong> <span th:text="${riskSolution.id}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Loại sợi:</strong>
-                                            <span th:if="${riskSolution.dyeRiskAssessment != null}"  th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
-                                            <span th:if="${riskSolution.windingRiskAssessment != null}"  th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
-                                            <span th:if="${riskSolution.packagingRiskAssessment != null}"  th:text="${riskSolution.packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Khối lượng:</strong> <span
-                                                th:text="${riskSolution.weightNeed}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Ngày tạo:</strong>
-                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd-MM-yyyy')}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Trạng thái gửi:</strong>
-                                            <span th:switch="${riskSolution.getApproveStatus()}">
-                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Chờ Duyệt'" class="badge" style="background-color: #ffcc00; color: #333;"></span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa Duyệt'" class="badge" style="background-color: #ff3b30; color: white;"></span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã Duyệt'" class="badge" style="background-color: #34c759; color: white;"></span>
-                                             <span th:case="*" th:text="'N/A'" class="badge" style="background-color: #ff3b30; color: white;"></span></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Ghi chú phòng kế hoạch:</strong>
-                                            <span th:text="${riskSolution.note != null ? riskSolution.note : 'N/A'}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Người tạo:</strong>
-                                            <span th:text="${riskSolution.createdBy != null ? riskSolution.createdBy.username : 'N/A'}"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <strong>Người Duyệt:</strong>
-                                            <span th:text="${riskSolution.approvedBy != null ? riskSolution.approvedBy.username : 'N/A'}"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Nút gửi RFQ -->
                             <div class="btn-container">
                                 <!-- Nút "Tạo phiếu yêu cầu cấp sợi" -->
-                                <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
-                                        class="btn btn-custom"
-                                        id="submitRfqBtn"
-                                        th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
-                                    Tạo phiếu yêu cầu cấp sợi
-                                </button>
-
-                                <!-- Nút "Chỉnh sửa phiếu yêu cầu cấp sợi" -->
                                 <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}"
                                         class="btn btn-custom"
-                                        id="editRfqBtn"
-                                        th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
-                                    Chỉnh sửa phiếu yêu cầu cấp sợi
+                                        id="submitRfqBtn"
+                                        th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}"
+                                        th:onclick="|approveOrder('${riskSolution.id}')|">
+                                    Ký duyệt
                                 </button>
+
                             </div>
 
                         </div>
@@ -692,56 +689,16 @@
     </div>
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    <!-- Modal for submitting RFQ -->
-    <!-- Modal for submitting RFQ -->
-    <div class="modal fade" id="submitRfqModal" tabindex="-1" aria-labelledby="submitRfqModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="submitRfqModalLabel">Tạo phiếu yêu cầu cấp sợi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="submitRfqForm" th:action="@{/risk-solution/technical/save-solution/{id}(id=${riskSolution.id})}" th:object="${riskSolution}" method="post">
-                        <input type="hidden" name="rfqId" th:value="${riskSolution.id}">
-                        <div class="form-group">
-                            <label for="threadTypeDye" th:if="${riskSolution.dyeRiskAssessment != null}" class="form-label"><strong>Loại sợi:</strong></label>
-                            <input type="text" class="form-control" id="threadTypeDye" name="threadType"
-                                   th:if="${riskSolution.dyeRiskAssessment != null}"
-                                   th:value="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}" readonly>
-
-                            <label for="threadTypeWinding" th:if="${riskSolution.windingRiskAssessment != null}" class="form-label"><strong>Loại sợi:</strong></label>
-                            <input type="text" class="form-control" id="threadTypeWinding" name="threadType"
-                                   th:if="${riskSolution.windingRiskAssessment != null}"
-                                   th:value="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}" readonly>
-
-                        </div>
-                        <div class="form-group">
-                            <label for="weightNeed"  class="form-label"><strong>Khối lượng cần cấp (kg):</strong></label>
-                            <input type="text" th:field="*{weightNeed}" class="form-control" id="weightNeed" name="weightNeed" placeholder="Nhập khối lượng cần cấp (ví dụ: 20,8)" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="note" class="form-label"><strong>Ghi chú:</strong></label>
-                            <textarea class="form-control" th:field="*{note}" id="note" name="note" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <button type="submit" class="btn btn-custom btn-confirm">Xác nhận</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 
-<div th:if="${save_success}">
+<div th:if="${approved}">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: /*[[${save_success}]]*/ "Default message",
+                title: /*[[${approved}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -764,73 +721,23 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-
-
-<script>
-    $(document).ready(function () {
-        // Xử lý khi nhấn nút "Tạo phiếu yêu cầu cấp sợi"
-        $('#submitRfqBtn').on('click', function () {
-            $('#submitRfqModal').modal('show');
-        });
-
-        $('#editRfqBtn').on('click', function () {
-            $('#submitRfqModal').modal('show');
-        });
-
-        // Kiểm soát dữ liệu nhập vào ô "Khối lượng cần cấp"
-        $('#weightNeed').on('input', function () {
-            let value = $(this).val();
-            // Chỉ cho phép số và dấu chấm (.)
-            value = value.replace(/[^0-9.]/g, '');
-
-            // Đảm bảo chỉ có một dấu chấm
-            const parts = value.split('.');
-            if (parts.length > 2) {
-                value = parts[0] + '.' + parts.slice(1).join('');
-            }
-
-            $(this).val(value);
-        });
-
-        // Kiểm tra dữ liệu trước khi gửi form
-        $('#submitRfqForm').on('submit', function (e) {
-            const weightNeed = $('#weightNeed').val();
-            const weightNeedValue = parseFloat(weightNeed);
-
-            if (!weightNeed || isNaN(weightNeedValue) || weightNeedValue <= 0) {
-                e.preventDefault(); // Ngăn gửi form
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Khối lượng cần cấp phải là số hợp lệ và lớn hơn 0 (ví dụ: 20.8)!',
-                    confirmButtonText: 'OK'
-                });
+<script th:inline="javascript">
+    function approveOrder(rsId) {
+        Swal.fire({
+            title: "Xác nhận Ký duyệt",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/risk-solution/production-manage/risk-solution-approved/" + rsId;
             }
         });
-
-        // Hiển thị thông báo từ server nếu có
-        const successMessage = $('#hiddenSuccess').text();
-        const errorMessage = $('#hiddenError').text();
-
-        if (successMessage) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Thành công',
-                text: successMessage,
-                confirmButtonText: 'OK'
-            });
-        }
-
-        if (errorMessage) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: errorMessage,
-                confirmButtonText: 'OK'
-            });
-        }
-    });
+    }
 </script>
-
 </body>
 </html>

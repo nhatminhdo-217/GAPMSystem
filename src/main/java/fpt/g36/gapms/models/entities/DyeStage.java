@@ -39,7 +39,6 @@ public class DyeStage extends BaseEntity {
     private LocalDateTime plannedStart;
 
 
-
     private LocalDateTime startAt;
 
     private LocalDateTime completeAt;
@@ -55,7 +54,7 @@ public class DyeStage extends BaseEntity {
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 
-    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DyeBatch> dyebatches;
 
     @ManyToMany(fetch = FetchType.LAZY)

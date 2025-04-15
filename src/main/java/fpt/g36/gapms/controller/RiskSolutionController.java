@@ -1,5 +1,6 @@
 package fpt.g36.gapms.controller;
 
+import fpt.g36.gapms.models.dto.quotation.QuotationInforCustomerDTO;
 import fpt.g36.gapms.models.entities.RiskSolution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.RiskSolutionService;
@@ -81,9 +82,8 @@ public class RiskSolutionController {
     public String getViewListPm(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
 
-
         Pageable pageable = PageRequest.of(page, size);
-        Page<RiskSolution> riskSolutions = riskSolutionService.getAllRiskSolution(pageable);
+        Page<RiskSolution> riskSolutions = riskSolutionService.getAllRiskSolutionManager(pageable);
         model.addAttribute("riskSolutions", riskSolutions.getContent());
         model.addAttribute("currentPage", riskSolutions.getNumber()); // Trang hiện tại
         model.addAttribute("totalPages", riskSolutions.getTotalPages());
@@ -93,6 +93,21 @@ public class RiskSolutionController {
 
         userUtils.getOptionalUser(model);
 
-        return "risk-solution/view-list-technical-risk-solution";
+        return "risk-solution/view-list-product-manager-risk-solution";
+    }
+
+    @GetMapping("/production-manage/detail/{id}")
+    public String getDetailPm(@PathVariable("id") Long riskSolutionId, Model model) {
+        RiskSolution riskSolution = riskSolutionService.getRiskSolutionById(riskSolutionId);
+        model.addAttribute("riskSolution", riskSolution);
+        userUtils.getOptionalUser(model);
+        return "risk-solution/view-detail-product-manager-risk-solution";
+    }
+
+    @GetMapping("/production-manage/risk-solution-approved/{id}")
+    public String getQuotationCustomerApproved(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
+        RiskSolution riskSolution = riskSolutionService.approveRiskSolution(rsId);
+        redirectAttributes.addFlashAttribute("approved", "Phiếu cấp sợi đã được duyệt");
+        return "redirect:/risk-solution/production-manage/detail/" +riskSolution.getId();
     }
 }

@@ -613,7 +613,7 @@
                     <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
                         <div class="card-wrapper">
                             <div class="card"
-                                 th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                 th:onclick="'location.href=\'/production-manager/submitted-work-order-details/' + ${workOrder.id} + '\''"
                                  th:data-workorder-id="${workOrder.id}">
                                 <div class="card-body parent-row">
                                     <span class="index-in-card"
@@ -688,18 +688,18 @@
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${workOrderPage.number == 0 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Previous</a>
+                               th:href="@{/production-manager/view-all-submitted-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Previous</a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, workOrderPage.totalPages - 1)}"
                             th:classappend="${i == workOrderPage.number ? 'active' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}"
+                               th:href="@{/production-manager/view-all-submitted-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}"
                                th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item"
                             th:classappend="${workOrderPage.number == workOrderPage.totalPages - 1 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Next</a>
+                               th:href="@{/production-manager/view-all-submitted-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Next</a>
                         </li>
                     </ul>
                 </nav>

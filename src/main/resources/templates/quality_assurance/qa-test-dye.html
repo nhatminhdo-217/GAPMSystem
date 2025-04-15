@@ -814,9 +814,15 @@
 
                             <!-- Nút hành động -->
                             <div class="action-buttons">
-                                <button type="submit" class="save-btn">Lưu</button>
-                                <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
+                                <button type="submit" class="save-btn"
+                                        th:disabled="${dyeRiskAssessment.pass != null}"
+                                        th:style="${dyeRiskAssessment.pass != null} ? 'background-color: #6c757d; color: white; opacity: 0.6; cursor: not-allowed; border: 1px solid #5a6268; padding: 8px 16px; border-radius: 4px;' : 'background-color: #28a745; color: white; cursor: pointer; border: none; padding: 8px 16px; border-radius: 4px;'"
+                                        >
+                                    Lưu
+                                </button>
+                                <a  th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}"
                                    class="cancel-btn">Hủy</a>
+
                             </div>
                         </form>
                     </div>
