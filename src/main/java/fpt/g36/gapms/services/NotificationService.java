@@ -26,4 +26,6 @@ public interface NotificationService {
 
     // Đếm số thông báo chưa đọc
     Long countUnreadNotifications(Long userId);
+
+    Notification saveAndSendMultiChannelNotification(NotificationDTO notificationDTO, boolean sendSms);
 }

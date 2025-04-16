@@ -23,6 +23,9 @@ public class User extends BaseEntity {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @Column(name = "sms_enabled", columnDefinition = "boolean default false")
+    private Boolean smsEnabled = false;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
@@ -43,16 +46,15 @@ public class User extends BaseEntity {
     private List<UserShift> userShifts;
 
     public User() {
-    }
+    };
 
-    ;
-
-    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers, List<UserShift> userShifts) {
+    public User(Long id, LocalDateTime createAt, LocalDateTime updateAt, String username, String password, String email, String phoneNumber, Boolean smsEnabled, Role role, boolean isVerified, String avatar, boolean isActive, List<CompanyUser> companyUsers, List<UserShift> userShifts) {
         super(id, createAt, updateAt);
         this.username = username;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.smsEnabled = smsEnabled;
         this.role = role;
         this.isVerified = isVerified;
         this.avatar = avatar;
@@ -139,5 +141,13 @@ public class User extends BaseEntity {
 
     public void setUserShifts(List<UserShift> userShifts) {
         this.userShifts = userShifts;
+    }
+
+    public Boolean getSmsEnabled() {
+        return smsEnabled;
+    }
+
+    public void setSmsEnabled(Boolean smsEnabled) {
+        this.smsEnabled = smsEnabled;
     }
 }

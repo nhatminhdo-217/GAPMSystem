@@ -6,26 +6,40 @@ import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.NotificationRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.NotificationService;
+import fpt.g36.gapms.services.SmsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
+
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final SmsService smsService;
 
-    public NotificationServiceImpl(UserRepository userRepository, NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate) {
+    public NotificationServiceImpl(UserRepository userRepository, NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate, SmsService smsService) {
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
         this.messagingTemplate = messagingTemplate;
+        this.smsService = smsService;
     }
 
     @Override
@@ -98,6 +112,28 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRepository.countUnreadNotifications(userId);
     }
 
+    @Override
+    @Transactional
+    public Notification saveAndSendMultiChannelNotification(NotificationDTO notificationDTO, boolean sendSms) {
+
+        User targetUser = userRepository.findById(notificationDTO.getTargetUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + notificationDTO.getTargetUserId()));
+
+        Notification notification = saveAndSendNotification(notificationDTO);
+
+        // Send SMS if required
+        if (sendSms && targetUser.getSmsEnabled()) {
+            String smsContent = notificationDTO.getMessage();
+            String header = "localhost:8080";
+            if (notificationDTO.getTargetUrl() != null && !notificationDTO.getTargetUrl().isEmpty()) {
+                smsContent += " Chi tiết tại: " + header + notificationDTO.getTargetUrl();
+            }
+
+            smsService.sendSmsNotification(notificationDTO.getTargetUserId(), smsContent);
+        }
+        return notification;
+    }
+
 
     // Private Method
     private static NotificationDTO getNotificationDTO(Notification savedNotification) {
@@ -111,5 +147,32 @@ public class NotificationServiceImpl implements NotificationService {
         responseDTO.setTargetUserId(savedNotification.getTargetUser().getId());
         responseDTO.setSource(savedNotification.getSource());
         return responseDTO;
+    }
+
+    private String createShortUrl(String longUrl) {
+        if (longUrl == null || longUrl.isEmpty()) {
+            return "";
+        }
+
+        try {
+            //Use TinyURL API to shorten the URL
+            String apiUrl = "https://tinyurl.com/api-create.php?url=" + URLEncoder.encode(longUrl, StandardCharsets.UTF_8);
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            // Read the response
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))){
+                String shortUrl = reader.readLine();
+                if (shortUrl != null && !shortUrl.isEmpty()) {
+                    return shortUrl;
+                }
+            }
+
+        } catch (IOException e){
+            logger.error("Error shortening URL: {}", e.getMessage(), e);
+        }
+        return longUrl;
     }
 }

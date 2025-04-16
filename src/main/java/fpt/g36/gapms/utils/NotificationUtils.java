@@ -22,28 +22,28 @@ public class NotificationUtils {
     }
 
     public void sendNotificationToRole(String role, String msg, NotificationEnum type,
-                                       String targetUrl, String src) {
+                                       String targetUrl, String src, Boolean sendSms) {
         List<User> users = userRepository.findAllByRole(role);
         for (User user : users) {
             NotificationDTO notification = createNotification(
                     msg, type, targetUrl, user.getId(), src
             );
-            notificationService.saveAndSendNotification(notification);
+            notificationService.saveAndSendMultiChannelNotification(notification, sendSms);
         }
     }
 
-    public void sendNotificationToUser(Long userId, String msg, NotificationEnum type, String targetUrl, String src) {
+    public void sendNotificationToUser(Long userId, String msg, NotificationEnum type, String targetUrl, String src, Boolean sendSms) {
         NotificationDTO notification = createNotification(
                 msg, type, targetUrl, userId, src
         );
-        notificationService.saveAndSendNotification(notification);
+        notificationService.saveAndSendMultiChannelNotification(notification, sendSms);
     }
 
     // This method is used to create a notification object
     public void sendRfqApproveToTechnical(Long rfqId) {
         String msg = "Một RFQ mới (#" + rfqId + ") đã được chấp nhận và đang chờ xử lý.";
         String targetUrl = "/technical/rfq-details/" + rfqId;
-        sendNotificationToRole("TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Quản lý RFQ");
+        sendNotificationToRole("TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Quản lý RFQ", true);
     }
 
     private NotificationDTO createNotification(String message, NotificationEnum type,
