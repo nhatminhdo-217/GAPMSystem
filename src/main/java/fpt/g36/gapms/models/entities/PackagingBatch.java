@@ -49,7 +49,7 @@ public class PackagingBatch extends BaseEntity {
     private PackagingStage packagingStage;
 
     @OneToOne
-    @JoinColumn(name = "winding_batch_id", nullable = false)
+    @JoinColumn(name = "winding_batch_id")
     private WindingBatch windingBatch;
 
     @OneToMany(mappedBy = "packagingBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
