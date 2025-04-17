@@ -24,4 +24,6 @@ public interface PackagingBatchRepository extends JpaRepository<PackagingBatch, 
 
     @Query(value = "SELECT id FROM packaging_batch WHERE packaging_stage_id IN :stageIds", nativeQuery = true)
     List<Long> findIdsByStageIds(@Param("stageIds") List<Long> stageIds);
+
+    List<PackagingBatch> findAllByPackagingStageIdIn(List<Long> packagingStageIds);
 }

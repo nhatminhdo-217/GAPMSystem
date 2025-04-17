@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>Chỉ may Dũng Đông - Danh sách Work Order</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -44,73 +44,119 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
         }
 
+        /* Styling for the card body and parent row */
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
         .parent-row {
             background-color: #ffffff;
             padding: 12px 15px;
-            border-radius: 8px 8px 0 0;
-            width: 100%; /* Đảm bảo phần thông tin chính chiếm toàn bộ chiều rộng */
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
 
-        .collapse {
-            display: none;
-        }
-
-        .collapse.show {
-            display: block;
-        }
-
-        .toggle-btn {
-            font-size: 12px;
-            color: #dc3545;
-            padding: 4px 8px;
-            border: none;
-            background: none;
-            cursor: pointer;
+        /* Styling for the index number */
+        .index-in-card {
+            margin-right: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            min-width: 40px;
             text-align: center;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+            background-color: #eff6ff;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .toggle-btn:hover {
-            background-color: rgba(220, 53, 69, 0.1);
+        /* Styling for the content section */
+        .content-section {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
         }
 
-        .toggle-btn:focus {
-            outline: none;
-            box-shadow: none;
+        /* Styling for individual columns */
+        .text-start {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 0;
+        }
+
+        .text-start:hover {
+            background-color: #e0f2fe;
+            transform: translateY(-2px);
         }
 
         .text-start strong {
             font-weight: 600;
-            color: #333;
+            color: #1f2937;
             font-size: 14px;
-            text-align: center;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .text-start span {
             font-weight: 400;
+            color: #4b5563;
             font-size: 14px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
+            line-height: 1.5;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
             background-color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #e9ecef;
+        /* Status-specific styling */
+        .status-draft, .status-wait-for-approval {
+            color: #f59e0b;
+            font-weight: 500;
+            background-color: #fefce8;
         }
 
-        .text-start.me-3 {
-            flex: 1;
-            text-align: center;
-            min-width: 0;
+        .status-not-approve {
+            color: #ef4444;
+            font-weight: 500;
+            background-color: #fef2f2;
+        }
+
+        .status-approve {
+            color: #10b981;
+            font-weight: 500;
+            background-color: #ecfdf5;
+        }
+
+        .send-status-not-sent {
+            color: #ef4444;
+            font-weight: 500;
+            background-color: #fef2f2;
+        }
+
+        .send-status-sent {
+            color: #10b981;
+            font-weight: 500;
+            background-color: #ecfdf5;
         }
 
         .search-container {
@@ -140,80 +186,10 @@
             border-color: #007bff;
         }
 
-        .index-in-card {
-            margin-right: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            min-width: 30px;
-            text-align: center;
-        }
-
         .card-wrapper {
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 0;
-        }
-
-        .card-body {
-            flex-grow: 1;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 12px 15px;
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        .toggle-container {
-            padding: 5px;
-            min-width: 30px;
-        }
-
-        .detail-table {
-            background-color: #ffffff;
-            border-radius: 0 0 8px 8px;
-            padding: 0;
-            width: 100%; /* Đảm bảo phần collapse có chiều rộng bằng phần thông tin chính */
-        }
-
-        .card-body.detail-table {
-            background-color: #f9fafc;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-            border-radius: 0 0 8px 8px;
-            width: 100%; /* Đảm bảo phần collapse có chiều rộng bằng phần thông tin chính */
-        }
-
-        .solution-details {
-            background-color: #f8f9fc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e7f0;
-            margin-top: 10px;
-            width: 100%; /* Đảm bảo phần chi tiết bên trong collapse có chiều rộng bằng phần thông tin chính */
-            display: flex; /* Sử dụng flex để hiển thị ngang */
-            flex-wrap: wrap; /* Cho phép các cột xuống dòng nếu không đủ chỗ */
-            justify-content: space-between; /* Căn đều các cột */
-            gap: 10px; /* Khoảng cách giữa các cột */
-        }
-
-        .solution-details .detail-item {
-            flex: 1; /* Mỗi cột chiếm đều không gian */
-            text-align: center; /* Căn giữa nội dung */
-            min-width: 0; /* Đảm bảo không bị tràn */
-        }
-
-        .solution-details strong {
-            color: #333;
-            font-weight: 600;
-            display: block; /* Đặt strong và span trên hai dòng */
-        }
-
-        .solution-details span {
-            color: #212529;
-            display: block; /* Đặt strong và span trên hai dòng */
         }
 
         .nav-tabs .nav-link {
@@ -251,221 +227,91 @@
             opacity: 0.6;
         }
 
-        .create-machine-btn {
-            margin-left: auto;
-            padding: 8px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .alert-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 400;
         }
 
-        .create-machine-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .modal-dialog {
-            max-width: 80%;
-            margin: 1.75rem auto;
-        }
-
-        .modal-content {
-            max-height: 100vh;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: none;
+        .back-to-top {
+            background-color: #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        .modal-header {
-            background-color: #007bff;
-            color: white;
-            border-bottom: none;
-            border-radius: 10px 10px 0 0;
-            padding: 15px 20px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .modal-body {
-            padding: 20px;
-            background-color: #ffffff;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .modal-body h6 {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .form-check {
-            margin-bottom: 10px;
-        }
-
-        .form-check-label {
-            font-size: 14px;
-            color: #495057;
-            margin-left: 8px;
-        }
-
-        .mb-3 {
-            margin-bottom: 15px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover {
+        .back-to-top:hover {
             background-color: #0056b3;
+            transform: scale(1.1);
         }
 
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        .form-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 8px 12px;
-            font-size: 14px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-            outline: none;
-        }
-
-        .modal-footer {
-            border-top: none;
-            padding: 15px 20px;
-            justify-content: flex-end;
-            background-color: #ffffff;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .create-machine-modal {
-            max-width: 60%;
-        }
-
-        .toast {
-            opacity: 0.9;
-        }
-
-        .success-toast {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            opacity: 0.9;
-        }
-
-        .success-toast .toast-header {
-            background-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .success-toast .toast-body {
-            color: #155724;
-        }
-
-        .error-toast {
+        .toast.error-toast {
             background-color: #f8d7da;
             border-color: #f5c6cb;
             opacity: 0.9;
         }
 
-        .error-toast .toast-header {
+        .toast-header {
             background-color: #f5c6cb;
             color: #721c24;
+            border-radius: 8px 8px 0 0;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        .error-toast .toast-body {
+        .toast-body {
             color: #721c24;
+            font-size: 14px;
         }
 
-        #toastSuccess, #toastError {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1050;
-            min-width: 300px;
-        }
-
-        #toastError {
-            bottom: 80px;
-        }
-
-        /* Định dạng màu cho Send Status */
-        .send-status-not-sent {
-            color: red;
-        }
-
-        .send-status-sent {
-            color: green;
-        }
-
-        /* Định dạng màu cho Status */
-        .status-not-approve {
-            color: red;
-        }
-
-        .status-draft, .status-wait-for-approval {
-            color: #d4a017; /* Màu vàng đậm */
-        }
-
-        .status-approve {
-            color: #28a745; /* Màu xanh lá */
-        }
-
+        /* Responsive design */
         @media (max-width: 768px) {
-            .content-section {
+            .card-body {
                 flex-direction: column;
-                width: 100%;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .parent-row {
+                flex-direction: column;
                 align-items: flex-start;
             }
 
-            .text-start.me-3 {
-                width: 100%;
+            .index-in-card {
                 margin-bottom: 10px;
+                margin-right: 0;
+                width: 100%;
                 text-align: left;
+            }
+
+            .content-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .text-start {
+                width: 100%;
+                text-align: left;
+                padding: 8px;
+            }
+
+            .text-start strong {
+                font-size: 13px;
+            }
+
+            .text-start span {
+                font-size: 13px;
             }
 
             .search-container {
@@ -481,82 +327,14 @@
                 width: 100%;
             }
 
-            .card-body {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 10px;
-            }
-
             .card-wrapper {
                 flex-direction: column;
-                gap: 0;
                 align-items: flex-start;
-            }
-
-            .index-in-card {
-                margin-bottom: 10px;
-                margin-right: 0;
-                text-align: left;
-            }
-
-            .toggle-container {
-                margin-top: 10px;
-                margin-left: 0;
-                text-align: right;
-                width: 100%;
-            }
-
-            .solution-details {
-                flex-direction: column; /* Trên thiết bị di động, hiển thị dọc */
-                align-items: flex-start;
-            }
-
-            .solution-details .detail-item {
-                width: 100%; /* Trên thiết bị di động, mỗi cột chiếm toàn bộ chiều rộng */
-                text-align: left; /* Căn trái trên thiết bị di động */
-                margin-bottom: 10px;
-            }
-
-            .create-machine-btn {
-                margin-left: 0;
-                margin-top: 10px;
-                width: 100%;
             }
 
             .nav-tabs .nav-link {
                 font-size: 14px;
                 padding: 8px 12px;
-            }
-
-            .modal-dialog {
-                max-width: 90%;
-                margin: 0.5rem;
-            }
-
-            .modal-content {
-                max-height: 80vh;
-            }
-
-            .modal-body {
-                padding: 15px;
-            }
-
-            .form-label, .form-check-label {
-                font-size: 12px;
-            }
-
-            .form-control {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-
-            .btn-primary, .btn-secondary {
-                font-size: 12px;
-                padding: 6px 15px;
-            }
-
-            .modal-title {
-                font-size: 16px;
             }
         }
     </style>
@@ -591,93 +369,312 @@
                 <!-- Search and title -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách kế hoạch</h6>
-                    <form method="get" action="/technical/view-all-work-order" class="d-flex align-items-center">
+                    <form method="get" action="/technical/view-all-work-order"
+                          class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
-                        <select name="status" class="form-control search-input ms-2">
-                            <option value="">Tất cả trạng thái</option>
-                            <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
-                                    th:selected="${status == selectedStatus}"></option>
-                        </select>
-                        <button type="submit" class="btn btn-primary ms-2" style="padding: 6px 12px;">Tìm</button>
+                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
                     </form>
                 </div>
 
-                <!-- Work Order List -->
-                <div class="row g-3">
-                    <div class="col-12" th:if="${workOrders == null or workOrders.isEmpty()}">
-                        <div class="alert alert-info text-center">
-                            <p>Không tìm thấy Work Order nào.</p>
-                        </div>
-                    </div>
-                    <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
-                        <div class="card-wrapper">
-                            <div class="card"
-                                 th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                 th:data-workorder-id="${workOrder.id}">
-                                <div class="card-body parent-row">
-                                    <span class="index-in-card"
-                                          th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                    <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                         style="width: 100%;">
-                                        <div class="text-start me-3">
-                                            <strong>Work Order ID</strong><br>
-                                            <span th:text="${workOrder.id}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Production Order ID</strong><br>
-                                            <span th:text="${workOrder.productionOrder.id}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Create At</strong><br>
-                                            <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Deadline</strong><br>
-                                            <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Status</strong><br>
-                                            <span th:classappend="${workOrder.status.name() == 'NOT_APPROVE'} ? 'status-not-approve' : (${workOrder.status.name() == 'DRAFT'} ? 'status-draft' : (${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : (${workOrder.status.name() == 'APPROVE'} ? 'status-approve' : '')))"
-                                                  th:text="${workOrder.status.name() == 'NOT_APPROVE'} ? 'Từ Chối' : (${workOrder.status.name() == 'DRAFT'} ? 'Bản Nháp' : (${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : (${workOrder.status.name() == 'APPROVE'} ? 'Đồng Ý' : ${workOrder.status.name()})))"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Send Status</strong><br>
-                                            <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                  th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                        </div>
-                                    </div>
+                <!-- Tabstrip -->
+                <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
+                    <ul class="nav nav-tabs" id="workOrderTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="draft-tab" data-bs-toggle="tab" href="#draft-work-orders"
+                               role="tab" aria-controls="draft-work-orders" aria-selected="true">Bản Nháp</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE' ? 'active' : ''}"
+                               id="wait-for-update-tab" data-bs-toggle="tab" href="#wait-for-update-work-orders"
+                               role="tab" aria-controls="wait-for-update-work-orders"
+                               aria-selected="${selectedStatus == 'WAIT_FOR_UPDATE'}">Chờ Cập Nhật</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${selectedStatus == 'NOT_APPROVED' ? 'active' : ''}"
+                               id="not-approved-tab" data-bs-toggle="tab" href="#not-approved-work-orders" role="tab"
+                               aria-controls="not-approved-work-orders"
+                               aria-selected="${selectedStatus == 'NOT_APPROVED'}">Từ Chối</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED' ? 'active' : ''}"
+                               id="approved-tab" data-bs-toggle="tab" href="#approved-work-orders" role="tab"
+                               aria-controls="approved-work-orders" aria-selected="${selectedStatus == 'APPROVED'}">Đồng
+                                Ý</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link"
+                               th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL' ? 'active' : ''}"
+                               id="wait-for-approval-tab" data-bs-toggle="tab" href="#wait-for-approval-work-orders"
+                               role="tab" aria-controls="wait-for-approval-work-orders"
+                               aria-selected="${selectedStatus == 'WAIT_FOR_APPROVAL'}">Chờ Phê Duyệt</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab content -->
+                <div class="tab-content" id="workOrderTabContent">
+                    <!-- Draft Work Orders Tab -->
+                    <div class="tab-pane fade show active" id="draft-work-orders" role="tabpanel"
+                         aria-labelledby="draft-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${workOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy Work Order nào ở trạng thái Bản Nháp.</p>
                                 </div>
-                                <div class="collapse"
-                                     th:id="'workorder-details-' + ${iterStat.count + workOrderPage.number * workOrderPage.size}">
-                                    <div class="card-body detail-table">
-                                        <div class="solution-details">
-                                            <div class="detail-item">
-                                                <strong>Created By</strong>
-                                                <span th:text="${workOrder.createdBy != null ? workOrder.createdBy.username : 'N/A'}"></span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <strong>Approved By</strong>
-                                                <span th:text="${workOrder.approvedBy != null ? workOrder.approvedBy.username : 'N/A'}"></span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <strong>Create At</strong>
-                                                <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy HH:mm')}"></span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <strong>Update At</strong>
-                                                <span th:text="${#temporals.format(workOrder.updateAt, 'dd/MM/yyyy HH:mm')}"></span>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                                <div class="card-wrapper"
+                                     th:if="${workOrder.status == T(fpt.g36.gapms.enums.BaseEnum).DRAFT}">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                            <div class="content-section">
+                                                <div class="text-start">
+                                                    <strong>Work Order ID</strong><br>
+                                                    <span th:text="${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Production Order ID</strong><br>
+                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Create At</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Deadline</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Status</strong><br>
+                                                    <span th:classappend="'status-draft'" th:text="'Bản Nháp'"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Send Status</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="toggle-container">
-                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                        th:data-target="'#workorder-details-' + ${iterStat.count + workOrderPage.number * workOrderPage.size}"
-                                        style="padding: 0; color: #dc3545; text-decoration: none;">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                        </div>
+                    </div>
+
+                    <!-- Wait for Update Work Orders Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE' ? 'show active' : ''}"
+                         id="wait-for-update-work-orders" role="tabpanel" aria-labelledby="wait-for-update-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${workOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy Work Order nào ở trạng thái Chờ Cập Nhật.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                                <div class="card-wrapper"
+                                     th:if="${workOrder.status == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_UPDATE}">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                            <div class="content-section">
+                                                <div class="text-start">
+                                                    <strong>Work Order ID</strong><br>
+                                                    <span th:text="${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Production Order ID</strong><br>
+                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Create At</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Deadline</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Status</strong><br>
+                                                    <span th:classappend="'status-wait-for-approval'"
+                                                          th:text="'Chờ Cập Nhật'"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Send Status</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Not Approved Work Orders Tab -->
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'NOT_APPROVED' ? 'show active' : ''}"
+                         id="not-approved-work-orders" role="tabpanel" aria-labelledby="not-approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${workOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy Work Order nào ở trạng thái Từ Chối.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                                <div class="card-wrapper"
+                                     th:if="${workOrder.status == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                            <div class="content-section">
+                                                <div class="text-start">
+                                                    <strong>Work Order ID</strong><br>
+                                                    <span th:text="${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Production Order ID</strong><br>
+                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Create At</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Deadline</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Status</strong><br>
+                                                    <span th:classappend="'status-not-approve'"
+                                                          th:text="'Từ Chối'"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Send Status</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Approved Work Orders Tab -->
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'APPROVED' ? 'show active' : ''}"
+                         id="approved-work-orders" role="tabpanel" aria-labelledby="approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${workOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy Work Order nào ở trạng thái Đồng Ý.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                                <div class="card-wrapper"
+                                     th:if="${workOrder.status == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                            <div class="content-section">
+                                                <div class="text-start">
+                                                    <strong>Work Order ID</strong><br>
+                                                    <span th:text="${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Production Order ID</strong><br>
+                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Create At</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Deadline</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Status</strong><br>
+                                                    <span th:classappend="'status-approve'" th:text="'Đồng Ý'"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Send Status</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wait for Approval Work Orders Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL' ? 'show active' : ''}"
+                         id="wait-for-approval-work-orders" role="tabpanel" aria-labelledby="wait-for-approval-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${workOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy Work Order nào ở trạng thái Chờ Phê Duyệt.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${workOrders}">
+                                <div class="card-wrapper"
+                                     th:if="${workOrder.status == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
+                                            <div class="content-section">
+                                                <div class="text-start">
+                                                    <strong>Work Order ID</strong><br>
+                                                    <span th:text="${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Production Order ID</strong><br>
+                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Create At</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Deadline</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Status</strong><br>
+                                                    <span th:classappend="'status-wait-for-approval'"
+                                                          th:text="'Chờ Phê Duyệt'"></span>
+                                                </div>
+                                                <div class="text-start">
+                                                    <strong>Send Status</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -688,18 +685,18 @@
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${workOrderPage.number == 0 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Previous</a>
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search})}">Previous</a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, workOrderPage.totalPages - 1)}"
                             th:classappend="${i == workOrderPage.number ? 'active' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}"
+                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search})}"
                                th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item"
                             th:classappend="${workOrderPage.number == workOrderPage.totalPages - 1 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, status=${selectedStatus})}">Next</a>
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search})}">Next</a>
                         </li>
                     </ul>
                 </nav>
@@ -710,7 +707,8 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <!-- Toast Error -->
-    <div id="toastError" class="toast error-toast">
+    <div id="toastError" class="toast error-toast"
+         style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
         <div class="toast-header">
             <strong class="me-auto">Lỗi</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -730,22 +728,9 @@
 <script src="/assert/js/main.js"></script>
 <script>
     $(document).ready(function () {
-        // Ẩn spinner khi trang tải xong
+        // Hide spinner when page loads
         $(window).on('load', function () {
             $('#spinner').removeClass('show');
-        });
-
-        // Xử lý nút toggle để hiển thị chi tiết
-        $('.toggle-btn').click(function (event) {
-            event.stopPropagation();
-            var target = $(this).data('target');
-            var icon = $(this).find('i');
-            $(target).collapse('toggle');
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
-            }
         });
 
         // Back to top
@@ -754,7 +739,7 @@
             return false;
         });
 
-        // Hiển thị toast lỗi từ server
+        // Show server error toast
         const hiddenError = document.getElementById('hiddenError');
         if (hiddenError && hiddenError.textContent.trim()) {
             const errorToast = new bootstrap.Toast(document.getElementById('toastError'));

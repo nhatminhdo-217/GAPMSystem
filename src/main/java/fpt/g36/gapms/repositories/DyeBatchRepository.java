@@ -26,4 +26,5 @@ public interface DyeBatchRepository extends JpaRepository<DyeBatch, Long> {
     @Query(value = "DELETE FROM dye_batch WHERE dye_stage_id IN :stageIds", nativeQuery = true)
     void deleteAllByDyeStageIds(@Param("stageIds") List<Long> stageIds);
 
+    List<DyeBatch> findAllByDyeStageIdIn(List<Long> dyeStageIds);
 }

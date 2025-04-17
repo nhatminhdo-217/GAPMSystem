@@ -22,4 +22,6 @@ public interface WindingBatchRepository extends JpaRepository<WindingBatch, Long
     @Modifying
     @Query(value = "DELETE FROM winding_batch WHERE winding_stage_id IN :stageIds", nativeQuery = true)
     void deleteAllByWindingStageIds(@Param("stageIds") List<Long> stageIds);
+
+    List<WindingBatch> findAllByWindingStageIdIn(List<Long> windingStageIds);
 }

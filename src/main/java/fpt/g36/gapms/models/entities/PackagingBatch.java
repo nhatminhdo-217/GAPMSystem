@@ -13,6 +13,10 @@ import java.util.List;
 @Table(name = "packaging_batch")
 public class PackagingBatch extends BaseEntity {
 
+    private int batchNumber;
+
+    private int plannedOutput;
+
     @NotNull
     private LocalDateTime plannedStart;
 
@@ -48,7 +52,7 @@ public class PackagingBatch extends BaseEntity {
     @JoinColumn(name = "packaging_stage_id")
     private PackagingStage packagingStage;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_batch_id")
     private WindingBatch windingBatch;
 
@@ -64,9 +68,10 @@ public class PackagingBatch extends BaseEntity {
     public PackagingBatch() {
     }
 
-
-    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime receivedProductAt, LocalDateTime deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, User qa, Boolean isPass) {
+    public PackagingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, LocalDateTime plannedStart, LocalDateTime receivedProductAt, LocalDateTime deadline, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String packagingPhoto, PackagingStage packagingStage, WindingBatch windingBatch, List<PackagingRiskAssessment> packagingRiskAssessments, User qa, Boolean isPass) {
         super(id, createAt, updateAt);
+        this.batchNumber = batchNumber;
+        this.plannedOutput = plannedOutput;
         this.plannedStart = plannedStart;
         this.receivedProductAt = receivedProductAt;
         this.deadline = deadline;
@@ -82,6 +87,22 @@ public class PackagingBatch extends BaseEntity {
         this.packagingRiskAssessments = packagingRiskAssessments;
         this.qa = qa;
         this.isPass = isPass;
+    }
+
+    public int getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(int batchNumber) {
+        this.batchNumber = batchNumber;
+    }
+
+    public int getPlannedOutput() {
+        return plannedOutput;
+    }
+
+    public void setPlannedOutput(int plannedOutput) {
+        this.plannedOutput = plannedOutput;
     }
 
     public LocalDateTime getPlannedStart() {

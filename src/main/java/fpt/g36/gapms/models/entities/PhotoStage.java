@@ -1,6 +1,7 @@
 package fpt.g36.gapms.models.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
@@ -11,15 +12,15 @@ public class PhotoStage extends BaseEntity{
 
     private String photo;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_risk_assessment_id")
     private DyeRiskAssessment dyeRiskAssessment;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_risk_assessment_id")
     private WindingRiskAssessment windingRiskAssessment;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "packaging_risk_assessment_id")
     private PackagingRiskAssessment packagingRiskAssessment;
 

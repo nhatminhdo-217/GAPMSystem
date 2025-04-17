@@ -968,6 +968,17 @@
             }
         });
     });
+
+    $(document).ready(function () {
+        // Ẩn thông báo thành công sau 3 giây
+        if ($('#successMessageDiv').length) {
+            setTimeout(function () {
+                $('#successMessageDiv').fadeOut(500, function () {
+                    $(this).remove(); // Xóa hoàn toàn div sau khi ẩn
+                });
+            }, 3000); // 3000 milliseconds = 3 giây
+        }
+    });
 </script>
 </body>
 </html>

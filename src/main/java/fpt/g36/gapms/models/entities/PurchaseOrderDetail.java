@@ -9,19 +9,19 @@ import java.time.LocalDateTime;
 @Table(name = "purchase_order_detail")
 public class PurchaseOrderDetail extends BaseEntity {
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "purchase_order_id", nullable = false)
   private PurchaseOrder purchaseOrder;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id")
   private Product product;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "brand_id")
   private Brand brand;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;
 
@@ -33,10 +33,10 @@ public class PurchaseOrderDetail extends BaseEntity {
 
   private BigDecimal totalPrice;
 
-  @OneToOne(mappedBy = "purchaseOrderDetail")
+  @OneToOne(mappedBy = "purchaseOrderDetail", fetch = FetchType.LAZY)
   private WorkOrderDetail workOrderDetail;
 
-  @OneToOne(mappedBy = "purchaseOrderDetail")
+  @OneToOne(mappedBy = "purchaseOrderDetail", fetch = FetchType.LAZY)
   private ProductionOrderDetail productionOrderDetail;
 
   public PurchaseOrderDetail() {

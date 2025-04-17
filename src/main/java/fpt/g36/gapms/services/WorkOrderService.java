@@ -43,10 +43,10 @@ public interface WorkOrderService {
 
     WorkOrder findWorkOrderByProductionOrder(ProductionOrder productionOrder);
 
-//    WorkOrder updateWorkOrder(Long workOrderId,
-//                              List<Long> selectedDyeMachineIds,
-//                              List<Long> selectedWindingMachineIds,
-//                              List<BigDecimal> additionalWeight);
+    WorkOrder updateWorkOrder(Long workOrderId,
+                              List<Long> selectedDyeMachineIds,
+                              List<Long> selectedWindingMachineIds,
+                              List<BigDecimal> additionalWeight);
 
     void deleteWorkOrderDetails(Long workOrderId);
 
