@@ -180,6 +180,20 @@
             color: #333;
         }
 
+        /* Additional Weight Section (bên trong detail-content) */
+        .additional-weight-container {
+            margin-top: 15px; /* Giãn cách với bảng detail-table phía trên */
+            margin-bottom: 15px; /* Giãn cách với stage-section phía dưới */
+        }
+
+        .additional-weight-container label {
+            margin-bottom: 5px; /* Khoảng cách giữa nhãn và input */
+        }
+
+        .additional-weight-container .form-control {
+            padding: 8px 12px; /* Đảm bảo padding đồng đều với các input khác */
+        }
+
         /* Stage Section */
         .stage-section {
             margin-top: 15px;
@@ -350,6 +364,12 @@
             .btn-success {
                 width: 100%;
             }
+
+            .additional-weight-container {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
         }
     </style>
 </head>
@@ -608,7 +628,6 @@
                 $additionalWeightInput.removeClass('is-invalid');
                 $errorDiv.text('');
             }
-
             return isValid;
         }
 
@@ -671,7 +690,6 @@
             var productionOrderId = $('input[name="productionOrderId"]').val();
             var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
             var additionalWeight = $('#additionalWeight-' + detailIndex).val();
-
             if (!validateAdditionalWeight(detailIndex)) {
                 $('#dyeAvailability-' + detailIndex).text('Vui lòng nhập trọng lượng bổ sung hợp lệ trước.').addClass('error').removeClass('success');
                 $('#dyeDetails-' + detailIndex).html('');

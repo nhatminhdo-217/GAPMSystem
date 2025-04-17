@@ -666,6 +666,13 @@ public class TechnicalWorkOrderController {
                     model.addAttribute("error", "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
                     return "technical/update-work-order";
                 }
+              
+                if (additionalWeights == null || additionalWeights.isEmpty() ||
+                        additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
+                    System.err.println("Additional Weights: " + additionalWeights);
+                    model.addAttribute("error", "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
+                    return "technical/update-work-order";
+                }
 
                 if (additionalWeights == null || additionalWeights.isEmpty() ||
                         additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {

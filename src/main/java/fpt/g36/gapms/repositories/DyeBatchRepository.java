@@ -27,4 +27,5 @@ public interface DyeBatchRepository extends JpaRepository<DyeBatch, Long> {
     void deleteAllByDyeStageIds(@Param("stageIds") List<Long> stageIds);
 
     List<DyeBatch> findAllByDyeStageIdIn(List<Long> dyeStageIds);
+
 }

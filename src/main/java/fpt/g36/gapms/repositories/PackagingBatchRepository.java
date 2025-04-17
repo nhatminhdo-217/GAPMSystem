@@ -26,4 +26,5 @@ public interface PackagingBatchRepository extends JpaRepository<PackagingBatch, 
     List<Long> findIdsByStageIds(@Param("stageIds") List<Long> stageIds);
 
     List<PackagingBatch> findAllByPackagingStageIdIn(List<Long> packagingStageIds);
+
 }

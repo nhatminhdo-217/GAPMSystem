@@ -24,4 +24,5 @@ public interface WindingBatchRepository extends JpaRepository<WindingBatch, Long
     void deleteAllByWindingStageIds(@Param("stageIds") List<Long> stageIds);
 
     List<WindingBatch> findAllByWindingStageIdIn(List<Long> windingStageIds);
+
 }

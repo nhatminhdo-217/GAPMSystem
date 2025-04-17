@@ -21,4 +21,5 @@ public interface WorkOrderDetailsRepository extends JpaRepository<WorkOrderDetai
     void deleteAllByWorkOrder(@Param("workOrder") WorkOrder workOrder);
 
     long countByWorkOrder_Id(Long workOrderId);
+
 }

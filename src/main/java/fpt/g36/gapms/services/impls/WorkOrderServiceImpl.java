@@ -7,6 +7,7 @@ import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.WorkOrderService;
 import jakarta.persistence.EntityManager;
+
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Autowired
     @PersistenceContext
     private EntityManager entityManager;
+
 
     @Override
     public Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId) {
@@ -261,6 +263,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             System.err.println("Error: DyeMachineIds or WindingMachineIds list is null");
             throw new IllegalArgumentException("Machine ID lists cannot be null");
         }
+
         // Kiểm tra số lượng additionalWeights và tải trước Thread để tránh lazy loading
         if (additionalWeights == null || additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
             throw new IllegalArgumentException("Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
@@ -273,6 +276,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 }
             }
         }
+
     }
 
     /**
