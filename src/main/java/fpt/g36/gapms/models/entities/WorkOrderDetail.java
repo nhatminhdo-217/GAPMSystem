@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "work_order_detail")
 public class WorkOrderDetail extends BaseEntity {
-
     @ManyToOne
     @JoinColumn(name = "work_order_id", nullable = false)
     private WorkOrder workOrder;
@@ -33,20 +32,20 @@ public class WorkOrderDetail extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private DyeStage dyeStage;
 
-    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private WindingStage windingStage;
 
-    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "workOrderDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private PackagingStage packagingStage;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "production_order_detail_id")
     private ProductionOrderDetail productionOrderDetail;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_detail_id")
     private PurchaseOrderDetail purchaseOrderDetail;
 
