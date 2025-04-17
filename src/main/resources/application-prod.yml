@@ -47,7 +47,6 @@ spring:
   # Thymeleaf cache bật trong môi trường production để tăng hiệu suất
   thymeleaf:
     cache: true
-  # Flyway configuration
 
 logging:
   level:
@@ -59,3 +58,9 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME}
