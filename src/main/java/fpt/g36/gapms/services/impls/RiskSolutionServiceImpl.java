@@ -6,6 +6,7 @@ import fpt.g36.gapms.models.entities.RiskSolution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RiskSolutionRepository;
 import fpt.g36.gapms.services.RiskSolutionService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Service;
 public class RiskSolutionServiceImpl implements RiskSolutionService {
     @Autowired
     private RiskSolutionRepository riskSolutionRepository;
+
+    @Autowired
+    private NotificationUtils notificationUtils;
+
+
     @Override
     public Page<RiskSolution> getAllRiskSolution(Pageable pageable) {
         Page<RiskSolution> riskSolutions = riskSolutionRepository.getAllRiskSolution(pageable);
@@ -35,6 +41,7 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
         riskSolution_save.setApproveStatus(BaseEnum.WAIT_FOR_APPROVAL);
         riskSolution_save.setCreatedBy(user);
         riskSolutionRepository.save(riskSolution_save);
+        notificationUtils.sentFalseSeriousFromTechnicalToPo(rsId);
         return riskSolution_save;
     }
 
@@ -53,6 +60,7 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
             riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
             riskSolution.getDyeRiskAssessment().getDyeBatch().setDyePhoto(null);
             riskSolutionRepository.save(riskSolution);
+            notificationUtils.sentRedoStageFromPoToDyeLeader(riskSolution.getDyeRiskAssessment().getDyeBatch().getId());
         }
 
         if(riskSolution.getWindingRiskAssessment() != null){
@@ -63,6 +71,7 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
             riskSolution.getWindingRiskAssessment().getWindingBatch().setWorkStatus(WorkEnum.FIX);
             riskSolution.getWindingRiskAssessment().getWindingBatch().setWindingPhoto(null);
             riskSolutionRepository.save(riskSolution);
+            notificationUtils.sentRedoStageFromPoToDyeLeader(riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getId());
         }
 
         return riskSolution;
@@ -79,6 +88,7 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
             riskSolution.setCreatedBy(user);
             riskSolution.setNote(riskSolution.getNote());
             riskSolutionRepository.save(riskSolution);
+            notificationUtils.sentRedoStageFromTechnicalToDyeLeader(riskSolution.getDyeRiskAssessment().getDyeBatch().getId());
         }
 
         if(riskSolution.getWindingRiskAssessment() != null){
@@ -92,6 +102,7 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
             riskSolution.setCreatedBy(user);
             riskSolution.setNote(riskSolution.getNote());
             riskSolutionRepository.save(riskSolution);
+            notificationUtils.sentRedoStageFromTechnicalToDyeLeader(riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getId());
         }
 
         return riskSolution;

@@ -33,6 +33,7 @@ public class SecurityConfig {
                                   "/purchase-order/customer/detail/**")
                         .hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/work-order/technology-process/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING", "QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .requestMatchers("/risk-solution/production-manager/**", "/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
                         .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")

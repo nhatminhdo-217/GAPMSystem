@@ -4,6 +4,7 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.quotation.*;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -25,9 +26,9 @@ public class QuotationController {
     private final RfqService rfqService;
    private final MailService mailService;
    private final PurchaseOrderService purchaseOrderService;
+    private final NotificationUtils notificationUtils;
 
-
-    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService, MailService mailService, PurchaseOrderService purchaseOrderService) {
+    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService, MailService mailService, PurchaseOrderService purchaseOrderService, NotificationUtils notificationUtils) {
         this.quotationService = quotationService;
         this.userUtils = userUtils;
         this.productService = productService;
@@ -36,6 +37,7 @@ public class QuotationController {
         this.rfqService = rfqService;
         this.mailService = mailService;
         this.purchaseOrderService = purchaseOrderService;
+        this.notificationUtils = notificationUtils;
     }
 
     @GetMapping("/list")
@@ -109,6 +111,7 @@ public class QuotationController {
         mailService.sendQuotationEmail(quotation.getRfq().getCreateBy().getEmail(), quotation.getRfq().getCreateBy().getUsername(), quotation.getRfq().getId());
          if(quotation.getAccepted() == BaseEnum.WAIT_FOR_APPROVAL) {
              redirectAttributes.addFlashAttribute("quotation_submit", "Báo giá đã được xác nhận và gửi cho khách");
+             notificationUtils.sentQuotationToSaleStaffToCustomer(quotation.getRfq().getId(), quotation.getRfq().getCreateBy().getId() );
          }
         return "redirect:/quotation/detail/" + id;
     }

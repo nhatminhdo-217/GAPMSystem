@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.entities.RiskSolution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.RiskSolutionService;
 import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,10 @@ public class RiskSolutionController {
 
     @Autowired
     private RiskSolutionService riskSolutionService;
+
+
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Autowired
     private UserService userService;

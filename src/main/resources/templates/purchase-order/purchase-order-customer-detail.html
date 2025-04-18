@@ -493,9 +493,18 @@
                             <button class="btn-action me-2" data-bs-toggle="modal" data-bs-target="#contractModal">
                                 <i class="fas fa-file-contract me-1"></i> Hợp đồng
                             </button>
-                            <button class="btn-action" onclick="window.print()">
+                            <!--<button class="btn-action" onclick="window.href">
                                 <i class="fas fa-print me-1"></i> In
+                            </button>-->
+                            <button class="btn-action"
+                                    th:onclick="|window.location.href='@{/purchase-order/customer/list}'|">
+                                <i class="fas fa-arrow-left me-1"></i> Quay lại
                             </button>
+
+
+
+
+
                         </div>
                     </div>
                     <div class="order-info">
