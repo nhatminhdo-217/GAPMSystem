@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.SendEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -57,28 +58,16 @@ public class TechnologyProcess extends BaseEntity {
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
 
+    @NotNull
+    private SendEnum sendStatus;
+
     private String qrCodeUrl;
+
     public TechnologyProcess() {
     }
 
     ;
 
-    public TechnologyProcess(Long id, LocalDateTime createAt, LocalDateTime updateAt, User createdBy, BigDecimal avcoLveDlxPlus, BigDecimal chelator, BigDecimal detergent, BigDecimal reducingAgent, BigDecimal dfm, BigDecimal axit, BigDecimal anbatex, BigDecimal liquorRatio, BigDecimal dispergatorN, List<DyeType> dyeTypes, DyeBatch dyeBatch, String qrCodeUrl) {
-        super(id, createAt, updateAt);
-        this.createdBy = createdBy;
-        this.avcoLveDlxPlus = avcoLveDlxPlus;
-        this.chelator = chelator;
-        this.detergent = detergent;
-        this.reducingAgent = reducingAgent;
-        this.dfm = dfm;
-        this.axit = axit;
-        this.anbatex = anbatex;
-        this.liquorRatio = liquorRatio;
-        this.dispergatorN = dispergatorN;
-        this.dyeTypes = dyeTypes;
-        this.dyeBatch = dyeBatch;
-        this.qrCodeUrl = qrCodeUrl;
-    }
 
     public User getCreatedBy() {
         return createdBy;
