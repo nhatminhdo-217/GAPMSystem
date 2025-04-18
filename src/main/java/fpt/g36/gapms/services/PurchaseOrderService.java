@@ -39,6 +39,9 @@ public interface PurchaseOrderService {
 
     PurchaseOrderDetail getPurchaseOrderDetailById(Long id);
 
+
+    PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id);
+
     Page<PurchaseOrderDTO> getAllPurchaseOrderWithSearchFilter(String search, BaseEnum status, int page, int size, String sortField, String sortDir);
 
     Page<PurchaseOrderDTO> getAllByRole(User currUser, String search, BaseEnum status, int page, int size, String sortField, String sortDir);

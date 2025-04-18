@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.enums.WorkEnum;
@@ -18,11 +19,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
     @Autowired
     private TechnologyProcessRepository technologyProcessRepository;
+
     @Autowired
     private WorkOrderRepository workOrderRepository;
 
@@ -269,5 +272,10 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             System.err.println("Lỗi khi tạo TechnologyProcess cho WorkOrderDetail ID: " + workOrderDetailId + " trong WorkOrder ID: " + workOrderId + " - " + e.getMessage());
             throw e;
         }
+      
+       @Override
+    public TechnologyProcess getByDyeId(Long dyeId) {
+        TechnologyProcess  technologyProcess = technologyProcessRepository.getTechnologyProcessByBatchId(dyeId);
+        return technologyProcess;
     }
 }

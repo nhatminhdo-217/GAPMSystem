@@ -50,7 +50,26 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public QuotationInfoDTO getQuotationInfo(long id) {
-        List<QuotationInfoProjection> quotationDetail = quotationRepository.findQuotationDetail(id);
+        /*List<QuotationInfoProjection> quotationDetail = quotationRepository.findQuotationDetail(id);*/
+        List<QuotationInfoProjection> quotationDetail = new ArrayList<>();
+        Quotation quotation = quotationRepository.findById(id).orElseThrow(() -> new RuntimeException("Quotation not found"));
+
+        Rfq rfq = rfqService.getRfqById(quotation.getRfq().getId());
+        for (RfqDetail rfqDetail: rfq.getRfqDetails()) {
+            Boolean color;
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            if(checkColor) {
+                color = false;
+                QuotationInfoProjection quotationDetail_set = quotationRepository.findQuotationDetail(rfqDetail.getId(), rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }else {
+                color = true;
+                QuotationInfoProjection quotationDetail_set = quotationRepository.findQuotationDetail(rfqDetail.getId(),rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
+                quotationDetail.add(quotationDetail_set);
+            }
+
+        }
+
 
         if (quotationDetail.isEmpty()) {
             throw new RuntimeException("Quotation not found");
@@ -223,7 +242,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public void approvedQuotation(long rfqId) {
+    public Quotation approvedQuotation(long rfqId) {
         Quotation quotation = quotationRepository.findByRfqId(rfqId);
         if (quotation == null) {
             throw new RuntimeException("Quotation not found");
@@ -235,6 +254,7 @@ public class QuotationServiceImpl implements QuotationService {
         purchaseOrder.setQuotation(quotation);
         purchaseOrder.setStatus(BaseEnum.DRAFT);
         purchaseOrder.setCustomer(quotation.getRfq().getCreateBy());
+        purchaseOrder.setSolution(quotation.getRfq().getSolution());
        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
 
         List<RfqDetail> rfqDetails = rfqDetailService.getAllRfqDetailByRfqId(rfqId);
@@ -263,7 +283,7 @@ public class QuotationServiceImpl implements QuotationService {
 
         }
 
-
+return quotation;
     }
 
     @Override
@@ -312,6 +332,8 @@ public class QuotationServiceImpl implements QuotationService {
             quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
             quotation.setUpdateAt(LocalDateTime.now());
             quotation.setCreatedBy(currentUser);
+            /*quotation.getRfq().setIsSent(BaseEnum.APPROVED);*/
+
         }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
             quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
             quotation.setUpdateAt(LocalDateTime.now());
@@ -319,6 +341,13 @@ public class QuotationServiceImpl implements QuotationService {
             throw new RuntimeException("Quotation status cannot valid");
         }
         quotationRepository.save(quotation);
+    }
+
+    @Override
+    public Quotation getQuotationById(Long quotationId) {
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+        return quotation;
     }
 
     @Override

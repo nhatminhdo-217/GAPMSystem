@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface WindingRiskAssessmentRepository extends JpaRepository<WindingRiskAssessment, Long> {
 
-    @Query("SELECT w FROM WindingRiskAssessment w WHERE w.windingBatch.id = :WindingBatchId ORDER BY w.createAt DESC")
+    @Query("SELECT w FROM WindingRiskAssessment w WHERE w.windingBatch.dyeBatch.id = :WindingBatchId ORDER BY w.createAt DESC")
     List<WindingRiskAssessment> getByWindingBatchId(Long WindingBatchId);
 
     @Modifying

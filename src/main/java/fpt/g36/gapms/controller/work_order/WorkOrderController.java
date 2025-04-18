@@ -2,7 +2,6 @@ package fpt.g36.gapms.controller.work_order;
 
 
 import fpt.g36.gapms.models.entities.*;
-import fpt.g36.gapms.repositories.PhotoStageRepository;
 import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
@@ -45,7 +44,8 @@ public class WorkOrderController {
     private WindingBatchService windingBatchService;
     @Autowired
     private ImageService imageService;
-
+    @Autowired
+    private TechnologyProcessService technologyProcessService;
     @Autowired
     private WindingStageService windingStageService;
 
@@ -171,7 +171,7 @@ public class WorkOrderController {
         dyeBatchService.changeStatusDyeBatchInProcess(dbId, leader);
         DyeBatch dyeBatch = dyeBatchService.getDyeBatchById(dbId);
         redirectAttributes.addFlashAttribute("in_process", "Mã mẻ DB-" + dyeBatch.getId() + " Đã được chuyển sang bắt đầu nhuộm");
-        return "redirect:/work-order/team-leader/Batch/" + dyeBatch.getDyeStage().getId();
+        return "redirect:/work-order/technology-process/" + dyeBatch.getId();
     }
 
     @PostMapping("/team-leader/Dye/change/finish/{id}")
@@ -208,7 +208,7 @@ public class WorkOrderController {
 
         // Redirect về trang chi tiết
         DyeBatch dyeBatch = dyeBatchService.getDyeBatchById(dbId);
-        return "redirect:/work-order/team-leader/Batch/" + dyeBatch.getDyeStage().getId();
+        return "redirect:/work-order/technology-process/" + dyeBatch.getId();
     }
 
     @GetMapping("/team-leader/winding/change/in-process/{id}")
@@ -223,7 +223,7 @@ public class WorkOrderController {
         windingBatchService.changeStatusWindingBatchInProcess(wbId, leader);
         WindingBatch windingBatch = windingBatchService.getWindingBatchById(wbId);
         redirectAttributes.addFlashAttribute("in_process_winding", "Mã Mẻ WB-" + windingBatch.getId() + " Đã được chuyển sang bắt đầu Côn");
-        return "redirect:/work-order/team-leader/Batch/" + windingBatch.getWindingStage().getId();
+        return "redirect:/work-order/technology-process/" + windingBatch.getDyeBatch().getId();
     }
 
     @PostMapping("/team-leader/winding/change/finish/{id}")
@@ -261,7 +261,7 @@ public class WorkOrderController {
 
         // Redirect về trang chi tiết
         WindingBatch windingBatch = windingBatchService.getWindingBatchById(id);
-        return "redirect:/work-order/team-leader/Batch/" + windingBatch.getWindingStage().getId();
+        return "redirect:/work-order/technology-process/" + windingBatch.getDyeBatch().getId();
     }
 
 
@@ -278,7 +278,7 @@ public class WorkOrderController {
         packagingBatchService.changeStatusPackagingBatchInProcess(pbId, leader);
        PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(pbId);
         redirectAttributes.addFlashAttribute("in_process_packaging", "Mã Mẻ PB-" + packagingBatch.getId() + " Đã Được Chuyển Sang Bắt Đầu Đóng Gói");
-        return "redirect:/work-order/team-leader/Batch/" + packagingBatch.getPackagingStage().getId();
+        return "redirect:/work-order/technology-process/" + packagingBatch.getWindingBatch().getDyeBatch().getId();
     }
 
     @PostMapping("/team-leader/packaging/change/finish/{id}")
@@ -315,10 +315,71 @@ public class WorkOrderController {
 
         // Redirect về trang chi tiết
         PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(id);
-        return "redirect:/work-order/team-leader/Batch/" + packagingBatch.getPackagingStage().getId();
+        return "redirect:/work-order/technology-process/" + packagingBatch.getWindingBatch().getDyeBatch().getId();
     }
 
 
+
+    @GetMapping("/technology-process/{id}")
+    public String getTechnology(Model model, @PathVariable("id") Long dyeId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+        String role = optionalUser.get().getRole().getName();
+        if (role.equalsIgnoreCase("LEAD_DYE")) {
+            userUtils.getOptionalUser(model);
+            TechnologyProcess technologyProcess = technologyProcessService.getByDyeId(dyeId);
+            model.addAttribute("technologyProcess", technologyProcess);
+            return "team-leader/dye-technology-process";
+        } else if (role.equalsIgnoreCase("LEAD_WINDING")) {
+            userUtils.getOptionalUser(model);
+            TechnologyProcess technologyProcess = technologyProcessService.getByDyeId(dyeId);
+            model.addAttribute("technologyProcess", technologyProcess);
+            return "team-leader/winding-technology-process";
+        } else if (role.equalsIgnoreCase("LEAD_PACKAGING")){
+            userUtils.getOptionalUser(model);
+            TechnologyProcess technologyProcess = technologyProcessService.getByDyeId(dyeId);
+            model.addAttribute("technologyProcess", technologyProcess);
+            return "team-leader/packaging-technology-process";
+        }else if (role.equalsIgnoreCase("QA_DYE")){
+            DyeRiskAssessment dyeRiskAssessment = dyeStageService.getDyeRiskAssessmentByDyeStageId(dyeId);
+            if(dyeRiskAssessment == null){
+                DyeBatch dyeBatch = dyeBatchService.getDyeBatchById(dyeId);
+                userUtils.getOptionalUser(model);
+                model.addAttribute("dyeBatch", dyeBatch);
+                return "quality_assurance/qa-test-dye";
+            }
+            model.addAttribute("dyeRiskAssessment", dyeRiskAssessment);
+            userUtils.getOptionalUser(model);
+            return "quality_assurance/qa-test-dye";
+        }else if (role.equalsIgnoreCase("QA_WINDING")){
+            WindingRiskAssessment windingRiskAssessment = windingStageService.getWindingRiskAssessmentByWindingBatchId(dyeId);
+            if(windingRiskAssessment == null){
+                WindingBatch windingBatch = windingBatchService.getWindingBatchById(dyeId);
+                userUtils.getOptionalUser(model);
+                model.addAttribute("windingBatch", windingBatch);
+                return "quality_assurance/qa-test-winding";
+            }
+
+            model.addAttribute("windingRiskAssessment", windingRiskAssessment);
+            userUtils.getOptionalUser(model);
+            return "quality_assurance/qa-test-winding";
+        }else{
+            PackagingRiskAssessment packagingRiskAssessment = packagingStageService.getPackagingRiskAssessmentByPackagingBatchId(dyeId);
+            if(packagingRiskAssessment == null){
+                PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(dyeId);
+                userUtils.getOptionalUser(model);
+                model.addAttribute("packagingBatch", packagingBatch);
+                return "quality_assurance/qa-test-packaging";
+            }
+            model.addAttribute("packagingRiskAssessment", packagingRiskAssessment);
+            userUtils.getOptionalUser(model);
+            return "quality_assurance/qa-test-packaging";
+        }
+    }
 
     /*----------------------------------------------QA----------------------------------------------------*/
 
@@ -424,7 +485,7 @@ public class WorkOrderController {
         }
     }
 
-    @GetMapping("/quality_assurance/test-form/dye/{id}")
+   /* @GetMapping("/quality_assurance/test-form/dye/{id}")
     public String getTestDyeForm(Model model, @PathVariable(value = "id") Long id){
         DyeRiskAssessment dyeRiskAssessment = dyeStageService.getDyeRiskAssessmentByDyeStageId(id);
         if(dyeRiskAssessment == null){
@@ -436,7 +497,7 @@ public class WorkOrderController {
         model.addAttribute("dyeRiskAssessment", dyeRiskAssessment);
         userUtils.getOptionalUser(model);
         return "quality_assurance/qa-test-dye";
-    }
+    }*/
 
     @PostMapping("/quality_assurance/test/dye/{id}")
     public String SaveTestDye(@PathVariable("id") Long id,
@@ -463,44 +524,41 @@ public class WorkOrderController {
                     dyeRiskAssessment.getMedication() == null ||
                     dyeRiskAssessment.getMedicineSafe() == null))
             {
+
                 redirectAttributes.addFlashAttribute("check_pass", "Chỉ có thể đánh pass/false khi các trường đã được đánh giá đủ");
-                return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment.getDyeBatch().getId();
+                return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
             }
 
         }
 
+        if(dyeRiskAssessment.getPass() != null){
+            if(dyeRiskAssessment.getPass()) {
+                if ((!dyeRiskAssessment.getColorFading() ||
+                        !dyeRiskAssessment.getColorTrue() ||
+                        !dyeRiskAssessment.getHumidity() ||
+                        !dyeRiskAssessment.getLightTrue() ||
+                        !dyeRiskAssessment.getIndustrialCleaningStains() ||
+                        !dyeRiskAssessment.getMedication() ||
+                        !dyeRiskAssessment.getMedicineSafe())) {
 
-        /*String uploadDir = "/uploads";
-
-        List<String> existingPhotoList = existingPhotos != null && !existingPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(existingPhotos.split(",")))
-                : new ArrayList<>();
-        List<String> deletedPhotoList = deletedPhotos != null && !deletedPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(deletedPhotos.split(",")))
-                : new ArrayList<>();
-
-        // Xóa các ảnh trong deletedPhotoList
-        for (String deletedPhoto : deletedPhotoList) {
-            if (existingPhotoList.contains(deletedPhoto)) {
-                existingPhotoList.remove(deletedPhoto);
-                File fileToDelete = new File(uploadDir + deletedPhoto);
-                if (fileToDelete.exists()) {
-                    fileToDelete.delete();
+                    redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
                 }
             }
-        }*/
+        }
+
         try {
             DyeRiskAssessment dyeRiskAssessment_save = dyeStageService.saveTestDye(id, dyeRiskAssessment, optionalUser.get(), photos);
             redirectAttributes.addFlashAttribute("save_dye", "Đã lưu thông tin kiểm tra");
-            return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment_save.getDyeBatch().getId();
+            return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("check_photo", e.getMessage());
-            return "redirect:/work-order/quality_assurance/test-form/dye/" + dyeRiskAssessment.getDyeBatch().getId();
+            return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
         }
     }
 
 
-    @GetMapping("/quality_assurance/test-form/winding/{id}")
+    /*@GetMapping("/quality_assurance/test-form/winding/{id}")
     public String getTestWindingForm(Model model, @PathVariable(value = "id") Long id){
         WindingRiskAssessment windingRiskAssessment = windingStageService.getWindingRiskAssessmentByWindingBatchId(id);
         if(windingRiskAssessment == null){
@@ -513,7 +571,7 @@ public class WorkOrderController {
         model.addAttribute("windingRiskAssessment", windingRiskAssessment);
         userUtils.getOptionalUser(model);
         return "quality_assurance/qa-test-winding";
-    }
+    }*/
 
     @PostMapping("/quality_assurance/test/winding/{id}")
     public String SaveTestWinding(@PathVariable("id") Long id,
@@ -539,24 +597,35 @@ public class WorkOrderController {
                     )
             {
                 redirectAttributes.addFlashAttribute("check_pass_winding", "Chỉ có thể đánh pass/false khi các trường đã được đánh giá đủ");
-                return "redirect:/work-order/quality_assurance/test-form/winding/" + windingRiskAssessment.getWindingBatch().getId() ;
+                return "redirect:/work-order/technology-process/" + windingRiskAssessment.getWindingBatch().getDyeBatch().getId() ;
             }
 
+        }
+
+        if(windingRiskAssessment.getPass() != null){
+            if(windingRiskAssessment.getPass()) {
+                if ((!windingRiskAssessment.getColorFading() ||
+                        !windingRiskAssessment.getColorUniformity()
+                )) {
+                    redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + windingRiskAssessment.getWindingBatch().getDyeBatch().getId();
+                }
+            }
         }
 
         try {
         WindingRiskAssessment windingRiskAssessment_save = windingStageService.saveTestWingding(id, windingRiskAssessment, optionalUser.get(), photos);
         redirectAttributes.addFlashAttribute("save_winding", "Đã lưu thông tin kiểm tra");
-        return "redirect:/work-order/quality_assurance/test-form/winding/" + windingRiskAssessment_save.getWindingBatch().getId() ;
+            return "redirect:/work-order/technology-process/" + windingRiskAssessment.getWindingBatch().getDyeBatch().getId() ;
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("check_photo_winding", e.getMessage());
-            return "redirect:/work-order/quality_assurance/test-form/winding/" + windingRiskAssessment.getWindingBatch().getId();
+            return "redirect:/work-order/technology-process/" + windingRiskAssessment.getWindingBatch().getDyeBatch().getId() ;
         }
     }
 
 
 
-    @GetMapping("/quality_assurance/test-form/packaging/{id}")
+    /*@GetMapping("/quality_assurance/test-form/packaging/{id}")
     public String getTestPackagingForm(Model model, @PathVariable(value = "id") Long id){
         PackagingRiskAssessment packagingRiskAssessment = packagingStageService.getPackagingRiskAssessmentByPackagingBatchId(id);
         if(packagingRiskAssessment == null){
@@ -568,7 +637,7 @@ public class WorkOrderController {
         model.addAttribute("packagingRiskAssessment", packagingRiskAssessment);
         userUtils.getOptionalUser(model);
         return "quality_assurance/qa-test-packaging";
-    }
+    }*/
 
     @PostMapping("/quality_assurance/test/packaging/{id}")
     public String SaveTestPackaging(@PathVariable("id") Long id,
@@ -594,37 +663,31 @@ public class WorkOrderController {
             )
             {
                 redirectAttributes.addFlashAttribute("check_pass_packaging", "Chỉ có thể đánh pass/false khi các trường đã được đánh giá đủ");
-                return "redirect:/work-order/quality_assurance/test-form/packaging/" + packagingRiskAssessment.getPackagingBatch().getId() ;
+                return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
             }
 
         }
 
-        /*String uploadDir = "/uploads";
-
-        List<String> existingPhotoList = existingPhotos != null && !existingPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(existingPhotos.split(",")))
-                : new ArrayList<>();
-        List<String> deletedPhotoList = deletedPhotos != null && !deletedPhotos.isEmpty()
-                ? new ArrayList<>(Arrays.asList(deletedPhotos.split(",")))
-                : new ArrayList<>();
-
-        // Xóa các ảnh trong deletedPhotoList
-        for (String deletedPhoto : deletedPhotoList) {
-            if (existingPhotoList.contains(deletedPhoto)) {
-                existingPhotoList.remove(deletedPhoto);
-                File fileToDelete = new File(uploadDir + deletedPhoto);
-                if (fileToDelete.exists()) {
-                    fileToDelete.delete();
+        if(packagingRiskAssessment.getPass() != null){
+            if(packagingRiskAssessment.getPass()) {
+                if ((!packagingRiskAssessment.getFirstStamp() ||
+                        !packagingRiskAssessment.getCoreStamp()||
+                        !packagingRiskAssessment.getDozenStamp() ||
+                        !packagingRiskAssessment.getKcsStamp())
+                ) {
+                    redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
                 }
             }
-        }*/
+        }
+
         try {
         PackagingRiskAssessment packagingRiskAssessment_save = packagingStageService.saveTestPackaging(id, packagingRiskAssessment, optionalUser.get(), photos);
         redirectAttributes.addFlashAttribute("save_packaging", "Đã lưu thông tin kiểm tra");
-        return "redirect:/work-order/quality_assurance/test-form/packaging/" + packagingRiskAssessment_save.getPackagingBatch().getId() ;
+            return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("check_photo_packaging", e.getMessage());
-            return "redirect:/work-order/quality_assurance/test-form/packaging/" + packagingRiskAssessment.getPackagingBatch().getId();
+            return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
         }
     }
 }
