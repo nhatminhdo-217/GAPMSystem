@@ -16,17 +16,11 @@ import java.util.List;
 public interface WorkOrderService {
     Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId);
 
-    Page<WorkOrder> getAllWorkOrders(Pageable pageable);
-
     WorkOrder getWorkOrderById(Long id);
 
     WorkOrder getSubmittedWorkOrderById(Long id);
 
     Page<WorkOrder> getAllSubmittedWorkOrders(Pageable pageable);
-
-    WorkOrder getWorkOrderByProductionOrder(ProductionOrder productionOrder);
-
-    Page<WorkOrder> getWorkOrdersByStatus(BaseEnum status, Pageable pageable);
 
     Page<WorkOrder> getSubmittedWorkOrdersByStatus(BaseEnum status, Pageable pageable);
 
@@ -49,5 +43,12 @@ public interface WorkOrderService {
                               List<BigDecimal> additionalWeight);
 
     void deleteWorkOrderDetails(Long workOrderId);
+
+    WorkOrder getWorkOrderByIdAndCreatedBy(Long workOrderId, User createBy);
+
+    Page<WorkOrder> getAllWorkOrdersByCreatedBy(Pageable pageable, User createBy);
+
+    Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createBy);
+
 
 }

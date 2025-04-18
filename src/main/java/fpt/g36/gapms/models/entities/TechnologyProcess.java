@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.SendEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -57,12 +58,15 @@ public class TechnologyProcess extends BaseEntity {
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
 
+    @NotNull
+    private SendEnum sendStatus;
+
     public TechnologyProcess() {
     }
 
     ;
 
-    public TechnologyProcess(Long id, LocalDateTime createAt, LocalDateTime updateAt, User createdBy, BigDecimal avcoLveDlxPlus, BigDecimal chelator, BigDecimal detergent, BigDecimal reducingAgent, BigDecimal dfm, BigDecimal axit, BigDecimal anbatex, BigDecimal liquorRatio, BigDecimal dispergatorN, List<DyeType> dyeTypes, DyeBatch dyeBatch) {
+    public TechnologyProcess(Long id, LocalDateTime createAt, LocalDateTime updateAt, User createdBy, BigDecimal avcoLveDlxPlus, BigDecimal chelator, BigDecimal detergent, BigDecimal reducingAgent, BigDecimal dfm, BigDecimal axit, BigDecimal anbatex, BigDecimal liquorRatio, BigDecimal dispergatorN, List<DyeType> dyeTypes, DyeBatch dyeBatch, SendEnum sendStatus) {
         super(id, createAt, updateAt);
         this.createdBy = createdBy;
         this.avcoLveDlxPlus = avcoLveDlxPlus;
@@ -76,6 +80,15 @@ public class TechnologyProcess extends BaseEntity {
         this.dispergatorN = dispergatorN;
         this.dyeTypes = dyeTypes;
         this.dyeBatch = dyeBatch;
+        this.sendStatus = sendStatus;
+    }
+
+    public SendEnum getSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(SendEnum sendStatus) {
+        this.sendStatus = sendStatus;
     }
 
     public User getCreatedBy() {

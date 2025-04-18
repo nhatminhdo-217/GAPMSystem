@@ -373,6 +373,8 @@
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <!-- Thêm hidden input để lưu trạng thái tab hiện tại -->
+                        <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
                         <button type="submit" class="btn btn-primary ms-2">Tìm</button>
                     </form>
                 </div>
@@ -381,8 +383,10 @@
                 <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
                     <ul class="nav nav-tabs" id="workOrderTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="draft-tab" data-bs-toggle="tab" href="#draft-work-orders"
-                               role="tab" aria-controls="draft-work-orders" aria-selected="true">Bản Nháp</a>
+                            <a class="nav-link" th:classappend="${selectedStatus == 'DRAFT' ? 'active' : ''}"
+                               id="draft-tab" data-bs-toggle="tab" href="#draft-work-orders"
+                               role="tab" aria-controls="draft-work-orders"
+                               aria-selected="${selectedStatus == 'DRAFT'}">Bản Nháp</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE' ? 'active' : ''}"
@@ -399,8 +403,8 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED' ? 'active' : ''}"
                                id="approved-tab" data-bs-toggle="tab" href="#approved-work-orders" role="tab"
-                               aria-controls="approved-work-orders" aria-selected="${selectedStatus == 'APPROVED'}">Đồng
-                                Ý</a>
+                               aria-controls="approved-work-orders"
+                               aria-selected="${selectedStatus == 'APPROVED'}">Đồng Ý</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link"
@@ -415,7 +419,8 @@
                 <!-- Tab content -->
                 <div class="tab-content" id="workOrderTabContent">
                     <!-- Draft Work Orders Tab -->
-                    <div class="tab-pane fade show active" id="draft-work-orders" role="tabpanel"
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'DRAFT' ? 'show active' : ''}"
+                         id="draft-work-orders" role="tabpanel"
                          aria-labelledby="draft-tab">
                         <div class="row g-3">
                             <div class="col-12" th:if="${workOrders.isEmpty()}">
@@ -432,28 +437,28 @@
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                            <div class="content-section">
-                                                <div class="text-start">
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
                                                     <strong>Work Order ID</strong><br>
                                                     <span th:text="${workOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Production Order ID</strong><br>
                                                     <span th:text="${workOrder.productionOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Create At</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Deadline</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Status</strong><br>
                                                     <span th:classappend="'status-draft'" th:text="'Bản Nháp'"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Send Status</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
@@ -485,29 +490,29 @@
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                            <div class="content-section">
-                                                <div class="text-start">
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
                                                     <strong>Work Order ID</strong><br>
                                                     <span th:text="${workOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Production Order ID</strong><br>
                                                     <span th:text="${workOrder.productionOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Create At</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Deadline</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Status</strong><br>
                                                     <span th:classappend="'status-wait-for-approval'"
                                                           th:text="'Chờ Cập Nhật'"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Send Status</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
@@ -538,29 +543,29 @@
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                            <div class="content-section">
-                                                <div class="text-start">
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
                                                     <strong>Work Order ID</strong><br>
                                                     <span th:text="${workOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Production Order ID</strong><br>
                                                     <span th:text="${workOrder.productionOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Create At</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Deadline</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Status</strong><br>
                                                     <span th:classappend="'status-not-approve'"
                                                           th:text="'Từ Chối'"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Send Status</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
@@ -591,28 +596,28 @@
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                            <div class="content-section">
-                                                <div class="text-start">
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
                                                     <strong>Work Order ID</strong><br>
                                                     <span th:text="${workOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Production Order ID</strong><br>
                                                     <span th:text="${workOrder.productionOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Create At</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Deadline</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Status</strong><br>
                                                     <span th:classappend="'status-approve'" th:text="'Đồng Ý'"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Send Status</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
@@ -644,29 +649,29 @@
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                            <div class="content-section">
-                                                <div class="text-start">
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
                                                     <strong>Work Order ID</strong><br>
                                                     <span th:text="${workOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Production Order ID</strong><br>
                                                     <span th:text="${workOrder.productionOrder.id}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Create At</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Deadline</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Status</strong><br>
                                                     <span th:classappend="'status-wait-for-approval'"
                                                           th:text="'Chờ Phê Duyệt'"></span>
                                                 </div>
-                                                <div class="text-start">
+                                                <div class="text-start me-3">
                                                     <strong>Send Status</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
@@ -685,67 +690,80 @@
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${workOrderPage.number == 0 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search})}">Previous</a>
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}">Previous</a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, workOrderPage.totalPages - 1)}"
                             th:classappend="${i == workOrderPage.number ? 'active' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search})}"
+                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}"
                                th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item"
                             th:classappend="${workOrderPage.number == workOrderPage.totalPages - 1 ? 'disabled' : ''}">
                             <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search})}">Next</a>
+                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}">Next</a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
-    </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Content End -->
 
-    <!-- Toast Error -->
-    <div id="toastError" class="toast error-toast"
-         style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
-        <div class="toast-header">
-            <strong class="me-auto">Lỗi</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            <p id="errorMessage"></p>
-        </div>
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 </div>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/wow/wow.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
+
+<!-- Toast script -->
 <script>
-    $(document).ready(function () {
-        // Hide spinner when page loads
-        $(window).on('load', function () {
-            $('#spinner').removeClass('show');
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMessage = document.getElementById('hiddenError')?.textContent;
 
-        // Back to top
-        $('.back-to-top').click(function () {
-            $('html, body').animate({scrollTop: 0}, 1000);
-            return false;
-        });
+        if (errorMessage && errorMessage.trim() !== '') {
+            const toastHTML = `
+                <div class="toast error-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Lỗi</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${errorMessage}
+                    </div>
+                </div>
+            `;
 
-        // Show server error toast
-        const hiddenError = document.getElementById('hiddenError');
-        if (hiddenError && hiddenError.textContent.trim()) {
-            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
-            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
-            errorToast.show();
-            setTimeout(() => errorToast.hide(), 3000);
+            const toastContainer = document.createElement('div');
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '1050';
+            toastContainer.innerHTML = toastHTML;
+            document.body.appendChild(toastContainer);
+
+            const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+            toast.show();
+        }
+
+        // Xử lý chuyển tab bằng URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        if (status) {
+            const tabElement = document.querySelector(`#${status.toLowerCase().replace(/_/g, '-')}-tab`);
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
         }
     });
 </script>
