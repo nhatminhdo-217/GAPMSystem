@@ -4,6 +4,8 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.technical.CreateWorkOrderForm;
 import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.repositories.WorkOrderDetailsRepository;
+import fpt.g36.gapms.repositories.WorkOrderRepository;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.UserService;
@@ -14,11 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -38,18 +42,26 @@ public class TechnicalWorkOrderController {
     private final ProductionOrderService productionOrderService;
     private final MachineService machineService;
     private final UserService userService;
+    private final WorkOrderRepository workOrderRepository;
+    private final WorkOrderDetailsRepository workOrderDetailsRepository;
 
     @Autowired
-    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService) {
+    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService, WorkOrderRepository workOrderRepository, WorkOrderDetailsRepository workOrderDetailsRepository) {
         this.workOrderService = workOrderService;
         this.userUtils = userUtils;
         this.productionOrderService = productionOrderService;
         this.machineService = machineService;
         this.userService = userService;
+        this.workOrderRepository = workOrderRepository;
+        this.workOrderDetailsRepository = workOrderDetailsRepository;
     }
 
     @GetMapping("/view-all-work-order")
-    public String viewAllWorkOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(required = false) String search, @RequestParam(required = false) String status, Model model) {
+    public String viewAllWorkOrders(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "5") int size,
+                                    @RequestParam(required = false) String search,
+                                    @RequestParam(required = false) String status,
+                                    Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userUtils.getOptionalUser(model);
 
@@ -550,10 +562,6 @@ public class TechnicalWorkOrderController {
                 List<WindingMachine> freeWindingMachines = machineService.findFreeWindingMachines(plannedStartAt, plannedEndAt);
                 List<DyeMachine> queuedDyeMachines = machineService.findQueuedDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
                 List<WindingMachine> queuedWindingMachines = machineService.findQueuedWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-                List<BigDecimal> additionalWeights = new ArrayList<>();
-                for (WorkOrderDetail detail : workOrder.getWorkOrderDetails()) {
-                    additionalWeights.add(detail.getAdditionalWeight());
-                }
 
                 if (freeDyeMachines.isEmpty() && queuedDyeMachines.isEmpty() ||
                         freeWindingMachines.isEmpty() && queuedWindingMachines.isEmpty()) {
@@ -567,7 +575,6 @@ public class TechnicalWorkOrderController {
                 model.addAttribute("queuedDyeMachines", queuedDyeMachines);
                 model.addAttribute("freeWindingMachines", freeWindingMachines);
                 model.addAttribute("queuedWindingMachines", queuedWindingMachines);
-                model.addAttribute("additionalWeights", additionalWeights);
                 model.addAttribute("plannedStartAt", plannedStartAt);
                 model.addAttribute("plannedEndAt", plannedEndAt);
                 return "technical/update-work-order";
@@ -581,6 +588,7 @@ public class TechnicalWorkOrderController {
     }
 
     @PostMapping("/update-work-order/{workOrderId}")
+    @Transactional
     public String updateWorkOrder(
             @PathVariable("workOrderId") Long workOrderId,
             @RequestParam(value = "additionalWeights", required = false) List<BigDecimal> additionalWeights,
@@ -666,6 +674,13 @@ public class TechnicalWorkOrderController {
                     return "technical/update-work-order";
                 }
 
+                if (additionalWeights == null || additionalWeights.isEmpty() ||
+                        additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
+                    System.err.println("Additional Weights: " + additionalWeights);
+                    model.addAttribute("error", "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
+                    return "technical/update-work-order";
+                }
+
                 for (int i = 0; i < additionalWeights.size(); i++) {
                     BigDecimal weight = additionalWeights.get(i);
                     if (weight == null || weight.compareTo(BigDecimal.valueOf(0.4)) < 0) {
@@ -682,13 +697,13 @@ public class TechnicalWorkOrderController {
                     }
                 }
 
-//                WorkOrder updatedWorkOrder = workOrderService.updateWorkOrder(
-//                        workOrderId,
-//                        selectedDyeMachineIds,
-//                        selectedWindingMachineIds,
-//                        additionalWeights);
+                WorkOrder updatedWorkOrder = workOrderService.updateWorkOrder(
+                        workOrderId,
+                        selectedDyeMachineIds,
+                        selectedWindingMachineIds,
+                        additionalWeights);
                 redirectAttributes.addFlashAttribute("success", "Cập nhật Work Order thành công!");
-//                return "redirect:/technical/work-order-details/" + updatedWorkOrder.getId();
+                return "redirect:/technical/work-order-details/" + updatedWorkOrder.getId();
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
                 model.addAttribute("error", e.getMessage());
@@ -734,11 +749,13 @@ public class TechnicalWorkOrderController {
                 workOrderService.deleteWorkOrderDetails(workOrderId);
 
                 // Sau khi xóa, lấy lại WorkOrder để đảm bảo trạng thái mới nhất
-                workOrder = workOrderService.getWorkOrderById(workOrderId);
-                if (workOrder.getWorkOrderDetails().isEmpty()) {
+                long detailCount = workOrderDetailsRepository.countByWorkOrder_Id(workOrderId);
+                System.err.println("Số lượng WorkOrderDetail còn lại trong DB: " + detailCount);
+                if (detailCount == 0) {
                     redirectAttributes.addFlashAttribute("success", "Xóa Work Order Details thành công!");
                 } else {
-                    redirectAttributes.addFlashAttribute("error", "Xóa Work Order Details không hoàn tất. Vẫn còn dữ liệu tồn tại.");
+                    System.err.println("sau khi xoá lỗi: " + detailCount);
+                    redirectAttributes.addFlashAttribute("error", "Xóa Work Order Details không hoàn tất. Vẫn còn " + detailCount + " dữ liệu tồn tại.");
                 }
                 return "redirect:/technical/work-order-details/" + workOrderId;
 

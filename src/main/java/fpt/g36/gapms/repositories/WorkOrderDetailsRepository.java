@@ -19,4 +19,7 @@ public interface WorkOrderDetailsRepository extends JpaRepository<WorkOrderDetai
     @Modifying
     @Query("DELETE FROM WorkOrderDetail wod WHERE wod.workOrder = :workOrder")
     void deleteAllByWorkOrder(@Param("workOrder") WorkOrder workOrder);
+
+    long countByWorkOrder_Id(Long workOrderId);
+
 }

@@ -22,6 +22,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
 
     WorkOrder findByProductionOrder(ProductionOrder productionOrder);
 
+    @Query("SELECT w FROM WorkOrder w WHERE w.status = :status ORDER BY w.updateAt DESC")
     Page<WorkOrder> findByStatus(@NotNull BaseEnum status, Pageable pageable);
 
     Page<WorkOrder> findAllByOrderByCreateAt(Pageable pageable);

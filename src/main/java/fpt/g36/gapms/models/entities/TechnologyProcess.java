@@ -53,7 +53,7 @@ public class TechnologyProcess extends BaseEntity {
     private List<DyeType> dyeTypes;
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
 
