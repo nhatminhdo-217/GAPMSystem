@@ -29,13 +29,15 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "JOIN product p ON rd.product_id = p.id " +
             "JOIN brand b ON rd.brand_id = b.id " +
             "JOIN category cate ON rd.cate_id = cate.id " +
-            "JOIN cate_brand_price cbp ON cbp.cate_id = cate.id " +
+            "JOIN cate_brand_price cbp ON cbp.cate_id = :cate_id \n" +
+            "        AND cbp.brand_id = :brand_id \n" +
+            "        AND cbp.is_color = :color\n" +
             "JOIN user u ON r.create_by = u.id " +
             "JOIN company_user cu ON u.id = cu.user_id " +
             "JOIN company c ON cu.company_id = c.id " +
             "JOIN solution s ON r.id = s.rfq_id " +
-            "WHERE q.id = :quotationId and cbp.is_color = 1", nativeQuery = true)
-    List<QuotationInfoProjection> findQuotationDetail(@Param("quotationId") long id);
+            "WHERE rd.id = :rfqDetailId", nativeQuery = true)
+    QuotationInfoProjection findQuotationDetail(@Param("rfqDetailId") long rfqDetailId, Long brand_id, Long cate_id,@Param("color") Boolean color);
 
     @Query(value = "SELECT " +
             "q.id AS quotationId, " +

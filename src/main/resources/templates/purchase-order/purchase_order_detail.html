@@ -201,21 +201,21 @@
                                 <th>Sản phẩm</th>
                                 <th>Thương hiệu</th>
                                 <th>Danh mục</th>
-                                <th>Ghi chú</th>
+                                <th>Tên màu</th>
                                 <th>Số lượng</th>
                                 <th>Giá (VND)</th>
                                 <th>Thành tiền (VND)</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="item : ${items}">
-                                <td th:text="${item.productName}"></td>
-                                <td th:text="${item.brandName}"></td>
-                                <td th:text="${item.categoryName}"></td>
-                                <td th:text="${item.noteColor}"></td>
+                            <tr th:each="item : ${purchaseOrder.purchaseOrderDetails}">
+                                <td th:text="${item.product.name}"></td>
+                                <td th:text="${item.brand.name}"></td>
+                                <td th:text="${item.category.name}"></td>
+                                <td th:text="${item.note_color}"></td>
                                 <td th:text="${item.quantity}"></td>
-                                <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></td>
-                                <td th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 0, 'POINT')}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -224,23 +224,23 @@
                     <!-- Mobile Card View -->
                     <div class="mobile-table">
                         <div class="mobile-table-items">
-                            <div th:each="item : ${items}" class="mobile-table-card mb-3">
+                            <div th:each="item : ${purchaseOrder.purchaseOrderDetails}" class="mobile-table-card mb-3">
                                 <div class="card-body p-3">
                                     <div class="row mb-2">
                                         <div class="col-5 label">Sản phẩm:</div>
-                                        <div class="col-7" th:text="${item.productName}"></div>
+                                        <div class="col-7" th:text="${item.product.name}"></div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Thương hiệu:</div>
-                                        <div class="col-7" th:text="${item.brandName}"></div>
+                                        <div class="col-7" th:text="${item.brand.name}"></div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Danh mục:</div>
-                                        <div class="col-7" th:text="${item.categoryName}"></div>
+                                        <div class="col-7" th:text="${item.category.name}"></div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col-5 label">Ghi chú:</div>
-                                        <div class="col-7" th:text="${item.noteColor}"></div>
+                                        <div class="col-5 label">Tên màu:</div>
+                                        <div class="col-7" th:text="${item.note_color}"></div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Số lượng:</div>
@@ -248,11 +248,11 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Giá (VND):</div>
-                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}"></div>
+                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 0, 'POINT')}"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-5 label">Thành tiền:</div>
-                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.detailAmount, 1, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 0, 'POINT')} + ' VND'"></div>
                                     </div>
                                 </div>
                             </div>
@@ -269,11 +269,11 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-5 col-md-3 text-muted">Ngày thực giao:</div>
-                        <div class="col-7 col-md-9 fw-bold" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                        <div class="col-7 col-md-9 fw-bold" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 col-md-3 text-muted">Tổng tiền:</div>
-                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(items.![detailAmount]), 1, 'COMMA', 0, 'POINT') + ' VND'}"></div>
+                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
                     </div>
                 </div>
             </div>

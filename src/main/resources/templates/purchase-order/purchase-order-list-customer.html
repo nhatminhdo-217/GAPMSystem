@@ -226,7 +226,6 @@
                             <thead>
                             <tr>
                                 <th>Mã PO</th>
-                                <th>Khách hàng</th>
                                 <th>Ngày tạo</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
@@ -237,7 +236,6 @@
                             <!-- Vòng lặp Thymeleaf để hiển thị danh sách purchaseOrders -->
                             <tr th:each="po : ${purchaseOrders}">
                                 <td th:text="'PO-' + ${po.id}"></td>
-                                <td>Công ty TNHH ABC</td>
                                 <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>

@@ -104,7 +104,7 @@
 
 
     <!-- Sales Chart Start -->
-    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SALE_STAFF'') or hasRole(''TECHNICAL'')')}">
+    <div class="container-fluid pt-4 px-4" th:if="${#authorization.expression('isAuthenticated() and !hasRole(''CUSTOMER'')')}">
         <div class="row g-4">
             <div class="col-sm-12 col-xl-6">
                 <div class="bg-light text-center rounded p-4">

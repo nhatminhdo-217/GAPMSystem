@@ -64,10 +64,12 @@ public class WindingBatch extends BaseEntity {
     @JoinColumn(name = "qa_id")
     private User qa;
 
+    @OneToOne(mappedBy = "windingBatch")
+    private PackagingBatch packagingBatch;
     public WindingBatch() {
     }
 
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa) {
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa, PackagingBatch packagingBatch) {
         super(id, createAt, updateAt);
         this.batchNumber = batchNumber;
         this.plannedOutput = plannedOutput;
@@ -86,6 +88,7 @@ public class WindingBatch extends BaseEntity {
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
         this.qa = qa;
+        this.packagingBatch = packagingBatch;
     }
 
     public int getBatchNumber() {
@@ -222,5 +225,13 @@ public class WindingBatch extends BaseEntity {
 
     public void setQa(User qa) {
         this.qa = qa;
+    }
+
+    public PackagingBatch getPackagingBatch() {
+        return packagingBatch;
+    }
+
+    public void setPackagingBatch(PackagingBatch packagingBatch) {
+        this.packagingBatch = packagingBatch;
     }
 }

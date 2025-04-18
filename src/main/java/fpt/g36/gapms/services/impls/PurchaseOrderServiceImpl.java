@@ -158,6 +158,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    public PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderByQuotationId(Id);
+        return purchaseOrder;
+    }
+
+    @Override
     public Page<PurchaseOrderDTO> getAllPurchaseOrderWithSearchFilter(String search, BaseEnum status, int page, int size, String sortField, String sortDir) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));

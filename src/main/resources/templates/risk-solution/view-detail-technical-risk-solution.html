@@ -620,7 +620,8 @@
 
 
                             <!-- Solution Info -->
-                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null}">
+                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null && ((riskSolution.dyeRiskAssessment != null && riskSolution.dyeRiskAssessment.errorLevel == true)
+                                                                                                                                  || (riskSolution.windingRiskAssessment != null && riskSolution.windingRiskAssessment.errorLevel == true))}">
                                 <h3 class="section-title">Thông tin phiếu yêu cầu cấp sợi</h3>
                                 <div class="solution-info">
                                     <div class="row">
@@ -665,10 +666,49 @@
                                 </div>
                             </div>
 
-                            <!-- Nút gửi RFQ -->
+
+                            <!-- Solution Info Easy-->
+                            <div class="detail-info mt-4" th:if="${riskSolution.createdBy != null && ((riskSolution.dyeRiskAssessment != null && riskSolution.dyeRiskAssessment.errorLevel == false)
+                                                                                                                                 || (riskSolution.windingRiskAssessment != null && riskSolution.windingRiskAssessment.errorLevel == false))}">
+                                <h3 class="section-title">Thông tin Phiếu yêu cầu làm lại công đoạn</h3>
+                                <div class="solution-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Mã phiếu:</strong> <span th:text="${riskSolution.id}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ngày tạo:</strong>
+                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd-MM-yyyy')}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Trạng thái gửi:</strong>
+                                            <span th:switch="${riskSolution.getApproveStatus()}">
+                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Chờ Duyệt'" class="badge" style="background-color: #ffcc00; color: #333;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa Duyệt'" class="badge" style="background-color: #ff3b30; color: white;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã Duyệt'" class="badge" style="background-color: #34c759; color: white;"></span>
+                                             <span th:case="*" th:text="'N/A'" class="badge" style="background-color: #ff3b30; color: white;"></span></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Ghi chú phòng kế hoạch:</strong>
+                                            <span th:text="${riskSolution.note != null ? riskSolution.note : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người tạo:</strong>
+                                            <span th:text="${riskSolution.createdBy != null ? riskSolution.createdBy.username : 'N/A'}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Người Duyệt:</strong>
+                                            <span th:text="${riskSolution.approvedBy != null ? riskSolution.approvedBy.username : 'N/A'}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nút gửi Risk Solution-->
                             <div class="btn-container">
                                 <!-- Nút "Tạo phiếu yêu cầu cấp sợi" -->
-                                <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED && ((riskSolution.dyeRiskAssessment != null && riskSolution.dyeRiskAssessment.errorLevel == true)
+                                                                                                                                 || (riskSolution.windingRiskAssessment != null && riskSolution.windingRiskAssessment.errorLevel == true))}"
                                         class="btn btn-custom"
                                         id="submitRfqBtn"
                                         th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
@@ -682,6 +722,14 @@
                                         th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
                                     Chỉnh sửa phiếu yêu cầu cấp sợi
                                 </button>
+
+                                <button th:if="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED && ((riskSolution.dyeRiskAssessment != null && riskSolution.dyeRiskAssessment.errorLevel == false)
+                                                                                                                                 || (riskSolution.windingRiskAssessment != null && riskSolution.windingRiskAssessment.errorLevel == false))}"
+                                        class="btn btn-custom"
+                                        id="confirmTechBtn"
+                                        th:disabled="${riskSolution.approveStatus == T(fpt.g36.gapms.enums.BaseEnum).APPROVED}">
+                                    Tạo Xác Nhận Làm Lại Công Đoạn
+                                </button>
                             </div>
 
                         </div>
@@ -692,9 +740,10 @@
     </div>
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
     <!-- Modal for submitting RFQ -->
-    <!-- Modal for submitting RFQ -->
-    <div class="modal fade" id="submitRfqModal" tabindex="-1" aria-labelledby="submitRfqModalLabel" aria-hidden="true">
+    <div class="modal fade" id="submitRfqModal" tabindex="-1" aria-labelledby="submitRfqModalLabel" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -731,6 +780,37 @@
                 </div>
             </div>
         </div>
+
+    </div>
+
+
+   <!--technical confirm easy risk solution-->
+    <div class="modal fade" id="confirmTechModal" tabindex="-1" aria-labelledby="confirmTechModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmTechModalLabel">Tạo phiếu yêu cầu cấp sợi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="confirmTechForm" th:action="@{/risk-solution/technical/risk-solution-approved/{id}(id=${riskSolution.id})}" th:object="${riskSolution}" method="post">
+                        <input type="hidden" name="rfqId" th:value="${riskSolution.id}">
+
+                        <div class="form-group">
+                            <label for="note" class="form-label"><strong>Ghi chú:</strong></label>
+                            <textarea class="form-control" th:field="*{note}" id="noteEasy" name="note" rows="3" placeholder="Nhập ghi chú (Bắt Buộc)" required></textarea>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="submit" class="btn btn-custom btn-confirm">Xác nhận</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
     </div>
 
 </div>
@@ -742,6 +822,20 @@
                 position: "top-end",
                 icon: "success",
                 title: /*[[${save_success}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${approve_easy}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${approve_easy}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -775,6 +869,10 @@
 
         $('#editRfqBtn').on('click', function () {
             $('#submitRfqModal').modal('show');
+        });
+
+        $('#confirmTechBtn').on('click', function () {
+            $('#confirmTechModal').modal('show');
         });
 
         // Kiểm soát dữ liệu nhập vào ô "Khối lượng cần cấp"
