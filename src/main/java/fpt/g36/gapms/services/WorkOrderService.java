@@ -26,10 +26,6 @@ public interface WorkOrderService {
 
     Page<WorkOrder> getAllSubmittedWorkOrders(Pageable pageable);
 
-    WorkOrder getWorkOrderByProductionOrder(ProductionOrder productionOrder);
-
-    Page<WorkOrder> getWorkOrdersByStatus(BaseEnum status, Pageable pageable);
-
     Page<WorkOrder> getSubmittedWorkOrdersByStatus(BaseEnum status, Pageable pageable);
 
     WorkOrder submitWorkOrder(Long workOrderId);
@@ -51,5 +47,12 @@ public interface WorkOrderService {
                               List<BigDecimal> additionalWeight);
 
     void deleteWorkOrderDetails(Long workOrderId);
+
+    WorkOrder getWorkOrderByIdAndCreatedBy(Long workOrderId, User createBy);
+
+    Page<WorkOrder> getAllWorkOrdersByCreatedBy(Pageable pageable, User createBy);
+
+    Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createBy);
+
 
 }

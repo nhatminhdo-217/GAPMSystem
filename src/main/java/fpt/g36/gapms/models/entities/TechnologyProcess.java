@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import fpt.g36.gapms.enums.SendEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -57,7 +58,11 @@ public class TechnologyProcess extends BaseEntity {
     @JoinColumn(name = "dye_batch_id", nullable = false)
     private DyeBatch dyeBatch;
 
+    @NotNull
+    private SendEnum sendStatus;
+
     private String qrCodeUrl;
+
     public TechnologyProcess() {
     }
 

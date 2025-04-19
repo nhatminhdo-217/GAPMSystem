@@ -116,16 +116,6 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     }
 
     @Override
-    public WorkOrder getWorkOrderByProductionOrder(ProductionOrder productionOrder) {
-        return workOrderRepository.findByProductionOrder(productionOrder);
-    }
-
-    @Override
-    public Page<WorkOrder> getWorkOrdersByStatus(BaseEnum status, Pageable pageable) {
-        return workOrderRepository.findByStatus(status, pageable);
-    }
-
-    @Override
     public Page<WorkOrder> getSubmittedWorkOrdersByStatus(BaseEnum status, Pageable pageable) {
         return workOrderRepository.findByStatusAndSendStatus(status, SendEnum.SENT, pageable);
     }
@@ -1450,5 +1440,24 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             System.err.println("Lỗi khi cập nhật WorkOrder ID: " + workOrderId + " - " + e.getMessage());
             throw e; // Đảm bảo ném exception để rollback nếu cần
         }
+    }
+
+    //
+    @Override
+    public WorkOrder getWorkOrderByIdAndCreatedBy(Long id, User createdBy) {
+        return workOrderRepository.findByIdAndCreatedBy(id, createdBy)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id + " và createdBy: " + createdBy.getUsername()));
+    }
+
+    @Override
+    public Page<WorkOrder> getAllWorkOrdersByCreatedBy(Pageable pageable, User createdBy) {
+        System.err.println("Lấy danh sách WorkOrder của user: " + createdBy.getUsername() + ", sắp xếp theo updateAt DESC");
+        return workOrderRepository.findByCreatedBy(createdBy, pageable);
+    }
+
+    @Override
+    public Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {
+        System.err.println("Lấy danh sách WorkOrder với status: " + status + " của user: " + createdBy.getUsername() + ", sắp xếp theo updateAt DESC");
+        return workOrderRepository.findByStatusAndCreatedBy(status, createdBy, pageable);
     }
 }
