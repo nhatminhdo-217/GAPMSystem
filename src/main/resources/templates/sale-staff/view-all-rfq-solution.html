@@ -369,11 +369,11 @@
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Ngày tạo giải pháp</strong><br>
-                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
+                                            <span th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></span>
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Ngày cập nhật gần nhất</strong><br>
-                                            <span th:text="${#temporals.format(solution.updateAt, 'yyyy-MM-dd')}"></span>
+                                            <span th:text="${#temporals.format(solution.updateAt, 'dd/MM/yyyy')}"></span>
                                         </div>
                                         <div class="text-start me-3 status-sent">
                                             <strong>Trạng thái gửi</strong><br>
@@ -407,10 +407,10 @@
                                         <!-- Thông tin giải pháp và RFQ -->
                                         <div class="solution-details">
                                             <p><strong>Ngày mong muốn nhận hàng:</strong>
-                                                <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                                <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd/MM/yyyy')}"></span>
                                             </p>
                                             <p><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                                <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
                                             </p>
                                             <p><strong>Chi tiết giải pháp:</strong>
                                                 <span th:text="${solution.description}"></span>

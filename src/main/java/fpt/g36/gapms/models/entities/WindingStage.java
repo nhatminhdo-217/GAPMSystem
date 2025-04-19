@@ -13,11 +13,11 @@ import java.util.List;
 @Table(name = "winding_stage")
 public class WindingStage extends BaseEntity{
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_order_detail_id", nullable = false)
     private WorkOrderDetail workOrderDetail;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_stage_id")
     private DyeStage dyeStage; //Lấy ngày kết thúc nhuộm và khối lượng nhuộm
 
@@ -37,11 +37,11 @@ public class WindingStage extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_machine_id")
     private WindingMachine windingMachine;
 
-    @OneToOne(mappedBy = "windingStage")
+    @OneToOne(mappedBy = "windingStage", fetch = FetchType.LAZY)
     private PackagingStage packagingStage;
 
     @OneToMany(mappedBy = "windingStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

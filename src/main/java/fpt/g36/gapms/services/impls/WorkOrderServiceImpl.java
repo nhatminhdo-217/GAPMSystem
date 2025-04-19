@@ -2,10 +2,13 @@ package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.*;
 import fpt.g36.gapms.models.entities.*;
+import fpt.g36.gapms.models.entities.Thread;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.WorkOrderService;
 import jakarta.persistence.EntityManager;
+
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +57,14 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private WindingBatchRepository windingBatchRepository;
     @Autowired
     private PackagingBatchRepository packagingBatchRepository;
+    @Autowired
+    private RiskSolutionRepository riskSolutionRepository;
+    @Autowired
+    private PhotoStageRepository photoStageRepository;
+    @Autowired
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
     @Override
     public Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId) {
@@ -70,11 +81,6 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     }
 
     @Override
-    public Page<WorkOrder> getAllWorkOrders(Pageable pageable) {
-        return workOrderRepository.findAllByOrderByCreateAt(pageable);
-    }
-
-    @Override
     public Page<WorkOrder> getAllSubmittedWorkOrders(Pageable pageable) {
         return workOrderRepository.findAllBySendStatus(SendEnum.SENT, pageable);
     }
@@ -88,16 +94,6 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Override
     public WorkOrder getWorkOrderById(Long id) {
         return workOrderRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy Work Order với ID: " + id));
-    }
-
-    @Override
-    public WorkOrder getWorkOrderByProductionOrder(ProductionOrder productionOrder) {
-        return workOrderRepository.findByProductionOrder(productionOrder);
-    }
-
-    @Override
-    public Page<WorkOrder> getWorkOrdersByStatus(BaseEnum status, Pageable pageable) {
-        return workOrderRepository.findByStatus(status, pageable);
     }
 
     @Override
@@ -197,7 +193,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 if (i < selectedDyeMachineIds.size()) {
                     Long dyeMachineId = selectedDyeMachineIds.get(i);
                     List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
-                  
+
                     //Quét trong list máy nhuộm khả dụng xem có rảnh thật khôgn
                     if (availableDyeMachines.stream().noneMatch(m -> m.getId().equals(dyeMachineId))) {
                         System.err.println("Lỗi: Máy nhuộm được chọn với ID " + dyeMachineId
@@ -252,10 +248,20 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             System.err.println("Error: DyeMachineIds or WindingMachineIds list is null");
             throw new IllegalArgumentException("Machine ID lists cannot be null");
         }
-        // Kiểm tra số lượng additionalWeights
+
+        // Kiểm tra số lượng additionalWeights và tải trước Thread để tránh lazy loading
         if (additionalWeights == null || additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
             throw new IllegalArgumentException("Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
         }
+        for (ProductionOrderDetail detail : productionOrder.getProductionOrderDetails()) {
+            if (detail.getPurchaseOrderDetail() != null && detail.getPurchaseOrderDetail().getProduct() != null) {
+                Thread thread = detail.getPurchaseOrderDetail().getProduct().getThread(); // Force lazy loading within transaction
+                if (thread != null) {
+                    thread.getConvert_rate(); // Đảm bảo dữ liệu được tải
+                }
+            }
+        }
+
     }
 
     /**
@@ -266,6 +272,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         workOrder.setCreateAt(LocalDateTime.now());
         workOrder.setCreatedBy(createBy);
         workOrder.setProductionOrder(productionOrder);
+        workOrder.setUpdateAt(LocalDateTime.now());
         workOrder.setDeadline(productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate().minusDays(1));
         workOrder.setStatus(BaseEnum.DRAFT);
         workOrder.setSendStatus(SendEnum.NOT_SENT);
@@ -577,11 +584,14 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             dyeBatch.setWorkStatus(WorkEnum.NOT_STARTED);
             dyeBatch.setTestStatus(TestEnum.NOT_STARTED);
             dyeBatch.setCreateAt(LocalDateTime.now());
+            dyeBatch.setBatchNumber(i + 1);
             // Kiểm tra xem có phải là batches cuối không
             // Nếu là batches cuối thì sẽ tính toán chuẩn số trọng lượng còn lại
             BigDecimal currentConeBatchWeight = (i == dyeBatches - 1
                     && remainingConeWeight.compareTo(coneBatchWeight) < 0)
                     ? remainingConeWeight : coneBatchWeight;
+            //
+            dyeBatch.setPlannedOutput(currentConeBatchWeight.divide(dyeStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread().getConvert_rate(), 0, RoundingMode.CEILING).intValue());
             //
             dyeBatch.setCone_batch_weight(currentConeBatchWeight);
             dyeBatch.setLiters_min(dyeMachine.getLittersMin());
@@ -718,6 +728,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             windingBatch.setDyeBatch(dyeBatch);
             windingBatch.setWorkStatus(WorkEnum.NOT_STARTED);
             windingBatch.setTestStatus(TestEnum.NOT_STARTED);
+            //
+            windingBatch.setBatchNumber(i + 1);
+            //
+            windingBatch.setPlannedOutput(dyeBatch.getCone_batch_weight().divide(windingStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread().getConvert_rate(), 0, RoundingMode.CEILING).intValue());
+            //
             windingBatch.setCreateAt(LocalDateTime.now());
             windingBatch.setWindingStage(windingStage);
             windingBatch.setPlannedStart(windingStage.getPlannedStart().plusMinutes(i * 75));
@@ -850,14 +865,16 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             packagingBatch.setPackagingStage(packagingStage);
             packagingBatch.setWorkStatus(WorkEnum.NOT_STARTED);
             packagingBatch.setTestStatus(TestEnum.NOT_STARTED);
-
+            //
+            packagingBatch.setBatchNumber(i + 1);
             //
             BigDecimal productsInBatch = packagingStage.getWorkOrderDetail().getDyeStage().getDyebatches().get(i).
                     getCone_batch_weight().divide(convertRate);
-            long batchDurationMinutes = productsInBatch.multiply(packagingTimePerProduct).longValue();
-
             //
-
+            packagingBatch.setPlannedOutput(productsInBatch.intValue());
+            //
+            long batchDurationMinutes = productsInBatch.multiply(packagingTimePerProduct).longValue();
+            //
             packagingBatch.setPlannedStart(i == 0 ? packagingStage.getPlannedStart() : packagingBatchList.get(i - 1).getDeadline());
             packagingBatch.setDeadline(packagingBatch.getPlannedStart().plusMinutes(batchDurationMinutes));
             assignTeamLeaderAndQAForPackagingBatch(packagingBatch);
@@ -897,7 +914,6 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy trưởng nhóm cho ca làm việc " + shift.getId()));
     }
-
 
     private User findQAForShift(Shift shift, StageType stageType) {
         String requiredRole;
@@ -1098,10 +1114,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 System.err.println("Không có WorkOrderDetails để xóa cho WorkOrder ID: " + workOrderId);
                 return;
             }
+            System.err.println("SIZE WORK ORDER DETAIL TRƯỚC KHI XOÁ: " + workOrderDetails.size());
 
-            // 4. Lấy danh sách PackagingStage, WindingStage, DyeStage liên quan
-            List<PackagingStage> packagingStages = workOrderDetails.stream()
-                    .map(WorkOrderDetail::getPackagingStage)
+            // 4. Lấy danh sách DyeStage, WindingStage, PackagingStage liên quan
+            List<DyeStage> dyeStages = workOrderDetails.stream()
+                    .map(WorkOrderDetail::getDyeStage)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -1110,67 +1127,113 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            List<DyeStage> dyeStages = workOrderDetails.stream()
-                    .map(WorkOrderDetail::getDyeStage)
+            List<PackagingStage> packagingStages = workOrderDetails.stream()
+                    .map(WorkOrderDetail::getPackagingStage)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            // 5. Lấy danh sách ID của PackagingStage, WindingStage, DyeStage
-            List<Long> packagingStageIds = packagingStages.stream()
-                    .map(PackagingStage::getId)
+            // 5. Lấy danh sách ID của DyeStage, WindingStage, PackagingStage
+            List<Long> dyeStageIds = dyeStages.stream()
+                    .map(DyeStage::getId)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
             List<Long> windingStageIds = windingStages.stream()
                     .map(WindingStage::getId)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            List<Long> dyeStageIds = dyeStages.stream()
-                    .map(DyeStage::getId)
+            List<Long> packagingStageIds = packagingStages.stream()
+                    .map(PackagingStage::getId)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            // 6. Lấy danh sách ID của PackagingBatch, WindingBatch, DyeBatch dựa trên stage IDs
-            List<Long> packagingBatchIds = packagingStageIds.isEmpty() ? new ArrayList<>() :
-                    packagingBatchRepository.findIdsByStageIds(packagingStageIds);
+            // 6. Lấy danh sách DyeBatch, WindingBatch, PackagingBatch trực tiếp từ cơ sở dữ liệu
+            List<Long> dyeBatchIds = dyeStageIds.isEmpty() ? new ArrayList<>() :
+                    dyeBatchRepository.findAllByDyeStageIdIn(dyeStageIds).stream()
+                            .map(DyeBatch::getId)
+                            .collect(Collectors.toList());
+            dyeBatchRepository.flush();
 
             List<Long> windingBatchIds = windingStageIds.isEmpty() ? new ArrayList<>() :
-                    windingBatchRepository.findIdsByStageIds(windingStageIds);
+                    windingBatchRepository.findAllByWindingStageIdIn(windingStageIds).stream()
+                            .map(WindingBatch::getId)
+                            .collect(Collectors.toList());
+            windingBatchRepository.flush();
 
-            List<Long> dyeBatchIds = dyeStageIds.isEmpty() ? new ArrayList<>() :
-                    dyeBatchRepository.findIdsByStageIds(dyeStageIds);
+            List<Long> packagingBatchIds = packagingStageIds.isEmpty() ? new ArrayList<>() :
+                    packagingBatchRepository.findAllByPackagingStageIdIn(packagingStageIds).stream()
+                            .map(PackagingBatch::getId)
+                            .collect(Collectors.toList());
+            packagingBatchRepository.flush();
 
-            // 7. Xóa các RiskAssessment trước khi xóa Batch
+            // 7. Xóa PhotoStage
             if (!packagingBatchIds.isEmpty()) {
+                photoStageRepository.deleteByPackagingBatchIds(packagingBatchIds);
+                photoStageRepository.flush();
+            }
+
+            if (!windingBatchIds.isEmpty()) {
+                photoStageRepository.deleteByWindingBatchIds(windingBatchIds);
+                photoStageRepository.flush();
+            }
+
+            if (!dyeBatchIds.isEmpty()) {
+                photoStageRepository.deleteByDyeBatchIds(dyeBatchIds);
+                photoStageRepository.flush();
+            }
+
+            // 8. Làm sạch session Hibernate sau khi xóa PhotoStage
+            entityManager.clear();
+
+            // 9. Xóa RiskSolution và RiskAssessment
+            if (!packagingBatchIds.isEmpty()) {
+                riskSolutionRepository.deleteByPackagingBatchIds(packagingBatchIds);
+                riskSolutionRepository.flush();
+
                 packagingRiskAssessmentRepository.deleteAllByPackagingBatchIds(packagingBatchIds);
                 packagingRiskAssessmentRepository.flush();
             }
 
             if (!windingBatchIds.isEmpty()) {
+                riskSolutionRepository.deleteByWindingBatchIds(windingBatchIds);
+                riskSolutionRepository.flush();
+
                 windingRiskAssessmentRepository.deleteAllByWindingBatchIds(windingBatchIds);
                 windingRiskAssessmentRepository.flush();
             }
 
             if (!dyeBatchIds.isEmpty()) {
+                riskSolutionRepository.deleteByDyeBatchIds(dyeBatchIds);
+                riskSolutionRepository.flush();
+
                 dyeRiskAssessmentRepository.deleteAllByDyeBatchIds(dyeBatchIds);
                 dyeRiskAssessmentRepository.flush();
             }
 
-            // 8. Xóa các Batch (PackagingBatch, WindingBatch, DyeBatch) dựa trên stage IDs
-            if (!packagingStageIds.isEmpty()) {
-                packagingBatchRepository.deleteAllByPackagingStageIds(packagingStageIds);
+            // 10. Làm sạch session Hibernate sau khi xóa RiskSolution và RiskAssessment
+            entityManager.clear();
+
+            // 11. Xóa các Batch
+            if (!packagingBatchIds.isEmpty()) {
+                packagingBatchRepository.deleteAllById(packagingBatchIds);
                 packagingBatchRepository.flush();
             }
 
-            if (!windingStageIds.isEmpty()) {
-                windingBatchRepository.deleteAllByWindingStageIds(windingStageIds);
+            if (!windingBatchIds.isEmpty()) {
+                windingBatchRepository.deleteAllById(windingBatchIds);
                 windingBatchRepository.flush();
             }
 
-            if (!dyeStageIds.isEmpty()) {
-                dyeBatchRepository.deleteAllByDyeStageIds(dyeStageIds);
+            if (!dyeBatchIds.isEmpty()) {
+                dyeBatchRepository.deleteAllById(dyeBatchIds);
                 dyeBatchRepository.flush();
             }
 
-            // 9. Xóa các bản ghi trong bảng trung gian (teamLeaders, qa) trước khi xóa Stage
+            // 12. Làm sạch session Hibernate sau khi xóa Batch
+            entityManager.clear();
+
+            // 13. Xóa các bản ghi trong bảng trung gian (teamLeaders, qa) trước khi xóa Stage
             if (!packagingStageIds.isEmpty()) {
                 packagingStageRepository.deleteTeamLeadersByPackagingStageIds(packagingStageIds);
                 packagingStageRepository.deleteQaByPackagingStageIds(packagingStageIds);
@@ -1189,7 +1252,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 dyeStageRepository.flush();
             }
 
-            // 10. Xóa các Stage (PackagingStage, WindingStage, DyeStage)
+            // 14. Xóa các Stage
             if (!workOrderDetails.isEmpty()) {
                 packagingStageRepository.deleteAllByWorkOrderDetailIn(workOrderDetails);
                 packagingStageRepository.flush();
@@ -1201,15 +1264,31 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 dyeStageRepository.flush();
             }
 
-            // 11. Xóa WorkOrderDetail
+            // 15. Làm sạch session Hibernate sau khi xóa Stage
+            entityManager.clear();
+
+            // 16. Xóa WorkOrderDetail
             workOrderDetailRepository.deleteAllByWorkOrder(workOrder);
             workOrderDetailRepository.flush();
 
-            // 12. Cập nhật WorkOrder mà không truy cập workOrderDetails
-            // Tránh gọi workOrder.getWorkOrderDetails() sau khi xóa
+            // 17. Làm mới WorkOrder từ cơ sở dữ liệu
+            workOrder = workOrderRepository.findById(workOrderId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy Work Order với ID: " + workOrderId));
+
+            // 18. Làm sạch session Hibernate trước khi cập nhật WorkOrder
+            entityManager.clear();
+
+            // 19. Cập nhật WorkOrder
             workOrder.setStatus(BaseEnum.WAIT_FOR_UPDATE);
             workOrder.setSendStatus(SendEnum.NOT_SENT);
-            workOrderRepository.saveAndFlush(workOrder); // Sử dụng saveAndFlush để đảm bảo cập nhật ngay lập tức
+            workOrderRepository.saveAndFlush(workOrder);
+
+            // 20. Kiểm tra lại số lượng WorkOrderDetail
+            long detailCount = workOrderDetailRepository.countByWorkOrder_Id(workOrderId);
+            System.err.println("Số lượng WorkOrderDetail còn lại trong DB: " + detailCount);
+            if (detailCount > 0) {
+                throw new IllegalStateException("Xóa WorkOrderDetails không hoàn tất. Vẫn còn " + detailCount + " bản ghi tồn tại.");
+            }
 
             System.err.println("Đã xóa toàn bộ WorkOrderDetails của WorkOrder ID: " + workOrderId + " thành công");
 
@@ -1219,4 +1298,147 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         }
     }
 
+    @Override
+    @Transactional
+    public WorkOrder updateWorkOrder(Long workOrderId,
+                                     List<Long> selectedDyeMachineIds,
+                                     List<Long> selectedWindingMachineIds,
+                                     List<BigDecimal> additionalWeights) {
+        try {
+            // 1. Tìm WorkOrder
+            WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+                    .orElseThrow(() -> new IllegalArgumentException("WorkOrder không tồn tại với ID: " + workOrderId));
+
+            // 2. Kiểm tra trạng thái của WorkOrder
+            if (workOrder.getStatus() != BaseEnum.WAIT_FOR_UPDATE) {
+                System.err.println("Lỗi: WorkOrder ID: " + workOrderId + " không ở trạng thái WAIT_FOR_UPDATE. Hiện tại: " + workOrder.getStatus());
+                throw new IllegalStateException("WorkOrder không ở trạng thái có thể cập nhật.");
+            }
+
+            // 3. Lấy ProductionOrder
+            ProductionOrder productionOrder = workOrder.getProductionOrder();
+            if (productionOrder == null) {
+                System.err.println("Lỗi: ProductionOrder không tồn tại cho WorkOrder ID: " + workOrderId);
+                throw new IllegalStateException("ProductionOrder không tồn tại.");
+            }
+
+            // 4. Validate input với eager loading cho Thread
+            validateInput(productionOrder, workOrder.getCreatedBy(), selectedDyeMachineIds, selectedWindingMachineIds, additionalWeights);
+
+            // 6. Kiểm tra tính khả dụng của các máy trước khi tạo WorkOrderDetails
+            LocalDateTime plannedStartAt = LocalDateTime.now().plusHours(2);
+            LocalDateTime plannedEndAt = workOrder.getDeadline().atTime(LocalTime.MAX);
+
+            // Khóa các máy được chọn để tránh đồng thời
+            List<DyeMachine> lockedDyeMachines = new ArrayList<>();
+            List<WindingMachine> lockedWindingMachines = new ArrayList<>();
+
+            // Khóa máy nhuộm
+            for (Long dyeMachineId : selectedDyeMachineIds) {
+                DyeMachine dyeMachine = dyeMachineRepository.findByIdWithLock(dyeMachineId);
+                if (dyeMachine == null) {
+                    throw new IllegalArgumentException("Không tìm thấy Dye Machine ID " + dyeMachineId);
+                }
+                lockedDyeMachines.add(dyeMachine);
+            }
+
+            // Khóa máy cuốn
+            for (Long windingMachineId : selectedWindingMachineIds) {
+                WindingMachine windingMachine = windingMachineRepository.findByIdWithLock(windingMachineId);
+                if (windingMachine == null) {
+                    throw new IllegalArgumentException("Không tìm thấy Winding Machine ID " + windingMachineId);
+                }
+                lockedWindingMachines.add(windingMachine);
+            }
+
+            // Tạo một WorkOrderDetail tạm thời để kiểm tra tính khả dụng
+            for (int i = 0; i < productionOrder.getProductionOrderDetails().size(); i++) {
+                WorkOrderDetail tempWorkOrderDetail = new WorkOrderDetail();
+                tempWorkOrderDetail.setWorkOrder(workOrder);
+                tempWorkOrderDetail.setProductionOrderDetail(productionOrder.getProductionOrderDetails().get(i));
+                tempWorkOrderDetail.setPlannedStartAt(plannedStartAt);
+                tempWorkOrderDetail.setPlannedEndAt(plannedEndAt);
+
+                // Kiểm tra máy nhuộm
+                if (i < selectedDyeMachineIds.size()) {
+                    Long dyeMachineId = selectedDyeMachineIds.get(i);
+                    List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    if (availableDyeMachines.stream().noneMatch(m -> m.getId().equals(dyeMachineId))) {
+                        System.err.println("Lỗi: Máy nhuộm được chọn với ID " + dyeMachineId
+                                + " không khả dụng cho ProductionOrderDetail ID: "
+                                + tempWorkOrderDetail.getProductionOrderDetail().getId());
+                        throw new IllegalArgumentException("Máy nhuộm được chọn với ID "
+                                + dyeMachineId + " không khả dụng");
+                    }
+                }
+
+                // Kiểm tra máy cuốn
+                if (i < selectedWindingMachineIds.size()) {
+                    Long windingMachineId = selectedWindingMachineIds.get(i);
+                    List<WindingMachine> availableWindingMachines = machineService.findAvailableWindingMachines(tempWorkOrderDetail, plannedStartAt, plannedEndAt);
+                    if (availableWindingMachines.stream().noneMatch(m -> m.getId().equals(windingMachineId))) {
+                        System.err.println("Lỗi: Máy cuốn được chọn với ID " + windingMachineId
+                                + " không khả dụng cho ProductionOrderDetail ID: "
+                                + tempWorkOrderDetail.getProductionOrderDetail().getId());
+                        throw new IllegalArgumentException("Máy cuốn được chọn với ID "
+                                + windingMachineId + " không khả dụng");
+                    }
+                }
+            }
+
+            // 7. Xóa các WorkOrderDetails cũ
+            List<WorkOrderDetail> existingDetails = new ArrayList<>(workOrder.getWorkOrderDetails());
+            if (!existingDetails.isEmpty()) {
+                workOrderDetailRepository.deleteAll(existingDetails);
+                workOrderDetailRepository.flush();
+                workOrder.setWorkOrderDetails(new ArrayList<>()); // Cập nhật danh sách rỗng
+            }
+
+            // 8. Tạo lại WorkOrderDetails mới
+            List<WorkOrderDetail> workOrderDetails = addWorkOrderDetails(workOrder, productionOrder, selectedDyeMachineIds, selectedWindingMachineIds, additionalWeights);
+
+            // 9. Đồng bộ hóa quan hệ hai chiều
+            for (WorkOrderDetail detail : workOrderDetails) {
+                detail.setWorkOrder(workOrder); // Đồng bộ quan hệ hai chiều
+                workOrder.getWorkOrderDetails().add(detail);
+            }
+
+            // 10. Lưu và flush để đảm bảo dữ liệu được ghi vào cơ sở dữ liệu
+            workOrderRepository.saveAndFlush(workOrder);
+
+            // 11. Cập nhật trạng thái WorkOrder
+            workOrder.setStatus(BaseEnum.DRAFT);
+            workOrder.setSendStatus(SendEnum.NOT_SENT);
+            workOrder.setUpdateAt(LocalDateTime.now());
+
+            // 12. Lưu WorkOrder và flush lại
+            WorkOrder updatedWorkOrder = workOrderRepository.saveAndFlush(workOrder);
+
+            System.err.println("Đã cập nhật WorkOrder ID: " + workOrderId + " thành công và đã flush dữ liệu");
+
+            return updatedWorkOrder;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi cập nhật WorkOrder ID: " + workOrderId + " - " + e.getMessage());
+            throw e; // Đảm bảo ném exception để rollback nếu cần
+        }
+    }
+
+    //
+    @Override
+    public WorkOrder getWorkOrderByIdAndCreatedBy(Long id, User createdBy) {
+        return workOrderRepository.findByIdAndCreatedBy(id, createdBy)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id + " và createdBy: " + createdBy.getUsername()));
+    }
+
+    @Override
+    public Page<WorkOrder> getAllWorkOrdersByCreatedBy(Pageable pageable, User createdBy) {
+        System.err.println("Lấy danh sách WorkOrder của user: " + createdBy.getUsername() + ", sắp xếp theo updateAt DESC");
+        return workOrderRepository.findByCreatedBy(createdBy, pageable);
+    }
+
+    @Override
+    public Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {
+        System.err.println("Lấy danh sách WorkOrder với status: " + status + " của user: " + createdBy.getUsername() + ", sắp xếp theo updateAt DESC");
+        return workOrderRepository.findByStatusAndCreatedBy(status, createdBy, pageable);
+    }
 }

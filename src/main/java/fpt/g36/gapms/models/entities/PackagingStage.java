@@ -16,7 +16,7 @@ public class PackagingStage extends BaseEntity {
     @JoinColumn(name = "work_order_detail_id", nullable = false)
     private WorkOrderDetail workOrderDetail;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 

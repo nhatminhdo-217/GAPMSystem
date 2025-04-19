@@ -112,14 +112,15 @@ public class PurchaseOrderController {
         User currUser = userUtils.getOptionalUserInfo(model);
 
         Optional<PurchaseOrderInfoDTO> data = purchaseOrderService.getPurchaseOrderInfoDTOById(id);
-        List<PurchaseOrderItemsDTO> items = purchaseOrderService.getPurchaseOrderItemsDTOById(id);
-
+        /*List<PurchaseOrderItemsDTO> items = purchaseOrderService.getPurchaseOrderItemsDTOById(id);*/
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderCustomerDetail(id);
         PurchaseOrderInfoDTO purchaseOrderInfoDTO = data.get();
 
         model.addAttribute("orderInfo", purchaseOrderInfoDTO);
-        model.addAttribute("items", items);
+        /*model.addAttribute("items", items);*/
         model.addAttribute("currUser", currUser);
         model.addAttribute("purchaseOrderId", id);
+        model.addAttribute("purchaseOrder", purchaseOrder);
 
         return "purchase-order/purchase_order_detail";
     }

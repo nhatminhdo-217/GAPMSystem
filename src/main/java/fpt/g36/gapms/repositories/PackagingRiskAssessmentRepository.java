@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface PackagingRiskAssessmentRepository extends JpaRepository<PackagingRiskAssessment, Long> {
-    @Query("SELECT p FROM PackagingRiskAssessment p WHERE p.packagingBatch.id = :packagingBatchId ORDER BY p.createAt DESC")
+    @Query("SELECT p FROM PackagingRiskAssessment p WHERE p.packagingBatch.windingBatch.dyeBatch.id = :packagingBatchId ORDER BY p.createAt DESC")
     List<PackagingRiskAssessment> getByPackagingBatchId(Long packagingBatchId);
 
     @Modifying

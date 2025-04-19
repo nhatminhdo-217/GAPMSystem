@@ -28,7 +28,7 @@ public class PackagingRiskAssessment extends BaseEntity {
     @JoinColumn(name = "packaging_batch_id")
     private PackagingBatch packagingBatch;
 
-    @OneToMany(mappedBy = "packagingRiskAssessment")
+    @OneToMany(mappedBy = "packagingRiskAssessment", fetch = FetchType.LAZY)
     private List<PhotoStage> photo;
 
 
@@ -42,7 +42,7 @@ public class PackagingRiskAssessment extends BaseEntity {
     private Boolean errorLevel;
 
 
-    @OneToOne(mappedBy = "packagingRiskAssessment")
+    @OneToOne(mappedBy = "packagingRiskAssessment", fetch = FetchType.LAZY)
     private RiskSolution riskSolution;
 
     public PackagingRiskAssessment() {

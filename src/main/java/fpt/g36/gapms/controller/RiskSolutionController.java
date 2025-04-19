@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.entities.RiskSolution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.RiskSolutionService;
 import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,10 @@ public class RiskSolutionController {
 
     @Autowired
     private RiskSolutionService riskSolutionService;
+
+
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Autowired
     private UserService userService;
@@ -73,7 +78,18 @@ public class RiskSolutionController {
     }
 
 
-
+    @PostMapping("/technical/risk-solution-approved/{id}")
+    public String approveSolutionEasy(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+        RiskSolution riskSolution = riskSolutionService.approveEasyRiskSolution(rsId, optionalUser.get());
+        redirectAttributes.addFlashAttribute("approve_easy", "Đã xác nhận làm lại công đoạn");
+        return "redirect:/risk-solution/technical/detail/" +riskSolution.getId();
+    }
 
 
     /*-------------------------Production Manager--------------------------------------------*/
@@ -81,6 +97,7 @@ public class RiskSolutionController {
     @GetMapping("/production-manager/view-list")
     public String getViewListPm(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
+
 
         Pageable pageable = PageRequest.of(page, size);
         Page<RiskSolution> riskSolutions = riskSolutionService.getAllRiskSolutionManager(pageable);
@@ -105,8 +122,14 @@ public class RiskSolutionController {
     }
 
     @GetMapping("/production-manage/risk-solution-approved/{id}")
-    public String getQuotationCustomerApproved(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
-        RiskSolution riskSolution = riskSolutionService.approveRiskSolution(rsId);
+    public String approveSolution(@PathVariable("id") Long rsId, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+        RiskSolution riskSolution = riskSolutionService.approveRiskSolution(rsId, optionalUser.get());
         redirectAttributes.addFlashAttribute("approved", "Phiếu cấp sợi đã được duyệt");
         return "redirect:/risk-solution/production-manage/detail/" +riskSolution.getId();
     }

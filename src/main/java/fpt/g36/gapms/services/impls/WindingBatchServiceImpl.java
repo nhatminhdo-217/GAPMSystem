@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.WindingBatchRepository;
 import fpt.g36.gapms.repositories.WindingRiskAssessmentRepository;
 import fpt.g36.gapms.repositories.WindingStageRepository;
 import fpt.g36.gapms.services.WindingBatchService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,8 @@ public class WindingBatchServiceImpl implements WindingBatchService {
     private WindingBatchRepository windingBatchRepository;
     @Autowired
     private WindingRiskAssessmentRepository windingRiskAssessmentRepository;
-
+    @Autowired
+    private NotificationUtils notificationUtils;
     @Override
     public List<WindingBatch> getAllWindingBatchForWindingLead(Long wsId) {
         List<WindingBatch> windingBatches = windingBatchRepository.getAllWindingBatchByWindingStageId(wsId);
@@ -49,6 +51,7 @@ public class WindingBatchServiceImpl implements WindingBatchService {
         WindingRiskAssessment windingRiskAssessment = new WindingRiskAssessment();
         windingRiskAssessment.setWindingBatch(windingBatch);
         windingRiskAssessmentRepository.save(windingRiskAssessment);
+        notificationUtils.sentSuccessStageToLeaderFromQA(windingBatch.getDyeBatch().getId(), "QA_WINDING");
     }
 
     @Override
