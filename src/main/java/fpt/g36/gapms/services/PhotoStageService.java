@@ -11,4 +11,6 @@ public interface PhotoStageService {
     List<PhotoStage> getAllPhotoStageByWraId(Long wraId);
 
     List<PhotoStage> getAllPhotoStageByPraId(Long praId);
+
+    boolean deletePhoto(String photoName);
 }

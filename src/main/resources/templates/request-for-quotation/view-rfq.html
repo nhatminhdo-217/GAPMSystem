@@ -405,7 +405,10 @@
                                             <td th:text="${detailIter.count}"></td>
                                             <td th:text="${detail.getId()}"></td>
                                             <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
-                                            <td th:text="${detail.getNoteColor()}"></td>
+                                            <td >
+                                                <div class="color-box" th:style="'background-color:' + ${detail.getNoteColor()}"></div>
+                                                <span th:text="${detail.getNoteColor()}">#FFFFFF</span>
+                                            </td>
                                             <td th:text="${detail.getQuantity()}"></td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">

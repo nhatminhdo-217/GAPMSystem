@@ -223,24 +223,24 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4" style="background-color: #fff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <div class="text-center mb-4" th:object="${company}">
+                <!--<div class="text-center mb-4" th:object="${company}">
                     <h4 class="mb-2" th:text="*{name}"></h4>
                     <p class="mb-1" th:text="*{address}"></p>
                     <p class="mb-1" th:text="'Mã số thuế: ' + *{taxNumber}"></p>
                     <p class="mb-1" th:text="'Số điện thoại: ' + *{phoneNumber}"></p>
                     <p class="mb-1" th:text="'Email: ' + *{email}"></p>
                     <h6 class="mb-0">RFQ (Request for Quotation)</h6>
-                </div>
+                </div>-->
                 <div class="form-container p-3">
                     <form id="lotForm" method="post" action="/request-for-quotation/save" th:object="${rfqForm}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div id="productRows">
                             <!-- Dòng đầu tiên -->
                             <div class="form-row" id="row-1">
-                                <div class="form-group" style="flex: 0 0 80px; text-align: center;">
+                                <!--<div class="form-group" style="flex: 0 0 80px; text-align: center;">
                                     <label class="label">Số thứ tự</label>
                                     <span class="form-control text-center" style="border: 2px solid #dc3545; border-radius: 5px; padding: 8px; font-size: 14px; background-color: #fff;">1</span>
-                                </div>
+                                </div>-->
                                 <div class="form-group">
                                     <label class="label" for="product-1">Sản phẩm</label>
                                     <select class="form-select" id="product-1" th:field="*{rfqDetails[0].product.id}" onchange="loadBrands(1)" required>
@@ -266,7 +266,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="label" for="quantity-1">Số lượng</label>
-                                    <input type="number" class="form-control" id="quantity-1" th:field="*{rfqDetails[0].quantity}" placeholder="Nhập số lượng" min="1" max="1000" required>
+                                    <input type="number" class="form-control" id="quantity-1" th:field="*{rfqDetails[0].quantity}" placeholder="Nhập số lượng" min="1" max="20000" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" required>
                                 </div>
                                 <div class="form-group">
                                     <button type="button" class="remove-row-btn" style="display: none;" onclick="removeRow(1)"><i class="fas fa-trash-alt"></i></button>
@@ -438,6 +438,11 @@
     today.setDate(today.getDate() + 3);
     const threeDaysLater = today.toISOString().split("T")[0];
     document.getElementById("desiredDeliveryDate").setAttribute("min", threeDaysLater);
+
+
+
+
+
 </script>
 </body>
 </html>

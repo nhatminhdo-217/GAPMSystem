@@ -81,6 +81,20 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     }
 
     @Override
+    public Page<WorkOrder> getAllWorkOrderPo(Pageable pageable, String workOrderId) {
+        Long id = null;
+        if (workOrderId != null && !workOrderId.trim().isEmpty()) {
+            try {
+                String numericPart = workOrderId.replace("WO-", "").trim();
+                id = Long.parseLong(numericPart);
+            } catch (NumberFormatException e) {
+                id = null;
+            }
+        }
+        return workOrderRepository.getAllWorkOrderPo(id, pageable);
+    }
+
+    @Override
     public Page<WorkOrder> getAllWorkOrders(Pageable pageable) {
         return workOrderRepository.findAllByOrderByCreateAt(pageable);
     }

@@ -6,7 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -424,7 +425,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WD-<span th:text="${stageId}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WO-<span th:text="${stageId}"></span>/WD-<span th:text="${stageId}"></span></h2>
                         <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">

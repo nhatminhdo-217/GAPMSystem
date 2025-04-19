@@ -20,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -54,6 +56,9 @@ public class WorkOrderController {
 
     @Autowired
     private PackagingBatchService packagingBatchService;
+
+    @Autowired
+    private WorkOrderDetailService workOrderDetailService;
 
 
     @GetMapping("/team-leader/list")
@@ -350,8 +355,10 @@ public class WorkOrderController {
                 DyeBatch dyeBatch = dyeBatchService.getDyeBatchById(dyeId);
                 userUtils.getOptionalUser(model);
                 model.addAttribute("dyeBatch", dyeBatch);
+                model.addAttribute("pass_check_delete", null);
                 return "quality_assurance/qa-test-dye";
             }
+            model.addAttribute("pass_check_delete", dyeRiskAssessment.getPass());
             model.addAttribute("dyeRiskAssessment", dyeRiskAssessment);
             userUtils.getOptionalUser(model);
             return "quality_assurance/qa-test-dye";
@@ -361,9 +368,11 @@ public class WorkOrderController {
                 WindingBatch windingBatch = windingBatchService.getWindingBatchById(dyeId);
                 userUtils.getOptionalUser(model);
                 model.addAttribute("windingBatch", windingBatch);
+                model.addAttribute("pass_check_delete", null);
                 return "quality_assurance/qa-test-winding";
             }
 
+            model.addAttribute("pass_check_delete", windingRiskAssessment.getPass());
             model.addAttribute("windingRiskAssessment", windingRiskAssessment);
             userUtils.getOptionalUser(model);
             return "quality_assurance/qa-test-winding";
@@ -373,8 +382,10 @@ public class WorkOrderController {
                 PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(dyeId);
                 userUtils.getOptionalUser(model);
                 model.addAttribute("packagingBatch", packagingBatch);
+                model.addAttribute("pass_check_delete", null);
                 return "quality_assurance/qa-test-packaging";
             }
+            model.addAttribute("pass_check_delete", packagingRiskAssessment.getPass());
             model.addAttribute("packagingRiskAssessment", packagingRiskAssessment);
             userUtils.getOptionalUser(model);
             return "quality_assurance/qa-test-packaging";
@@ -689,5 +700,75 @@ public class WorkOrderController {
             redirectAttributes.addFlashAttribute("check_photo_packaging", e.getMessage());
             return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
         }
+    }
+
+
+    @DeleteMapping("/quality_assurance/delete-photo")
+    @ResponseBody
+    public Map<String, Object> deletePhoto(@RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        String photoName = request.get("photoName");
+
+        try {
+            boolean deleted = photoStageService.deletePhoto(photoName);
+            if (deleted) {
+                response.put("success", true);
+            } else {
+                response.put("success", false);
+                response.put("message", "Ảnh không tồn tại trong database.");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi khi xóa ảnh: " + e.getMessage());
+        }
+        return response;
+    }
+
+
+    /*----------------------------------Production Manager-------------------------------------------*/
+
+    @GetMapping("/production-manager/list")
+    public String getAllWorkOrderForPo(Model model,
+                                               @RequestParam(required = false) String workOrderId,
+                                               @RequestParam(value = "page", defaultValue = "0") String pageStr,
+                                               @RequestParam(value = "size", defaultValue = "10") String sizeStr) {
+        int page;
+        try {
+            page = Integer.parseInt(pageStr);
+            if (page < 0) { // Không cho phép page âm
+                page = 0; // Đặt về mặc định nếu không hợp lệ
+            }
+        } catch (NumberFormatException e) {
+            page = 0; // Nếu không parse được (ví dụ: "l"), đặt về 0
+        }
+
+        // Xử lý size
+        int size;
+        try {
+            size = Integer.parseInt(sizeStr);
+            if (size <= 0 || size > 100) { // Giới hạn size từ 1 đến 100
+                size = 5; // Đặt về mặc định nếu không hợp lệ
+            }
+        } catch (NumberFormatException e) {
+            size = 5; // Nếu không parse được (ví dụ: "l"), đặt về 5
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<WorkOrder> workOrders = workOrderService.getAllWorkOrderPo(pageable, workOrderId);
+        model.addAttribute("currentPage", workOrders.getNumber());
+        model.addAttribute("totalPages", workOrders.getTotalPages());
+        model.addAttribute("totalItems", workOrders.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("workOrders", workOrders);
+        userUtils.getOptionalUser(model);
+        return "production-manager/view-list-work-order";
+    }
+
+    @GetMapping("/production-manager/detail/{id}")
+    public String getWorkOrderDetailForPo(Model model, @PathVariable("id") Long woId) {
+
+        List<WorkOrderDetail> workOrderDetails = workOrderDetailService.getAllByWoId(woId);
+        model.addAttribute("workOrderDetails",workOrderDetails);
+        userUtils.getOptionalUser(model);
+        return "production-manager/view-work-order-detail";
     }
 }

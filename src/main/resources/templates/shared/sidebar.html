@@ -58,10 +58,12 @@
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''PRODUCTION_MANAGER'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
                     class="fa fa-tachometer-alt me-2"></i>Giám Đốc Sản Xuất</a>
-            <a href="/risk-solution/production-manager/view-list" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Giới thiệu</a>
+            <a href="/risk-solution/production-manager/view-list" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Giải Pháp Lỗi</a>
             <a href="/production-manager/view-all-submitted-work-order" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Danh sách kế hoạch</a>
 
+            <a href="/work-order/production-manager/list" class="nav-item nav-link">
+                <i class="fa fa-cogs me-2"></i>Quy Trình Sản Xuất</a>
 
         </div>
 
@@ -111,12 +113,6 @@
                 <i class="fa fa-th me-2"></i>Danh sách lệnh sản xuất</a>
         </div>
 
-        <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''PRODUCTION_MANAGER'')')}">
-            <a href="/home_page" class="nav-item nav-link active">
-                <i class="fa fa-tachometer-alt me-2"></i>Giám Đốc Kinh Doanh</a>
-            <a href="/production-manager/view-all-submitted-work-order" class="nav-item nav-link">
-                <i class="fa fa-th me-2"></i>Danh sách kế hoạch</a>
-        </div>
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_DYE'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i

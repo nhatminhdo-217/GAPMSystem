@@ -299,7 +299,10 @@
                         <td th:text="${quotation.productName}"></td>
                         <td th:text="${quotation.brandName}"></td>
                         <td th:text="${quotation.categoryName}"></td>
-                        <td th:text="${quotation.noteColor}"></td>
+                        <td >
+                            <div class="color-box" th:style="'background-color:' + ${quotation.noteColor}"></div>
+                            <span th:text="${quotation.noteColor}">#FFFFFF</span>
+                        </td>
                         <td th:text="${quotation.quantity}"></td>
                         <td th:text="${quotation.price}"></td>
                         <td>Đồng/ cuộn</td>
