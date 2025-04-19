@@ -26,6 +26,7 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile,email
             redirect-uri: https://gapms-aha3aphhh0fna2dx.southeastasia-01.azurewebsites.net/login/oauth2/code/google
+            #redirect-uri: http://localhost:8080/login/oauth2/code/google
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/auth

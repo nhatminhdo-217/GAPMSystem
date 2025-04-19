@@ -29,7 +29,14 @@ public class UserUtils {
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
                 model.addAttribute("user", optionalUser.get());
-                model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+                String avatar = optionalUser.get().getAvatar();
+                if (avatar != null && !avatar.startsWith("http")) {
+                    model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+                } else {
+                    System.err.println("Avatar URL: " + avatar);
+                    model.addAttribute("avatar", avatar);
+                }
+
 
                 Long unreadNotifications = notificationService.countUnreadNotifications(optionalUser.get().getId());
                 model.addAttribute("unreadNotifications", unreadNotifications);
