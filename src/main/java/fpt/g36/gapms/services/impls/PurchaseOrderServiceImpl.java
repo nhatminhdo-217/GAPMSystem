@@ -186,7 +186,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending().and(Sort.by("status").ascending()));
 
-        Page<PurchaseOrder> purchaseOrders = purchaseOrderRepository.searchAndFilter(search, BaseEnum.WAIT_FOR_APPROVAL, pageable);
+        Page<PurchaseOrder> purchaseOrders = purchaseOrderRepository.searchAndFilterByStatus(search, status, pageable);
 
         List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
 //        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);

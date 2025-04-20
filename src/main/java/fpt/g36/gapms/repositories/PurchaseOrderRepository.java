@@ -113,15 +113,13 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     select distinct po from PurchaseOrder po
     where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
     or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+    and po.status in (fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL, fpt.g36.gapms.enums.BaseEnum.APPROVED, fpt.g36.gapms.enums.BaseEnum.CANCELED)
     and (:status is null or po.status = :status)
     order by 
       case 
-        when po.status = fpt.g36.gapms.enums.BaseEnum.DRAFT then 1
-        when po.status = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED then 2
-        when po.status = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 3
-        when po.status = fpt.g36.gapms.enums.BaseEnum.APPROVED then 4
-        when po.status = fpt.g36.gapms.enums.BaseEnum.CANCELED then 5
-        else 6
+        when po.status = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 1
+        when po.status = fpt.g36.gapms.enums.BaseEnum.APPROVED then 2
+        when po.status = fpt.g36.gapms.enums.BaseEnum.CANCELED then 3
       end,
       po.createAt desc
 """,
@@ -129,9 +127,9 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     select count(distinct po) from PurchaseOrder po
     where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
     or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
-    and po.status = :status
-"""
-    )
+    and po.status in (fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL, fpt.g36.gapms.enums.BaseEnum.APPROVED, fpt.g36.gapms.enums.BaseEnum.CANCELED)
+    and (:status is null or po.status = :status)
+""")
     Page<PurchaseOrder> searchAndFilterByStatus(
             @Param("search") String search,
             @Param("status") BaseEnum status,
