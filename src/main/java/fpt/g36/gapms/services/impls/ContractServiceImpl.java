@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -123,7 +124,18 @@ public class ContractServiceImpl implements ContractService {
             return null;
         }
 
-        String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+        // Check file size (e.g., 10MB limit)
+        String extension = getString(file);
+
+        // Optional: Validate MIME type
+        String contentType = file.getContentType();
+        Set<String> allowedTypes = Set.of("image/png", "image/jpeg", "application/pdf");
+        if (contentType == null || !allowedTypes.contains(contentType)) {
+            throw new IllegalArgumentException("Sai định dạng file. Chỉ file PNG, JPEG, và PDF files được chấp nhận");
+        }
+
+        // Generate a unique file name
+        String fileNameUnique = UUID.randomUUID().toString() + extension;
 
         Path pathDir = Paths.get("uploads/contracts");
         if (!Files.exists(pathDir)) {
@@ -134,8 +146,31 @@ public class ContractServiceImpl implements ContractService {
 
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            // Log the error
+            throw new IOException("Failed to save file: " + e.getMessage(), e);
         }
 
         return fileNameUnique;
+    }
+
+    private static String getString(MultipartFile file) {
+        long maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.getSize() > maxSize) {
+            throw new IllegalArgumentException("File phải ít hơn 10 MB");
+        }
+
+        // Validate file extension
+        String fileName = file.getOriginalFilename();
+        if (fileName == null) {
+            throw new IllegalArgumentException("Tên file không được để trống");
+        }
+
+        String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+        Set<String> allowedExtensions = Set.of(".png", ".jpg", ".jpeg", ".pdf");
+        if (!allowedExtensions.contains(extension)) {
+            throw new IllegalArgumentException("File phải ở định dạng .png, .jpg, .jpeg hoặc .pdf");
+        }
+        return extension;
     }
 }

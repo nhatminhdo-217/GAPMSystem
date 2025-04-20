@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -29,36 +31,41 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/list")
-    public String listProductionOrder(Model model) {
-        return findPaginated(1, "createAt", "asc", model);
-    }
-
-    @GetMapping("/list/page/{page}")
-    public String findPaginated(
-            @PathVariable("page") Integer page,
-            @RequestParam("sortField") String sortField,
-            @RequestParam("sortDir") String sortDir,
-            Model model
-    ) {
+    public String listProductionOrder(
+            @RequestParam(defaultValue = "", required = false) String search,
+            @RequestParam(required = false) BaseEnum status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "createAt", required = false) String sortField,
+            @RequestParam(defaultValue = "desc", required = false) String sortDir,
+            Model model) {
 
         userUtils.getOptionalUser(model);
 
-        int pageSize = 5;
+        Page<ProductionOrderDTO> pageData = productionOrderService.getAllProductionOrders(search, status, page, size, sortField, sortDir);
 
-        User currUser = userUtils.getOptionalUserInfo(model);
-
-        Page<ProductionOrderDTO> pageData = productionOrderService.findPaginatedByRoles(page, pageSize, sortField, sortDir, currUser);
-
-        List<ProductionOrderDTO> productionOrderList = pageData.getContent();
-
-        model.addAttribute("productionOrderList", productionOrderList);
+        model.addAttribute("pageData", pageData);
+        model.addAttribute("search", search);
+        model.addAttribute("status", status);
         model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", pageData.getTotalPages());
         model.addAttribute("totalItems", pageData.getTotalElements());
-
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        List<BaseEnum> statuses = new ArrayList<>();
+        Collections.addAll(statuses, BaseEnum.values());
+        model.addAttribute("statuses", statuses);
+
+        int totalPages = pageData.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = java.util.stream.IntStream.rangeClosed(0, totalPages - 1)
+                    .boxed()
+                    .collect(java.util.stream.Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
 
         return "production_order/list_production_order";
     }
@@ -90,7 +97,7 @@ public class ProductionOrderController {
 
         if (status.equals(BaseEnum.NOT_APPROVED)) {
             ProductionOrder po = productionOrderService.updateStatus(id, currUser);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật lệnh sản xuất thành công");
+            redirectAttributes.addFlashAttribute("success", "Phê duyệt lệnh sản xuất thành công");
             return "redirect:/production-order/detail/" + po.getId();
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {

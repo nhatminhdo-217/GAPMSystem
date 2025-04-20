@@ -81,16 +81,26 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     PurchaseOrder getPurchaseOrderByQuotationId(Long id);
 
     @Query(value = """
-        select distinct po from PurchaseOrder po
-        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
-        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
-        and (:status is null or po.status = :status)
+    select distinct po from PurchaseOrder po
+    where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+    or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or po.status = :status)
+    order by 
+      case 
+        when po.status = fpt.g36.gapms.enums.BaseEnum.DRAFT then 1
+        when po.status = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED then 2
+        when po.status = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 3
+        when po.status = fpt.g36.gapms.enums.BaseEnum.APPROVED then 4
+        when po.status = fpt.g36.gapms.enums.BaseEnum.CANCELED then 5
+        else 6
+      end,
+      po.createAt desc
 """,
             countQuery = """
-        select count(distinct po) from PurchaseOrder po
-        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
-        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
-        and (:status is null or po.status = :status)
+    select count(distinct po) from PurchaseOrder po
+    where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+    or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or po.status = :status)
 """
     )
     Page<PurchaseOrder> searchAndFilter(
@@ -100,17 +110,31 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     );
 
     @Query(value = """
-        select distinct po from PurchaseOrder po
-        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
-        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
-        and (:status is null or po.status = :status)
+    select distinct po from PurchaseOrder po
+    where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+    or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or po.status = :status)
+    order by 
+      case 
+        when po.status = fpt.g36.gapms.enums.BaseEnum.DRAFT then 1
+        when po.status = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED then 2
+        when po.status = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 3
+        when po.status = fpt.g36.gapms.enums.BaseEnum.APPROVED then 4
+        when po.status = fpt.g36.gapms.enums.BaseEnum.CANCELED then 5
+        else 6
+      end,
+      po.createAt desc
 """,
             countQuery = """
-        select count(distinct po) from PurchaseOrder po
-        where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
-        or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
-        and po.status = :status
+    select count(distinct po) from PurchaseOrder po
+    where (:search is null or lower(po.customer.username) like concat('%', lower(:search), '%')
+    or lower(po.quotation.createdBy.username) like concat('%', lower(:search), '%'))
+    and po.status = :status
 """
     )
-    Page<PurchaseOrder> searchAndFilterByStatus(BaseEnum status, Pageable pageable);
+    Page<PurchaseOrder> searchAndFilterByStatus(
+            @Param("search") String search,
+            @Param("status") BaseEnum status,
+            Pageable pageable
+    );
 }

@@ -172,7 +172,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
 
-        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
+//        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
 
         return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
     }
@@ -189,7 +189,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Page<PurchaseOrder> purchaseOrders = purchaseOrderRepository.searchAndFilter(search, BaseEnum.WAIT_FOR_APPROVAL, pageable);
 
         List<PurchaseOrderDTO> purchaseOrderDTOS = new ArrayList<>(purchaseOrderMapper.toListDTO(purchaseOrders));
-        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
+//        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
 
         return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
     }
@@ -197,42 +197,5 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();
-    }
-
-    private void sortPurchaseOrderDTOs(List<PurchaseOrderDTO> content, String sortDir) {
-        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
-        // and then by createAt
-        content.sort((q1, q2) -> {
-            int statusCompare = compareStatus(q1.getStatus(), q2.getStatus());
-            if (statusCompare != 0) {
-                return statusCompare;
-            }
-
-            // Then sort by createAt (ascending or descending based on sortDir)
-            if ("asc".equals(sortDir)) {
-                return q1.getCreateAt().compareTo(q2.getCreateAt());
-            } else {
-                return q2.getCreateAt().compareTo(q1.getCreateAt());
-            }
-        });
-    }
-
-    private int compareStatus(BaseEnum status1, BaseEnum status2) {
-        if (status1 == status2) return 0;
-        if (status1 == null) return -1;
-        if (status2 == null) return 1;
-
-        // Define priority order
-        Map<BaseEnum, Integer> priorityMap = new HashMap<>();
-        priorityMap.put(BaseEnum.DRAFT, 1);
-        priorityMap.put(BaseEnum.NOT_APPROVED, 2);
-        priorityMap.put(BaseEnum.WAIT_FOR_APPROVAL, 3);
-        priorityMap.put(BaseEnum.APPROVED, 4);
-        priorityMap.put(BaseEnum.CANCELED, 5);
-
-        Integer priority1 = priorityMap.getOrDefault(status1, 99);
-        Integer priority2 = priorityMap.getOrDefault(status2, 99);
-
-        return priority1.compareTo(priority2);
     }
 }

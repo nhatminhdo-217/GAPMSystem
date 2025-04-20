@@ -11,6 +11,7 @@ import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.WorkOrder;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.mapper.ProductionOrderMapper;
+import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.ProductionOrderDetailRepository;
 import fpt.g36.gapms.repositories.WorkOrderRepository;
 import fpt.g36.gapms.repositories.ProductionOrderRepository;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.PageImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,13 +40,15 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     private final WorkOrderRepository workOrderRepository;
     private final ProductionOrderDetailRepository productionOrderDetailRepository;
     private final PurchaseOrderService purchaseOrderService;
+    private final PurchaseOrderMapper purchaseOrderMapper;
 
-    public ProductionOrderServiceImpl(ProductionOrderRepository productionOrderRepository, ProductionOrderMapper productionOrderMapper, WorkOrderRepository workOrderRepository, ProductionOrderDetailRepository productionOrderDetailRepository, PurchaseOrderService purchaseOrderService) {
+    public ProductionOrderServiceImpl(ProductionOrderRepository productionOrderRepository, ProductionOrderMapper productionOrderMapper, WorkOrderRepository workOrderRepository, ProductionOrderDetailRepository productionOrderDetailRepository, PurchaseOrderService purchaseOrderService, PurchaseOrderMapper purchaseOrderMapper) {
         this.productionOrderRepository = productionOrderRepository;
         this.workOrderRepository = workOrderRepository;
         this.productionOrderMapper = productionOrderMapper;
         this.productionOrderDetailRepository = productionOrderDetailRepository;
         this.purchaseOrderService = purchaseOrderService;
+        this.purchaseOrderMapper = purchaseOrderMapper;
     }
 
     @Override
@@ -208,8 +212,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             po.setCreatedBy(currUser);
         }
         else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED){
-            po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
-        } else if (getStatusByProductionOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
             po.setStatus(BaseEnum.APPROVED);
             po.setApprovedBy(currUser);
         }
@@ -228,6 +230,18 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         productionOrder.setStatus(BaseEnum.CANCELED);
         productionOrderRepository.save(productionOrder);
         return true;
+    }
+
+    @Override
+    public Page<ProductionOrderDTO> getAllProductionOrders(String search, BaseEnum status, int page, int size, String sortField, String sortDir) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ProductionOrder> productionOrders = productionOrderRepository.searchAndFilter(search, status, pageable);
+
+        List<ProductionOrderDTO> productionOrderDTOS = new ArrayList<>(productionOrderMapper.toDTOList(productionOrders.getContent()));
+
+        return new PageImpl<>(productionOrderDTOS, pageable, productionOrders.getTotalElements());
     }
 
     private BaseEnum getStatusByProductionOrderId(Long id) {
