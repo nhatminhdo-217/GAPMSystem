@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 @Controller
@@ -103,12 +104,6 @@ public class MachineController {
         return "redirect:/login";
     }
 
-    private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {
-        public PageImplWrapper(java.util.List<T> content, Pageable pageable, long total) {
-            super(content, pageable, total);
-        }
-    }
-
     @GetMapping("/dye-machine-details/{id}")
     public String viewDyeMachineDetails(@PathVariable("id") Long id, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -165,15 +160,15 @@ public class MachineController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
                 if ("dye".equals(machineType)) {
-                    if (dyeMachine.getDiameter() == null || dyeMachine.getDiameter() <= 0 ||
-                            dyeMachine.getPile() == null || dyeMachine.getPile() <= 0 ||
-                            dyeMachine.getConePerPile() == null || dyeMachine.getConePerPile() <= 0 ||
-                            dyeMachine.getMaxWeight() == null || dyeMachine.getMaxWeight() <= 0 ||
-                            dyeMachine.getCapacity() == null || dyeMachine.getCapacity() <= 0) {
+                    if (dyeMachine.getDiameter() == null || dyeMachine.getDiameter().compareTo(BigDecimal.ZERO) <= 0 ||
+                            dyeMachine.getPile() == null || dyeMachine.getPile().compareTo(BigDecimal.ZERO) <= 0 ||
+                            dyeMachine.getConePerPile() == null || dyeMachine.getConePerPile().compareTo(BigDecimal.ZERO) <= 0 ||
+                            dyeMachine.getMaxWeight() == null || dyeMachine.getMaxWeight().compareTo(BigDecimal.ZERO) <= 0 ||
+                            dyeMachine.getCapacity() == null || dyeMachine.getCapacity().compareTo(BigDecimal.ZERO) <= 0) {
                         throw new IllegalArgumentException("Thông tin máy nhuộm không hợp lệ. Các giá trị phải lớn hơn 0.");
                     }
-                    if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) <= 0
-                            || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) <= 0) {
+                    if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) < 0
+                            || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) < 0) {
                         throw new IllegalArgumentException("Giá trị của litter max phải lớn hơn litters min " +
                                 "và giá trị của cone max phải lớn hơn cone min");
                     }
@@ -184,9 +179,9 @@ public class MachineController {
                     System.err.println("Rendering dye-machine-details with success: " + model.containsAttribute("success"));
                     return "technical/dye-machine-details";
                 } else if ("winding".equals(machineType)) {
-                    if (windingMachine.getMotor_speed() == null || windingMachine.getMotor_speed() <= 0 ||
-                            windingMachine.getSpindle() == null || windingMachine.getSpindle() <= 0 ||
-                            windingMachine.getCapacity() == null || windingMachine.getCapacity() <= 0) {
+                    if (windingMachine.getMotor_speed() == null || windingMachine.getMotor_speed().compareTo(BigDecimal.ZERO) <= 0 ||
+                            windingMachine.getSpindle() == null || windingMachine.getSpindle().compareTo(BigDecimal.ZERO) <= 0 ||
+                            windingMachine.getCapacity() == null || windingMachine.getCapacity().compareTo(BigDecimal.ZERO) <= 0) {
                         throw new IllegalArgumentException("Thông tin máy cuốn không hợp lệ. Các giá trị phải lớn hơn 0.");
                     }
                     WindingMachine savedWindingMachine = machineService.addWindingMachine(windingMachine);
@@ -203,53 +198,7 @@ public class MachineController {
                 return "technical/view-all-machine";
             } catch (Exception e) {
                 model.addAttribute("error", "Có lỗi xảy ra khi thêm máy: " + e.getMessage());
-                return "technical/view-all-machine";
-            }
-        }
-        return "redirect:/login";
-    }
-
-    @GetMapping("/edit-dye-machine/{id}")
-    public String showEditDyeMachineForm(@PathVariable("id") Long id, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userUtils.getOptionalUser(model);
-
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            try {
-                DyeMachine dyeMachine = machineService.getDyeMachinesById(id);
-                if (dyeMachine.getDyeStage() != null) {
-                    model.addAttribute("error", "Máy đã được gán vào stage, không thể chỉnh sửa.");
-                    model.addAttribute("dyeMachine", dyeMachine);
-                    return "technical/dye-machine-details";
-                }
-                model.addAttribute("dyeMachine", dyeMachine);
-                return "technical/edit-dye-machine";
-            } catch (RuntimeException e) {
-                model.addAttribute("error", e.getMessage());
-                return "technical/view-all-machine";
-            }
-        }
-        return "redirect:/login";
-    }
-
-    @GetMapping("/edit-winding-machine/{id}")
-    public String showEditWindingMachineForm(@PathVariable("id") Long id, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userUtils.getOptionalUser(model);
-
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            try {
-                WindingMachine windingMachine = machineService.getWindingMachinesById(id);
-                if (windingMachine.getWindingStage() != null) {
-                    model.addAttribute("error", "Máy đã được gán vào stage, không thể chỉnh sửa.");
-                    model.addAttribute("windingMachine", windingMachine);
-                    return "technical/winding-machine-details";
-                }
-                model.addAttribute("windingMachine", windingMachine);
-                return "technical/edit-winding-machine";
-            } catch (RuntimeException e) {
-                model.addAttribute("error", e.getMessage());
-                return "technical/view-all-machine";
+                return "redirect:/technical/view-all-machine";
             }
         }
         return "redirect:/login";
@@ -265,15 +214,15 @@ public class MachineController {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
-                if (dyeMachine.getDiameter() == null || dyeMachine.getDiameter() <= 0 ||
-                        dyeMachine.getPile() == null || dyeMachine.getPile() <= 0 ||
-                        dyeMachine.getConePerPile() == null || dyeMachine.getConePerPile() <= 0 ||
-                        dyeMachine.getMaxWeight() == null || dyeMachine.getMaxWeight() <= 0 ||
-                        dyeMachine.getCapacity() == null || dyeMachine.getCapacity() <= 0) {
+                if (dyeMachine.getDiameter() == null || dyeMachine.getDiameter().compareTo(BigDecimal.ZERO) <= 0 ||
+                        dyeMachine.getPile() == null || dyeMachine.getPile().compareTo(BigDecimal.ZERO) <= 0 ||
+                        dyeMachine.getConePerPile() == null || dyeMachine.getConePerPile().compareTo(BigDecimal.ZERO) <= 0 ||
+                        dyeMachine.getMaxWeight() == null || dyeMachine.getMaxWeight().compareTo(BigDecimal.ZERO) <= 0 ||
+                        dyeMachine.getCapacity() == null || dyeMachine.getCapacity().compareTo(BigDecimal.ZERO) <= 0) {
                     throw new IllegalArgumentException("Thông tin máy nhuộm không hợp lệ. Các giá trị phải lớn hơn 0.");
                 }
-                if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) <= 0
-                        || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) <= 0) {
+                if (dyeMachine.getLittersMax().compareTo(dyeMachine.getLittersMin()) < 0
+                        || dyeMachine.getConeMax().compareTo(dyeMachine.getConeMin()) < 0) {
                     throw new IllegalArgumentException("Giá trị của litter max phải lớn hơn litters min " +
                             "và giá trị của cone max phải lớn hơn cone min");
                 }
@@ -289,10 +238,10 @@ public class MachineController {
             } catch (IllegalArgumentException e) {
                 model.addAttribute("error", e.getMessage());
                 model.addAttribute("dyeMachine", machineService.getDyeMachinesById(id));
-                return "technical/edit-dye-machine";
+                return "technical/dye-machine-details";
             } catch (Exception e) {
                 model.addAttribute("error", "Có lỗi xảy ra khi cập nhật máy: " + e.getMessage());
-                return "technical/view-all-machine";
+                return "redirect:/technical/view-all-machine";
             }
         }
         return "redirect:/login";
@@ -308,9 +257,9 @@ public class MachineController {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
-                if (windingMachine.getMotor_speed() == null || windingMachine.getMotor_speed() <= 0 ||
-                        windingMachine.getSpindle() == null || windingMachine.getSpindle() <= 0 ||
-                        windingMachine.getCapacity() == null || windingMachine.getCapacity() <= 0) {
+                if (windingMachine.getMotor_speed() == null || windingMachine.getMotor_speed().compareTo(BigDecimal.ZERO) <= 0 ||
+                        windingMachine.getSpindle() == null || windingMachine.getSpindle().compareTo(BigDecimal.ZERO) <= 0 ||
+                        windingMachine.getCapacity() == null || windingMachine.getCapacity().compareTo(BigDecimal.ZERO) <= 0) {
                     throw new IllegalArgumentException("Thông tin máy cuốn không hợp lệ. Các giá trị phải lớn hơn 0.");
                 }
                 WindingMachine updatedWindingMachine = machineService.updateWindingMachine(id, windingMachine);
@@ -327,7 +276,7 @@ public class MachineController {
                 return "technical/edit-winding-machine";
             } catch (Exception e) {
                 model.addAttribute("error", "Có lỗi xảy ra khi cập nhật máy: " + e.getMessage());
-                return "technical/view-all-machine";
+                return "redirect:/technical/view-all-machine";
             }
         }
         return "redirect:/login";
@@ -378,4 +327,11 @@ public class MachineController {
         }
         return "redirect:/login";
     }
+
+    private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {
+        public PageImplWrapper(java.util.List<T> content, Pageable pageable, long total) {
+            super(content, pageable, total);
+        }
+    }
+
 }

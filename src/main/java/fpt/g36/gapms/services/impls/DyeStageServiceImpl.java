@@ -9,6 +9,7 @@ import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.DyeStageService;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.PhotoStageService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class DyeStageServiceImpl implements DyeStageService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private NotificationUtils notificationUtils;
     @Autowired
     private DyeRiskAssessmentRepository dyeRiskAssessmentRepository;
 
@@ -132,6 +135,7 @@ public class DyeStageServiceImpl implements DyeStageService {
             dyeRiskAssessment_save.getDyeBatch().setTestStatus(TestEnum.TESTED);
             if(dyeRiskAssessment.getPass()) {
                 dyeRiskAssessment_save.getDyeBatch().setPass(true);
+                notificationUtils.sentSuccessTestToQaFromLeader(dyeRiskAssessment.getDyeBatch().getId(), "LEAD_WINDING");
             }else {
                 dyeRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(dyeRiskAssessment.getErrorDetails()));
                 dyeRiskAssessment_save.setErrorLevel(dyeRiskAssessment.getErrorLevel());
@@ -141,7 +145,11 @@ public class DyeStageServiceImpl implements DyeStageService {
                 riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
                 riskSolution.setDyeRiskAssessment(dyeRiskAssessment);
                 riskSolutionRepository.save(riskSolution);
-
+                if(dyeRiskAssessment_save.getErrorLevel()){
+                    notificationUtils.sentFalseSeriousToQaFromTechnical(riskSolution.getId());
+                }else{
+                    notificationUtils.sentFalseEasyToQaFromTechnical(riskSolution.getId());
+                }
             }
 
             List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());

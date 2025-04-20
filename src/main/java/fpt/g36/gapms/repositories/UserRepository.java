@@ -1,5 +1,6 @@
 package fpt.g36.gapms.repositories;
 
+import fpt.g36.gapms.models.entities.Role;
 import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,4 +53,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u from Rfq r JOIN r.createBy u WHERE r.id = :rfqId")
     Optional<User> findUsersByRfqId(long rfqId);
+
+    @Query("SELECT u FROM User u JOIN u.role r WHERE r.name = :roleName")
+    List<User> findAllByRole(@Param("roleName") String roleName);
 }

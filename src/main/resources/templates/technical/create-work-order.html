@@ -215,6 +215,16 @@
             border-color: #007bff;
         }
 
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
         .btn-success {
             background-color: #28a745;
             border: none;
@@ -418,14 +428,29 @@
                                                         <th>Sản phẩm</th>
                                                         <th>Màu</th>
                                                         <th>Số lượng</th>
+                                                        <th>Thread Mass (kg)</th>
                                                     </tr>
                                                     <tr>
                                                         <td th:text="${detail.id}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.quantity}"></td>
+                                                        <td th:text="${detail.thread_mass}"></td>
                                                     </tr>
                                                 </table>
+
+                                                <!-- Thêm trường nhập additionalWeight cho từng detail -->
+                                                <div class="form-group">
+                                                    <label th:for="'additionalWeight-' + ${iterStat.index}">Trọng lượng
+                                                        bổ sung (additionalWeight, kg):</label>
+                                                    <input type="number" step="0.01" min="0.4"
+                                                           class="form-control additional-weight"
+                                                           th:id="'additionalWeight-' + ${iterStat.index}"
+                                                           th:name="'additionalWeights[' + ${iterStat.index} + ']'"
+                                                           required>
+                                                    <div class="invalid-feedback"
+                                                         th:id="'additionalWeightError-' + ${iterStat.index}"></div>
+                                                </div>
 
                                                 <!-- Dye Stage -->
                                                 <div class="stage-section">
@@ -559,9 +584,29 @@
             }
         });
 
+        // Hàm kiểm tra giá trị additionalWeight cho từng detail
+        function validateAdditionalWeight(detailIndex) {
+            var additionalWeight = $('#additionalWeight-' + detailIndex).val();
+            var $additionalWeightInput = $('#additionalWeight-' + detailIndex);
+            var $errorDiv = $('#additionalWeightError-' + detailIndex);
+            var isValid = true;
+
+            if (!additionalWeight || additionalWeight < 0.4) {
+                $additionalWeightInput.addClass('is-invalid');
+                $errorDiv.text('Trọng lượng bổ sung phải lớn hơn hoặc bằng 0.4 kg.');
+                isValid = false;
+            } else {
+                $additionalWeightInput.removeClass('is-invalid');
+                $errorDiv.text('');
+            }
+
+            return isValid;
+        }
+
         // Hàm kiểm tra trạng thái toàn bộ form để bật/tắt nút submit
         function updateSubmitButton() {
             var allValid = true;
+
             $('.detail-section').each(function () {
                 var index = $(this).data('index'); // Lấy index từ data-index
                 var dyeSelected = $('#freeDyeMachine-' + index).val() || $('#queuedDyeMachine-' + index).val();
@@ -570,19 +615,22 @@
                 var windingDeadlineError = $('#windingDeadline-' + index).hasClass('error');
                 var dyeAvailabilityError = $('#dyeAvailability-' + index).hasClass('error');
                 var windingAvailabilityError = $('#windingAvailability-' + index).hasClass('error');
+                var additionalWeightValid = validateAdditionalWeight(index);
 
-                console.log(`Detail ${index + 2}: ` +
+                console.log(`Detail ${index + 1}: ` +
                     `dyeSelected=${dyeSelected}, ` +
                     `windingSelected=${windingSelected}, ` +
                     `dyeDeadlineError=${dyeDeadlineError}, ` +
                     `windingDeadlineError=${windingDeadlineError}, ` +
                     `dyeAvailabilityError=${dyeAvailabilityError}, ` +
-                    `windingAvailabilityError=${windingAvailabilityError}`);
+                    `windingAvailabilityError=${windingAvailabilityError}, ` +
+                    `additionalWeightValid=${additionalWeightValid}`);
 
-                if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError) {
+                if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
                     allValid = false;
                 }
             });
+
             $('#submitBtn').prop('disabled', !allValid);
             console.log("Submit button enabled: " + allValid);
         }
@@ -597,8 +645,9 @@
             var windingDeadlineError = $('#windingDeadline-' + detailIndex).hasClass('error');
             var dyeAvailabilityError = $('#dyeAvailability-' + detailIndex).hasClass('error');
             var windingAvailabilityError = $('#windingAvailability-' + detailIndex).hasClass('error');
+            var additionalWeightValid = validateAdditionalWeight(detailIndex);
 
-            if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError) {
+            if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
                 toggleBtn.removeClass('success').addClass('error');
                 icon.removeClass('fa-plus fa-minus fa-check').addClass('fa-times');
             } else {
@@ -612,6 +661,18 @@
         function checkDyeMachineAvailability(detailIndex, dyeMachineId) {
             var productionOrderId = $('input[name="productionOrderId"]').val();
             var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            var additionalWeight = $('#additionalWeight-' + detailIndex).val();
+
+            if (!validateAdditionalWeight(detailIndex)) {
+                $('#dyeAvailability-' + detailIndex).text('Vui lòng nhập trọng lượng bổ sung hợp lệ trước.').addClass('error').removeClass('success');
+                $('#dyeDetails-' + detailIndex).html('');
+                $('#dyeDeadline-' + detailIndex).html('');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
             if (!dyeMachineId) {
                 $('#dyeAvailability-' + detailIndex).text('Vui lòng chọn máy nhuộm.').addClass('error').removeClass('success');
                 $('#dyeDetails-' + detailIndex).html('');
@@ -629,6 +690,7 @@
                     productionOrderId: productionOrderId,
                     detailId: detailId,
                     dyeMachineId: dyeMachineId,
+                    additionalWeight: additionalWeight,
                     _csrf: $('input[name="_csrf"]').val()
                 },
                 success: function (response) {
@@ -719,6 +781,16 @@
         function checkWindingMachineAvailability(detailIndex, windingMachineId) {
             var productionOrderId = $('input[name="productionOrderId"]').val();
             var detailId = $('.detail-section').eq(detailIndex).data('detail-id');
+            var additionalWeight = $('#additionalWeight-' + detailIndex).val();
+
+            if (!validateAdditionalWeight(detailIndex)) {
+                $('#windingAvailability-' + detailIndex).text('Vui lòng nhập trọng lượng bổ sung hợp lệ trước.').addClass('error').removeClass('success');
+                $('#windingDeadline-' + detailIndex).html('');
+                $('#packagingDeadline-' + detailIndex).html('');
+                updateToggleIcon(detailIndex);
+                return;
+            }
+
             if (!windingMachineId) {
                 $('#windingAvailability-' + detailIndex).text('Vui lòng chọn máy cuốn.').addClass('error').removeClass('success');
                 $('#windingDeadline-' + detailIndex).html('');
@@ -742,6 +814,7 @@
                     detailId: detailId,
                     dyeMachineId: dyeMachineId,
                     windingMachineId: windingMachineId,
+                    additionalWeight: additionalWeight,
                     _csrf: $('input[name="_csrf"]').val()
                 },
                 success: function (response) {
@@ -938,11 +1011,28 @@
             checkWindingMachineAvailability(detailIndex, windingMachineId);
         });
 
+        // Xử lý thay đổi giá trị additionalWeight cho từng detail
+        $('.additional-weight').on('input', function () {
+            var detailIndex = $(this).attr('id').split('-')[1];
+            validateAdditionalWeight(detailIndex);
+
+            // Khi thay đổi additionalWeight, kiểm tra lại máy nhuộm và máy cuốn của detail này
+            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
+            var windingMachineId = $('#freeWindingMachine-' + detailIndex).val() || $('#queuedWindingMachine-' + detailIndex).val();
+
+            if (dyeMachineId) {
+                checkDyeMachineAvailability(detailIndex, dyeMachineId);
+            }
+            if (windingMachineId && dyeMachineId) {
+                checkWindingMachineAvailability(detailIndex, windingMachineId);
+            }
+        });
+
         // Xử lý form submit
         $('#createWorkOrderForm').submit(function (event) {
             if ($('#submitBtn').prop('disabled')) {
                 event.preventDefault();
-                alert('Vui lòng chọn đầy đủ máy và đảm bảo deadline hợp lệ.');
+                alert('Vui lòng nhập đầy đủ thông tin và đảm bảo tất cả các giá trị hợp lệ.');
             }
         });
 

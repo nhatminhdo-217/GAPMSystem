@@ -1,13 +1,17 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.enums.NotificationEnum;
 import fpt.g36.gapms.enums.SendEnum;
+import fpt.g36.gapms.models.dto.notification.NotificationDTO;
 import fpt.g36.gapms.models.entities.Rfq;
 import fpt.g36.gapms.models.entities.Solution;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.RfqRepository;
 import fpt.g36.gapms.repositories.UserRepository;
+import fpt.g36.gapms.services.NotificationService;
 import fpt.g36.gapms.services.RfqService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +35,10 @@ public class RfqServiceImpl implements RfqService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Override
     public Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable) {
@@ -112,7 +120,12 @@ public class RfqServiceImpl implements RfqService {
 
         Rfq submittedRfq = rfqRepository.save(rfq);
         rfqRepository.flush();
+
+        notificationUtils.sendRfqApproveToTechnical(rfqId);
+
         entityManager.refresh(submittedRfq.getRfqDetails());
+
+
         return submittedRfq;
     }
 }

@@ -2,7 +2,10 @@ package fpt.g36.gapms.repositories;
 
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.DyeStage;
+import fpt.g36.gapms.models.entities.WorkOrder;
+import fpt.g36.gapms.models.entities.WorkOrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,4 +29,19 @@ public interface DyeStageRepository extends JpaRepository<DyeStage, Long> {
             @Param("plannedStart") LocalDateTime plannedStart,
             @Param("deadline") LocalDateTime deadline,
             @Param("finishedStatus") WorkEnum finishedStatus);
+
+    Iterable<DyeStage> findByWorkOrderDetail_WorkOrder(WorkOrder workOrderDetailWorkOrder);
+
+    @Modifying
+    @Query("DELETE FROM DyeStage ds WHERE ds.workOrderDetail IN :workOrderDetails")
+    void deleteAllByWorkOrderDetailIn(@Param("workOrderDetails") List<WorkOrderDetail> workOrderDetails);
+
+    @Modifying
+    @Query(value = "DELETE FROM dye_stage_team_leaders WHERE dye_stage_id IN :stageIds", nativeQuery = true)
+    void deleteTeamLeadersByDyeStageIds(@Param("stageIds") List<Long> stageIds);
+
+    // Xóa bản ghi trong bảng dye_stage_qa
+    @Modifying
+    @Query(value = "DELETE FROM dye_stage_qa WHERE dye_stage_id IN :stageIds", nativeQuery = true)
+    void deleteQaByDyeStageIds(@Param("stageIds") List<Long> stageIds);
 }

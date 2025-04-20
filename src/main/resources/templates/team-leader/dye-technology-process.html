@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- Custom CSS cho bảng -->
+    <style>
+        .header-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+        }
+
+        /* Căn giữa tiêu đề của bảng */
+        .table th.table-header {
+            text-align: center;
+        }
+
+        .highlight {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .highlight-cell {
+            background-color: #e9ecef;
+        }
+
+        .delta-e {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            border: 1px solid #000;
+            padding: 8px;
+        }
+
+        /* Đảm bảo hai bảng có chiều cao bằng nhau */
+        .equal-height-table {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .equal-height-table table {
+            flex: 1;
+        }
+
+        /* Container cho hai bảng */
+        .table-container {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .table-container .col-md-6 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Định dạng nút "Cập nhật trạng thái" */
+        .update-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .update-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .update-btn i {
+            margin-right: 8px;
+        }
+
+        /* Định dạng nút "Back" */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        /* Căn các nút sang bên phải */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Responsive cho màn hình điện thoại */
+        @media (max-width: 576px) {
+            /* Chuyển 2 bảng thành 1 cột */
+            .table-container {
+                flex-direction: column;
+            }
+
+            .table-container .col-md-6 {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            /* Giảm kích thước chữ và padding trong bảng */
+            .table th, .table td {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .section-header {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            .delta-e {
+                font-size: 14px;
+            }
+
+            .highlight {
+                font-size: 14px;
+            }
+
+            /* Bảng Thuộc Nhuộm: Cho phép cuộn ngang nếu cần */
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Điều chỉnh các nút */
+            .update-btn, .back-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+                width: 48%;
+                max-width: 200px;
+            }
+
+            .back-btn {
+                margin-left: 4%;
+            }
+
+            .button-container {
+                justify-content: space-between;
+            }
+        }
+
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .popup-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover { color: #333; }
+        .popup-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+            text-align: center;
+        }
+        .status-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .status-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 48%;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-btn.in-progress { background: #ffc107; color: #333; }
+        .status-btn.completed { background: #28a745; color: white; }
+        .status-btn:hover { transform: scale(1.02); }
+        .captured-image {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .disabled-link {
+            background: #d3d3d3;
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+            color: #666;
+        }
+
+        /* Container bao quanh video và các nút bên trong */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* Video preview */
+        .video-preview {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Nút "Đổi camera" và "Chụp ảnh" bên trong khung video */
+        .camera-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .camera-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Nút "Đổi camera" - ở góc trên bên phải */
+        .camera-switch-btn {
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Nút "Chụp ảnh" - ở giữa dưới cùng */
+        .camera-capture-btn {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%); /* Chỉ dùng để căn giữa, không có hiệu ứng transform khi hover */
+        }
+
+        /* Icon trong nút */
+        .camera-btn i {
+            font-size: 18px;
+        }
+
+        /* Nút "Bật camera" bên dưới */
+        .capture-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 5px 0;
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+        }
+
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main Content Start -->
+        <div class="container-fluid pt-4 px-4" th:if="${technologyProcess != null}">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <!-- Tiêu đề -->
+                        <div class="header-title text-center mb-4">ĐƠN CÔNG NGHỆ SẢN XUẤT</div>
+
+                        <!-- Phần Thông Tin Chung và Hóa Chất - Chất Trợ -->
+                        <div class="table-container row">
+                            <!-- Thông Tin Chung (Bên trái) -->
+                            <div class="col-md-6">
+                                <div class="equal-height-table">
+                                    <div class="section-header">
+                                        <span>THÔNG TIN CHUNG</span>
+                                        <span class="delta-e">ΔE: 0.8</span>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td>Mã QL</td>
+                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}">N14597-NAVY</td>
+                                            <td>KL</td>
+                                            <td th:text="${technologyProcess.dyeBatch.cone_batch_weight}">9.5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mã KH</td>
+                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}">AZU-MHB</td>
+                                            <td>Số Mẻ</td>
+                                            <td>1/1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Màu</td>
+                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">C136-D(w)</td>
+                                            <td>Mã Máy</span></td>
+                                            <td class="highlight-cell"><span class="highlight" th:text="${technologyProcess.dyeBatch.dyeStage.dyeMachine.id}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chỉ số</td>
+                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">60/3BYA</td>
+                                            <td>Q. Trình</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ghi chú</td>
+                                            <td colspan="3">N/A</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Hóa Chất - Chất Trợ (Bên phải) -->
+                            <div class="col-md-6">
+                                <div class="equal-height-table">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th colspan="4" class="table-header">HÓA CHẤT - CHẤT TRỢ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Anbatex AB-45</td>
+                                            <td th:text="${technologyProcess.anbatex}">143</td>
+                                            <td>C. Hóa</td>
+                                            <td th:text="${technologyProcess.chelator}">143</td>
+                                        </tr>
+                                        <tr>
+                                            <td>AVCO-LEV DLX PLUS</td>
+                                            <td th:text="${technologyProcess.avcoLveDlxPlus}">114</td>
+                                            <td>Disper gator N</td>
+                                            <td th:text="${technologyProcess.dispergatorN}">57</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chất giặt</td>
+                                            <td th:text="${technologyProcess.detergent}">69</td>
+                                            <td>Số Lít</td>
+                                            <td th:text="${technologyProcess.dyeBatch.liters}">57</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Univadin DFM</td>
+                                            <td th:text="${technologyProcess.dfm}">46</td>
+                                            <td>Dung Tỷ</td>
+                                            <td >1/6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giặt khử</td>
+                                            <td th:text="${technologyProcess.reducingAgent}">46</td>
+                                            <td>AX. Giặt</td>
+                                            <td th:text="${technologyProcess.axit}">69</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bảng Thuộc Nhuộm -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered mt-4">
+                                <thead>
+                                <tr>
+                                    <th colspan="6" class="table-header">THUỘC NHUỘM</th>
+                                </tr>
+                                <tr>
+                                    <th>TQD2</th>
+                                    <th>%+ánh</th>
+                                    <th>Tỷ lệ %</th>
+                                    <th>Số gam</th>
+                                </tr>
+                                </thead>
+                                <tbody th:each="dyeType: ${technologyProcess.dyeTypes}">
+                                <tr>
+                                    <td th:text="${dyeType.name}">FORON BRILL YELLOW RD-E</td>
+                                    <td th:text="${dyeType.lightPercent}"></td>
+                                    <td th:text="${dyeType.ratio}">0.1200%</td>
+                                    <td th:text="${dyeType.weight}">11.400</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Nút Cập nhật trạng thái và Back (Căn sang bên phải) -->
+                        <div class="button-container">
+                            <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${technologyProcess.dyeBatch.id} + '\')'">
+                                <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
+                            </button>
+                            <button class="back-btn" onclick="window.history.back()">
+                                <i class="fas fa-arrow-left me-2"></i> Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content End -->
+        <div class="container-fluid pt-4 px-4" th:if="${technologyProcess == null}">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <!-- Tiêu đề -->
+                        <div class="header-title text-center mb-4"> Chờ ĐƠN CÔNG NGHỆ SẢN XUẤT</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+    <!-- Popup động cho mỗi Work Order Con -->
+    <th:block th:if="${technologyProcess != null}">
+        <div th:id="'popup-' + ${technologyProcess.dyeBatch.id}" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" th:onclick="'closePopup(\'popup-' + ${technologyProcess.dyeBatch.id} + '\')'">×</span>
+                <h3>Cập nhật trạng thái</h3>
+                <form th:action="@{/work-order/team-leader/Dye/change/finish/{id}(id=${technologyProcess.dyeBatch.id})}" method="post" enctype="multipart/form-data" th:id="'form-' + ${technologyProcess.dyeBatch.id}">
+                    <div class="form-group">
+                        <label>Cập nhật trạng thái nhuộm:</label>
+                        <div class="status-buttons">
+                            <a th:href="@{/work-order/team-leader/Dye/change/in-process/{id}(id=${technologyProcess.dyeBatch.id})}"
+                               th:classappend="${technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                               class="status-btn in-progress">
+                                <i class="fas fa-spinner me-2"></i> Bắt đầu nhuộm
+                            </a>
+                            <button type="button"
+                                    class="status-btn completed"
+                                    th:onclick="'submitFormWithPhoto(\'form-' + ${technologyProcess.dyeBatch.id} + '\')'"
+                                    th:classappend="${technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                <i class="fas fa-check-circle me-2"></i> Hoàn thành
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Chụp ảnh xác thực:</label>
+                        <div th:if="${technologyProcess.dyeBatch.dyePhoto == null}">
+                            <!-- Container bao quanh video và các nút bên trong -->
+                            <div class="camera-container">
+                                <video th:id="'video-' + ${technologyProcess.dyeBatch.id}" class="video-preview" autoplay></video>
+                                <!-- Nút "Đổi camera" -->
+                                <button type="button" class="camera-btn camera-switch-btn" th:onclick="'switchCamera(\'video-' + ${technologyProcess.dyeBatch.id} + '\', \'popup-' + ${technologyProcess.dyeBatch.id} + '\')'" style="display: none;" th:id="'switch-btn-' + ${technologyProcess.dyeBatch.id}">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                                <!-- Nút "Chụp ảnh" -->
+                                <button type="button" class=" camera-btn camera-capture-btn" th:onclick="'capturePhoto(\'video-' + ${technologyProcess.dyeBatch.id} + '\', \'popup-' + ${technologyProcess.dyeBatch.id} + '\')'" style="display: none;" th:id="'capture-btn-' + ${technologyProcess.dyeBatch.id}">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <!-- Nút "Bật camera" bên dưới -->
+                            <button type="button" class="capture-btn" th:onclick="'startCamera(\'video-' + ${technologyProcess.dyeBatch.id} + '\', \'popup-' + ${technologyProcess.dyeBatch.id} + '\')'">
+                                <i class="fas fa-camera me-2"></i> Bật camera
+                            </button>
+                        </div>
+                        <div th:if="${technologyProcess.dyeBatch.dyePhoto != null}">
+                            <img th:src="'/uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
+                        </div>
+                        <div th:id="'photoPreview-' + ${technologyProcess.dyeBatch.id}"></div>
+                        <input type="file" th:id="'photoInput-' + ${technologyProcess.dyeBatch.id}" name="photo" style="display: none;">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </th:block>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<div th:if="${in_process} or ${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Hiển thị thông báo thành công (in_process)
+            const inProcessMessage = /*[[${in_process}]]*/ null;
+            if (inProcessMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: inProcessMessage,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+
+            // Hiển thị thông báo lỗi (error)
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Lỗi",
+                    text: errorMessage,
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        });
+    </script>
+</div>
+
+<div th:if="${completed}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${completed}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+<script>
+    let currentStream = null;
+    let useRearCamera = true; // Mặc định dùng camera sau
+
+    // Hiển thị popup (không tự động mở camera)
+    function showUpdatePopup(popupId) {
+        const popup = document.getElementById(popupId);
+        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
+        photoPreview.innerHTML = '';
+        popup.style.display = 'flex';
+    }
+
+    // Đóng popup và dừng camera
+    function closePopup(popupId) {
+        const popup = document.getElementById(popupId);
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop()); // Tự động tắt camera khi đóng popup
+            currentStream = null;
+        }
+        popup.style.display = 'none';
+    }
+
+    // Bật camera (mặc định camera sau)
+    async function startCamera(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        const captureBtn = document.getElementById('capture-btn-' + popupId.split('-')[1]);
+        const switchBtn = document.getElementById('switch-btn-' + popupId.split('-')[1]);
+        const startBtn = document.querySelector(`button[onclick*="startCamera('${videoId}', '${popupId}')]`);
+
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: useRearCamera ? "environment" : "user"
+                }
+            });
+            video.srcObject = currentStream;
+            captureBtn.style.display = 'flex'; // Hiển thị nút "Chụp ảnh"
+            switchBtn.style.display = 'flex'; // Hiển thị nút "Đổi camera"
+            if (startBtn) {
+                startBtn.style.display = 'none'; // Ẩn nút "Bật camera" sau khi mở
+            }
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể truy cập camera: ' + err.message,
+            });
+        }
+    }
+
+    // Chuyển đổi giữa camera trước và sau
+    async function switchCamera(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        useRearCamera = !useRearCamera;
+
+        try {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            currentStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: useRearCamera ? "environment" : "user"
+                }
+            });
+            video.srcObject = currentStream;
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể chuyển camera: ' + err.message,
+            });
+        }
+    }
+
+    // Chụp ảnh từ video
+    function capturePhoto(videoId, popupId) {
+        const video = document.getElementById(videoId);
+        const photoPreview = document.getElementById('photoPreview-' + popupId.split('-')[1]);
+        const photoInput = document.getElementById('photoInput-' + popupId.split('-')[1]);
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/png');
+
+        const img = document.createElement('img');
+        img.src = imageData;
+        img.className = 'captured-image';
+        photoPreview.innerHTML = '';
+        photoPreview.appendChild(img);
+
+        fetch(imageData)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], `photo-${popupId.split('-')[1]}.png`, { type: 'image/png' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                photoInput.files = dataTransfer.files;
+            });
+
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        video.srcObject = null;
+    }
+
+    // Xử lý khi nhấn "Hoàn thành"
+    function submitFormWithPhoto(formId) {
+        console.log('Form ID:', formId);
+        const form = document.getElementById(formId);
+        const photoInput = document.getElementById('photoInput-' + formId.split('-')[1]);
+
+        console.log('Form element:', form);
+        console.log('photoInput.files:', photoInput.files);
+
+        if (!form) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không tìm thấy form với ID: ' + formId,
+            });
+            return;
+        }
+
+        if (!photoInput.files || photoInput.files.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu chụp ảnh',
+                text: 'Bạn phải chụp ảnh xác thực trước khi hoàn thành!',
+            });
+        } else {
+            console.log('Submitting form to:', form.action);
+            form.submit();
+        }
+    }
+</script>
+</body>
+
+</html>

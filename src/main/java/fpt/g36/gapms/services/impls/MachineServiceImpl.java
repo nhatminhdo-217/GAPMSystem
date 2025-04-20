@@ -254,43 +254,6 @@ public class MachineServiceImpl implements MachineService {
         }
     }
 
-    private List<Object> findMachinesWithEarliestDeadline(MachineType machineType) {
-        List<MachineQueue> earliestQueues = machineQueueRepository.findQueuesWithEarliestDeadline(machineType, LocalDateTime.now());
-        List<Object> machines = new ArrayList<>();
-
-        for (MachineQueue machineQueue : earliestQueues) {
-            Long machineId = machineQueue.getMachineId();
-            if (machineType == MachineType.DYE_MACHINE) {
-                dyeMachineRepository.findById(machineId).ifPresent(machines::add);
-            } else if (machineType == MachineType.WINDING_MACHINE) {
-                windingMachineRepository.findById(machineId).ifPresent(machines::add);
-            }
-        }
-        return machines;
-    }
-
-    // Phương thức hỗ trợ MVC để kiểm tra hàng đợi đầy
-    public boolean isQueueFullForMachineType(MachineType machineType, LocalDateTime plannedStart, LocalDateTime deadline) {
-        long machinesInQueue = machineQueueRepository.countDistinctMachinesInQueueByType(machineType, plannedStart, deadline);
-        long totalMachines = (machineType == MachineType.DYE_MACHINE)
-                ? dyeMachineRepository.count()
-                : windingMachineRepository.count();
-        return machinesInQueue >= totalMachines;
-    }
-
-    // Phương thức hỗ trợ MVC để lấy danh sách máy khả dụng
-    public List<DyeMachine> getAvailableDyeMachinesForSelection(WorkOrderDetail workOrderDetail,
-                                                                LocalDateTime plannedStart,
-                                                                LocalDateTime deadline) {
-        return findAvailableDyeMachines(workOrderDetail, plannedStart, deadline);
-    }
-
-    public List<WindingMachine> getAvailableWindingMachinesForSelection(WorkOrderDetail workOrderDetail,
-                                                                        LocalDateTime plannedStart,
-                                                                        LocalDateTime deadline) {
-        return findAvailableWindingMachines(workOrderDetail, plannedStart, deadline);
-    }
-
     //
     @Override
     @Transactional

@@ -435,11 +435,12 @@
                                 <th>Trạng thái</th>
                                 <th>Mã sản phẩm nhuộm</th>
                                 <th>Thiết bị</th>
+                                <th>Số mẻ</th>
                                 <th>Thời Gian Bắt Đầu</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
                                 <th>Khối lượng</th>
-                                <th>Số mẻ</th>
+
                                 <th>Ánh Sáng</th>
                                 <th>Ghi chú kế hoạch</th>
                                 <th>Số lít nước tối thiểu</th>
@@ -467,11 +468,12 @@
                                 </td>
                                 <td>WD-<span th:text="${dy.id}"></span></td>
                                 <td>MB-<span th:text="${dy.dyeMachine.id}"></span></td>
+                                <td th:text="${dy.dyebatches.size()}">na</td>
                                 <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
                                 <td th:text="${dy.cone_weight}">31.2</td>
-                                <td>na</td>
+
                                 <td>na</td>
                                 <td>na</td>
                                 <td th:text="${dy.dyeMachine.littersMin}">160</td>

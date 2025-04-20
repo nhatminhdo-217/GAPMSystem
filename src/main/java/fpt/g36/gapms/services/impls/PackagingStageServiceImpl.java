@@ -103,8 +103,8 @@ public class PackagingStageServiceImpl implements PackagingStageService {
             if(packagingRiskAssessment.getPass()) {
                 packagingRiskAssessment_save.getPackagingBatch().setPass(true);
             }else {
-                packagingRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(packagingRiskAssessment.getErrorDetails()));
-                packagingRiskAssessment_save.setErrorLevel(packagingRiskAssessment.getErrorLevel());
+                /*packagingRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(packagingRiskAssessment.getErrorDetails()));
+                packagingRiskAssessment_save.setErrorLevel(packagingRiskAssessment.getErrorLevel());*/
                 packagingRiskAssessment_save.getPackagingBatch().setPass(false);
 
             }

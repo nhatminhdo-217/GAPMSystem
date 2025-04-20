@@ -13,6 +13,10 @@ import java.util.List;
 @Entity
 public class DyeBatch extends BaseEntity {
 
+    private int batchNumber;
+
+    private int plannedOutput;
+
     @NotNull
     @Column(name = "liters_min", precision = 10, scale = 2)
     private BigDecimal liters_min;
@@ -30,7 +34,6 @@ public class DyeBatch extends BaseEntity {
 
     @NotNull
     private LocalDateTime plannedStart;
-
 
 
     private LocalDateTime startAt;
@@ -59,24 +62,28 @@ public class DyeBatch extends BaseEntity {
     @JoinColumn(name = "qa_id")
     private User qa;
 
-    @OneToOne(mappedBy = "dyeBatch")
+    @OneToOne(mappedBy = "dyeBatch", fetch = FetchType.LAZY)
     private WindingBatch windingBatch;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_stage_id")
     private DyeStage dyeStage;
 
     @OneToMany(mappedBy = "dyeBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DyeRiskAssessment> dyeRiskAssessments;
 
+    @OneToOne(mappedBy = "dyeBatch", fetch = FetchType.LAZY)
+    private TechnologyProcess technologyProcess;
+
     private Boolean isPass;
 
     public DyeBatch() {
     }
 
-
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, Boolean isPass) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, TechnologyProcess technologyProcess, Boolean isPass) {
         super(id, createAt, updateAt);
+        this.batchNumber = batchNumber;
+        this.plannedOutput = plannedOutput;
         this.liters_min = liters_min;
         this.liters = liters;
         this.cone_batch_weight = cone_batch_weight;
@@ -93,7 +100,32 @@ public class DyeBatch extends BaseEntity {
         this.windingBatch = windingBatch;
         this.dyeStage = dyeStage;
         this.dyeRiskAssessments = dyeRiskAssessments;
+        this.technologyProcess = technologyProcess;
         this.isPass = isPass;
+    }
+
+    public int getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(int batchNumber) {
+        this.batchNumber = batchNumber;
+    }
+
+    public int getPlannedOutput() {
+        return plannedOutput;
+    }
+
+    public void setPlannedOutput(int plannedOutput) {
+        this.plannedOutput = plannedOutput;
+    }
+
+    public TechnologyProcess getTechnologyProcess() {
+        return technologyProcess;
+    }
+
+    public void setTechnologyProcess(TechnologyProcess technologyProcess) {
+        this.technologyProcess = technologyProcess;
     }
 
     public BigDecimal getLiters_min() {

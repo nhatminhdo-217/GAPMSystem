@@ -180,7 +180,7 @@ public class SaleApprovedRfqController {
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
-            mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), quotationId);
+            /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), quotationId);*/
 
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
             model.addAttribute("success", "Solution và Quotation đã được gửi thành công!");

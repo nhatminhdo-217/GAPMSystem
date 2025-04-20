@@ -809,6 +809,20 @@
         });
     </script>
 </div>
+
+<div th:if="${check_pass_when_false}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${check_pass_when_false}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -992,6 +1006,54 @@
         }
     }
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById('qcForm');
+        const inputs = form.querySelectorAll('input, select, textarea');
+
+        // Lưu dữ liệu khi submit form
+        form.addEventListener('submit', function () {
+            const formData = {};
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    if (input.checked) {
+                        formData[input.name] = input.value;
+                    }
+                } else if (input.type !== 'file') { // Bỏ qua input file
+                    formData[input.name] = input.value;
+                }
+            });
+            localStorage.setItem('qcFormData', JSON.stringify(formData));
+        });
+
+        // Khôi phục dữ liệu nếu có lỗi
+        const savedData = localStorage.getItem('qcFormData');
+        if (savedData) {
+            const formData = JSON.parse(savedData);
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    if (formData[input.name] === input.value) {
+                        input.checked = true;
+                    }
+                } else if (input.type !== 'file') {
+                    input.value = formData[input.name] || '';
+                }
+            });
+
+            // Hiển thị/ẩn phần ghi chú nếu chọn "False"
+            const failRadio = document.getElementById('fail');
+            const failNoteSection = document.getElementById('failNoteSection');
+            if (failRadio.checked) {
+                failNoteSection.style.display = 'block';
+            }
+
+            // Xóa dữ liệu sau khi khôi phục (tùy chọn)
+            localStorage.removeItem('qcFormData');
+        }
+    });
+</script>
+
 <!-- Hiển thị thông báo nếu có -->
 <div th:if="${successMessage}">
     <script th:inline="javascript">

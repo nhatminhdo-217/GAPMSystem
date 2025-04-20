@@ -16,15 +16,15 @@ public class RiskSolution extends BaseEntity{
     @Column(columnDefinition = "TEXT")
     private String note;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dye_risk_assessment_id")
     private DyeRiskAssessment dyeRiskAssessment;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_risk_assessment_id")
     private WindingRiskAssessment windingRiskAssessment;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "packaging_risk_assessment_id")
     private PackagingRiskAssessment packagingRiskAssessment;
 

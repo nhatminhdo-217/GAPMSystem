@@ -13,7 +13,9 @@ import java.util.List;
 @Table(name = "winding_batch")
 public class WindingBatch extends BaseEntity {
 
+    private int batchNumber;
 
+    private int plannedOutput;
 
     @NotNull
     private LocalDateTime plannedStart;
@@ -45,14 +47,14 @@ public class WindingBatch extends BaseEntity {
 
     private String windingPhoto;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_stage_id")
     private WindingStage windingStage;
 
     private Boolean isPass;
 
-    @OneToOne
-    @JoinColumn(name = "dye_batch_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dye_batch_id")
     private DyeBatch dyeBatch;
 
     @OneToMany(mappedBy = "windingBatch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -62,11 +64,15 @@ public class WindingBatch extends BaseEntity {
     @JoinColumn(name = "qa_id")
     private User qa;
 
+    @OneToOne(mappedBy = "windingBatch")
+    private PackagingBatch packagingBatch;
     public WindingBatch() {
     }
 
-    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa) {
+    public WindingBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, LocalDateTime plannedStart, LocalDateTime deadline, LocalDateTime receivedConeAt, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, User leaderStart, User leaderEnd, String windingPhoto, WindingStage windingStage, Boolean isPass, DyeBatch dyeBatch, List<WindingRiskAssessment> windingRiskAssessmentList, User qa, PackagingBatch packagingBatch) {
         super(id, createAt, updateAt);
+        this.batchNumber = batchNumber;
+        this.plannedOutput = plannedOutput;
         this.plannedStart = plannedStart;
         this.deadline = deadline;
         this.receivedConeAt = receivedConeAt;
@@ -82,6 +88,23 @@ public class WindingBatch extends BaseEntity {
         this.dyeBatch = dyeBatch;
         this.windingRiskAssessmentList = windingRiskAssessmentList;
         this.qa = qa;
+        this.packagingBatch = packagingBatch;
+    }
+
+    public int getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(int batchNumber) {
+        this.batchNumber = batchNumber;
+    }
+
+    public int getPlannedOutput() {
+        return plannedOutput;
+    }
+
+    public void setPlannedOutput(int plannedOutput) {
+        this.plannedOutput = plannedOutput;
     }
 
     public LocalDateTime getPlannedStart() {
@@ -202,5 +225,13 @@ public class WindingBatch extends BaseEntity {
 
     public void setQa(User qa) {
         this.qa = qa;
+    }
+
+    public PackagingBatch getPackagingBatch() {
+        return packagingBatch;
+    }
+
+    public void setPackagingBatch(PackagingBatch packagingBatch) {
+        this.packagingBatch = packagingBatch;
     }
 }

@@ -325,7 +325,7 @@
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Ngày tạo đơn</strong><br>
-                                            <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>
+                                            <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
                                         </div>
                                         <div class="text-start me-3">
                                             <strong>Nhân viên phụ trách</strong><br>
@@ -361,10 +361,10 @@
                                         </table>
                                         <div class="solution-details">
                                             <p><strong>Ngày mong muốn nhận hàng:</strong>
-                                                <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd-MM-yyyy')}"></span>
+                                                <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd/MM/yyyy')}"></span>
                                             </p>
                                             <p th:if="${rfq.solution != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
                                             </p>
                                             <p th:if="${rfq.solution != null}"><strong>Trạng thái gửi:</strong>
                                                 <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>

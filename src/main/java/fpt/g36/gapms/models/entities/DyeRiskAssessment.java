@@ -38,7 +38,7 @@ public class DyeRiskAssessment extends BaseEntity{
     @JoinColumn(name = "dye_batch_id")
     private DyeBatch dyeBatch;
 
-    @OneToMany(mappedBy = "dyeRiskAssessment")
+    @OneToMany(mappedBy = "dyeRiskAssessment", fetch = FetchType.LAZY)
     private List<PhotoStage> photo;
 
 
@@ -51,7 +51,7 @@ public class DyeRiskAssessment extends BaseEntity{
 
       private Boolean errorLevel;
 
-    @OneToOne(mappedBy = "dyeRiskAssessment")
+    @OneToOne(mappedBy = "dyeRiskAssessment", fetch = FetchType.LAZY)
     private RiskSolution riskSolution;
 
 

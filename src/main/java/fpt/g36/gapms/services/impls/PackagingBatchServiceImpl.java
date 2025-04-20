@@ -9,6 +9,7 @@ import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.PackagingBatchRepository;
 import fpt.g36.gapms.repositories.PackagingRiskAssessmentRepository;
 import fpt.g36.gapms.services.PackagingBatchService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ public class PackagingBatchServiceImpl implements PackagingBatchService {
 
     @Autowired
     private PackagingBatchRepository packagingBatchRepository;
-
+    @Autowired
+    private NotificationUtils notificationUtils;
     @Autowired
     private PackagingRiskAssessmentRepository packagingRiskAssessmentRepository;
 
@@ -50,6 +52,8 @@ public class PackagingBatchServiceImpl implements PackagingBatchService {
         PackagingRiskAssessment packagingRiskAssessment = new PackagingRiskAssessment();
         packagingRiskAssessment.setPackagingBatch(packagingBatch);
         packagingRiskAssessmentRepository.save(packagingRiskAssessment);
+
+        notificationUtils.sentSuccessStageToLeaderFromQA(packagingBatch.getWindingBatch().getDyeBatch().getId(), "QA_PACKAGING");
     }
 
     @Override
