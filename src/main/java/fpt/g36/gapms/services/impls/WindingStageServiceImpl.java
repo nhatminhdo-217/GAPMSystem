@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.ImageService;
 import fpt.g36.gapms.services.PhotoStageService;
 import fpt.g36.gapms.services.WindingStageService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class WindingStageServiceImpl implements WindingStageService {
     private RiskSolutionRepository riskSolutionRepository;
     @Autowired
     private UserUtils userUtils;
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Autowired
     private WindingBatchRepository windingBatchRepository;
@@ -92,6 +95,7 @@ public class WindingStageServiceImpl implements WindingStageService {
             windingRiskAssessment_save.getWindingBatch().setTestStatus(TestEnum.TESTED);
             if(windingRiskAssessment.getPass()) {
                 windingRiskAssessment_save.getWindingBatch().setPass(true);
+                notificationUtils.sentSuccessTestToQaFromLeader(windingRiskAssessment.getWindingBatch().getDyeBatch().getId(), "LEAD_PACKAGING");
             }else {
                 windingRiskAssessment_save.setErrorDetails(userUtils.cleanSpaces(windingRiskAssessment.getErrorDetails()));
                 windingRiskAssessment_save.setErrorLevel(windingRiskAssessment.getErrorLevel());
@@ -101,6 +105,12 @@ public class WindingStageServiceImpl implements WindingStageService {
                 riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
                 riskSolution.setWindingRiskAssessment(windingRiskAssessment);
                 riskSolutionRepository.save(riskSolution);
+
+                if(windingRiskAssessment_save.getErrorLevel()){
+                    notificationUtils.sentFalseSeriousToQaFromTechnical(riskSolution.getId());
+                }else{
+                    notificationUtils.sentFalseEasyToQaFromTechnical(riskSolution.getId());
+                }
 
             }
             List<WindingBatch> windingBatches = windingBatchRepository.getAllWindingBatchByWindingStageId(windingRiskAssessment.getWindingBatch().getWindingStage().getId());

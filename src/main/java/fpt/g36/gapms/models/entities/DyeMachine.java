@@ -14,16 +14,16 @@ public class DyeMachine extends BaseEntity {
     private DyeStage dyeStage;
 
     @NotNull
-    private Integer diameter; // Đường kính
+    private BigDecimal diameter; // Đường kính
 
     @NotNull
-    private Integer pile; // Số cọc
+    private BigDecimal pile; // Số cọc
 
     @NotNull
-    private Integer conePerPile; // Số quả trên mỗi cọc
+    private BigDecimal conePerPile; // Số quả trên mỗi cọc
 
     @NotNull
-    private Integer maxWeight; // Khối lượng tối đa
+    private BigDecimal maxWeight; // Khối lượng tối đa
 
     @NotNull
     private BigDecimal littersMin;
@@ -38,7 +38,7 @@ public class DyeMachine extends BaseEntity {
     private BigDecimal coneMax;
 
     @NotNull
-    private Integer capacity; // Công suất (quả/h)
+    private BigDecimal capacity; // Công suất (quả/h)
 
     @Lob
     @Column(name = "description")
@@ -50,7 +50,7 @@ public class DyeMachine extends BaseEntity {
     public DyeMachine() {
     }
 
-    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, Integer diameter, Integer pile, Integer conePerPile, Integer maxWeight, BigDecimal littersMin, BigDecimal littersMax, BigDecimal coneMin, BigDecimal coneMax, Integer capacity, String description, boolean isActive) {
+    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, BigDecimal diameter, BigDecimal pile, BigDecimal conePerPile, BigDecimal maxWeight, BigDecimal littersMin, BigDecimal littersMax, BigDecimal coneMin, BigDecimal coneMax, BigDecimal capacity, String description, boolean isActive) {
         super(id, createAt, updateAt);
         this.dyeStage = dyeStage;
         this.diameter = diameter;
@@ -64,6 +64,46 @@ public class DyeMachine extends BaseEntity {
         this.capacity = capacity;
         this.description = description;
         this.isActive = isActive;
+    }
+
+    public DyeStage getDyeStage() {
+        return dyeStage;
+    }
+
+    public void setDyeStage(DyeStage dyeStage) {
+        this.dyeStage = dyeStage;
+    }
+
+    public BigDecimal getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(BigDecimal diameter) {
+        this.diameter = diameter;
+    }
+
+    public BigDecimal getPile() {
+        return pile;
+    }
+
+    public void setPile(BigDecimal pile) {
+        this.pile = pile;
+    }
+
+    public BigDecimal getConePerPile() {
+        return conePerPile;
+    }
+
+    public void setConePerPile(BigDecimal conePerPile) {
+        this.conePerPile = conePerPile;
+    }
+
+    public BigDecimal getMaxWeight() {
+        return maxWeight;
+    }
+
+    public void setMaxWeight(BigDecimal maxWeight) {
+        this.maxWeight = maxWeight;
     }
 
     public BigDecimal getLittersMin() {
@@ -98,59 +138,11 @@ public class DyeMachine extends BaseEntity {
         this.coneMax = coneMax;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public DyeStage getDyeStage() {
-        return dyeStage;
-    }
-
-    public void setDyeStage(DyeStage dyeStage) {
-        this.dyeStage = dyeStage;
-    }
-
-    public Integer getDiameter() {
-        return diameter;
-    }
-
-    public void setDiameter(Integer diameter) {
-        this.diameter = diameter;
-    }
-
-    public Integer getPile() {
-        return pile;
-    }
-
-    public void setPile(Integer pile) {
-        this.pile = pile;
-    }
-
-    public Integer getConePerPile() {
-        return conePerPile;
-    }
-
-    public void setConePerPile(Integer conePerPile) {
-        this.conePerPile = conePerPile;
-    }
-
-    public Integer getMaxWeight() {
-        return maxWeight;
-    }
-
-    public void setMaxWeight(Integer maxWeight) {
-        this.maxWeight = maxWeight;
-    }
-
-    public Integer getCapacity() {
+    public BigDecimal getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(Integer capacity) {
+    public void setCapacity(BigDecimal capacity) {
         this.capacity = capacity;
     }
 
@@ -160,5 +152,13 @@ public class DyeMachine extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

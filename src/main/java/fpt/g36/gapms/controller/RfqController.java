@@ -8,6 +8,7 @@ import fpt.g36.gapms.models.dto.RfqFormDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.services.BrandService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,9 @@ public class RfqController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     @Autowired
     private CompanyService companyService;
@@ -140,7 +144,7 @@ public class RfqController {
         }
         System.err.println(rfqDetails);
         rfqDetailService.saveRfqDetail(rfqDetails);
-
+        notificationUtils.addNewRfqToCustomerFromSale(savedRfq.getId());
         redirectAttributes.addFlashAttribute("saveSuccessMessage", "Tạo thành công yêu cầu báo giá mới");
         return "redirect:/request-for-quotation/view-list";
     }

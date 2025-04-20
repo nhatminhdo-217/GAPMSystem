@@ -1,4 +1,6 @@
 <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4" th:fragment="navbar">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <a href="#" class="sidebar-toggler flex-shrink-0">
         <i class="fa fa-bars"></i>
     </a>
@@ -12,70 +14,33 @@
 
     <div class="navbar-nav align-items-center ms-auto" th:if="${#authorization.expression('isAuthenticated()')}">
         <div class="nav-item dropdown" th:if="${!#authorization.expression('hasRole(''CUSTOMER'')')}">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-envelope me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">Message</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">
-                    <div class="d-flex align-items-center">
-                        <img class="rounded-circle" src="img/user.jpg" alt=""
-                             style="width: 40px; height: 40px;">
-                        <div class="ms-2">
-                            <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                            <small>15 minutes ago</small>
-                        </div>
-                    </div>
-                </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item">
-                    <div class="d-flex align-items-center">
-                        <img class="rounded-circle" src="img/user.jpg" alt=""
-                             style="width: 40px; height: 40px;">
-                        <div class="ms-2">
-                            <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                            <small>15 minutes ago</small>
-                        </div>
-                    </div>
-                </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item">
-                    <div class="d-flex align-items-center">
-                        <img class="rounded-circle" src="img/user.jpg" alt=""
-                             style="width: 40px; height: 40px;">
-                        <div class="ms-2">
-                            <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                            <small>15 minutes ago</small>
-                        </div>
-                    </div>
-                </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item text-center">See all message</a>
-            </div>
+
         </div>
         <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">Notification</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">Profile updated</h6>
-                    <small>15 minutes ago</small>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge bg-danger" id="notification-badge" style="display: none;">0</span>
                 </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">New user added</h6>
-                    <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">Password changed</h6>
-                    <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item text-center">See all notifications</a>
-            </div>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px;">
+                    <li>
+                        <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                            Thông báo
+                            <button class="btn btn-sm btn-link" id="mark-all-as-read-btn">Đánh dấu tất cả đã đọc</button>
+                        </h6>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <div id="notification-dropdown-items" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Notification items will be added here dynamically -->
+
+                    </div>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-center" href="/notifications">Xem tất cả thông báo</a></li>
+                </ul>
+            </li>
+            <input type="hidden" id="current-user-id" th:value="${user != null ? user.id : ''}">
+            <!-- Toast container for notifications -->
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 11" id="notification-container"></div>
         </div>
         <a th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}" href="/request-for-quotation/view-list" class="nav-link" >
             <i class="fas fa-file-invoice-dollar me-lg-2"></i>
@@ -117,4 +82,9 @@
             </ul>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+    <script src="/assert/js/notification.js"></script>
 </nav>

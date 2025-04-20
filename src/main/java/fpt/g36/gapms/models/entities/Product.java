@@ -24,11 +24,11 @@ public class Product extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "production")
+    @OneToMany(mappedBy = "production", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Brand> brands = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<RfqDetail> rfqDetails = new LinkedHashSet<>();
 

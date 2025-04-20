@@ -16,5 +16,7 @@ public interface RiskSolutionService {
 
     Page<RiskSolution> getAllRiskSolutionManager(Pageable pageable);
 
-    RiskSolution approveRiskSolution(Long rsId);
+    RiskSolution approveRiskSolution(Long rsId, User user);
+
+    RiskSolution approveEasyRiskSolution(Long rsId, User user);
 }

@@ -52,28 +52,29 @@
             margin-top: 20px;
         }
 
-        .detail-section .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .detail-section table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .detail-section .col-md-4 {
-            flex: 1 1 300px;
+        .detail-section th, .detail-section td {
             padding: 10px;
-            cursor: default;
+            border: 1px solid #e2e7f0;
+            text-align: left;
+            font-size: 15px;
+            color: #212529;
         }
 
-        .detail-section strong {
+        .detail-section th {
             font-size: 14px;
             color: #495057;
             font-weight: 600;
-            display: block;
+            background-color: #f1f3f9;
+            width: 25%;
         }
 
-        .detail-section span {
-            font-size: 15px;
-            color: #212529;
+        .detail-section td {
+            width: 25%;
         }
 
         .btn-container {
@@ -167,7 +168,7 @@
             padding: 20px;
             border-radius: 8px;
             width: 80%;
-            max-width: 500px;
+            max-width: 800px; /* Tăng chiều rộng để chứa 3 trường mỗi hàng */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
@@ -207,6 +208,17 @@
         .form-control:focus {
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
             border-color: #007bff;
+        }
+
+        .modal-body .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .modal-body .col-md-4 {
+            flex: 1 1 calc(33.33% - 15px); /* Chia đều cho 3 trường mỗi hàng */
+            min-width: 200px;
         }
 
         .modal-footer {
@@ -285,59 +297,50 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="detail-section">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <strong>Mã máy:</strong> <span th:text="'Máy nhuộm ' + ${dyeMachine.id}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Đường kính:</strong> <span th:text="${dyeMachine.diameter}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Số cọc:</strong> <span th:text="${dyeMachine.pile}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Số quả trên mỗi cọc:</strong> <span
-                                        th:text="${dyeMachine.conePerPile}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Khối lượng tối đa:</strong> <span th:text="${dyeMachine.maxWeight}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Công suất:</strong> <span th:text="${dyeMachine.capacity}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Lít nước tối thiểu:</strong> <span
-                                        th:text="${dyeMachine.littersMin} + ' lít'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Lít nước tối đa:</strong> <span
-                                        th:text="${dyeMachine.littersMax} + ' lít'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Số quả tối thiểu:</strong> <span
-                                        th:text="${dyeMachine.coneMin} + ' quả'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Số quả tối đa:</strong> <span
-                                        th:text="${dyeMachine.coneMax} + ' quả'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Mô tả:</strong> <span
-                                        th:text="${dyeMachine.description != null ? dyeMachine.description : 'N/A'}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Ngày tạo:</strong> <span
-                                        th:text="${#temporals.format(dyeMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Trạng thái:</strong> <span
-                                        th:text="${dyeMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>Ngày cập nhật:</strong> <span
-                                        th:text="${#temporals.format(dyeMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-                                </div>
-                            </div>
+                            <table>
+                                <tr>
+                                    <th>Mã máy:</th>
+                                    <td th:text="'Máy nhuộm ' + ${dyeMachine.id}"></td>
+                                    <th>Đường kính:</th>
+                                    <td th:text="${dyeMachine.diameter}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Số cọc:</th>
+                                    <td th:text="${dyeMachine.pile}"></td>
+                                    <th>Số quả trên mỗi cọc:</th>
+                                    <td th:text="${dyeMachine.conePerPile}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Khối lượng tối đa:</th>
+                                    <td th:text="${dyeMachine.maxWeight}"></td>
+                                    <th>Công suất:</th>
+                                    <td th:text="${dyeMachine.capacity}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Lít nước tối thiểu:</th>
+                                    <td th:text="${dyeMachine.littersMin} + ' lít'"></td>
+                                    <th>Lít nước tối đa:</th>
+                                    <td th:text="${dyeMachine.littersMax} + ' lít'"></td>
+                                </tr>
+                                <tr>
+                                    <th>Số quả tối thiểu:</th>
+                                    <td th:text="${dyeMachine.coneMin} + ' quả'"></td>
+                                    <th>Số quả tối đa:</th>
+                                    <td th:text="${dyeMachine.coneMax} + ' quả'"></td>
+                                </tr>
+                                <tr>
+                                    <th>Mô tả:</th>
+                                    <td th:text="${dyeMachine.description != null ? dyeMachine.description : 'N/A'}"></td>
+                                    <th>Ngày tạo:</th>
+                                    <td th:text="${#temporals.format(dyeMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái:</th>
+                                    <td th:text="${dyeMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></td>
+                                    <th>Ngày cập nhật:</th>
+                                    <td th:text="${#temporals.format(dyeMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="btn-container">
                             <button type="button" class="btn btn-custom" data-bs-toggle="modal"
@@ -364,62 +367,73 @@
                     <form th:action="@{/technical/update-dye-machine}" method="post">
                         <div class="modal-body">
                             <input type="hidden" name="id" th:value="${dyeMachine.id}">
-                            <div class="form-group">
-                                <label for="diameter">Đường kính:</label>
-                                <input type="number" class="form-control" id="diameter" name="diameter"
-                                       th:value="${dyeMachine.diameter}" required min="1">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="diameter">Đường kính:</label>
+                                    <input type="number" class="form-control" id="diameter" name="diameter"
+                                           th:value="${dyeMachine.diameter}" required min="1">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="pile">Số cọc:</label>
+                                    <input type="number" class="form-control" id="pile" name="pile"
+                                           th:value="${dyeMachine.pile}" required min="1">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="conePerPile">Số quả trên mỗi cọc:</label>
+                                    <input type="number" class="form-control" id="conePerPile" name="conePerPile"
+                                           th:value="${dyeMachine.conePerPile}" required min="1">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="pile">Số cọc:</label>
-                                <input type="number" class="form-control" id="pile" name="pile"
-                                       th:value="${dyeMachine.pile}" required min="1">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="maxWeight">Khối lượng tối đa:</label>
+                                    <input type="number" class="form-control" id="maxWeight" name="maxWeight"
+                                           th:value="${dyeMachine.maxWeight}" required min="1">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="capacity">Công suất (quả/giờ):</label>
+                                    <input type="number" class="form-control" id="capacity" name="capacity"
+                                           th:value="${dyeMachine.capacity}" required min="1">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="littersMin">Số lít nước tối thiểu (lít):</label>
+                                    <input type="number" class="form-control" id="littersMin" name="littersMin"
+                                           th:value="${dyeMachine.littersMin}" required min="1" max="10000">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="conePerPile">Số quả trên mỗi cọc:</label>
-                                <input type="number" class="form-control" id="conePerPile" name="conePerPile"
-                                       th:value="${dyeMachine.conePerPile}" required min="1">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="littersMax">Số lít nước tối đa (lít):</label>
+                                    <input type="number" class="form-control" id="littersMax" name="littersMax"
+                                           th:value="${dyeMachine.littersMax}" required min="1" max="10000">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="coneMin">Số quả tối thiểu (quả):</label>
+                                    <input type="number" class="form-control" id="coneMin" name="coneMin"
+                                           th:value="${dyeMachine.coneMin}" required min="1" max="10000">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="coneMax">Số quả tối đa (quả):</label>
+                                    <input type="number" class="form-control" id="coneMax" name="coneMax"
+                                           th:value="${dyeMachine.coneMax}" required min="1" max="10000">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="maxWeight">Khối lượng tối đa:</label>
-                                <input type="number" class="form-control" id="maxWeight" name="maxWeight"
-                                       th:value="${dyeMachine.maxWeight}" required min="1">
-                            </div>
-                            <div class="form-group">
-                                <label for="capacity">Công suất (quả/giờ):</label>
-                                <input type="number" class="form-control" id="capacity" name="capacity"
-                                       th:value="${dyeMachine.capacity}" required min="1">
-                            </div>
-                            <div class="form-group">
-                                <label for="capacity">Số lít nước tối thiểu (lít) :</label>
-                                <input type="number" class="form-control" id="littersMin" name="littersMin"
-                                       th:value="${dyeMachine.littersMin}" required min="1" max="10000">
-                            </div>
-                            <div class="form-group">
-                                <label for="capacity">Số lít nước tối đa (lít) :</label>
-                                <input type="number" class="form-control" id="littersMax" name="littersMax"
-                                       th:value="${dyeMachine.littersMax}" required min="1" max="10000">
-                            </div>
-                            <div class="form-group">
-                                <label for="capacity">Số quả tối thiểu (quả) :</label>
-                                <input type="number" class="form-control" id="coneMin" name="coneMin"
-                                       th:value="${dyeMachine.coneMin}" required min="1" max="10000">
-                            </div>
-                            <div class="form-group">
-                                <label for="capacity">Số quả tối đa (quả) :</label>
-                                <input type="number" class="form-control" id="coneMax" name="coneMax"
-                                       th:value="${dyeMachine.coneMax}" required min="1" max="10000">
-                            </div>
-                            <div class="form-group">
-                                <label for="description">Mô tả:</label>
-                                <textarea class="form-control" id="description" name="description"
-                                          th:text="${dyeMachine.description}"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="active">Trạng thái:</label>
-                                <select class="form-control" id="active" name="active" required>
-                                    <option value="true" th:selected="${dyeMachine.active}">Hoạt động</option>
-                                    <option value="false" th:selected="${!dyeMachine.active}">Không hoạt động</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="description">Mô tả:</label>
+                                    <textarea class="form-control" id="description" name="description"
+                                              th:text="${dyeMachine.description}"></textarea>
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="active">Trạng thái:</label>
+                                    <select class="form-control" id="active" name="active" required>
+                                        <option value="true" th:selected="${dyeMachine.active}">Hoạt động</option>
+                                        <option value="false" th:selected="${!dyeMachine.active}">Không hoạt động
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- Thêm một cột trống để cân bằng layout 3 trường mỗi hàng -->
+                                <div class="col-md-4 form-group"></div>
                             </div>
                         </div>
                         <div class="modal-footer">

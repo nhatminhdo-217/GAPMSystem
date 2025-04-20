@@ -57,7 +57,7 @@ public class DyeStage extends BaseEntity {
     @OneToMany(mappedBy = "dyeStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DyeBatch> dyebatches;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "dye_stage_team_leaders",
             joinColumns = @JoinColumn(name = "dye_stage_id"),
@@ -65,7 +65,7 @@ public class DyeStage extends BaseEntity {
     )
     private List<User> teamLeaders; // Danh sách Team Leaders
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "dye_stage_qa",
             joinColumns = @JoinColumn(name = "dye_stage_id"),
@@ -75,7 +75,7 @@ public class DyeStage extends BaseEntity {
 
     public DyeStage() {
     }
-  
+
     public DyeStage(Long id, LocalDateTime createAt, LocalDateTime updateAt, WorkOrderDetail workOrderDetail, BigDecimal liters, BigDecimal cone_weight, BigDecimal cone_batch_weight, BigDecimal cone_quantity, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, WindingStage windingStage, DyeMachine dyeMachine, List<DyeBatch> dyebatches, List<User> teamLeaders, List<User> qa) {
         super(id, createAt, updateAt);
         this.workOrderDetail = workOrderDetail;

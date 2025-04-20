@@ -3,9 +3,9 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?&allowPublicKeyRetrieval=true&useSSL=false
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${AZURE_HOST}:${AZURE_PORT}/${AZURE_DB_NAME}?useSSL=true&requireSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: ${AZURE_NAME}
+    password: ${AZURE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -25,7 +25,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile,email
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: https://gapms-aha3aphhh0fna2dx.southeastasia-01.azurewebsites.net/login/oauth2/code/google
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/auth
@@ -48,18 +48,14 @@ spring:
   thymeleaf:
     cache: true
   # Flyway configuration
-  flyway:
-    enabled: true
-    baseline-on-migrate: false
-    locations: classpath:db/migration
-    validate-on-migrate: true
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?&allowPublicKeyRetrieval=true&useSSL=false
-    user: ${DB_USER}
-    password: ${DB_PASSWORD}
 
 logging:
   level:
     root: ERROR
     org.springframework: WARN
     fpt.g36.gapms: INFO
-    org.flywaydb: DEBUG
+  file:
+    name: /tmp/gapms.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

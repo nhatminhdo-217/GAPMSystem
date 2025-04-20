@@ -9,6 +9,7 @@ import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.repositories.DyeBatchRepository;
 import fpt.g36.gapms.repositories.DyeRiskAssessmentRepository;
 import fpt.g36.gapms.services.DyeBatchService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ public class DyeBatchServiceImpl implements DyeBatchService {
 
     @Autowired
     private DyeBatchRepository dyeBatchRepository;
-
+    @Autowired
+    private NotificationUtils notificationUtils;
     @Autowired
     private DyeRiskAssessmentRepository dyeRiskAssessmentRepository;
     @Override
@@ -52,6 +54,7 @@ public class DyeBatchServiceImpl implements DyeBatchService {
         DyeRiskAssessment dyeRiskAssessment = new DyeRiskAssessment();
         dyeRiskAssessment.setDyeBatch(dyeBatch);
         dyeRiskAssessmentRepository.save(dyeRiskAssessment);
+        notificationUtils.sentSuccessStageToLeaderFromQA(dyeBatch.getId(), "QA_DYE");
     }
 
     @Override

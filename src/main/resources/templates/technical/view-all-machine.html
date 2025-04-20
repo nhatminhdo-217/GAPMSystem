@@ -47,36 +47,7 @@
         .parent-row {
             background-color: #ffffff;
             padding: 12px 15px;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .collapse {
-            display: none;
-        }
-
-        .collapse.show {
-            display: block;
-        }
-
-        .toggle-btn {
-            font-size: 12px;
-            color: #dc3545;
-            padding: 4px 8px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-        .toggle-btn:focus {
-            outline: none;
-            box-shadow: none;
+            border-radius: 8px;
         }
 
         .text-start strong {
@@ -153,7 +124,6 @@
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 0;
         }
 
         .card-body {
@@ -164,55 +134,6 @@
             padding: 12px 15px;
             width: 100%;
             border-radius: 8px;
-        }
-
-        .toggle-container {
-            padding: 5px;
-            min-width: 30px;
-        }
-
-        .detail-table {
-            background-color: #ffffff;
-            border-radius: 0 0 8px 8px;
-            padding: 0;
-        }
-
-        .card-body.detail-table {
-            background-color: #f9fafc;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-            border-radius: 0 0 8px 8px;
-        }
-
-        .solution-details {
-            background-color: #f8f9fc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e7f0;
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .solution-details p {
-            margin: 0;
-            font-size: 14px;
-            color: #495057;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .solution-details strong {
-            color: #333;
-            font-weight: 600;
-            flex: 0 0 50%;
-        }
-
-        .solution-details span {
-            color: #212529;
-            text-align: right;
-            flex: 0 0 50%;
         }
 
         .nav-tabs .nav-link {
@@ -383,7 +304,7 @@
         }
 
         .create-machine-modal {
-            max-width: 60%;
+            max-width: 50%;
         }
 
         .toast {
@@ -424,7 +345,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 1050;
+            z-index: 1060;
             min-width: 300px;
         }
 
@@ -466,35 +387,12 @@
 
             .card-wrapper {
                 flex-direction: column;
-                gap: 0;
                 align-items: flex-start;
             }
 
             .index-in-card {
                 margin-bottom: 10px;
                 margin-right: 0;
-                text-align: left;
-            }
-
-            .toggle-container {
-                margin-top: 10px;
-                margin-left: 0;
-                text-align: right;
-                width: 100%;
-            }
-
-            .solution-details p {
-                flex-direction: column;
-                text-align: left;
-                gap: 5px;
-            }
-
-            .solution-details strong, .solution-details span {
-                flex: none;
-                width: 100%;
-            }
-
-            .solution-details span {
                 text-align: left;
             }
 
@@ -646,64 +544,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="collapse"
-                                             th:id="'dye-details-' + ${iterStat.count + dyePage.number * dyePage.size}">
-                                            <div class="card-body detail-table">
-                                                <div class="solution-details">
-                                                    <p><strong>Số quả trên mỗi cọc:</strong>
-                                                        <span th:text="${machine.conePerPile}"></span>
-                                                    </p>
-                                                    <p><strong>Khối lượng tối đa:</strong>
-                                                        <span th:text="${machine.maxWeight}"></span>
-                                                    </p>
-                                                    <p><strong>Lít nước tối thiểu:</strong>
-                                                        <span th:text="${machine.littersMin}"></span>
-                                                    </p>
-                                                    <p><strong>Lít nước tối đa:</strong>
-                                                        <span th:text="${machine.littersMax}"></span>
-                                                    </p>
-                                                    <p><strong>Số quả tối thiểu:</strong>
-                                                        <span th:text="${machine.coneMin}"></span>
-                                                    </p>
-                                                    <p><strong>Số quả tối đa:</strong>
-                                                        <span th:text="${machine.coneMax}"></span>
-                                                    </p>
-                                                    <p><strong>Mô tả:</strong>
-                                                        <span th:text="${machine.description != null ? machine.description : 'N/A'}"></span>
-                                                    </p>
-                                                    <p><strong>Ngày cập nhật:</strong>
-                                                        <span th:text="${machine.updateAt != null ? #temporals.format(machine.updateAt, 'yyyy-MM-dd') : 'Chưa cập nhật'}"></span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="toggle-container">
-                                        <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                                th:data-target="'#dye-details-' + ${iterStat.count + dyePage.number * dyePage.size}"
-                                                style="padding: 0; color: #dc3545; text-decoration: none;">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination for Dye Machines, ẩn khi tìm kiếm -->
-                        <nav th:if="${dyePage != null and dyePage.totalPages > 1 and (param?.search == null or param?.search.isEmpty())}">
+                        <!-- Pagination for Dye Machines -->
+                        <nav th:if="${dyePage != null and dyePage.totalPages > 1}">
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${dyePage.first} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number - 1}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search})}">Previous</a>
+                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number - 1}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search} ? ${param.search} : null)}"
+                                    >Previous</a>
                                 </li>
                                 <li class="page-item" th:each="i : ${#numbers.sequence(0, dyePage.totalPages - 1)}"
                                     th:classappend="${i == dyePage.number} ? 'active'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${i}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search})}"
+                                       th:href="@{/technical/view-all-machine(pageDye=${i}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search} ? ${param.search} : null)}"
                                        th:text="${i + 1}"></a>
                                 </li>
                                 <li class="page-item" th:classappend="${dyePage.last} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number + 1}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search})}">Next</a>
+                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number + 1}, pageWinding=${windingPage.number}, size=${dyePage.size}, tab='dye', search=${param.search} ? ${param.search} : null)}"
+                                    >Next</a>
                                 </li>
                             </ul>
                         </nav>
@@ -758,46 +620,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="collapse"
-                                             th:id="'winding-details-' + ${iterStat.count + windingPage.number * windingPage.size}">
-                                            <div class="card-body detail-table">
-                                                <div class="solution-details">
-                                                    <p><strong>Mô tả:</strong>
-                                                        <span th:text="${machine.description != null ? machine.description : 'N/A'}"></span>
-                                                    </p>
-                                                    <p><strong>Ngày cập nhật:</strong>
-                                                        <span th:text="${machine.updateAt != null ? #temporals.format(machine.updateAt, 'yyyy-MM-dd') : 'Chưa cập nhật'}"></span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="toggle-container">
-                                        <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                                th:data-target="'#winding-details-' + ${iterStat.count + windingPage.number * windingPage.size}"
-                                                style="padding: 0; color: #dc3545; text-decoration: none;">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination for Winding Machines, ẩn khi tìm kiếm -->
-                        <nav th:if="${windingPage != null and windingPage.totalPages > 1 and (param?.search == null or param?.search.isEmpty())}">
+                        <!-- Pagination for Winding Machines -->
+                        <nav th:if="${windingPage != null and windingPage.totalPages > 1}">
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${windingPage.first} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${windingPage.number - 1}, size=${windingPage.size}, tab='winding', search=${param.search})}">Previous</a>
+                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${windingPage.number - 1}, size=${windingPage.size}, tab='winding', search=${param.search} ? ${param.search} : null)}"
+                                    >Previous</a>
                                 </li>
                                 <li class="page-item" th:each="i : ${#numbers.sequence(0, windingPage.totalPages - 1)}"
                                     th:classappend="${i == windingPage.number} ? 'active'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${i}, size=${windingPage.size}, tab='winding', search=${param.search})}"
+                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${i}, size=${windingPage.size}, tab='winding', search=${param.search} ? ${param.search} : null)}"
                                        th:text="${i + 1}"></a>
                                 </li>
                                 <li class="page-item" th:classappend="${windingPage.last} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${windingPage.number + 1}, size=${windingPage.size}, tab='winding', search=${param.search})}">Next</a>
+                                       th:href="@{/technical/view-all-machine(pageDye=${dyePage.number}, pageWinding=${windingPage.number + 1}, size=${windingPage.size}, tab='winding', search=${param.search} ? ${param.search} : null)}"
+                                    >Next</a>
                                 </li>
                             </ul>
                         </nav>
@@ -839,48 +683,50 @@
                         <form th:action="@{/technical/create-machine}" method="post" id="dyeCreationForm">
                             <input type="hidden" name="machineType" value="dye">
                             <div class="row">
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="diameter" class="form-label">Đường kính</label>
                                     <input type="number" class="form-control" id="diameter" name="diameter" step="0.01"
-                                           required>
+                                           required min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="pile" class="form-label">Số cọc</label>
-                                    <input type="number" class="form-control" id="pile" name="pile" required>
+                                    <input type="number" class="form-control" id="pile" name="pile" required min="1"
+                                           max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="capacity" class="form-label">Công suất (quả/giờ)</label>
-                                    <input type="number" class="form-control" id="capacity" name="capacity" required>
+                                    <input type="number" class="form-control" id="capacity" name="capacity" required
+                                           min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="conePerPile" class="form-label">Số quả trên mỗi cọc</label>
                                     <input type="number" class="form-control" id="conePerPile" name="conePerPile"
-                                           required>
+                                           required min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="maxWeight" class="form-label">Khối lượng tối đa</label>
                                     <input type="number" class="form-control" id="maxWeight" name="maxWeight"
-                                           step="0.01" required>
+                                           step="0.01" required min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="littersMin" class="form-label">Lít nước tối thiểu</label>
                                     <input type="number" class="form-control" id="littersMin" name="littersMin"
-                                           step="0.01" required>
+                                           step="0.01" required min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="littersMax" class="form-label">Lít nước tối đa</label>
                                     <input type="number" class="form-control" id="littersMax" name="littersMax"
-                                           step="0.01" required>
+                                           step="0.01" required min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="coneMin" class="form-label">Số quả tối thiểu</label>
-                                    <input type="number" class="form-control" id="coneMin" name="coneMin"
-                                           required>
+                                    <input type="number" class="form-control" id="coneMin" name="coneMin" required
+                                           min="1" max="10000">
                                 </div>
-                                <div class="col-12 col-md-6 mb-3">
+                                <div class="col-12 col-md-4 mb-3">
                                     <label for="coneMax" class="form-label">Số quả tối đa</label>
-                                    <input type="number" class="form-control" id="coneMax" name="coneMax"
-                                           required>
+                                    <input type="number" class="form-control" id="coneMax" name="coneMax" required
+                                           min="1" max="10000">
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="description" class="form-label">Mô tả</label>
@@ -902,16 +748,17 @@
                                 <div class="col-12 col-md-6 mb-3">
                                     <label for="motorSpeed" class="form-label">Tốc độ động cơ</label>
                                     <input type="number" class="form-control" id="motorSpeed" name="motor_speed"
-                                           step="0.01" required>
+                                           step="0.01" required min="1" max="10000">
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label for="spindle" class="form-label">Số trục</label>
-                                    <input type="number" class="form-control" id="spindle" name="spindle" required>
+                                    <input type="number" class="form-control" id="spindle" name="spindle" required
+                                           min="1" max="10000">
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label for="windingCapacity" class="form-label">Công suất (vòng/phút)</label>
                                     <input type="number" class="form-control" id="windingCapacity" name="capacity"
-                                           required>
+                                           required min="1" max="10000">
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="windingDescription" class="form-label">Mô tả</label>
@@ -979,37 +826,24 @@
                 const searchValue = $(this).val().trim();
                 console.log("Search triggered with value:", searchValue);
                 const currentTab = $('#machineTabs .nav-link.active').attr('id') === 'dye-tab' ? 'dye' : 'winding';
-                const url = `/technical/view-all-machine?pageDye=0&pageWinding=0&size=5&tab=${currentTab}&search=${encodeURIComponent(searchValue)}`;
+                let url = `/technical/view-all-machine?pageDye=0&pageWinding=0&size=5&tab=${currentTab}`;
+                if (searchValue) {
+                    url += `&search=${encodeURIComponent(searchValue)}`;
+                }
                 console.log("Redirecting to:", url);
                 window.location.href = url;
             }
         });
 
-        // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle
-        $('.card').on('click', function (event) {
-            if (!$(event.target).closest('.toggle-btn').length) {
-                var machineId = $(this).data('machine-id');
-                var isDyeMachine = $(this).closest('#dye-machines').length > 0;
-                var url = isDyeMachine
-                    ? '/technical/dye-machine-details/' + machineId
-                    : '/technical/winding-machine-details/' + machineId;
-                console.log("Redirecting to:", url);
-                window.location.href = url;
-            }
-        });
-
-        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
-        $('.toggle-btn').click(function (event) {
-            event.stopPropagation();
-            var target = $(this).data('target');
-            console.log("Toggling target:", target);
-            var icon = $(this).find('i');
-            $(target).collapse('toggle');
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
-            }
+        // Xử lý nhấp vào card để chuyển hướng
+        $('.card').on('click', function () {
+            var machineId = $(this).data('machine-id');
+            var isDyeMachine = $(this).closest('#dye-machines').length > 0;
+            var url = isDyeMachine
+                ? '/technical/dye-machine-details/' + machineId
+                : '/technical/winding-machine-details/' + machineId;
+            console.log("Redirecting to:", url);
+            window.location.href = url;
         });
 
         // Back to top

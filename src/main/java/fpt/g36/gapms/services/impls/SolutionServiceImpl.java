@@ -9,6 +9,7 @@ import fpt.g36.gapms.repositories.RfqRepository;
 import fpt.g36.gapms.repositories.SolutionRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.SolutionService;
+import fpt.g36.gapms.utils.UserUtils;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class SolutionServiceImpl implements SolutionService {
     private RfqRepository rfqRepository;
     @Autowired
     private EntityManager entityManager;
-
+    @Autowired
+    private UserUtils userUtils;
     @Override
     @Transactional
     public Solution addSolution(Long rfqId, Long userId, SolutionDTO solutionDTO) {
@@ -41,9 +43,9 @@ public class SolutionServiceImpl implements SolutionService {
         }
 
         Solution solution = new Solution();
-        solution.setReason(solutionDTO.getReason());
+        solution.setReason(userUtils.cleanSpaces(solutionDTO.getReason()));
         solution.setActualDeliveryDate(solutionDTO.getActualDeliveryDate());
-        solution.setDescription(solutionDTO.getDescription());
+        solution.setDescription(userUtils.cleanSpaces(solutionDTO.getDescription()));
         solution.setCreateBy(user);
         solution.setRfq(rfq);
         solution.setIsSent(SendEnum.NOT_SENT); // Mặc định là NOT_SENT khi tạo mới
@@ -71,9 +73,9 @@ public class SolutionServiceImpl implements SolutionService {
             throw new RuntimeException("Ngày giao hàng dự kiến không thể trước ngày mong muốn nhận hàng (" + existingSolution.getRfq().getExpectDeliveryDate() + ").");
         }
 
-        existingSolution.setReason(solutionDTO.getReason());
+        existingSolution.setReason(userUtils.cleanSpaces(solutionDTO.getReason()));
         existingSolution.setActualDeliveryDate(solutionDTO.getActualDeliveryDate());
-        existingSolution.setDescription(solutionDTO.getDescription());
+        existingSolution.setDescription(userUtils.cleanSpaces(solutionDTO.getDescription()));
         existingSolution.setUpdateAt(LocalDateTime.now());
 
         Solution updatedSolution = solutionRepository.save(existingSolution);

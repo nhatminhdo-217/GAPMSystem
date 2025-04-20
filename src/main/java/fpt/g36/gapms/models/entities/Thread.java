@@ -23,11 +23,11 @@ public class Thread extends BaseEntity {
   @Column(name = "convert_rate", precision = 10, scale = 4)
   private BigDecimal convert_rate; // Định mức
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "process_id", nullable = false)
   private WindingProcess process;
 
-  @OneToMany(mappedBy = "thread")
+  @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
   private List<Product> products;
 
   public Thread() {

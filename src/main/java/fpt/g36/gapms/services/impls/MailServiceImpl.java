@@ -61,9 +61,11 @@ public class MailServiceImpl implements MailService {
         message.setSubject("Báo giá của bạn đã được gửi");
         message.setText("Gửi bạn " + name + ",\n\n"
                 + "Báo giá của bạn đã được gửi thành công. Mã báo giá của bạn là: " + quotationId + "\n\n"
-                + "Ấn vào đường link sau để xem chi tiết báo giá: \n\n" // thêm link dẫn đến quotation detail vào đây
+                + "Ấn vào đường link sau để xem chi tiết báo giá: \n"
+                + "http://localhost:8080/quotation/quotation-customer/" + quotationId + "\n\n"
                 + "Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.\n\n"
                 + "Trân trọng!");
         mailSender.send(message);
     }
+
 }

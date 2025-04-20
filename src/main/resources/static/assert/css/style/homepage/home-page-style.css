@@ -654,5 +654,70 @@ h3 {
     }
 }
 
+/* Add to your styles.css or create notification.css */
+.notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    position: relative;
+}
+
+.notification-item.unread {
+    background-color: #f8f9fa;
+}
+
+.notification-item.unread:before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: #ff3366;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 5px;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.notification-source {
+    font-weight: bold;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.notification-message {
+    margin-bottom: 10px;
+}
+
+.notification-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+#notification-dropdown-items {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#notification-dropdown-items:hover {
+    cursor: pointer;
+    background-color: rgba(204, 204, 204, 0.3);
+}
+
+#notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.6rem;
+}
+
 
 

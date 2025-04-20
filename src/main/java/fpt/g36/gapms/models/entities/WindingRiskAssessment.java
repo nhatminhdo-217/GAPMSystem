@@ -20,7 +20,7 @@ public class WindingRiskAssessment extends BaseEntity {
     //loang màu sau côn
     private Boolean isColorFading;
 
-    @OneToMany(mappedBy = "windingRiskAssessment")
+    @OneToMany(mappedBy = "windingRiskAssessment", fetch = FetchType.LAZY)
     private List<PhotoStage> photo;
 
     private Boolean isPass;
@@ -39,7 +39,7 @@ public class WindingRiskAssessment extends BaseEntity {
     //0 là nhẹ 1 là nặng
     private Boolean errorLevel;
 
-    @OneToOne(mappedBy = "windingRiskAssessment")
+    @OneToOne(mappedBy = "windingRiskAssessment", fetch = FetchType.LAZY)
     private RiskSolution riskSolution;
 
     public WindingRiskAssessment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Integer trueCone, Integer falseCone, Boolean isColorUniformity, Boolean isColorFading, List<PhotoStage> photo, Boolean isPass, User createBy, WindingBatch windingBatch, String errorDetails, Boolean errorLevel, RiskSolution riskSolution) {

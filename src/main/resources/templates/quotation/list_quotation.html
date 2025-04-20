@@ -55,178 +55,229 @@
 
             <div class="header"><h3>Danh sách báo giá</h3></div>
 
-            <!-- Filter Form -->
-            <form class="row mb-4" th:action="@{/quotation/list}" method="get">
-                <div class="col-md-3">
-                    <input type="text" name="search" class="form-control"
-                           placeholder="Tìm kiếm..." th:value="${search}">
+            <!-- Search and Filter Box -->
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/quotation/list}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" th:value="${search}" placeholder="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="status">
+                                <option value="">Tất cả trạng thái</option>
+                                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}" th:selected="${statusOption == selectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-2">Lọc</button>
+                            <a th:href="@{/quotation/list}" class="btn btn-secondary">Làm mới</a>
+                        </div>
+                        <!-- Hidden sort fields -->
+                        <input type="hidden" name="sortField" th:value="${sortField}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+                        <input type="hidden" name="page" th:value="${currentPage}">
+                        <input type="hidden" name="size" th:value="${pageSize}">
+                    </form>
                 </div>
-                <div class="col-md-3">
-                    <select name="product" class="form-select">
-                        <option value="">Tất cả sản phẩm</option>
-                        <option th:each="prod : ${products}"
-                                th:value="${prod}"
-                                th:text="${prod}"
-                                th:selected="${prod == selectedProduct}"></option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="brand" class="form-select">
-                        <option value="">Tất cả thương hiệu</option>
-                        <option th:each="br : ${brands}"
-                                th:value="${br}"
-                                th:text="${br}"
-                                th:selected="${br == selectedBrand}"></option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="category" class="form-select">
-                        <option value="">Tất cả danh mục</option>
-                        <option th:each="cat : ${categories}"
-                                th:value="${cat}"
-                                th:text="${cat}"
-                                th:selected="${cat == selectedCategory}"></option>
-                    </select>
-                </div>
-                <div class="col-md-12 mt-3 text-end">
-                    <button type="submit" class="btn btn-primary">Lọc</button>
-                </div>
-            </form>
+            </div>
 
-            <div class="row g-3">
-                <div class="col-12 d-flex align-items-start" th:each="quotation, iterStat : ${quotations.content}">
-                    <div class="me-3" style="margin-top: 10px;">
-                        <span class="fw-bold" style="font-size: 16px;" th:text="${iterStat.count}"></span>
+            <!-- Results Table -->
+            <div class="card mt-3 desktop-table">
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <div class="fade-scroll fade-scroll-left"></div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">
+                                            Mã báo giá
+                                        </th>
+                                        <th scope="col">
+                                            Khách hàng
+                                        </th>
+                                        <th scope="col">
+                                            Trạng thái
+                                        </th>
+                                        <th scope="col">
+                                            Ngày tạo
+                                        </th>
+                                        <th scope="col">
+                                            Thao tác
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${quotations.empty}">
+                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                    <tr th:each="quotation, iterStat : ${quotations.content}">
+                                        <th scope="row" th:text="${iterStat.count + quotations.number * quotations.size}"></th>
+                                        <td th:text="${quotation.id}"></td>
+                                        <td th:text="${quotation.customerName}"></td>
+                                        <td>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ phê duyệt</span>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(quotation.createAt, 'dd/MM/yyyy')}"></td>
+                                        <td>
+                                            <a th:href="@{'/quotation/detail/' + ${quotation.id}}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="card flex-grow-1 mb-3"
-                         style="border-radius: 8px; background-color: #f8f9fa; width: 100%;">
-                        <div class="card-body d-flex justify-content-between align-items-center p-3 parent-row">
-                            <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                    th:data-target="'#details-' + ${iterStat.count}"
-                                    style="padding: 0; color: #dc3545; text-decoration: none;">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between"
-                                 style="width: 80%;">
-                                <div class="text-start me-3">
-                                    <strong>Mã báo giá</strong><br>
-                                    <span th:text="${quotation.quotationId}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Tên khách hàng</strong><br>
-                                    <span th:text="${quotation.userName}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Số lượng sản phẩm</strong><br>
-                                    <span th:text="${#lists.size(quotation.products)}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Ngày tạo đơn</strong><br>
-                                    <span th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></span>
-                                </div>
-                                <div class="text-start me-3">
-                                    <strong>Trạng thái đơn hàng</strong><br>
-                                    <span th:switch="${quotation.isAccepted}">
-                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
-                                               style="color: green;">
-                                         </span>
-                                          <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Đang chờ phê duyệt'"
-                                                style="color: #ffc107;">
-                                          </span>
-                                           <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
-                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div>
-                                <a th:href="@{'/quotation/detail/' + ${quotation.quotationId}}"
-                                   class="btn btn-primary" style="padding: 5px 10px;">
-                                    Xem chi tiết
-                                </a>
-                            </div>
-                        </div>
-                        <div class="collapse" th:id="'details-' + ${iterStat.count}">
-                            <div class="card-body p-4" style="background-color: #fff; border-radius: 0 0 8px 8px;">
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr class="text-dark">
-                                        <th>Số thứ tự</th>
-                                        <th>Sản phẩm</th>
-                                        <th>Màu</th>
-                                        <th>Giá theo màu (VND)</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="product, productIter : ${quotation.products}">
-                                        <td th:text="${productIter.count}"></td>
-                                        <td th:text="${product.productName} + ' - ' + ${product.brandName} + ' - ' + ${product.categoryName}"></td>
-                                        <td th:text="${product.noteColor}"></td>
-                                        <td th:text="${product.price}"></td>
-<!--                                        <td class="text-center">-->
-<!--                                            <div class="d-flex justify-content-center gap-2">-->
-<!--                                                <a href="#" class="text-danger" title="Delete"-->
-<!--                                                   th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED }and ${#lists.size(rfq.rfqDetails) > 1}"-->
-<!--                                                   th:onclick="'deleteDetail(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">-->
-<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
-<!--                                                </a>-->
-<!--                                                <a href="#" class="text-danger" title="Delete"-->
-<!--                                                   th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED} and ${#lists.size(rfq.rfqDetails) == 1}"-->
-<!--                                                   th:onclick="showApprovalAlertCountLessThan1()">-->
-<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
-<!--                                                </a>-->
-<!--                                                <a href="#" class="text-danger" title="Delete"-->
-<!--                                                   th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"-->
-<!--                                                   th:onclick="showApprovalAlert()">-->
-<!--                                                    <i class="fas fa-trash-alt fa-lg"></i>-->
-<!--                                                </a>-->
-<!--                                            </div>-->
-<!--                                        </td>-->
-                                    </tr>
-                                    </tbody>
-                                </table>
 
-                            </div>
+                    <!-- Pagination -->
+                    <div th:if="${!quotations.empty}" class="d-flex justify-content-between align-items-center">
+                        <div>
+                            Hiển thị <span th:text="${quotations.numberOfElements}"></span> trên <span th:text="${quotations.totalElements}"></span> kết quả
                         </div>
+                        <nav th:if="${quotations.totalPages > 0}">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${quotations.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=0&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Đầu</a>
+                                </li>
+                                <li class="page-item" th:classappend="${quotations.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                    th:classappend="${pageNumbers == quotations.number ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${pageNumber} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
+                                       th:text="${pageNumber + 1}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${quotations.number == quotations.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number + 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Sau</a>
+                                </li>
+                                <li class="page-item" th:classappend="${quotations.number == quotations.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.totalPages - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Cuối</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
 
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li class="page-item" th:classappend="${!quotations.hasPrevious()} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/quotation/list(
-                       search=${search},
-                       product=${selectedProduct},
-                       brand=${selectedBrand},
-                       category=${selectedCategory},
-                       page=${quotations.number - 1}
-                   )}">Previous</a>
-                    </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0, quotations.totalPages - 1)}"
-                        th:classappend="${i == quotations.number} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/quotation/list(
-                       search=${search},
-                       product=${selectedProduct},
-                       brand=${selectedBrand},
-                       category=${selectedCategory},
-                       page=${i}
-                   )}" th:text="${i + 1}"></a>
-                    </li>
-                    <li class="page-item" th:classappend="${!quotations.hasNext()} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/quotation/list(
-                       search=${search},
-                       product=${selectedProduct},
-                       brand=${selectedBrand},
-                       category=${selectedCategory},
-                       page=${quotations.number + 1}
-                   )}">Next</a>
-                    </li>
-                </ul>
-            </nav>
+            <!-- Results Cards (Mobile) -->
+            <div class="mobile-cards mt-3">
+                <div th:if="${quotations.empty}" class="alert alert-info">
+                    Không có dữ liệu báo giá nào
+                </div>
+
+                <div th:each="quotation : ${quotations.content}" class="mobile-card">
+                    <div class="card-header">
+                        <div>
+                            <span class="fw-bold">Mã báo giá:</span>
+                            <span th:text="${quotation.id}"></span>
+                        </div>
+                        <div>
+                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'DRAFT'}" class="status-badge status-draft">DRAFT</span>
+                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">NOT_APPROVED</span>
+                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">WAIT_FOR_APPROVAL</span>
+                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'APPROVED'}" class="status-badge status-approved">APPROVED</span>
+                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'CANCELED'}" class="status-badge status-canceled">CANCELED</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div class="info-label">Khách hàng:</div>
+                            <div th:text="${quotation.customerName}"></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Ngày tạo:</div>
+                            <div th:text="${#temporals.format(quotation.createAt, 'dd-MM-yyyy')}"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a th:href="@{'/quotation/detail/' + ${quotation.id}}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile Pagination -->
+                <div th:if="${!quotations.empty}" class="d-flex flex-column align-items-center mt-3 mb-5">
+                    <div class="mb-2 text-center">
+                        Hiển thị <span th:text="${quotations.numberOfElements}"></span> trên <span th:text="${quotations.totalElements}"></span> kết quả
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/quotation/list?page=0&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link" th:text="${currentPage + 1} + ' / ' + ${totalPages}"></span>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number + 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.totalPages - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Filter button (Mobile) -->
+            <div class="filter-button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilters">
+                <i class="fas fa-filter"></i>
+            </div>
+
+            <!-- Offcanvas Filter (Mobile) -->
+            <div class="offcanvas offcanvas-start offcanvas-filter" tabindex="-1" id="offcanvasFilters">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Bộ lọc</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <form th:action="@{/quotation/list}" method="get" class="d-flex flex-column">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Trạng thái</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="">Tất cả trạng thái</option>
+                                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}" th:selected="${statusOption == selectedStatus}"></option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="search" th:value="${search}">
+                        <input type="hidden" name="sortField" th:value="${sortField}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+                        <input type="hidden" name="page" value="0">
+                        <input type="hidden" name="size" th:value="${pageSize}">
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary">Áp dụng bộ lọc</button>
+                            <a th:href="@{/quotation/list}" class="btn btn-outline-secondary">Xóa bộ lọc</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -245,24 +296,37 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-
 <script>
-    $(document).ready(function () {
-        // Xử lý sự kiện click vào nút toggle
-        $('.toggle-btn').click(function () {
-            var target = $(this).data('target');
-            var icon = $(this).find('i');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide fade effect for table scroll
+        const tableWrapper = document.querySelector('.table-responsive');
+        if (tableWrapper) {
+            const fadeLeft = document.querySelector('.fade-scroll-left');
+            const fadeRight = document.querySelector('.fade-scroll-right');
 
-            // Toggle trạng thái collapse
-            $(target).collapse('toggle');
+            tableWrapper.addEventListener('scroll', function() {
+                if (this.scrollLeft > 0) {
+                    fadeLeft.style.opacity = '1';
+                } else {
+                    fadeLeft.style.opacity = '0';
+                }
 
-            // Thay đổi icon (plus -> minus, và ngược lại)
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
+                if (this.scrollLeft + this.clientWidth < this.scrollWidth) {
+                    fadeRight.style.opacity = '1';
+                } else {
+                    fadeRight.style.opacity = '0';
+                }
+            });
+
+            // Initial check
+            if (tableWrapper.scrollLeft === 0) {
+                fadeLeft.style.opacity = '0';
             }
-        });
+
+            if (tableWrapper.scrollLeft + tableWrapper.clientWidth >= tableWrapper.scrollWidth) {
+                fadeRight.style.opacity = '0';
+            }
+        }
     });
 </script>
 </body>
