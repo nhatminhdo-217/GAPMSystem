@@ -653,18 +653,25 @@
                                     </div>
                                 </div>
                                 <a
-                                        class="btn btn-primary" th:if="${rfq.quotation != null}"
+                                        class="btn btn-primary" th:if="${rfq.quotation != null and rfq.quotation?.purchaseOrder == null}"
                                         th:href="@{/quotation/quotation-customer/{rfqId}(rfqId=${rfq.id})}"
                                         title="Xem báo giá">
-                                    Xem báo giá <i class="fas fa-eye"></i>
+                                     báo giá <i class="fas fa-eye"></i>
                                 </a>
                                 <a
-                                        class="btn btn-primary" th:if="${rfq.quotation == null}"
+                                        class="btn btn-primary" th:if="${rfq.quotation == null }"
                                         href="#"
                                         th:onclick="showQuotationAlert()"
                                         title="Xem báo giá">
-                                    Xem báo giá <i class="fas fa-eye"></i>
+                                     báo giá <i class="fas fa-eye"></i>
                                 </a>
+                                <a
+                                        class="btn btn-primary" th:if="${rfq.quotation?.purchaseOrder != null}"
+                                        th:href="@{/purchase-order/customer/detail/{id}(id=${rfq.quotation.purchaseOrder.id})}"
+                                        title="Xem báo giá">
+                                    Xem đơn <i class="fas fa-eye"></i>
+                                </a>
+
                                 <div class="dropdown ms-3">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
                                             th:id="'dropdownMenuButton' + ${iterStat.count}" data-bs-toggle="dropdown"
@@ -722,10 +729,7 @@
                                             <td th:text="${detailIter.count}"></td>
                                             <td th:text="${detail.getId()}"></td>
                                             <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
-                                            <td>
-                                                <div class="color-box" th:style="'background-color:' + ${detail.getNoteColor()}"></div>
-                                                <span th:text="${detail.getNoteColor()}">#FFFFFF</span>
-                                            </td>
+                                            <td th:text="${detail.getNoteColor()}"></td>
                                             <td th:text="${detail.getQuantity()}"></td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
@@ -1027,7 +1031,7 @@
                 <!-- Mã 5 -->
                 <div class="color-section">
                     <h4>Mã 5</h4>
-                    <img src="[Đường dẫn ảnh 2]" alt="Mã 5 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma5.png" alt="Mã 5 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 129</span><span>S 130</span><span>S 131</span><span>S 132</span><span>S 133</span>
                         <span>S 134</span><span>S 135</span><span>S 136</span><span>S 137</span><span>S 138</span>
@@ -1042,7 +1046,7 @@
                 <!-- Mã 6 -->
                 <div class="color-section">
                     <h4>Mã 6</h4>
-                    <img src="[Đường dẫn ảnh 2]" alt="Mã 6 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma6.png" alt="Mã 6 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 161</span><span>S 162</span><span>S 163</span><span>S 164</span><span>S 165</span>
                         <span>S 166</span><span>S 167</span><span>S 168</span><span>S 169</span><span>S 170</span>
@@ -1057,7 +1061,7 @@
                 <!-- Mã 7 -->
                 <div class="color-section">
                     <h4>Mã 7</h4>
-                    <img src="[Đường dẫn ảnh 2]" alt="Mã 7 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma7.png" alt="Mã 7 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 193</span><span>S 194</span><span>S 195</span><span>S 196</span><span>S 197</span>
                         <span>S 198</span><span>S 199</span><span>S 200</span><span>S 201</span><span>S 202</span>
@@ -1072,7 +1076,7 @@
                 <!-- Mã 8 -->
                 <div class="color-section">
                     <h4>Mã 8</h4>
-                    <img src="[Đường dẫn ảnh 2]" alt="Mã 8 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma8.png" alt="Mã 8 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 225</span><span>S 226</span><span>S 227</span><span>S 228</span><span>S 229</span>
                         <span>S 230</span><span>S 231</span><span>S 232</span><span>S 233</span><span>S 234</span>
@@ -1087,7 +1091,7 @@
                 <!-- Mã 9 -->
                 <div class="color-section">
                     <h4>Mã 9</h4>
-                    <img src="[Đường dẫn ảnh 3]" alt="Mã 9 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma9.png" alt="Mã 9 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 257</span><span>S 258</span><span>S 259</span><span>S 260</span><span>S 261</span>
                         <span>S 262</span><span>S 263</span><span>S 264</span><span>S 265</span><span>S 266</span>
@@ -1117,7 +1121,7 @@
                 <!-- Mã 11 -->
                 <div class="color-section">
                     <h4>Mã 11</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 11 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma11.png" alt="Mã 11 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 321</span><span>S 322</span><span>S 323</span><span>S 324</span><span>S 325</span>
                         <span>S 326</span><span>S 327</span><span>S 328</span><span>S 329</span><span>S 330</span>
@@ -1132,7 +1136,7 @@
                 <!-- Mã 12 -->
                 <div class="color-section">
                     <h4>Mã 12</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 12 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma12.png" alt="Mã 12 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 353</span><span>S 354</span><span>S 355</span><span>S 356</span><span>S 357</span>
                         <span>S 358</span><span>S 359</span><span>S 360</span><span>S 361</span><span>S 362</span>
@@ -1147,7 +1151,7 @@
                 <!-- Mã 13 -->
                 <div class="color-section">
                     <h4>Mã 13</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 13 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma13.png" alt="Mã 13 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 385</span><span>S 386</span><span>S 387</span><span>S 388</span><span>S 389</span>
                         <span>S 390</span><span>S 391</span><span>S 392</span><span>S 393</span><span>S 394</span>
@@ -1162,7 +1166,7 @@
                 <!-- Mã 14 -->
                 <div class="color-section">
                     <h4>Mã 14</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 14 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma14.png" alt="Mã 14 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 417</span><span>S 418</span><span>S 419</span><span>S 420</span><span>S 421</span>
                         <span>S 422</span><span>S 423</span><span>S 424</span><span>S 425</span><span>S 426</span>
@@ -1177,7 +1181,7 @@
                 <!-- Mã 15 -->
                 <div class="color-section">
                     <h4>Mã 15</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 15 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma15.png" alt="Mã 15 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 449</span><span>S 450</span><span>S 451</span><span>S 452</span><span>S 453</span>
                         <span>S 454</span><span>S 455</span><span>S 456</span><span>S 457</span><span>S 458</span>
@@ -1192,7 +1196,7 @@
                 <!-- Mã 16 -->
                 <div class="color-section">
                     <h4>Mã 16</h4>
-                    <img src="[Đường dẫn ảnh 4]" alt="Mã 16 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma16.png" alt="Mã 16 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 481</span><span>S 482</span><span>S 483</span><span>S 484</span><span>S 485</span>
                         <span>S 486</span><span>S 487</span><span>S 488</span><span>S 489</span><span>S 490</span>

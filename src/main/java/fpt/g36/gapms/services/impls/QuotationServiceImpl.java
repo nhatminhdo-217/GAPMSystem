@@ -252,7 +252,7 @@ public class QuotationServiceImpl implements QuotationService {
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
-        purchaseOrder.setStatus(BaseEnum.DRAFT);
+        purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
         purchaseOrder.setCustomer(quotation.getRfq().getCreateBy());
         purchaseOrder.setSolution(quotation.getRfq().getSolution());
        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
