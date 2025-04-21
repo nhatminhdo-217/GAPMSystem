@@ -278,7 +278,7 @@
                 </div>
                 <div class="detail-row delivery-row">
                     <span class="detail-label">Ngày giao hàng dự kiến:</span>
-                    <span class="detail-value" th:text="*{actualDate}"></span>
+                    <span class="detail-value" th:text="${#temporals.format(actualDate, 'dd/MM/yyyy')}"></span>
                 </div>
             </div>
             <div class="quotation-table">

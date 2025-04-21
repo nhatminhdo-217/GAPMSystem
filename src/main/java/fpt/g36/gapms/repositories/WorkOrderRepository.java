@@ -24,7 +24,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
 
     @Query("SELECT wo FROM WorkOrder wo " +
             "WHERE  (:workOrderId IS NULL OR wo.id = :workOrderId) " +
-            "ORDER BY wo.createAt DESC, CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.IN_PROGRESS Then 1  WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.IN_PROGRESS Then 2 ELSE 3 END")
+            "ORDER BY wo.createAt DESC, CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.IN_PROGRESS Then 1  WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.FINISHED Then 2 ELSE 3 END")
     Page<WorkOrder> getAllWorkOrderPo(@Param("workOrderId") Long workOrderId, Pageable pageable);
 
     WorkOrder findByProductionOrder(ProductionOrder productionOrder);

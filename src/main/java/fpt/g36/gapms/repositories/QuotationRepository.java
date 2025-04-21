@@ -95,7 +95,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
     @Query(value = """
     select distinct q from Quotation q
     join q.rfq r
-    join q.createdBy u
+    left join q.createdBy u
     join r.rfqDetails rd
     where (:search is null or lower(rd.product.name) like concat('%', lower(:search), '%')
     or lower(r.createBy.username) like concat('%', lower(:search), '%')

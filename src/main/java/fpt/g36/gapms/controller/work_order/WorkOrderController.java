@@ -179,6 +179,16 @@ public class WorkOrderController {
         return "redirect:/work-order/technology-process/" + dyeBatch.getId();
     }
 
+    //pause
+    @GetMapping("/team-leader/Dye/change/pause/{id}")
+    public String chaneWorkStatusPause(@PathVariable("id") Long dbId,Model model, RedirectAttributes redirectAttributes){
+
+        dyeBatchService.changeStatusDyeBatchPause(dbId);
+        DyeBatch dyeBatch = dyeBatchService.getDyeBatchById(dbId);
+        redirectAttributes.addFlashAttribute("pause", "Mã mẻ DB-" + dyeBatch.getId() + " Đã được chuyển sang trạng thai tạm dừng");
+        return "redirect:/work-order/technology-process/" + dyeBatch.getId();
+    }
+
     @PostMapping("/team-leader/Dye/change/finish/{id}")
     public String completeDyeing(@PathVariable("id") Long dbId, @RequestParam("photo") MultipartFile photo, RedirectAttributes redirectAttributes) {
         try {
@@ -227,7 +237,16 @@ public class WorkOrderController {
         User leader = optionalUser.get();
         windingBatchService.changeStatusWindingBatchInProcess(wbId, leader);
         WindingBatch windingBatch = windingBatchService.getWindingBatchById(wbId);
-        redirectAttributes.addFlashAttribute("in_process_winding", "Mã Mẻ WB-" + windingBatch.getId() + " Đã được chuyển sang bắt đầu Côn");
+        redirectAttributes.addFlashAttribute("in_process_winding", "Mã Mẻ WB-" + windingBatch.getDyeBatch().getId() + " Đã được chuyển sang bắt đầu Côn");
+        return "redirect:/work-order/technology-process/" + windingBatch.getDyeBatch().getId();
+    }
+
+    @GetMapping("/team-leader/winding/change/pause/{id}")
+    public String chaneWorkStatusPauseWinding(@PathVariable("id") Long wbId,Model model, RedirectAttributes redirectAttributes){
+
+        windingBatchService.changeStatusWindingBatchPause(wbId);
+        WindingBatch windingBatch = windingBatchService.getWindingBatchById(wbId);
+        redirectAttributes.addFlashAttribute("pause", "Mã Mẻ WB-" + windingBatch.getDyeBatch().getId() + " Đã được chuyển sang tạm dừng");
         return "redirect:/work-order/technology-process/" + windingBatch.getDyeBatch().getId();
     }
 
@@ -282,7 +301,17 @@ public class WorkOrderController {
         User leader = optionalUser.get();
         packagingBatchService.changeStatusPackagingBatchInProcess(pbId, leader);
        PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(pbId);
-        redirectAttributes.addFlashAttribute("in_process_packaging", "Mã Mẻ PB-" + packagingBatch.getId() + " Đã Được Chuyển Sang Bắt Đầu Đóng Gói");
+        redirectAttributes.addFlashAttribute("in_process_packaging", "Mã Mẻ PB-" + packagingBatch.getWindingBatch().getDyeBatch().getId() + " Đã Được Chuyển Sang Bắt Đầu Đóng Gói");
+        return "redirect:/work-order/technology-process/" + packagingBatch.getWindingBatch().getDyeBatch().getId();
+    }
+
+
+    @GetMapping("/team-leader/packaging/change/pause/{id}")
+    public String chaneWorkStatusPausePackaging(@PathVariable("id") Long pbId,Model model, RedirectAttributes redirectAttributes){
+
+        packagingBatchService.changeStatusPackagingBatchInPause(pbId);
+        PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(pbId);
+        redirectAttributes.addFlashAttribute("pause", "Mã Mẻ PB-" + packagingBatch.getWindingBatch().getDyeBatch().getId() + " Đã Được Chuyển Sang Bắt Đầu Đóng Gói");
         return "redirect:/work-order/technology-process/" + packagingBatch.getWindingBatch().getDyeBatch().getId();
     }
 
@@ -309,7 +338,7 @@ public class WorkOrderController {
             PackagingBatch packagingBatch = packagingBatchService.getPackagingBatchById(id);
 
             // Thêm thông báo thành công
-            redirectAttributes.addFlashAttribute("complete_packaging", "Mã mẻ WD-" + packagingBatch.getId() + " Đã chuyển sang trạng thái hoàn thành");
+            redirectAttributes.addFlashAttribute("complete_packaging", "Mã mẻ WD-" + packagingBatch.getWindingBatch().getDyeBatch().getId() + " Đã chuyển sang trạng thái hoàn thành");
         } catch (IllegalArgumentException e) {
             // Thêm thông báo lỗi nếu có ngoại lệ
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -515,9 +544,7 @@ public class WorkOrderController {
                               @Valid @ModelAttribute("dyeRiskAssessment") DyeRiskAssessment dyeRiskAssessment,
                               BindingResult bindingResult, RedirectAttributes redirectAttributes,
                               Model model,
-                              @RequestParam(value = "photos", required = false) MultipartFile[] photos,
-                              @RequestParam(value = "existingPhotos", required = false) String existingPhotos,
-                              @RequestParam(value = "deletedPhotos", required = false) String deletedPhotos
+                              @RequestParam(value = "photos", required = false) MultipartFile[] photos
                               ) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> optionalUser = null;

@@ -41,6 +41,13 @@ public class PackagingBatchServiceImpl implements PackagingBatchService {
     }
 
     @Override
+    public void changeStatusPackagingBatchInPause(Long pbId) {
+        PackagingBatch packagingBatch = packagingBatchRepository.findById(pbId).orElseThrow(() -> new RuntimeException("pbId not found"));
+        packagingBatch.setWorkStatus(WorkEnum.PAUSE);
+        packagingBatchRepository.save(packagingBatch);
+    }
+
+    @Override
     public void changeStatusPackagingBatchFinish(Long pbId, String photo, User leader) {
         PackagingBatch packagingBatch = packagingBatchRepository.findById(pbId).orElseThrow(() -> new RuntimeException("pbId not found"));
         packagingBatch.setWorkStatus(WorkEnum.FINISHED);

@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -122,8 +125,12 @@ public class QuotationController {
 
         QuotationInforCustomerDTO quotationCustomer = quotationService.getQuotationCustomer(rfqId);
 
-        userUtils.getOptionalUser(model);
+        Date actualDate = quotationCustomer.getActualDate();
+        LocalDate localDate = ((java.sql.Date) actualDate).toLocalDate();
 
+
+        userUtils.getOptionalUser(model);
+        model.addAttribute("actualDate", localDate);
         model.addAttribute("quotation_customer", quotationCustomer);
         return "quotation/quotation-customer";
     }
