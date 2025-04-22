@@ -44,12 +44,11 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
       end,
       po.createAt desc
     """,
-    countQuery = """
-    select distinct po from ProductionOrder po
+            countQuery = """
+    select count(distinct po) from ProductionOrder po
     where (:search is null or lower(po.createdBy.username) like concat('%', lower(:search), '%'))
     and (:status is null or po.status = :status)
-    """
-    )
+    """)
     Page<ProductionOrder> searchAndFilter(
             @Param("search") String search,
             @Param("status") BaseEnum status,
