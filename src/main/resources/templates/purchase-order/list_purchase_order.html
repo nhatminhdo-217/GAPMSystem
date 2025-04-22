@@ -282,7 +282,39 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide fade effect for table scroll
+        const tableWrapper = document.querySelector('.table-responsive');
+        if (tableWrapper) {
+            const fadeLeft = document.querySelector('.fade-scroll-left');
+            const fadeRight = document.querySelector('.fade-scroll-right');
 
+            tableWrapper.addEventListener('scroll', function() {
+                if (this.scrollLeft > 0) {
+                    fadeLeft.style.opacity = '1';
+                } else {
+                    fadeLeft.style.opacity = '0';
+                }
+
+                if (this.scrollLeft + this.clientWidth < this.scrollWidth) {
+                    fadeRight.style.opacity = '1';
+                } else {
+                    fadeRight.style.opacity = '0';
+                }
+            });
+
+            // Initial check
+            if (tableWrapper.scrollLeft === 0) {
+                fadeLeft.style.opacity = '0';
+            }
+
+            if (tableWrapper.scrollLeft + tableWrapper.clientWidth >= tableWrapper.scrollWidth) {
+                fadeRight.style.opacity = '0';
+            }
+        }
+    });
+</script>
 </body>
 
 </html>

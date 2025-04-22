@@ -42,4 +42,6 @@ public interface ProductionOrderService {
     ProductionOrder updateStatus(Long id, User currUser);
 
     boolean cancelProductionOrder(Long id);
+
+    Page<ProductionOrderDTO> getAllProductionOrders(String search, BaseEnum status, int page, int size, String sortField, String sortDir);
 }

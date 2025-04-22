@@ -1,6 +1,7 @@
 package fpt.g36.gapms.services.impls;
 
 import fpt.g36.gapms.services.ImageService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,16 @@ import java.util.UUID;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
+    private final AzureBlobStorageService azureBlobStorageService;
+
+    public ImageServiceImpl(AzureBlobStorageService azureBlobStorageService) {
+        this.azureBlobStorageService = azureBlobStorageService;
+    }
+
     @Override
     public String saveImage(String imageUrl) throws IOException {
         if (imageUrl == null || imageUrl.isEmpty()) {
@@ -27,21 +38,31 @@ public class ImageServiceImpl implements ImageService {
         // Tạo tên file duy nhất
         String fileNameUnique = UUID.randomUUID().toString() + ".jpg";
 
-        Path pathDir = Paths.get("uploads");
-        if (!Files.exists(pathDir)) {
-            Files.createDirectories(pathDir);
+        // Use Azure Blob Storage if the active profile is "prod"
+        if ("prod".equals(activeProfile) && azureBlobStorageService != null) {
+            try (InputStream in = new URL(imageUrl).openStream()) {
+                byte[] imageData = in.readAllBytes();
+                return azureBlobStorageService.uploadFile(imageData, fileNameUnique);
+            }
+        }else {
+            // Store locally if not in "prod" profile
+            Path pathDir = Paths.get("uploads");
+            if (!Files.exists(pathDir)) {
+                Files.createDirectories(pathDir);
+            }
+
+            Path destination = Paths.get(pathDir.toString(), fileNameUnique);
+
+            // Tải ảnh từ URL
+            try (InputStream in = new URL(imageUrl).openStream()) {
+                Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            return fileNameUnique;
         }
 
-        Path destination = Paths.get(pathDir.toString(), fileNameUnique);
 
-        // Tải ảnh từ URL
-        try (InputStream in = new URL(imageUrl).openStream()) {
-            Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        return fileNameUnique;
     }
-
 
     @Override
     public String saveImageMultiFile(MultipartFile file) throws IOException {
@@ -51,18 +72,23 @@ public class ImageServiceImpl implements ImageService {
 
         String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
 
-        Path pathDir = Paths.get("uploads");
-        if (!Files.exists(pathDir)) {
-            Files.createDirectories(pathDir);
+        // Use Azure Blob Storage if the active profile is "prod"
+        if ("prod".equals(activeProfile) && azureBlobStorageService != null) {
+            return azureBlobStorageService.uploadFile(file);
+        } else {
+            Path pathDir = Paths.get("uploads");
+            if (!Files.exists(pathDir)) {
+                Files.createDirectories(pathDir);
+            }
+
+            Path destination = pathDir.resolve(fileNameUnique);
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            return fileNameUnique;
         }
-
-        Path destination = pathDir.resolve(fileNameUnique);
-
-        try (InputStream inputStream = file.getInputStream()) {
-            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        return fileNameUnique;
     }
 
 
@@ -81,14 +107,18 @@ public class ImageServiceImpl implements ImageService {
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
-                String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
-                Path destination = pathDir.resolve(fileNameUnique);
+                if ("prod".equals(activeProfile) && azureBlobStorageService != null) {
+                    fileNames.add(azureBlobStorageService.uploadFile(file));
+                } else {
+                    String fileNameUnique = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+                    Path destination = pathDir.resolve(fileNameUnique);
 
-                try (InputStream inputStream = file.getInputStream()) {
-                    Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+                    try (InputStream inputStream = file.getInputStream()) {
+                        Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                    fileNames.add(fileNameUnique);
                 }
-
-                fileNames.add(fileNameUnique);
             }
         }
 
