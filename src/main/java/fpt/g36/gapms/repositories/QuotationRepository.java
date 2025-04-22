@@ -101,8 +101,18 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
     or lower(r.createBy.username) like concat('%', lower(:search), '%')
     or lower(q.createdBy.username) like concat('%', lower(:search), '%'))
     and (:status is null or q.isAccepted = :status)
-   """,
-            countQuery = """
+    order by 
+      case 
+        when q.isAccepted = fpt.g36.gapms.enums.BaseEnum.DRAFT then 1
+        when q.isAccepted = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED then 2
+        when q.isAccepted = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 3
+        when q.isAccepted = fpt.g36.gapms.enums.BaseEnum.APPROVED then 4
+        when q.isAccepted = fpt.g36.gapms.enums.BaseEnum.CANCELED then 5
+        else 6
+      end,
+      q.createAt desc
+    """,
+                countQuery = """
     select count(distinct q) from Quotation q
     join q.rfq r
     join q.createdBy u
@@ -111,7 +121,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
     or lower(r.createBy.username) like concat('%', lower(:search), '%')
     or lower(q.createdBy.username) like concat('%', lower(:search), '%'))
     and (:status is null or q.isAccepted = :status)
-   """)
+    """)
     Page<Quotation> searchAndFilter(
             @Param("search") String search,
             @Param("status") BaseEnum status,

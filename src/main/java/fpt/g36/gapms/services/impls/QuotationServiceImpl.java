@@ -364,9 +364,7 @@ return quotation;
 
         List<QuotationDTO> quotationDTOs = new ArrayList<>(quotationMapper.toListDTO(rawResults));
 
-        System.err.println("quotationDTOs: " + quotationDTOs.size());
-
-        sortQuotationDTOs(quotationDTOs, sortDir);
+//        sortQuotationDTOs(quotationDTOs, sortDir);
 
         return new PageImpl<>(quotationDTOs, pageable, rawResults.getTotalElements());
     }

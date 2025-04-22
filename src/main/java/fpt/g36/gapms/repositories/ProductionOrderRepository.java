@@ -28,4 +28,29 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
     Optional<ProductionOrderDetail> findByProductionOrderId(@Param("id") Long id);
 
     Page<ProductionOrder> findAllByStatus(BaseEnum status, Pageable pageable);
+
+    @Query(value = """
+    select distinct po from ProductionOrder po
+    where (:search is null or lower(po.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or po.status = :status)
+    order by 
+      case 
+        when po.status = fpt.g36.gapms.enums.BaseEnum.DRAFT then 1
+        when po.status = fpt.g36.gapms.enums.BaseEnum.NOT_APPROVED then 2
+        when po.status = fpt.g36.gapms.enums.BaseEnum.WAIT_FOR_APPROVAL then 3
+        when po.status = fpt.g36.gapms.enums.BaseEnum.APPROVED then 4
+        when po.status = fpt.g36.gapms.enums.BaseEnum.CANCELED then 5
+        else 6
+      end,
+      po.createAt desc
+    """,
+            countQuery = """
+    select count(distinct po) from ProductionOrder po
+    where (:search is null or lower(po.createdBy.username) like concat('%', lower(:search), '%'))
+    and (:status is null or po.status = :status)
+    """)
+    Page<ProductionOrder> searchAndFilter(
+            @Param("search") String search,
+            @Param("status") BaseEnum status,
+            Pageable pageable);
 }

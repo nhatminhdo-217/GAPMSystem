@@ -73,8 +73,6 @@ public class PurchaseOrderController {
 
         User currUser = userUtils.getOptionalUserInfo(model);
 
-        List<PurchaseOrderDTO> ordersByRole = purchaseOrderService.getAllPurchaseOrderByRole(currUser);
-
         Page<PurchaseOrderDTO> purchaseOrderPage = purchaseOrderService.getAllByRole(currUser, search, status, page, size, sortField, sortDir);
 
         model.addAttribute("purchaseOrderPage", purchaseOrderPage);
@@ -264,7 +262,6 @@ public class PurchaseOrderController {
             return "redirect:/purchase-order/detail/" + id + "/contract/" + contract.getId();
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("error", "Tạo hợp đồng thất bại");
-            System.err.println(e.getMessage());
             return "redirect:/purchase-order/detail/" + id + "/contract/upload";
         }
     }
