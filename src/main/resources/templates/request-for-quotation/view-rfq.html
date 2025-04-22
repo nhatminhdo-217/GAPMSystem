@@ -647,6 +647,8 @@
                                                   style="color: green;"></span>
                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
                                                   style="color: green;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'"
+                                                  style="color: red;"></span>
                                             <span th:case="*" th:text="'Đang chờ phê duyệt'"
                                                   style="color: #ffc107;"></span>
                                         </span>
@@ -719,8 +721,8 @@
                                             <th>Số thứ tự</th>
                                             <th>Mã đơn hàng</th>
                                             <th>Sản phẩm</th>
-                                            <th>Màu</th>
-                                            <th>Số lượng đặt</th>
+                                            <th>Mã màu</th>
+                                            <th>Số lượng (cuộn)</th>
                                             <th>Hành động</th>
                                         </tr>
                                         </thead>
@@ -1106,7 +1108,7 @@
                 <!-- Mã 10 -->
                 <div class="color-section">
                     <h4>Mã 10</h4>
-                    <img src="[Đường dẫn ảnh 3]" alt="Mã 10 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <img src="/assert/images/ma10.png" alt="Mã 10 Colors" style="width: 100%; margin-bottom: 10px;">
                     <div class="color-codes">
                         <span>S 289</span><span>S 290</span><span>S 291</span><span>S 292</span><span>S 293</span>
                         <span>S 294</span><span>S 295</span><span>S 296</span><span>S 297</span><span>S 298</span>
@@ -1205,13 +1207,18 @@
                     </div>
                 </div>
 
-                <!-- Black, White, NTRL -->
                 <div class="color-section">
-                    <h4>Mã Đặc Biệt</h4>
+                    <h4>Màu Cơ Bản</h4>
                     <div class="color-codes">
                         <span>Đen</span>
                         <span>Trắng</span>
-                        <span>Trắng Ngà (Nguyên Bản)</span>
+                    </div>
+                </div>
+
+                <div class="color-section">
+                    <h4>Màu Nguyên Bản</h4>
+                    <div class="color-codes">
+                        <span>Trắng Ngà</span>
                     </div>
                 </div>
             </div>

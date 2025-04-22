@@ -31,208 +31,305 @@
 
     <!-- Custom Styles for Detail Section -->
     <style>
-        /* Container cách ly để tránh xung đột CSS */
-        .detail-container {
+        /* Scoped styles to avoid conflicts with template CSS */
+        .dtl-container {
             padding: 20px;
-            background-color: #FFFFFF;
+            background-color: #fff;
+            max-width: 100%;
+            overflow-x: auto;
+            font-family: 'Heebo', sans-serif;
         }
-        .detail-container h2 {
-            color: #333;
+
+        .dtl-container h2 {
+            color: #2c3e50;
             text-align: center;
-            margin-bottom: 20px;
-        }
-        .detail-container .product-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .detail-container h3 {
-            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
             font-weight: 600;
-            margin: 0;
         }
-        .detail-container .detail-table {
+
+        .dtl-table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            background-color: #FFFFFF;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .detail-container .detail-table thead {
-            background-color: #4CAF50;
+
+        .dtl-table thead {
+            background-color: #3498db;
         }
-        .detail-container .detail-table th {
-            color: white;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+
+        .dtl-table th {
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+            border-bottom: 2px solid #2980b9;
         }
-        .detail-container .detail-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+
+        .dtl-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.95rem;
         }
-        .detail-container .detail-table tbody tr:hover {
-            background-color: #f5f5f5;
+
+        .dtl-table tbody tr:hover {
+            background-color: #f5f7fa;
         }
-        .detail-container .batch-row {
+
+        .dtl-batch-row {
             display: none;
             background-color: #f9f9f9;
         }
-        .detail-container .batch-content {
+
+        .dtl-batch-content {
             padding: 15px;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #ecf0f1;
         }
-        .detail-container .batch-table {
+
+        .dtl-batch-table {
             width: 100%;
             border-collapse: collapse;
             background-color: #f9f9f9;
         }
-        .detail-container .batch-table thead {
-            background-color: #e0e0e0;
+
+        .dtl-batch-table thead {
+            background-color: #dfe6e9;
         }
-        .detail-container .batch-table th {
-            color: #333;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
+
+        .dtl-batch-table th {
+            color: #2c3e50;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-weight: 500;
         }
-        .detail-container .batch-table td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-        .detail-container .status-completed {
-            color: green;
-            font-weight: bold;
-        }
-        .detail-container .status-in-progress {
-            color: orange;
-            font-weight: bold;
-        }
-        .detail-container .status-pending {
-            color: red;
-            font-weight: bold;
-        }
-        .detail-container .toggle-details {
-            color: #4CAF50;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .detail-container .toggle-details:hover {
-            text-decoration: underline;
-        }
-        .detail-container .update-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
+
+        .dtl-batch-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
             font-size: 0.9rem;
         }
-        .detail-container .update-btn:hover {
-            background-color: #45a049;
+
+        .dtl-status-completed {
+            color: #27ae60;
+            font-weight: 600;
         }
-        .detail-container .back-link {
+
+        .dtl-status-in-progress {
+            color: #e67e22;
+            font-weight: 600;
+        }
+
+        .dtl-status-pending {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .dtl-toggle-details {
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .dtl-toggle-details:hover {
+            text-decoration: underline;
+        }
+
+        .dtl-update-btn {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .dtl-update-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .dtl-back-link {
             display: block;
             text-align: center;
             margin-top: 20px;
-            color: #4CAF50;
+            color: #3498db;
             text-decoration: none;
             font-size: 1rem;
+            font-weight: 500;
         }
-        .detail-container .back-link:hover {
+
+        .dtl-back-link:hover {
             text-decoration: underline;
         }
+
         /* Popup styles */
-        .detail-container .modal {
+        .dtl-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
-        .detail-container .modal-content {
+
+        .dtl-modal-content {
             background-color: #fff;
-            margin: 10% auto;
             padding: 20px;
             width: 90%;
-            max-width: 500px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            max-width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
-        .detail-container .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 1.2rem;
+
+        .dtl-modal-content h3 {
+            margin: 0 0 15px;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
-        .detail-container .modal-content label {
+
+        .dtl-modal-content label {
             display: block;
             margin: 10px 0 5px;
             font-size: 0.9rem;
+            color: #34495e;
         }
-        .detail-container .modal-content select,
-        .detail-container .modal-content textarea {
+
+        .dtl-modal-content select,
+        .dtl-modal-content textarea {
             width: 100%;
             padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
+            margin-bottom: 15px;
+            border: 1px solid #dfe6e9;
+            border-radius: 4px;
             font-size: 0.9rem;
+            box-sizing: border-box;
         }
-        .detail-container .modal-content .btn {
+
+        .dtl-modal-content .dtl-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
             margin-right: 10px;
-            font-size: 0.9rem;
         }
+
+        .dtl-modal-content .dtl-btn-primary {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .dtl-modal-content .dtl-btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .dtl-modal-content .dtl-btn-secondary {
+            background-color: #95a5a6;
+            color: #fff;
+        }
+
+        .dtl-modal-content .dtl-btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .dtl-badge {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 16px;
+            font-weight: 500;
+            text-align: center;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 80px;
+            transition: transform 0.2s ease;
+        }
+
+        .dtl-badge:hover {
+            transform: scale(1.03);
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .detail-container {
-                padding: 10px;
+            .dtl-container {
+                padding: 15px;
             }
-            .detail-container h2 {
+
+            .dtl-container h2 {
                 font-size: 1.5rem;
             }
-            .detail-container h3 {
-                font-size: 1.2rem;
-            }
-            .detail-container .detail-table th,
-            .detail-container .detail-table td {
+
+            .dtl-table th,
+            .dtl-table td {
                 padding: 8px;
                 font-size: 0.85rem;
             }
-            .detail-container .batch-table th,
-            .detail-container .batch-table td {
+
+            .dtl-batch-table th,
+            .dtl-batch-table td {
                 padding: 6px;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
-            .detail-container .modal-content {
+
+            .dtl-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .dtl-modal-content {
                 width: 95%;
-                margin: 20% auto;
+                max-width: 350px;
+                padding: 15px;
             }
-            .badge {
+
+            .dtl-modal-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .dtl-update-btn,
+            .dtl-modal-content .dtl-btn {
+                font-size: 0.8rem;
                 padding: 6px 10px;
-                font-size: 12px;
-                min-width: 80px; /* Giảm kích thước cho màn nhỏ */
+            }
+
+            .dtl-badge {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+                min-width: 70px;
             }
         }
 
-        .badge {
-            padding: 8px 15px;
-            font-size: 14px;
-            border-radius: 20px;
-            font-weight: 500;
-            min-width: 100px;
-            text-align: center;
-            display: inline-flex; /* Đảm bảo căn giữa nội dung */
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
-            transition: all 0.3s ease; /* Hiệu ứng mượt mà */
-        }
+        @media (max-width: 576px) {
+            .dtl-table th,
+            .dtl-table td {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
 
-        .badge:hover {
-            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+            .dtl-batch-table th,
+            .dtl-batch-table td {
+                font-size: 0.7rem;
+                padding: 5px;
+            }
+
+            .dtl-container {
+                padding: 10px;
+            }
+
+            .dtl-modal-content {
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -259,10 +356,10 @@
         <!-- Navbar End -->
 
         <!-- Main Content Start -->
-        <div class="detail-container">
+        <div class="dtl-container">
             <h2>Chi tiết sản phẩm</h2>
 
-            <table class="detail-table">
+            <table class="dtl-table">
                 <thead>
                 <tr>
                     <th>Mã chi tiết</th>
@@ -280,24 +377,21 @@
                     <td th:text="${workOrderDetail.id}">40/2</td>
                     <td th:text="${workOrderDetail.id}">Vàng nhạt</td>
                     <td th:text="${workOrderDetail.id}">30 cuộn</td>
-                    <td class="status-in-progress">Đang tiến hành</td>
+                    <td class="dtl-status-in-progress dtl-badge">Đang tiến hành</td>
                     <td>
-                        <a href="#" class="toggle-details"
+                        <a href="#" class="dtl-toggle-details"
                            th:onclick="'toggleDetails(\'batch-' + ${workOrderDetail.id} + '\')'">Xem mẻ</a>
                     </td>
                 </tr>
 
-                <br>
-                <br>
-                <hr>
-                <!-- Hàng chứa danh sách Batch, đặt ngay bên dưới hàng workOrderDetail tương ứng -->
+                <!-- Hàng chứa danh sách Batch -->
                 <tr th:each="workOrderDetail : ${workOrderDetails}"
                     th:id="'batch-' + ${workOrderDetail.id}"
-                    class="batch-row">
+                    class="dtl-batch-row">
                     <td colspan="6">
-                        <div class="batch-content">
+                        <div class="dtl-batch-content">
                             <h5>Danh sách mẻ</h5>
-                            <table class="batch-table" th:each="batch : ${workOrderDetail.dyeStage.dyebatches}">
+                            <table class="dtl-batch-table" th:each="batch : ${workOrderDetail.dyeStage.dyebatches}">
                                 <thead>
                                 <tr>
                                     <th>Mã mẻ</th>
@@ -313,34 +407,34 @@
                                 <tr>
                                     <td th:text="${batch.id}">BATCH001</td>
                                     <td>Nhuộm</td>
-                                    <td class="status-completed">Hoàn thành</td>
+                                    <td class="dtl-status-completed dtl-badge">Hoàn thành</td>
                                     <td>15/04/2025</td>
                                     <td>15/04/2025</td>
                                     <td>Đã hoàn thành mẻ nhuộm.</td>
                                     <td>
-                                        <button class="update-btn" onclick="openPopup('BATCH001')">Cập nhật</button>
+                                        <button class="dtl-update-btn" onclick="openPopup('BATCH001')">Cập nhật</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td th:text="${batch.windingBatch.id}">BATCH002</td>
                                     <td>Đánh côn</td>
-                                    <td class="status-in-progress">Đang tiến hành</td>
+                                    <td class="dtl-status-in-progress dtl-badge">Đang tiến hành</td>
                                     <td>16/04/2025</td>
                                     <td>17/04/2025</td>
                                     <td>Đang đánh côn, 50% tiến độ.</td>
                                     <td>
-                                        <button class="update-btn" onclick="openPopup('BATCH002')">Cập nhật</button>
+                                        <button class="dtl-update-btn" onclick="openPopup('BATCH002')">Cập nhật</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td th:text="${batch.windingBatch.packagingBatch.id}">BATCH003</td>
                                     <td>Đóng gói</td>
-                                    <td class="status-pending">Chưa bắt đầu</td>
+                                    <td class="dtl-status-pending dtl-badge">Chưa bắt đầu</td>
                                     <td>18/04/2025</td>
                                     <td>19/04/2025</td>
                                     <td>Chờ đánh côn hoàn tất.</td>
                                     <td>
-                                        <button class="update-btn" onclick="openPopup('BATCH003')">Cập nhật</button>
+                                        <button class="dtl-update-btn" onclick="openPopup('BATCH003')">Cập nhật</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -350,13 +444,13 @@
                 </tr>
                 </tbody>
             </table>
-            <a href="/work-order/production-manager/list" class="back-link">Quay lại danh sách</a>
+            <a href="/work-order/production-manager/list" class="dtl-back-link">Quay lại danh sách</a>
         </div>
         <!-- Main Content End -->
 
         <!-- Popup Form -->
-        <div class="modal" id="updateModal">
-            <div class="modal-content">
+        <div class="dtl-modal" id="updateModal">
+            <div class="dtl-modal-content">
                 <h3>Cập nhật trạng thái mẻ <span id="batchId"></span></h3>
                 <form>
                     <label for="status">Trạng thái:</label>
@@ -367,8 +461,8 @@
                     </select>
                     <label for="note">Ghi chú:</label>
                     <textarea id="note" name="note" rows="3" placeholder="Nhập ghi chú..."></textarea>
-                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Lưu</button>
-                    <button type="button" class="btn btn-secondary" onclick="closePopup()">Hủy</button>
+                    <button type="button" class="dtl-btn dtl-btn-primary" onclick="saveChanges()">Lưu</button>
+                    <button type="button" class="dtl-btn dtl-btn-secondary" onclick="closePopup()">Hủy</button>
                 </form>
             </div>
         </div>
@@ -399,46 +493,18 @@
 
 <!-- Custom Javascript for Detail Section -->
 <script>
-    // Dữ liệu giả lập cho các sản phẩm
-    const products = {
-        1: {
-            name: "Chỉ may 40/2 - Màu vàng",
-            details: `<strong>Mã sản phẩm:</strong> PRD001<br>
-                      <strong>Số lượng:</strong> 50 cuộn<br>
-                      <strong>Ngày bắt đầu:</strong> 15/04/2025<br>
-                      <strong>Ghi chú:</strong> Sản phẩm đang trong giai đoạn sản xuất.`
-        },
-        2: {
-            name: "Chỉ may 40/3 - Màu xanh",
-            details: `<strong>Mã sản phẩm:</strong> PRD002<br>
-                      <strong>Số lượng:</strong> 40 cuộn<br>
-                      <strong>Ngày bắt đầu:</strong> 16/04/2025<br>
-                      <strong>Ghi chú:</strong> Chưa bắt đầu sản xuất.`
-        }
-    };
-
-    // Lấy ID từ URL và cập nhật thông tin sản phẩm
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-    if (productId && products[productId]) {
-        document.getElementById('product-name').textContent = products[productId].name;
-        document.getElementById('product-details').innerHTML = products[productId].details;
-    }
-
     function toggleDetails(id) {
         const batchRow = document.getElementById(id);
         const isVisible = batchRow.style.display === 'table-row';
-        // Ẩn tất cả các hàng batch khác
-        document.querySelectorAll('.batch-row').forEach(row => {
+        document.querySelectorAll('.dtl-batch-row').forEach(row => {
             row.style.display = 'none';
         });
-        // Hiển thị/ẩn hàng batch được chọn
         batchRow.style.display = isVisible ? 'none' : 'table-row';
     }
 
     function openPopup(batchId) {
         document.getElementById('batchId').textContent = batchId;
-        document.getElementById('updateModal').style.display = 'block';
+        document.getElementById('updateModal').style.display = 'flex';
     }
 
     function closePopup() {
@@ -452,7 +518,6 @@
         const status = document.getElementById('status').value;
         const note = document.getElementById('note').value;
         console.log(`Cập nhật mẻ ${batchId}: Trạng thái=${status}, Ghi chú=${note}`);
-        // Ở đây bạn có thể thêm logic để cập nhật giao diện hoặc gửi dữ liệu lên server
         closePopup();
     }
 </script>

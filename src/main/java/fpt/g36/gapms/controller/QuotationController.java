@@ -144,7 +144,7 @@ public class QuotationController {
          PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderDetailByQuotationId(quotation.getId());
         userUtils.getOptionalUser(model);
         model.addAttribute("quotation_customer", quotationCustomer);
-        redirectAttributes.addFlashAttribute("approved", "Bạn đã chấp nhận đơn báo giá");
+        redirectAttributes.addFlashAttribute("approved", "Bạn đã đồng ý đơn đơn báo giá");
         return "redirect:/purchase-order/customer/detail/" +purchaseOrder.getId();
     }
     @GetMapping("/quotation-customer-cancel/{rfq-id}")

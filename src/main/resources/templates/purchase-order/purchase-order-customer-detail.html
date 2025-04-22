@@ -674,8 +674,8 @@
                                     <p th:text="${pod.category.name}"></p>
                                     <p th:text="${pod.note_color}"></p>
                                     <p th:text="${pod.quantity}"></p>
-                                    <p th:text="${#numbers.formatDecimal(pod.unitPrice * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></p>
-                                    <p th:text="${#numbers.formatDecimal(pod.totalPrice * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></p>
+                                    <p th:text="${#numbers.formatDecimal(pod.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></p>
+                                    <p th:text="${#numbers.formatDecimal(pod.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></p>
                                 </div>
                                 <div class="details-left">
                                     <p><strong>Sản phẩm:</strong> <span th:text="${pod.product.name}"></span></p>
@@ -685,8 +685,8 @@
                                 </div>
                                 <div class="details-right">
                                     <p><strong>Số lượng:</strong> <span th:text="${pod.quantity}"></span></p>
-                                    <p><strong>Đơn giá:</strong> <span th:text="${#numbers.formatDecimal(pod.unitPrice * 100, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ</p>
-                                    <p><strong>Thành tiền:</strong> <span th:text="${#numbers.formatDecimal(pod.totalPrice * 100, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ</p>
+                                    <p><strong>Đơn giá:</strong> <span th:text="${#numbers.formatDecimal(pod.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></span></p>
+                                    <p><strong>Thành tiền:</strong> <span th:text="${#numbers.formatDecimal(pod.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></span></p>
                                 </div>
                             </div>
                             <div class="process-bar">
@@ -848,6 +848,21 @@
                 position: "top-end",
                 icon: "success",
                 text: /*[[${contractReUploadSuccess}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
+
+
+<div th:if="${approved}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${approved}]]*/ "Default message",
                 showConfirmButton: true,
                 timer: 3000
             });
