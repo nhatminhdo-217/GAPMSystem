@@ -59,6 +59,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         else if (getStatusByPurchaseOrderId(id) == BaseEnum.NOT_APPROVED){
             po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
+            po.setManageBy(currUser);
         } else if (getStatusByPurchaseOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
             po.setStatus(BaseEnum.APPROVED);
             po.setApprovedBy(currUser);
@@ -192,6 +193,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 //        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
 
         return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
+    }
+
+    @Override
+    public String getUserPhoneNumberByQuotationId(Long id) {
+        Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
+        if (purchaseOrder.isPresent()) {
+            return purchaseOrder.get().getQuotation().getRfq().getCreateBy().getPhoneNumber();
+        }
+        return "";
     }
 
     private boolean isPurchaseOrderContract(Long id){

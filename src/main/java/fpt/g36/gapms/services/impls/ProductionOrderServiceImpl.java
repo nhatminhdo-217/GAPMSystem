@@ -181,7 +181,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
         ProductionOrder productionOrder = new ProductionOrder();
 
-        productionOrder.setStatus(BaseEnum.DRAFT);
+        productionOrder.setStatus(BaseEnum.NOT_APPROVED);
         productionOrder.setPurchaseOrder(purchaseOrderService.getPurchaseOrderById(id).get());
         ProductionOrder savedProductionOrder = productionOrderRepository.save(productionOrder);
 
@@ -213,6 +213,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         }
         else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED){
             po.setStatus(BaseEnum.APPROVED);
+            po.setCreatedBy(currUser);
             po.setApprovedBy(currUser);
         }
         return productionOrderRepository.save(po);

@@ -312,7 +312,7 @@ return quotation;
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.DRAFT);
+        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -337,6 +337,7 @@ return quotation;
         }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
             quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
             quotation.setUpdateAt(LocalDateTime.now());
+            quotation.setCreatedBy(currentUser);
         }else {
             throw new RuntimeException("Quotation status cannot valid");
         }
@@ -367,6 +368,17 @@ return quotation;
 //        sortQuotationDTOs(quotationDTOs, sortDir);
 
         return new PageImpl<>(quotationDTOs, pageable, rawResults.getTotalElements());
+    }
+
+    @Override
+    public String getUserPhoneNumberByQuotationId(Long id) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+        User user = quotation.getRfq().getCreateBy();
+        if (user != null) {
+            return user.getPhoneNumber();
+        }
+        return "";
     }
 
     private void sortQuotationDTOs(List<QuotationDTO> content, String sortDir) {

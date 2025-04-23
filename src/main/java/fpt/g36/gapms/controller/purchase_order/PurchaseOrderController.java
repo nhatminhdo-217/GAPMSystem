@@ -5,11 +5,7 @@ import fpt.g36.gapms.models.dto.contract.ContractDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
-import fpt.g36.gapms.models.entities.Contract;
-import fpt.g36.gapms.models.entities.Company;
-import fpt.g36.gapms.models.entities.PurchaseOrder;
-import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.ContractService;
 import fpt.g36.gapms.services.ProductionOrderService;
@@ -110,15 +106,20 @@ public class PurchaseOrderController {
         User currUser = userUtils.getOptionalUserInfo(model);
 
         Optional<PurchaseOrderInfoDTO> data = purchaseOrderService.getPurchaseOrderInfoDTOById(id);
-        /*List<PurchaseOrderItemsDTO> items = purchaseOrderService.getPurchaseOrderItemsDTOById(id);*/
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderCustomerDetail(id);
         PurchaseOrderInfoDTO purchaseOrderInfoDTO = data.get();
+
+        String phoneNumber = purchaseOrderService.getUserPhoneNumberByQuotationId(id);
+
+        Solution solution = purchaseOrder.getSolution();
 
         model.addAttribute("orderInfo", purchaseOrderInfoDTO);
         /*model.addAttribute("items", items);*/
         model.addAttribute("currUser", currUser);
         model.addAttribute("purchaseOrderId", id);
         model.addAttribute("purchaseOrder", purchaseOrder);
+        model.addAttribute("phoneNumber", phoneNumber);
+        model.addAttribute("solution", solution);
 
         return "purchase-order/purchase_order_detail";
     }
