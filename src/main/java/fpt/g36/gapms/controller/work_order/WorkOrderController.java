@@ -795,6 +795,7 @@ public class WorkOrderController {
 
         List<WorkOrderDetail> workOrderDetails = workOrderDetailService.getAllByWoId(woId);
         model.addAttribute("workOrderDetails",workOrderDetails);
+        model.addAttribute("workOrderId",woId);
         userUtils.getOptionalUser(model);
         return "production-manager/view-work-order-detail";
     }
