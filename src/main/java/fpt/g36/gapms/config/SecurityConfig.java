@@ -30,13 +30,14 @@ public class SecurityConfig {
                         .requestMatchers("/request-for-quotation/**", "/quotation/quotation-customer/**",
                                 "/quotation/quotation-customer-approved/**", "/quotation/quotation-customer-cancel/**",
                                 "/purchase-order/customer/list",
-                                  "/purchase-order/customer/detail/**")
+                                "/purchase-order/customer/detail/**")
                         .hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/work-order/technology-process/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING", "QA_DYE", "QA_WINDING", "QA_PACKAGING")
                         .requestMatchers("/risk-solution/production-manager/**", "/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/quotation/**").hasRole("SALE_STAFF")
-                        .requestMatchers("/technical/**","/risk-solution/technical/**").hasRole("TECHNICAL")
+                        .requestMatchers("/dye-technical").hasRole("DYE_TECHNICAL")
+                        .requestMatchers("/technical/**", "/risk-solution/technical/**").hasRole("TECHNICAL")
                         .requestMatchers("/production-manager/**").hasRole("PRODUCTION_MANAGER")
                         .requestMatchers("/work-order/team-leader/**").hasAnyRole("LEAD_DYE", "LEAD_WINDING", "LEAD_PACKAGING")
                         .requestMatchers("/work-order/quality-assurance/**").hasAnyRole("QA_DYE", "QA_WINDING", "QA_PACKAGING")
@@ -87,8 +88,8 @@ public class SecurityConfig {
                             String exceptionMessage = (exception.getMessage() != null) ? exception.getMessage() : "";
                             String causeMessage = (exception.getCause() != null
                                     && exception.getCause().getMessage() != null)
-                                            ? exception.getCause().getMessage()
-                                            : "";
+                                    ? exception.getCause().getMessage()
+                                    : "";
 
                             if (causeMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa") ||
                                     exceptionMessage.toLowerCase().contains("tài khoản của bạn đã bị khóa")) {
@@ -115,7 +116,7 @@ public class SecurityConfig {
                         .rememberMeParameter("remember") // Tên tham số trên form
                         .alwaysRemember(false))
                 .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/error-403")
+                                .accessDeniedPage("/error-403")
                         // Chuyển hướng đến controller xử lý trang lỗi
                 )
                 .sessionManagement(session -> session

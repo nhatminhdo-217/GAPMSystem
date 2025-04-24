@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -1440,5 +1441,53 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     public Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {
         System.err.println("Lấy danh sách WorkOrder với status: " + status + " của user: " + createdBy.getUsername() + ", sắp xếp theo updateAt DESC");
         return workOrderRepository.findByStatusAndCreatedBy(status, createdBy, pageable);
+    }
+
+    @Override
+    public Page<WorkOrder> getAllApprovedWorkOrders(Pageable pageable) {
+        return workOrderRepository.getAllByStatus(BaseEnum.APPROVED, pageable);
+    }
+
+    ;
+
+    //
+    @Override
+    public Page<WorkOrder> getApprovedWorkOrdersWithoutTechnologyProcess(Pageable pageable) {
+        return workOrderRepository.findApprovedWorkOrdersWithoutTechnologyProcess(BaseEnum.APPROVED, pageable);
+    }
+
+    @Override
+    public WorkOrder getApprovedWorkOrderWithoutTechnologyProcessById(Long id) {
+        WorkOrder workOrder = workOrderRepository.findByIdAndStatus(id, BaseEnum.APPROVED)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id + " ở trạng thái APPROVED."));
+        boolean hasTechnologyProcess = workOrder.getWorkOrderDetails().stream()
+                .flatMap(detail -> detail.getDyeStage() != null && detail.getDyeStage().getDyebatches() != null
+                        ? detail.getDyeStage().getDyebatches().stream()
+                        : Collections.<DyeBatch>emptyList().stream())
+                .anyMatch(batch -> batch.getTechnologyProcess() != null);
+        if (hasTechnologyProcess) {
+            throw new RuntimeException("WorkOrder với ID: " + id + " đã có TechnologyProcess.");
+        }
+        return workOrder;
+    }
+
+    @Override
+    public Page<WorkOrder> getWorkOrdersWithTechnologyProcessByCreatedBy(Pageable pageable, User createdBy) {
+        return workOrderRepository.findWorkOrdersWithTechnologyProcessByCreatedBy(createdBy, pageable);
+    }
+
+    @Override
+    public WorkOrder getWorkOrderWithTechnologyProcessByIdAndCreatedBy(Long id, User createdBy) {
+        WorkOrder workOrder = workOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id));
+        boolean hasTechnologyProcessByUser = workOrder.getWorkOrderDetails().stream()
+                .flatMap(detail -> detail.getDyeStage() != null && detail.getDyeStage().getDyebatches() != null
+                        ? detail.getDyeStage().getDyebatches().stream()
+                        : Collections.<DyeBatch>emptyList().stream())
+                .anyMatch(batch -> batch.getTechnologyProcess() != null && batch.getTechnologyProcess().getCreatedBy().equals(createdBy));
+        if (!hasTechnologyProcessByUser) {
+            throw new RuntimeException("WorkOrder với ID: " + id + " không có TechnologyProcess do bạn tạo.");
+        }
+        return workOrder;
     }
 }

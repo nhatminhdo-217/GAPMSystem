@@ -63,7 +63,7 @@ public class TechnicalWorkOrderController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String previousStatus, // Thêm tham số để lưu trạng thái trước đó
+            @RequestParam(required = false) String previousStatus,
             Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userUtils.getOptionalUser(model);
@@ -170,12 +170,14 @@ public class TechnicalWorkOrderController {
             try {
                 if (productionOrderId == null) {
                     model.addAttribute("error", "Production Order ID không hợp lệ.");
+                    System.err.println("loi o production order id k hop le");
                     return "redirect:/technical/view-all-work-order";
                 }
 
                 ProductionOrder productionOrder = productionOrderService.getProductionOrderById(productionOrderId);
                 if (productionOrder == null) {
                     model.addAttribute("error", "Production Order không tồn tại");
+                    System.err.println("loi o production order k ton tai");
                     return "redirect:/technical/view-all-work-order";
                 }
 
@@ -205,6 +207,7 @@ public class TechnicalWorkOrderController {
                 System.err.println("Lỗi ở showCreateWorkOrderForm: " + e.getMessage());
                 e.printStackTrace();
                 model.addAttribute("error", "Có lỗi xảy ra khi tải form: " + e.getMessage());
+                System.err.println("co loi khi tai form");
                 return "redirect:/technical/view-all-work-order";
             }
         }

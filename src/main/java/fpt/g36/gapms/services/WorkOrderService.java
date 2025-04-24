@@ -50,5 +50,16 @@ public interface WorkOrderService {
 
     Page<WorkOrder> getWorkOrdersByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createBy);
 
+    Page<WorkOrder> getAllApprovedWorkOrders(Pageable pageable);
+
+    //
+    Page<WorkOrder> getApprovedWorkOrdersWithoutTechnologyProcess(Pageable pageable);
+
+    WorkOrder getApprovedWorkOrderWithoutTechnologyProcessById(Long id);
+
+    Page<WorkOrder> getWorkOrdersWithTechnologyProcessByCreatedBy(Pageable pageable, User createdBy);
+
+    WorkOrder getWorkOrderWithTechnologyProcessByIdAndCreatedBy(Long id, User createdBy);
+
 
 }
