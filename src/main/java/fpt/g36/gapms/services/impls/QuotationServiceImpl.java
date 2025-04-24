@@ -57,7 +57,7 @@ public class QuotationServiceImpl implements QuotationService {
         Rfq rfq = rfqService.getRfqById(quotation.getRfq().getId());
         for (RfqDetail rfqDetail: rfq.getRfqDetails()) {
             Boolean color;
-            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("Trắng Ngà");
             if(checkColor) {
                 color = false;
                 QuotationInfoProjection quotationDetail_set = quotationRepository.findQuotationDetail(rfqDetail.getId(), rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
@@ -195,7 +195,7 @@ public class QuotationServiceImpl implements QuotationService {
          Rfq rfq = rfqService.getRfqById(rfqId);
         for (RfqDetail rfqDetail: rfq.getRfqDetails()) {
             Boolean color;
-            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("Trắng Ngà");
             if(checkColor) {
                 color = false;
                 QuotationInforCustomerProjection quotationDetail_set = quotationRepository.findQuotationCustomers(rfqDetail.getId(), rfqDetail.getBrand().getId(),rfqDetail.getCate().getId(), color);
@@ -252,7 +252,7 @@ public class QuotationServiceImpl implements QuotationService {
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setQuotation(quotation);
-        purchaseOrder.setStatus(BaseEnum.DRAFT);
+        purchaseOrder.setStatus(BaseEnum.NOT_APPROVED);
         purchaseOrder.setCustomer(quotation.getRfq().getCreateBy());
         purchaseOrder.setSolution(quotation.getRfq().getSolution());
        PurchaseOrder purchaseOrderSaved = purchaseOrderRepository.save(purchaseOrder);
@@ -267,7 +267,7 @@ public class QuotationServiceImpl implements QuotationService {
             purchaseOrderDetail.setProduct(rfqDetail.getProduct());
             purchaseOrderDetail.setPurchaseOrder(purchaseOrderSaved);
             purchaseOrderDetail.setNote_color(rfqDetail.getNoteColor());
-            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("#FFFFFF");
+            Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("Trắng Ngà");
             BigDecimal unitPrice;
             if(checkColor) {
 

@@ -154,7 +154,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chi tiết đơn hàng sản xuất với ID: " + detailDTO.getId()));
 
         existingDetail.setLight_env(detailDTO.isLightEnv());
-        existingDetail.setThread_mass(detailDTO.getThreadMass());
         existingDetail.setUpdateAt(LocalDateTime.now());
 
         ProductionOrderDetail updatedDetail = productionOrderDetailRepository.save(existingDetail);

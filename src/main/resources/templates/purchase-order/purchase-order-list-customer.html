@@ -116,7 +116,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .badge {
+        .badgeC {
             padding: 8px 15px;
             font-size: 14px;
             border-radius: 20px;
@@ -131,7 +131,7 @@
         }
 
 
-        .badge:hover {
+        .badgeC:hover {
             transform: scale(1.05); /* Phóng to nhẹ khi hover */
         }
 
@@ -166,7 +166,7 @@
                 font-size: 13px;
             }
 
-            .badge {
+            .badgeC {
                 padding: 6px 10px;
                 font-size: 12px;
                 min-width: 80px;
@@ -225,8 +225,9 @@
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Mã PO</th>
+                                <th>Mã hàng</th>
                                 <th>Ngày tạo</th>
+                                <th>Mã hợp đồng</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
@@ -238,20 +239,21 @@
                                 <td th:text="'PO-' + ${po.id}"></td>
                                 <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025
                                 </td>
+                                <td th:text="${po.contract?.name} ?: 'Chưa có'"></td>
                                 <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
                                     <span th:switch="${po.productionOrder?.workOrder?.isProduction}">
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
           th:text="'Đang sản xuất'"
-          class="badge"
+          class="badgeC"
           style="background-color: #ffcc00; color: #333;"></span>
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
           th:text="'Hoàn thành'"
-          class="badge"
+          class="badgeC"
           style="background-color: #34c759; color: white;"></span>
     <span th:case="*"
           th:text="'Chờ sản xuất'"
-          class="badge"
+          class="badgeC"
           style="background-color: #ff3b30; color: white;"></span>
 </span>
                                 </td>
@@ -302,8 +304,6 @@
     </div>
     <!-- Content End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 <div th:if="${approved}">
     <script>

@@ -4,5 +4,6 @@ public enum WorkEnum {
     NOT_STARTED,
     IN_PROGRESS,
     FINISHED,
-    FIX
+    FIX,
+    PAUSE
 }

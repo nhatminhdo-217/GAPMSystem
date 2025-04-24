@@ -1,5 +1,6 @@
 package fpt.g36.gapms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -28,6 +29,7 @@ public class Thread extends BaseEntity {
   private WindingProcess process;
 
   @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
+  @JsonIgnore
   private List<Product> products;
 
   public Thread() {

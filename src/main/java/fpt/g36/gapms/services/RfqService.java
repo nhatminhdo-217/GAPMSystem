@@ -29,4 +29,6 @@ public interface RfqService {
     List<Rfq> getAllRfq();
 
     Rfq submitRfq(Long rfqId, Long userId);
+
+
 }

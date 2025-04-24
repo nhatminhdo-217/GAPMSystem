@@ -43,6 +43,13 @@ public class DyeBatchServiceImpl implements DyeBatchService {
     }
 
     @Override
+    public void changeStatusDyeBatchPause(Long dbId) {
+        DyeBatch dyeBatch = dyeBatchRepository.findById(dbId).orElseThrow(() -> new RuntimeException("dbId not found"));
+        dyeBatch.setWorkStatus(WorkEnum.PAUSE);
+        dyeBatchRepository.save(dyeBatch);
+    }
+
+    @Override
     public void changeStatusDyeBatchFinish(Long dbId, String photo, User leader) {
         DyeBatch dyeBatch = dyeBatchRepository.findById(dbId).orElseThrow(() -> new RuntimeException("dbId not found"));
         dyeBatch.setWorkStatus(WorkEnum.FINISHED);

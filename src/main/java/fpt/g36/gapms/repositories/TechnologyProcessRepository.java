@@ -23,7 +23,7 @@ public interface TechnologyProcessRepository extends JpaRepository<TechnologyPro
 
     @Query("SELECT tp FROM TechnologyProcess tp WHERE tp.sendStatus = :status AND tp.createdBy = :createdBy ORDER BY tp.updateAt DESC")
     Page<TechnologyProcess> findByStatusAndCreatedBy(@Param("status") SendEnum status, @Param("createdBy") User createdBy, Pageable pageable);
-  
+
     @Query("select tp from TechnologyProcess tp where tp.dyeBatch.id = :dyeId")
     TechnologyProcess getTechnologyProcessByBatchId(@Param("dyeId") Long dyeId);
 

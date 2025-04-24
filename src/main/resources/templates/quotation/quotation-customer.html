@@ -267,18 +267,18 @@
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
         <div class="quotation-container" th:object="${quotation_customer}">
             <div class="quotation-header">
-                <h1>Báo Giá Lô Hàng #Q-<span th:text="*{quotationId}"></span></h1>
+                <h1>Báo Giá Lô Hàng Mã RFQ-<span th:text="*{rfqId}"></span></h1>
             </div>
             <div class="quotation-details">
                 <div class="detail-row status-row">
                     <span class="detail-label">Trạng thái:</span>
-                    <span class="detail-value" th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" style="color:yellow;">Chưa duyệt</span>
-                    <span class="detail-value" th:if="*{accepted == 'APPROVED'}" style="color:green;">Đã duyệt</span>
-                    <span class="detail-value" th:if="*{accepted == 'CANCELED'}" style="color:red;">Đã Hủy</span>
+                    <span class="detail-value" th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" style="color:yellow;">Chưa đồng ý</span>
+                    <span class="detail-value" th:if="*{accepted == 'APPROVED'}" style="color:green;">Đã đồng ý</span>
+                    <span class="detail-value" th:if="*{accepted == 'CANCELED'}" style="color:red;">không đồng ý</span>
                 </div>
                 <div class="detail-row delivery-row">
                     <span class="detail-label">Ngày giao hàng dự kiến:</span>
-                    <span class="detail-value" th:text="*{actualDate}"></span>
+                    <span class="detail-value" th:text="${#temporals.format(actualDate, 'dd/MM/yyyy')}"></span>
                 </div>
             </div>
             <div class="quotation-table">
@@ -299,17 +299,21 @@
                         <td th:text="${quotation.productName}"></td>
                         <td th:text="${quotation.brandName}"></td>
                         <td th:text="${quotation.categoryName}"></td>
-                        <td th:text="${quotation.noteColor}"></td>
+                        <td >
+                            <div class="color-box" th:style="'background-color:' + ${quotation.noteColor}"></div>
+                            <span th:text="${quotation.noteColor}">#FFFFFF</span>
+                        </td>
                         <td th:text="${quotation.quantity}"></td>
-                        <td th:text="${quotation.price}"></td>
+                        <td th:text="${#numbers.formatDecimal(quotation.price * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
+
                         <td>Đồng/ cuộn</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <div class="quotation-footer">
-                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-success" th:onclick="|approveOrder('${quotation_customer.rfqId}')|">Duyệt Đơn <i class="fas fa-check"></i></button>
-                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-danger" th:onclick="|cancelOrder('${quotation_customer.rfqId}')|">Hủy Đơn <i class="fas fa-times"></i></button>
+                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-success" th:onclick="|approveOrder('${quotation_customer.rfqId}')|">Đồng ý <i class="fas fa-check"></i></button>
+                <button th:if="*{accepted == 'WAIT_FOR_APPROVAL'}" class="btn btn-danger" th:onclick="|cancelOrder('${quotation_customer.rfqId}')|"> Không đồng ý <i class="fas fa-times"></i></button>
                 <button class="btn btn-secondary" onclick="window.location.href='/request-for-quotation/view-list'">Quay lại <i class="fas fa-arrow-left"></i></button>
             </div>
         </div>

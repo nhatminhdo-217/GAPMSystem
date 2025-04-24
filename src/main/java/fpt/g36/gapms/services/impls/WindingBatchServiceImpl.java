@@ -40,6 +40,13 @@ public class WindingBatchServiceImpl implements WindingBatchService {
     }
 
     @Override
+    public void changeStatusWindingBatchPause(Long wbId) {
+        WindingBatch windingBatch = windingBatchRepository.findById(wbId).orElseThrow(() -> new RuntimeException("wbId not found"));
+        windingBatch.setWorkStatus(WorkEnum.PAUSE);
+        windingBatchRepository.save(windingBatch);
+    }
+
+    @Override
     public void changeStatusWindingBatchFinish(Long wbId, String photo, User leader) {
         WindingBatch windingBatch = windingBatchRepository.findById(wbId).orElseThrow(() -> new RuntimeException("wbId not found"));
         windingBatch.setWorkStatus(WorkEnum.FINISHED);

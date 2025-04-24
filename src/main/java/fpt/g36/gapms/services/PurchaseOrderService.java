@@ -9,7 +9,9 @@ import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +41,10 @@ public interface PurchaseOrderService {
 
     PurchaseOrderDetail getPurchaseOrderDetailById(Long id);
 
+    PurchaseOrder uploadContract(PurchaseOrder purchaseOrder, String contractCode, Long purchaseOrderId , User uploadBy, MultipartFile contractImage) throws IOException;
+
+    PurchaseOrder reUploadContract( String contractCode, Long purchaseOrderId, MultipartFile contractImage) throws IOException;
+    PurchaseOrder reUploadContract( String contractCode, Long purchaseOrderId) throws IOException;
 
     PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id);
 

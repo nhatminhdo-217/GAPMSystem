@@ -13,6 +13,8 @@ public interface WindingBatchService {
 
     void changeStatusWindingBatchInProcess(Long wbId, User leader);
 
+    void changeStatusWindingBatchPause(Long wbId);
+
     void changeStatusWindingBatchFinish(Long wbId, String photo, User leader);
 
     WindingBatch getWindingBatchById(Long wbId);

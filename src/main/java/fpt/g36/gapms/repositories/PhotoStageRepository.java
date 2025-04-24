@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PhotoStageRepository extends JpaRepository<PhotoStage, Long> {
@@ -20,6 +21,8 @@ public interface PhotoStageRepository extends JpaRepository<PhotoStage, Long> {
 
     @Query("select ps from PhotoStage ps where ps.packagingRiskAssessment.id = :praId")
     List<PhotoStage> getAllPhotoStageByPackagingRiskId(Long praId);
+
+    Optional<PhotoStage> findByPhoto(String photo);
 
     @Modifying
     @Query("DELETE FROM PhotoStage p WHERE p.packagingRiskAssessment.packagingBatch.id IN :packagingBatchIds")
