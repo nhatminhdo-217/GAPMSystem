@@ -273,7 +273,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 col-md-3 text-muted">Tổng tiền:</div>
-                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
+                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0), 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
                     </div>
                 </div>
             </div>

@@ -68,4 +68,5 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     Page<WorkOrder> findWorkOrdersWithTechnologyProcessByCreatedBy(@Param("createdBy") User createdBy, Pageable pageable);
 
     Optional<WorkOrder> findByIdAndStatus(Long id, BaseEnum status);
+
 }

@@ -7,6 +7,7 @@ import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.TechnologyProcessService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.WorkOrderService;
+
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -420,6 +421,7 @@ public class TechnicalProcessController {
             model.addAttribute("technologyProcesses", technologyProcessPage.getContent());
             model.addAttribute("technologyProcessPage", technologyProcessPage);
             model.addAttribute("search", search);
+  
             return "dye-technical/view-all-technology-process";
         }
         System.err.println("User chưa đăng nhập, chuyển hướng đến trang login.");
@@ -519,3 +521,4 @@ public class TechnicalProcessController {
         }
     }
 }
+

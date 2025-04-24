@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.enums.WorkEnum;
@@ -7,6 +8,7 @@ import fpt.g36.gapms.models.dto.dye_technical.DyeTypeDTO;
 import fpt.g36.gapms.models.dto.dye_technical.TechnologyProcessForm;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.DyeTypeRepository;
+
 import fpt.g36.gapms.repositories.TechnologyProcessRepository;
 import fpt.g36.gapms.repositories.WorkOrderRepository;
 import fpt.g36.gapms.services.TechnologyProcessService;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
+
 
 @Service
 public class TechnologyProcessServiceImpl implements TechnologyProcessService {
@@ -115,7 +118,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                                                            BigDecimal dispergatorNForLastBatch) {
         try {
             System.err.println("Bắt đầu tạo TechnologyProcess cho WorkMISOrder ID: " + workOrderId + ", WorkOrderDetail ID: " + workOrderDetailId);
-
             WorkOrder workOrder = workOrderRepository.findById(workOrderId)
                     .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy WorkOrder với ID: " + workOrderId));
             System.err.println("Đã tìm thấy WorkOrder ID: " + workOrderId);
@@ -148,7 +150,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
             if (totalBatches > 1) {
                 System.err.println("Trường hợp có nhiều mẻ (" + totalBatches + " mẻ): các mẻ đầu giống nhau, mẻ cuối khác.");
-
                 BigDecimal coneBatchWeightFirst = dyeBatches.get(0).getCone_batch_weight();
                 if (coneBatchWeightFirst == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch đầu tiên không được null.");
@@ -198,7 +199,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch cuối không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ cuối: " + coneBatchWeightLast);
-
                 ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast);
                 System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus=" + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
                         ", reducingAgent=" + paramsLast.reducingAgent + ", dfm=" + paramsLast.dfm + ", axit=" + paramsLast.axit + ", anbatex=" + paramsLast.anbatex + ", liquorRatio=" + paramsLast.liquorRatio +
@@ -234,7 +234,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 System.err.println("Đã tạo TechnologyProcess cho mẻ cuối (DyeBatch ID: " + lastBatch.getId() + ")");
             } else {
                 System.err.println("Trường hợp chỉ có 1 mẻ: Tính toán tự động dựa trên cone_batch_weight của mẻ đó.");
-
                 DyeBatch singleBatch = dyeBatches.get(0);
                 BigDecimal coneBatchWeight = singleBatch.getCone_batch_weight();
                 if (coneBatchWeight == null) {

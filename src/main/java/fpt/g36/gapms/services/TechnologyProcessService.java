@@ -2,6 +2,7 @@ package fpt.g36.gapms.services;
 
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
+
 import fpt.g36.gapms.models.dto.dye_technical.DyeTypeDTO;
 import fpt.g36.gapms.models.dto.dye_technical.TechnologyProcessForm;
 import fpt.g36.gapms.models.entities.TechnologyProcess;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,6 +39,10 @@ public interface TechnologyProcessService {
 
     void submitTechnologyProcesses(Long workOrderId);
 
+    Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createBy);
+
+    Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy);
+  
     TechnologyProcess getByDyeId(Long dyeId);
 
     Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createdBy);
@@ -44,4 +50,5 @@ public interface TechnologyProcessService {
     Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy);
 
     TechnologyProcess getTechnologyProcessByIdAndCreatedBy(Long id, User createdBy);
+
 }

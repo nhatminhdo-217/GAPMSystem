@@ -61,5 +61,4 @@ public interface WorkOrderService {
 
     WorkOrder getWorkOrderWithTechnologyProcessByIdAndCreatedBy(Long id, User createdBy);
 
-
 }
