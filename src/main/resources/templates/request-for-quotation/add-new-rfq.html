@@ -35,6 +35,8 @@
     <style>
         .form-container {
             padding: 20px;
+            max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto; /* Căn giữa form */
         }
 
         .form-row {
@@ -42,11 +44,24 @@
             gap: 10px;
             margin-bottom: 15px;
             align-items: center;
+            flex-wrap: nowrap; /* Đảm bảo không xuống dòng */
         }
 
         .form-group {
             flex: 1;
             min-width: 0;
+        }
+
+        /* Định dạng các trường lớn (Sản phẩm, Thương hiệu, Danh mục) */
+        .form-group.large-field {
+            flex: 2; /* Chiếm nhiều không gian hơn */
+            min-width: 200px; /* Đảm bảo độ rộng tối thiểu */
+        }
+
+        /* Định dạng các trường nhỏ (Màu, Số lượng) */
+        .form-group.small-field {
+            flex: 1; /* Chiếm ít không gian hơn */
+            min-width: 100px; /* Độ rộng nhỏ hơn */
         }
 
         .form-select, .form-control {
@@ -56,6 +71,8 @@
             font-size: 14px;
             background-color: #fff;
             box-shadow: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .form-select:focus, .form-control:focus {
@@ -69,6 +86,7 @@
             color: #333;
             margin-bottom: 5px;
             font-size: 14px;
+            text-align: left; /* Căn trái nhãn */
         }
 
         .add-row-btn {
@@ -79,6 +97,8 @@
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
+            display: block;
+            margin: 10px auto; /* Căn giữa nút */
         }
 
         .add-row-btn:hover {
@@ -88,17 +108,19 @@
 
         .remove-row-btn {
             background-color: #dc3545;
-            border: none;
+            border: 2px solid #c82333; /* Thêm border */
             color: #fff;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
+            transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
         }
 
         .remove-row-btn:hover {
             background-color: #c82333;
-            color: #fff;
+            border-color: #bd2130;
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
         }
 
         .btn-success {
@@ -107,6 +129,8 @@
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 14px;
+            display: block;
+            margin: 10px auto; /* Căn giữa nút */
         }
 
         .btn-success:hover {
@@ -114,61 +138,141 @@
             color: #fff;
         }
 
+        .color-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Khoảng cách giữa các hàng */
+        }
+
+        .color-section {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .color-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+        }
+
+        .color-codes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .color-codes span {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .color-codes span:hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .color-section h4 {
+                font-size: 14px;
+            }
+
+            .color-codes span {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+        }
+
         /* Responsive cho màn hình nhỏ hơn 768px (điện thoại) */
         @media (max-width: 768px) {
+            .form-container {
+                padding: 10px;
+                overflow-x: auto; /* Cho phép cuộn ngang nếu tràn */
+            }
+
             .form-row {
-                flex-direction: column;
-                gap: 15px;
-                margin-bottom: 20px;
+                flex-direction: row; /* Giữ ngang như máy tính */
+                gap: 6px; /* Giảm khoảng cách giữa các trường */
+                margin-bottom: 12px;
+                flex-wrap: nowrap; /* Ngăn xuống dòng */
+                min-width: 600px; /* Đảm bảo chiều rộng tối thiểu để giữ bố cục */
             }
 
             .form-group {
-                width: 100%;
-                min-width: unset;
+                min-width: 60px; /* Giảm kích thước tối thiểu */
             }
 
-            .label {
-                font-size: 16px;
+            .form-group.large-field {
+                flex: 2;
+                min-width: 100px; /* Thu nhỏ hơn so với máy tính */
+            }
+
+            .form-group.small-field {
+                flex: 1;
+                min-width: 50px; /* Thu nhỏ hơn nữa */
             }
 
             .form-select, .form-control {
-                font-size: 16px;
-                padding: 10px;
-                height: 45px;
+                font-size: 11px; /* Giảm kích thước chữ */
+                padding: 5px; /* Giảm padding */
+                height: 36px; /* Giảm chiều cao */
             }
 
-            .form-group:first-child {
-                flex: 0 0 auto;
-                width: 60px;
+            .label {
+                font-size: 11px; /* Giảm kích thước nhãn */
             }
 
             .remove-row-btn {
-                padding: 8px 15px;
-                font-size: 16px;
-                width: 100%;
-                margin-top: 10px;
+                padding: 3px 6px; /* Thu nhỏ nút xóa */
+                font-size: 11px;
             }
 
-            .add-row-btn, .btn-success {
+            .add-row-btn {
+                padding: 8px;
+                font-size: 13px;
                 width: 100%;
-                padding: 12px;
-                font-size: 16px;
+                max-width: 180px; /* Giới hạn chiều rộng nút */
+                margin: 10px auto; /* Căn giữa nút */
             }
 
-            .form-container {
-                padding: 10px;
+            .btn-success {
+                padding: 8px;
+                font-size: 13px;
+                width: 100%;
+                max-width: 180px; /* Giới hạn chiều rộng nút */
+                margin: 10px auto; /* Căn giữa nút */
+            }
+
+            /* Căn giữa ô nhập ngày giao hàng mong muốn */
+            .form-group.date-field {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                max-width: 200px; /* Giới hạn chiều rộng */
+                margin: 10px auto; /* Căn giữa */
+            }
+
+            .form-group.date-field .form-control {
+                width: 100%;
+                max-width: 180px; /* Đảm bảo ô nhập không quá rộng */
             }
 
             .bg-light {
-                padding: 15px;
+                padding: 12px;
             }
 
             .text-center h4 {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             .text-center p {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .back-to-top {
@@ -178,22 +282,199 @@
             .content {
                 margin-left: 0;
             }
+
+            .color-section h4 {
+                font-size: 14px;
+            }
+
+            .color-codes span {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
         }
 
         /* Responsive cho màn hình nhỏ hơn 576px (điện thoại rất nhỏ) */
         @media (max-width: 576px) {
+            .form-row {
+                gap: 4px; /* Giảm khoảng cách hơn nữa */
+                min-width: 500px; /* Giảm chiều rộng tối thiểu */
+            }
+
+            .form-group.large-field {
+                min-width: 80px; /* Thu nhỏ thêm */
+            }
+
+            .form-group.small-field {
+                min-width: 40px; /* Thu nhỏ thêm */
+            }
+
             .form-select, .form-control {
-                font-size: 14px;
-                height: 40px;
+                font-size: 10px; /* Giảm kích thước chữ hơn nữa */
+                padding: 4px;
+                height: 32px; /* Giảm chiều cao hơn nữa */
             }
 
             .label {
-                font-size: 14px;
+                font-size: 10px;
             }
 
-            .add-row-btn, .btn-success {
-                font-size: 14px;
-                padding: 10px;
+            .remove-row-btn {
+                padding: 2px 5px;
+                font-size: 10px;
+            }
+
+            .add-row-btn {
+                font-size: 12px;
+                padding: 7px;
+                max-width: 160px;
+                margin: 10px auto; /* Căn giữa nút */
+            }
+
+            .btn-success {
+                font-size: 12px;
+                padding: 7px;
+                max-width: 160px;
+                margin: 10px auto; /* Căn giữa nút */
+            }
+
+            /* Căn giữa ô nhập ngày giao hàng mong muốn */
+            .form-group.date-field {
+                max-width: 180px; /* Thu nhỏ hơn */
+                margin: 10px auto; /* Căn giữa */
+            }
+
+            .form-group.date-field .form-control {
+                max-width: 160px; /* Thu nhỏ ô nhập */
+            }
+
+            .color-section h4 {
+                font-size: 12px;
+            }
+
+            .color-codes span {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+        }
+
+        /* Color Popup Styles */
+        .color-picker-btn {
+            border: 2px solid #dc3545;
+            border-radius: 5px;
+            padding: 8px;
+            font-size: 14px;
+            background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .color-picker-btn:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 5px rgba(220, 53, 69, 0.3);
+            outline: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .color-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .color-table th,
+        .color-table td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .color-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .color-table td:hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .color-picker-btn {
+                font-size: 11px;
+                padding: 5px;
+                height: 36px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .color-table {
+                font-size: 10px;
+            }
+
+            .color-table th,
+            .color-table td {
+                padding: 3px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .color-picker-btn {
+                font-size: 10px;
+                padding: 4px;
+                height: 32px;
+            }
+
+            .color-table {
+                font-size: 9px;
+            }
+
+            .color-table th,
+            .color-table td {
+                padding: 2px;
             }
         }
     </style>
@@ -222,64 +503,329 @@
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-light text-center rounded p-4" style="background-color: #fff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <div class="text-center mb-4" th:object="${company}">
-                    <h4 class="mb-2" th:text="*{name}"></h4>
-                    <p class="mb-1" th:text="*{address}"></p>
-                    <p class="mb-1" th:text="'Mã số thuế: ' + *{taxNumber}"></p>
-                    <p class="mb-1" th:text="'Số điện thoại: ' + *{phoneNumber}"></p>
-                    <p class="mb-1" th:text="'Email: ' + *{email}"></p>
-                    <h6 class="mb-0">RFQ (Request for Quotation)</h6>
-                </div>
+            <div class="bg-light text-center rounded p-4"
+                 style="background-color: #fff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                 <div class="form-container p-3">
                     <form id="lotForm" method="post" action="/request-for-quotation/save" th:object="${rfqForm}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div id="productRows">
                             <!-- Dòng đầu tiên -->
                             <div class="form-row" id="row-1">
-                                <div class="form-group" style="flex: 0 0 80px; text-align: center;">
-                                    <label class="label">Số thứ tự</label>
-                                    <span class="form-control text-center" style="border: 2px solid #dc3545; border-radius: 5px; padding: 8px; font-size: 14px; background-color: #fff;">1</span>
-                                </div>
-                                <div class="form-group">
+                                <div class="form-group large-field">
                                     <label class="label" for="product-1">Sản phẩm</label>
-                                    <select class="form-select" id="product-1" th:field="*{rfqDetails[0].product.id}" onchange="loadBrands(1)" required>
+                                    <select class="form-select" id="product-1" th:field="*{rfqDetails[0].product.id}"
+                                            onchange="loadBrands(1)" required>
                                         <option value="">Chọn sản phẩm</option>
-                                        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                                        <option th:each="product : ${products}" th:value="${product.id}"
+                                                th:text="${product.name}"></option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group large-field">
                                     <label class="label" for="brand-1">Thương hiệu</label>
-                                    <select class="form-select" id="brand-1" th:field="*{rfqDetails[0].brand.id}" onchange="loadCategories(1)" required>
+                                    <select class="form-select" id="brand-1" th:field="*{rfqDetails[0].brand.id}"
+                                            onchange="loadCategories(1)" required>
                                         <option value="">Chọn thương hiệu</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group large-field">
                                     <label class="label" for="category-1">Danh mục</label>
-                                    <select class="form-select" id="category-1" th:field="*{rfqDetails[0].cate.id}" required>
+                                    <select class="form-select" id="category-1" th:field="*{rfqDetails[0].cate.id}"
+                                            required>
                                         <option value="">Chọn danh mục</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group small-field">
                                     <label class="label" for="color-1">Màu</label>
-                                    <input type="color" class="form-control" id="color-1" th:field="*{rfqDetails[0].noteColor}" placeholder="Nhập màu" required>
+                                    <input type="hidden" class="form-control" id="color-1"
+                                           th:field="*{rfqDetails[0].noteColor}" required>
+                                    <button type="button" class="color-picker-btn" id="color-btn-1">Chọn màu</button>
+                                </div>
+                                <div class="form-group small-field">
+                                    <label class="label" for="quantity-1">Số lượng (Cuộn)</label>
+                                    <input type="number" class="form-control" id="quantity-1"
+                                           th:field="*{rfqDetails[0].quantity}" placeholder="Nhập số lượng" min="1"
+                                           max="20000" step="1"
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                                           required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="label" for="quantity-1">Số lượng</label>
-                                    <input type="number" class="form-control" id="quantity-1" th:field="*{rfqDetails[0].quantity}" placeholder="Nhập số lượng" min="1" max="1000" required>
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" class="remove-row-btn" style="display: none;" onclick="removeRow(1)"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" class="remove-row-btn" style="display: none;"
+                                            onclick="removeRow(1)"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="add-row-btn" id="addRowBtn"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
+                        <button type="button" class="add-row-btn" id="addRowBtn"><i class="fas fa-plus"></i> Thêm sản
+                            phẩm
+                        </button>
                         <div class="form-group mt-3">
                             <label class="label" for="desiredDeliveryDate">Ngày giao hàng mong muốn</label>
-                            <input type="date" class="form-control" id="desiredDeliveryDate" name="desiredDeliveryDate" th:field="*{desiredDeliveryDate}" min="" required>
+                            <input type="date" class="form-control" id="desiredDeliveryDate" name="desiredDeliveryDate"
+                                   th:field="*{desiredDeliveryDate}" min="" required>
                         </div>
                         <button type="submit" class="btn-success mt-3">Lưu lô hàng</button>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Modal -->
+
+        <div id="colorModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeColorModal()">×</span>
+                <h3>Chọn Màu</h3>
+                <div class="color-sections">
+                    <!-- Mã 1 -->
+                    <div class="color-section">
+                        <h4>Mã 1</h4>
+                        <img src="/assert/images/ma1.png" alt="Mã 1 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 001</span><span>S 002</span><span>S 003</span><span>S 004</span><span>S 005</span>
+                            <span>S 006</span><span>S 007</span><span>S 008</span><span>S 009</span><span>S 010</span>
+                            <span>S 011</span><span>S 012</span><span>S 013</span><span>S 014</span><span>S 015</span>
+                            <span>S 016</span><span>S 017</span><span>S 018</span><span>S 019</span><span>S 020</span>
+                            <span>S 021</span><span>S 022</span><span>S 023</span><span>S 024</span><span>S 025</span>
+                            <span>S 026</span><span>S 027</span><span>S 028</span><span>S 029</span><span>S 030</span>
+                            <span>S 031</span><span>S 032</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 2 -->
+                    <div class="color-section">
+                        <h4>Mã 2</h4>
+                        <img src="/assert/images/ma2.png" alt="Mã 2 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 033</span><span>S 034</span><span>S 035</span><span>S 036</span><span>S 037</span>
+                            <span>S 038</span><span>S 039</span><span>S 040</span><span>S 041</span><span>S 042</span>
+                            <span>S 043</span><span>S 044</span><span>S 045</span><span>S 046</span><span>S 047</span>
+                            <span>S 048</span><span>S 049</span><span>S 050</span><span>S 051</span><span>S 052</span>
+                            <span>S 053</span><span>S 054</span><span>S 055</span><span>S 056</span><span>S 057</span>
+                            <span>S 058</span><span>S 059</span><span>S 060</span><span>S 061</span><span>S 062</span>
+                            <span>S 063</span><span>S 064</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 3 -->
+                    <div class="color-section">
+                        <h4>Mã 3</h4>
+                        <img src="/assert/images/ma3.png" alt="Mã 3 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 065</span><span>S 066</span><span>S 067</span><span>S 068</span><span>S 069</span>
+                            <span>S 070</span><span>S 071</span><span>S 072</span><span>S 073</span><span>S 074</span>
+                            <span>S 075</span><span>S 076</span><span>S 077</span><span>S 078</span><span>S 079</span>
+                            <span>S 080</span><span>S 081</span><span>S 082</span><span>S 083</span><span>S 084</span>
+                            <span>S 085</span><span>S 086</span><span>S 087</span><span>S 088</span><span>S 089</span>
+                            <span>S 090</span><span>S 091</span><span>S 092</span><span>S 093</span><span>S 094</span>
+                            <span>S 095</span><span>S 096</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 4 -->
+                    <div class="color-section">
+                        <h4>Mã 4</h4>
+                        <img src="/assert/images/ma4.png" alt="Mã 4 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 097</span><span>S 098</span><span>S 099</span><span>S 100</span><span>S 101</span>
+                            <span>S 102</span><span>S 103</span><span>S 104</span><span>S 105</span><span>S 106</span>
+                            <span>S 107</span><span>S 108</span><span>S 109</span><span>S 110</span><span>S 111</span>
+                            <span>S 112</span><span>S 113</span><span>S 114</span><span>S 115</span><span>S 116</span>
+                            <span>S 117</span><span>S 118</span><span>S 119</span><span>S 120</span><span>S 121</span>
+                            <span>S 122</span><span>S 123</span><span>S 124</span><span>S 125</span><span>S 126</span>
+                            <span>S 127</span><span>S 128</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 5 -->
+                    <div class="color-section">
+                        <h4>Mã 5</h4>
+                        <img src="/assert/images/ma5.png" alt="Mã 5 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 129</span><span>S 130</span><span>S 131</span><span>S 132</span><span>S 133</span>
+                            <span>S 134</span><span>S 135</span><span>S 136</span><span>S 137</span><span>S 138</span>
+                            <span>S 139</span><span>S 140</span><span>S 141</span><span>S 142</span><span>S 143</span>
+                            <span>S 144</span><span>S 145</span><span>S 146</span><span>S 147</span><span>S 148</span>
+                            <span>S 149</span><span>S 150</span><span>S 151</span><span>S 152</span><span>S 153</span>
+                            <span>S 154</span><span>S 155</span><span>S 156</span><span>S 157</span><span>S 158</span>
+                            <span>S 159</span><span>S 160</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 6 -->
+                    <div class="color-section">
+                        <h4>Mã 6</h4>
+                        <img src="/assert/images/ma6.png" alt="Mã 6 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 161</span><span>S 162</span><span>S 163</span><span>S 164</span><span>S 165</span>
+                            <span>S 166</span><span>S 167</span><span>S 168</span><span>S 169</span><span>S 170</span>
+                            <span>S 171</span><span>S 172</span><span>S 173</span><span>S 174</span><span>S 175</span>
+                            <span>S 176</span><span>S 177</span><span>S 178</span><span>S 179</span><span>S 180</span>
+                            <span>S 181</span><span>S 182</span><span>S 183</span><span>S 184</span><span>S 185</span>
+                            <span>S 186</span><span>S 187</span><span>S 188</span><span>S 189</span><span>S 190</span>
+                            <span>S 191</span><span>S 192</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 7 -->
+                    <div class="color-section">
+                        <h4>Mã 7</h4>
+                        <img src="/assert/images/ma7.png" alt="Mã 7 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 193</span><span>S 194</span><span>S 195</span><span>S 196</span><span>S 197</span>
+                            <span>S 198</span><span>S 199</span><span>S 200</span><span>S 201</span><span>S 202</span>
+                            <span>S 203</span><span>S 204</span><span>S 205</span><span>S 206</span><span>S 207</span>
+                            <span>S 208</span><span>S 209</span><span>S 210</span><span>S 211</span><span>S 212</span>
+                            <span>S 213</span><span>S 214</span><span>S 215</span><span>S 216</span><span>S 217</span>
+                            <span>S 218</span><span>S 219</span><span>S 220</span><span>S 221</span><span>S 222</span>
+                            <span>S 223</span><span>S 224</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 8 -->
+                    <div class="color-section">
+                        <h4>Mã 8</h4>
+                        <img src="/assert/images/ma8.png" alt="Mã 8 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 225</span><span>S 226</span><span>S 227</span><span>S 228</span><span>S 229</span>
+                            <span>S 230</span><span>S 231</span><span>S 232</span><span>S 233</span><span>S 234</span>
+                            <span>S 235</span><span>S 236</span><span>S 237</span><span>S 238</span><span>S 239</span>
+                            <span>S 240</span><span>S 241</span><span>S 242</span><span>S 243</span><span>S 244</span>
+                            <span>S 245</span><span>S 246</span><span>S 247</span><span>S 248</span><span>S 249</span>
+                            <span>S 250</span><span>S 251</span><span>S 252</span><span>S 253</span><span>S 254</span>
+                            <span>S 255</span><span>S 256</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 9 -->
+                    <div class="color-section">
+                        <h4>Mã 9</h4>
+                        <img src="/assert/images/ma9.png" alt="Mã 9 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 257</span><span>S 258</span><span>S 259</span><span>S 260</span><span>S 261</span>
+                            <span>S 262</span><span>S 263</span><span>S 264</span><span>S 265</span><span>S 266</span>
+                            <span>S 267</span><span>S 268</span><span>S 269</span><span>S 270</span><span>S 271</span>
+                            <span>S 272</span><span>S 273</span><span>S 274</span><span>S 275</span><span>S 276</span>
+                            <span>S 277</span><span>S 278</span><span>S 279</span><span>S 280</span><span>S 281</span>
+                            <span>S 282</span><span>S 283</span><span>S 284</span><span>S 285</span><span>S 286</span>
+                            <span>S 287</span><span>S 288</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 10 -->
+                    <div class="color-section">
+                        <h4>Mã 10</h4>
+                        <img src="/assert/images/ma10.png" alt="Mã 10 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 289</span><span>S 290</span><span>S 291</span><span>S 292</span><span>S 293</span>
+                            <span>S 294</span><span>S 295</span><span>S 296</span><span>S 297</span><span>S 298</span>
+                            <span>S 299</span><span>S 300</span><span>S 301</span><span>S 302</span><span>S 303</span>
+                            <span>S 304</span><span>S 305</span><span>S 306</span><span>S 307</span><span>S 308</span>
+                            <span>S 309</span><span>S 310</span><span>S 311</span><span>S 312</span><span>S 313</span>
+                            <span>S 314</span><span>S 315</span><span>S 316</span><span>S 317</span><span>S 318</span>
+                            <span>S 319</span><span>S 320</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 11 -->
+                    <div class="color-section">
+                        <h4>Mã 11</h4>
+                        <img src="/assert/images/ma11.png" alt="Mã 11 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 321</span><span>S 322</span><span>S 323</span><span>S 324</span><span>S 325</span>
+                            <span>S 326</span><span>S 327</span><span>S 328</span><span>S 329</span><span>S 330</span>
+                            <span>S 331</span><span>S 332</span><span>S 333</span><span>S 334</span><span>S 335</span>
+                            <span>S 336</span><span>S 337</span><span>S 338</span><span>S 339</span><span>S 340</span>
+                            <span>S 341</span><span>S 342</span><span>S 343</span><span>S 344</span><span>S 345</span>
+                            <span>S 346</span><span>S 347</span><span>S 348</span><span>S 349</span><span>S 350</span>
+                            <span>S 351</span><span>S 352</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 12 -->
+                    <div class="color-section">
+                        <h4>Mã 12</h4>
+                        <img src="/assert/images/ma12.png" alt="Mã 12 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 353</span><span>S 354</span><span>S 355</span><span>S 356</span><span>S 357</span>
+                            <span>S 358</span><span>S 359</span><span>S 360</span><span>S 361</span><span>S 362</span>
+                            <span>S 363</span><span>S 364</span><span>S 365</span><span>S 366</span><span>S 367</span>
+                            <span>S 368</span><span>S 369</span><span>S 370</span><span>S 371</span><span>S 372</span>
+                            <span>S 373</span><span>S 374</span><span>S 375</span><span>S 376</span><span>S 377</span>
+                            <span>S 378</span><span>S 379</span><span>S 380</span><span>S 381</span><span>S 382</span>
+                            <span>S 383</span><span>S 384</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 13 -->
+                    <div class="color-section">
+                        <h4>Mã 13</h4>
+                        <img src="/assert/images/ma13.png" alt="Mã 13 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 385</span><span>S 386</span><span>S 387</span><span>S 388</span><span>S 389</span>
+                            <span>S 390</span><span>S 391</span><span>S 392</span><span>S 393</span><span>S 394</span>
+                            <span>S 395</span><span>S 396</span><span>S 397</span><span>S 398</span><span>S 399</span>
+                            <span>S 400</span><span>S 401</span><span>S 402</span><span>S 403</span><span>S 404</span>
+                            <span>S 405</span><span>S 406</span><span>S 407</span><span>S 408</span><span>S 409</span>
+                            <span>S 410</span><span>S 411</span><span>S 412</span><span>S 413</span><span>S 414</span>
+                            <span>S 415</span><span>S 416</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 14 -->
+                    <div class="color-section">
+                        <h4>Mã 14</h4>
+                        <img src="/assert/images/ma14.png" alt="Mã 14 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 417</span><span>S 418</span><span>S 419</span><span>S 420</span><span>S 421</span>
+                            <span>S 422</span><span>S 423</span><span>S 424</span><span>S 425</span><span>S 426</span>
+                            <span>S 427</span><span>S 428</span><span>S 429</span><span>S 430</span><span>S 431</span>
+                            <span>S 432</span><span>S 433</span><span>S 434</span><span>S 435</span><span>S 436</span>
+                            <span>S 437</span><span>S 438</span><span>S 439</span><span>S 440</span><span>S 441</span>
+                            <span>S 442</span><span>S 443</span><span>S 444</span><span>S 445</span><span>S 446</span>
+                            <span>S 447</span><span>S 448</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 15 -->
+                    <div class="color-section">
+                        <h4>Mã 15</h4>
+                        <img src="/assert/images/ma15.png" alt="Mã 15 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 449</span><span>S 450</span><span>S 451</span><span>S 452</span><span>S 453</span>
+                            <span>S 454</span><span>S 455</span><span>S 456</span><span>S 457</span><span>S 458</span>
+                            <span>S 459</span><span>S 460</span><span>S 461</span><span>S 462</span><span>S 463</span>
+                            <span>S 464</span><span>S 465</span><span>S 466</span><span>S 467</span><span>S 468</span>
+                            <span>S 469</span><span>S 470</span><span>S 471</span><span>S 472</span><span>S 473</span>
+                            <span>S 474</span><span>S 475</span><span>S 476</span><span>S 477</span><span>S 478</span>
+                            <span>S 479</span><span>S 480</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã 16 -->
+                    <div class="color-section">
+                        <h4>Mã 16</h4>
+                        <img src="/assert/images/ma16.png" alt="Mã 16 Colors" style="width: 100%; margin-bottom: 10px;">
+                        <div class="color-codes">
+                            <span>S 481</span><span>S 482</span><span>S 483</span><span>S 484</span><span>S 485</span>
+                            <span>S 486</span><span>S 487</span><span>S 488</span><span>S 489</span><span>S 490</span>
+                            <span>S 491</span><span>S 492</span><span>S 493</span><span>S 494</span><span>S 495</span>
+                            <span>S 496</span><span>S 497</span><span>S 498</span><span>S 499</span><span>S 500</span>
+                        </div>
+                    </div>
+
+                    <div class="color-section">
+                        <h4>Màu Cơ Bản</h4>
+                        <div class="color-codes">
+                            <span>Đen</span>
+                            <span>Trắng</span>
+                        </div>
+                    </div>
+
+                    <div class="color-section">
+                        <h4>Màu Nguyên Bản</h4>
+                        <div class="color-codes">
+                            <span>Trắng Ngà</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -310,19 +856,34 @@
 
 <script>
     let rowCount = 1;
+    let currentRow = 1;
 
-    $('#addRowBtn').click(function() {
+    // Gắn sự kiện cho các nút "Chọn màu" hiện có
+    function attachColorPickerEvents() {
+        $('.color-picker-btn').off('click').on('click', function () {
+            const rowId = $(this).attr('id').split('-').pop();
+            openColorModal(rowId);
+        });
+    }
+
+    // Gắn sự kiện ban đầu cho nút "Chọn màu" trong hàng đầu tiên
+    $(document).ready(function () {
+        attachColorPickerEvents();
+    });
+
+    $('#addRowBtn').click(function () {
         rowCount++;
         $.ajax({
             url: '/request-for-quotation/get-product-row?rowNumber=' + rowCount,
             type: 'GET',
-            success: function(response) {
+            success: function (response) {
                 $('#productRows').append(response);
                 if (rowCount > 1) {
                     $('.remove-row-btn').show();
                 }
+                attachColorPickerEvents(); // Gắn lại sự kiện cho các nút "Chọn màu" mới
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Lỗi khi tải dòng mới:', error);
             }
         });
@@ -338,11 +899,10 @@
     }
 
     function updateRowNumbers() {
-        $('#productRows .form-row').each(function(index) {
+        $('#productRows .form-row').each(function (index) {
             const newIndex = index + 1;
             $(this).attr('id', `row-${newIndex}`);
-            $(this).find('.form-group:first span').text(newIndex);
-            $(this).find('input, select').each(function() {
+            $(this).find('input, select, button').each(function () {
                 const oldId = $(this).attr('id');
                 if (oldId) {
                     const newId = oldId.replace(/\d+$/, newIndex);
@@ -357,6 +917,7 @@
             $(this).find('.remove-row-btn').attr('onclick', `removeRow(${newIndex})`);
         });
         rowCount = $('#productRows .form-row').length;
+        attachColorPickerEvents(); // Gắn lại sự kiện sau khi cập nhật số hàng
     }
 
     function loadBrands(rowNumber) {
@@ -366,18 +927,18 @@
                 url: '/request-for-quotation/brands?productId=' + productId,
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     const brandSelect = $('#brand-' + rowNumber);
                     brandSelect.empty();
                     brandSelect.append('<option value="">Chọn thương hiệu</option>');
                     if (response && Array.isArray(response) && response.length > 0) {
-                        response.forEach(function(brand) {
+                        response.forEach(function (brand) {
                             brandSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
                         });
                     }
                     loadCategories(rowNumber);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Lỗi khi tải thương hiệu:', error);
                     const brandSelect = $('#brand-' + rowNumber);
                     brandSelect.empty();
@@ -404,17 +965,17 @@
                 url: '/request-for-quotation/categories?brandId=' + brandId,
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     const categorySelect = $('#category-' + rowNumber);
                     categorySelect.empty();
                     categorySelect.append('<option value="">Chọn danh mục</option>');
                     if (response && Array.isArray(response) && response.length > 0) {
-                        response.forEach(function(category) {
+                        response.forEach(function (category) {
                             categorySelect.append('<option value="' + category.id + '">' + category.name + '</option>');
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Lỗi khi tải danh mục:', error);
                     const categorySelect = $('#category-' + rowNumber);
                     categorySelect.empty();
@@ -438,6 +999,41 @@
     today.setDate(today.getDate() + 3);
     const threeDaysLater = today.toISOString().split("T")[0];
     document.getElementById("desiredDeliveryDate").setAttribute("min", threeDaysLater);
+
+
+    // Color Modal Functions
+    function openColorModal(rowNumber) {
+        currentRow = rowNumber;
+        const modal = document.getElementById("colorModal");
+        modal.style.display = "block";
+        attachColorClickEvents();
+    }
+
+    function closeColorModal() {
+        const modal = document.getElementById("colorModal");
+        modal.style.display = "none";
+    }
+
+    function attachColorClickEvents() {
+        const colorCodes = document.querySelectorAll('.color-codes span');
+        colorCodes.forEach(code => {
+            code.onclick = function () {
+                const colorCode = this.textContent;
+                const colorInput = document.getElementById(`color-${currentRow}`);
+                const colorButton = document.getElementById(`color-btn-${currentRow}`);
+                colorInput.value = colorCode;
+                colorButton.textContent = colorCode;
+                closeColorModal();
+            };
+        });
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById("colorModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
 </script>
 </body>
 </html>

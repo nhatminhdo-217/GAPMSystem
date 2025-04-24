@@ -162,15 +162,6 @@ public class DyeStageServiceImpl implements DyeStageService {
                 }
         }
         dyeRiskAssessmentRepository.save(dyeRiskAssessment_save);
-        /*List<PhotoStage> photoStages = new ArrayList<>();
-        List<String> images = imageService.saveListImageMultiFile(photos);
-        for (String photoUrl : images) {
-            PhotoStage photoStage = new PhotoStage();
-            photoStage.setPhoto(photoUrl);
-            photoStage.setDyeRiskAssessment(dyeRiskAssessment_save);// Lưu từng ảnh riêng biệt
-            photoStages.add(photoStage);
-        }
-        photoStageRepository.saveAll(photoStages);*/
 
 
 

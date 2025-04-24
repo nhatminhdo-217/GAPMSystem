@@ -13,8 +13,6 @@
     <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
@@ -119,13 +117,6 @@
             width: 16%; /* Phân chia đều cho 6 cột (khoảng 16.67% mỗi cột, nhưng điều chỉnh nếu cần) */
         }
 
-        @media (max-width: 768px) {
-            .text-start.me-3 {
-                width: 100%; /* Cột chiếm toàn bộ chiều rộng trên mobile */
-                margin-bottom: 10px;
-                text-align: center;
-            }
-        }
         .custom-popup {
             position: fixed; /* Dùng fixed để giữ popup cố định trên màn hình */
             z-index: 1000;
@@ -238,6 +229,355 @@
             }
         }
 
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+
+
+        /* Color Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .modal-content h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .color-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .color-section {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .color-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+        }
+
+        .color-codes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .color-codes span {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .color-codes span:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Color Input Wrapper */
+        .color-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .color-input-wrapper input {
+            padding-right: 40px;
+        }
+
+        .color-input-wrapper .color-picker-btn {
+            position: absolute;
+            right: 5px;
+            background: none;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 16px;
+        }
+
+        .color-input-wrapper .color-picker-btn:hover {
+            color: #0056b3;
+        }
+
+        /* Error Text */
+        .error-text {
+            color: red;
+            font-size: 12px;
+            display: block;
+            margin-top: 5px;
+        }
+        @media (max-width: 768px) {
+            /* Điều chỉnh bố cục chính của mỗi RFQ */
+            .col-12.d-flex.align-items-start {
+                flex-direction: column; /* Chuyển thành cột để dễ sắp xếp */
+                align-items: stretch; /* Đảm bảo các phần tử chiếm toàn bộ chiều rộng */
+                padding: 10px; /* Thêm padding để không bị sát mép */
+            }
+
+            /* Số thứ tự bên trái */
+            .me-3 {
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                text-align: center; /* Căn giữa số thứ tự */
+                margin-bottom: 10px; /* Khoảng cách với phần bên dưới */
+            }
+
+            /* Card chứa thông tin RFQ */
+            .card.flex-grow-1.mb-3 {
+                width: 100%; /* Đảm bảo card chiếm toàn bộ chiều rộng */
+                margin-bottom: 15px; /* Thêm khoảng cách giữa các RFQ */
+            }
+
+            /* Bố cục trong card-body */
+            .card-body.d-flex.justify-content-between.align-items-center.p-3.parent-row {
+                flex-direction: column; /* Sắp xếp theo cột */
+                align-items: stretch; /* Đảm bảo các phần tử trải dài */
+                padding: 15px; /* Tăng padding cho thoải mái */
+            }
+
+            /* Nút toggle (plus/minus) */
+            .btn.btn-link.toggle-btn {
+                align-self: flex-start; /* Đặt ở góc trái */
+                margin-bottom: 10px; /* Khoảng cách với phần thông tin */
+            }
+
+            /* Phần thông tin chính */
+            .flex-grow-1.ms-3.d-flex.flex-wrap.justify-content-between {
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                flex-direction: column; /* Sắp xếp thành cột */
+                align-items: center; /* Căn giữa các phần tử */
+            }
+
+            /* Mã lô nằm ở trên cùng */
+            .text-start.me-3:first-child {
+                order: -1; /* Đưa mã lô lên đầu */
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                margin-bottom: 15px; /* Khoảng cách với các phần khác */
+                text-align: center; /* Căn giữa */
+                font-size: 18px; /* Tăng kích thước chữ cho nổi bật */
+            }
+
+            /* Các thông tin khác (trừ mã lô) */
+            .text-start.me-3 {
+                width: 100%; /* Mỗi thông tin chiếm toàn bộ chiều rộng */
+                margin-bottom: 10px; /* Khoảng cách giữa các thông tin */
+                text-align: center; /* Căn giữa */
+            }
+
+            /* Nút Xem báo giá và Dropdown */
+            .btn.btn-primary,
+            .dropdown.ms-3 {
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                margin-top: 10px; /* Khoảng cách với phần thông tin */
+            }
+
+            .btn.btn-primary {
+                margin-bottom: 10px; /* Khoảng cách với dropdown */
+            }
+
+            .dropdown.ms-3 {
+                text-align: center; /* Căn giữa dropdown */
+            }
+
+            .dropdown-menu {
+                width: 100%; /* Dropdown menu chiếm toàn bộ chiều rộng */
+                text-align: center; /* Căn giữa các mục trong dropdown */
+            }
+
+            /* Phần chi tiết (collapse) */
+            .collapse .card-body.p-4 {
+                padding: 10px; /* Giảm padding cho gọn trên mobile */
+                overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+            }
+
+            /* Bảng chi tiết */
+            .table.table-bordered.table-hover {
+                width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+                min-width: 600px; /* Đặt chiều rộng tối thiểu để giữ cấu trúc bảng */
+                font-size: 14px; /* Giảm kích thước chữ cho phù hợp */
+            }
+
+            .table th, .table td {
+                padding: 8px; /* Giảm padding để tiết kiệm không gian */
+                font-size: 14px; /* Giảm kích thước chữ */
+            }
+
+            /* Cột màu */
+            .color-box {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+
+            /* Ngày mong muốn nhận hàng */
+            .d-flex.justify-content-between.align-items-start.mt-3 {
+                flex-direction: column; /* Sắp xếp thành cột */
+                align-items: flex-start; /* Căn trái */
+                padding: 10px; /* Thêm padding */
+            }
+
+            /* Popup trên mobile */
+            .custom-popup {
+                width: 90%; /* Chiếm 90% chiều rộng màn hình */
+                max-width: 300px; /* Giới hạn chiều rộng tối đa */
+                padding: 15px; /* Giảm padding cho gọn */
+            }
+
+            .popup-header h5 {
+                font-size: 16px; /* Giảm kích thước tiêu đề */
+            }
+
+            .form-control {
+                font-size: 14px; /* Giảm kích thước chữ trong input */
+            }
+
+            .btn {
+                font-size: 13px; /* Giảm kích thước chữ trong nút */
+                padding: 6px 12px; /* Giảm padding của nút */
+            }
+
+            /* Phân trang */
+            .pagination {
+                flex-wrap: wrap; /* Cho phép các nút phân trang xuống dòng */
+            }
+
+            .page-item {
+                margin: 2px; /* Giảm khoảng cách giữa các nút */
+            }
+
+            .page-link {
+                font-size: 14px; /* Giảm kích thước chữ */
+                padding: 5px 10px; /* Giảm kích thước nút */
+            }
+
+            /* Thông tin phân trang */
+            .text-center {
+                font-size: 14px; /* Giảm kích thước chữ */
+                margin-top: 10px; /* Thêm khoảng cách */
+            }
+
+
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                max-height: 70vh;
+            }
+
+            .color-section h4 {
+                font-size: 14px;
+            }
+
+            .color-codes span {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+
+            .color-input-wrapper .color-picker-btn {
+                font-size: 14px;
+            }
+
+            .error-text {
+                font-size: 10px;
+            }
+        }
+
+
+        /*form popup add new rfq detail*/
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-group.large-field {
+            flex: 2;
+        }
+
+        .form-group.small-field {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .form-select, .form-control {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -253,7 +593,6 @@
     </div>
     <!-- Spinner End -->
 
-
     <!-- Sidebar Start -->
     <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
     <!-- Sidebar End -->
@@ -263,7 +602,6 @@
         <!-- Navbar Start -->
         <div th:replace="~{shared/navbar.html :: navbar}"></div>
         <!-- Navbar End -->
-
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
@@ -300,39 +638,42 @@
                                     </div>
                                     <div class="text-start me-3">
                                         <strong>Ngày tạo đơn</strong><br>
-                                        <span th:text="${#temporals.format(rfq.getCreateAt(), 'yyyy-MM-dd')}"></span>
+                                        <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
                                     </div>
-                                   <!-- <div class="text-start me-3">
-                                        <strong>Nhân viên phụ trách</strong><br>
-                                        <span th:text="${rfq.getApprovedBy() != null and rfq.getApprovedBy().getUsername() != null ? rfq.getApprovedBy().getUsername() : 'vui lòng chờ'}"></span>
-                                    </div>-->
                                     <div class="text-start me-3">
                                         <strong>Trạng thái đơn hàng</strong><br>
                                         <span th:switch="${rfq.quotation?.isAccepted}">
-                                         <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đã được duyệt'"
-                                          style="color: green;"></span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đã được duyệt'"
+                                                  style="color: green;"></span>
                                             <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"
                                                   style="color: green;"></span>
-                                          <span th:case="*" th:text="'Đang chờ phê duyệt'"
-                                             style="color: #ffc107;"></span>
-                                           <!--<span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'" style="color: red;"></span>
-                                           <span th:case="*" th:text="'Trạng thái không xác định'" style="color: gray;"></span>-->
-                                              </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'"
+                                                  style="color: red;"></span>
+                                            <span th:case="*" th:text="'Đang chờ phê duyệt'"
+                                                  style="color: #ffc107;"></span>
+                                        </span>
                                     </div>
                                 </div>
                                 <a
-                                   class="btn btn-primary" th:if="${rfq.quotation != null}"
-                                   th:href="@{/quotation/quotation-customer/{rfqId}(rfqId=${rfq.id})}"
-                                   title="Xem báo giá">
-                                    Xem báo giá <i class="fas fa-eye"></i>
+                                        class="btn btn-primary" th:if="${rfq.quotation != null and rfq.quotation?.purchaseOrder == null}"
+                                        th:href="@{/quotation/quotation-customer/{rfqId}(rfqId=${rfq.id})}"
+                                        title="Xem báo giá">
+                                     báo giá <i class="fas fa-eye"></i>
                                 </a>
                                 <a
-                                        class="btn btn-primary" th:if="${rfq.quotation == null}"
+                                        class="btn btn-primary" th:if="${rfq.quotation == null }"
                                         href="#"
                                         th:onclick="showQuotationAlert()"
                                         title="Xem báo giá">
-                                    Xem báo giá <i class="fas fa-eye"></i>
+                                     báo giá <i class="fas fa-eye"></i>
                                 </a>
+                                <a
+                                        class="btn btn-primary" th:if="${rfq.quotation?.purchaseOrder != null}"
+                                        th:href="@{/purchase-order/customer/detail/{id}(id=${rfq.quotation.purchaseOrder.id})}"
+                                        title="Xem báo giá">
+                                    Xem đơn <i class="fas fa-eye"></i>
+                                </a>
+
                                 <div class="dropdown ms-3">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
                                             th:id="'dropdownMenuButton' + ${iterStat.count}" data-bs-toggle="dropdown"
@@ -355,21 +696,6 @@
                                                 Sửa ngày nhận hàng mong muốn
                                             </a>
                                         </li>
-                                        <li>
-                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
-                                                    th:href="'/request-for-quotation/edit-rfq-form?rfqId=' + ${rfq.id}"
-                                               class="dropdown-item text-success"
-                                               title="Edit">
-                                                Sửa thông tin đơn hàng
-                                            </a>
-                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
-                                               class="dropdown-item text-success"
-                                               href="#"
-                                               th:onclick="showEditApprovalAlert()">
-                                                Sửa thông tin đơn hàng
-                                            </a>
-                                        </li>
-
                                         <li>
                                             <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
                                                class="dropdown-item text-danger"
@@ -395,8 +721,8 @@
                                             <th>Số thứ tự</th>
                                             <th>Mã đơn hàng</th>
                                             <th>Sản phẩm</th>
-                                            <th>Màu</th>
-                                            <th>Số lượng đặt</th>
+                                            <th>Mã màu</th>
+                                            <th>Số lượng (cuộn)</th>
                                             <th>Hành động</th>
                                         </tr>
                                         </thead>
@@ -409,17 +735,30 @@
                                             <td th:text="${detail.getQuantity()}"></td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <a href="#" class="text-danger" title="Delete"
+                                                      <!--edit-->
+                                                    <a href="#" class="text-primary" title="Chỉnh sửa"
+                                                       th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                       th:onclick="'showEditProductPopup(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">
+                                                        <i class="fas fa-edit fa-lg"></i>
+                                                    </a>
+                                                    <a href="#" class="text-primary" title="Chỉnh sửa"
+                                                       th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                                       th:onclick="showEditApprovalAlert()">
+                                                        <i class="fas fa-edit fa-lg"></i>
+                                                    </a>
+
+                                                    <!--delete-->
+                                                    <a href="#" class="text-danger" title="Xóa"
                                                        th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED }and ${#lists.size(rfq.rfqDetails) > 1}"
                                                        th:onclick="'deleteDetail(' + ${detail.getId()} + ', ' + ${rfq.getId()} + ')'">
                                                         <i class="fas fa-trash-alt fa-lg"></i>
                                                     </a>
-                                                    <a href="#" class="text-danger" title="Delete"
+                                                    <a href="#" class="text-danger" title="Xóa"
                                                        th:if="${rfq.getIsSent()} == ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED} and ${#lists.size(rfq.rfqDetails) == 1}"
                                                        th:onclick="showApprovalAlertCountLessThan1()">
                                                         <i class="fas fa-trash-alt fa-lg"></i>
                                                     </a>
-                                                    <a href="#" class="text-danger" title="Delete"
+                                                    <a href="#" class="text-danger" title="Xóa"
                                                        th:if="${rfq.getIsSent()} != ${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
                                                        th:onclick="showApprovalAlert()">
                                                         <i class="fas fa-trash-alt fa-lg"></i>
@@ -434,19 +773,25 @@
                                         <!-- Ngày mong muốn nhận hàng (bên trái) -->
                                         <div>
                                             <strong>Ngày mong muốn nhận hàng: </strong>
-                                            <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${rfq.getExpectDeliveryDate()}"></span>
+                                            <span th:id="'desiredDeliveryDate_' + ${rfq.id}" th:name="'desiredDeliveryDate_' + ${rfq.id}" th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd/MM/yyyy')}"></span>
                                         </div>
 
-                                        <!-- Các thông tin khác (bên phải) --><!--
-                                        <div class="text-end">
-                                            <p th:if="${rfq.solutions != null}" ><strong>Lý do: </strong> <span th:text="${rfq.solutions.reason}"></span></p>
-                                            <p th:if="${rfq.solutions != null}"><strong>Chi tiết: </strong><span th:text="${rfq.solutions.description}"></span></p>
-                                            <p th:if="${rfq.solutions != null}"><strong>Ngày có thể giao hàng dự kiến: </strong>
-                                                <span th:text="${rfq.solutions.actualDeliveryDate}"></span>
-                                            </p>
-                                        </div>-->
+                                        <div>
+                                            <a th:if="${rfq.isSent == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="btn btn-success btn-sm"
+                                               href="#"
+                                               th:id="'addProductLink_' + ${rfq.id}"
+                                               th:onclick="'showAddProductPopup(\'' + ${rfq.id} + '\')'">
+                                                <i class="fas fa-plus"></i> Thêm sản phẩm vào lô hàng
+                                            </a>
+                                            <a th:if="${rfq.isSent != T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                               class="btn btn-success btn-sm"
+                                               href="#"
+                                               th:onclick="showEditApprovalAlert()">
+                                                <i class="fas fa-plus"></i> Thêm sản phẩm vào lô hàng
+                                            </a>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -455,7 +800,7 @@
                         <div id="editPopup" class="custom-popup">
                             <div class="popup-header">
                                 <h5>Chỉnh sửa ngày giao hàng</h5>
-                                <button type="button" class="close-btn" onclick="hidePopup()">&times;</button>
+                                <button type="button" class="close-btn" onclick="hidePopup()">×</button>
                             </div>
                             <div class="popup-body">
                                 <div class="form-group">
@@ -468,6 +813,125 @@
                                 <button class="btn btn-secondary" onclick="hidePopup()">Hủy</button>
                             </div>
                         </div>
+
+
+                        <!-- Popup Thêm sản phẩm -->
+                        <div id="addProductPopup" class="custom-popup">
+                            <div class="popup-header">
+                                <h5>Thêm sản phẩm vào lô hàng</h5>
+                                <button type="button" class="close-btn" onclick="hideAddProductPopup()">×</button>
+                            </div>
+                            <div class="popup-body">
+                                <form id="addProductForm" method="post" action="/request-for-quotation/add-rfq-detail" th:object="${rfqDetailForm}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <input type="hidden" id="rfqId" name="rfqId" value=""/>
+                                    <div id="productRows">
+                                        <!-- Dòng sản phẩm -->
+                                        <div class="form-row" id="row-1">
+                                            <div class="form-group large-field">
+                                                <label class="label" for="product-1">Sản phẩm</label>
+                                                <select class="form-select" id="product-1" name="productId" onchange="loadBrands(1)" required>
+                                                    <option value="">Chọn sản phẩm</option>
+                                                    <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group large-field">
+                                                <label class="label" for="brand-1">Thương hiệu</label>
+                                                <select class="form-select" id="brand-1" name="brandId" onchange="loadCategories(1)" required>
+                                                    <option value="">Chọn thương hiệu</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group large-field">
+                                                <label class="label" for="category-1">Danh mục</label>
+                                                <select class="form-select" id="category-1" name="categoryId" required>
+                                                    <option value="">Chọn danh mục</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group small-field">
+                                                <label class="label" for="color-1">Màu</label>
+                                                <div class="color-input-wrapper">
+                                                    <input type="text" class="form-control" id="color-1" name="noteColor" placeholder="Chọn màu" required readonly>
+                                                    <button type="button" class="color-picker-btn" id="color-btn-1">
+                                                        <i class="fas fa-palette"></i>
+                                                    </button>
+                                                </div>
+                                                <span class="error-text"></span>
+                                            </div>
+                                            <div class="form-group small-field">
+                                                <label class="label" for="quantity-1">Số lượng</label>
+                                                <input type="number" class="form-control" id="quantity-1" name="quantity" placeholder="Nhập số lượng" min="1" max="20000" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" required>
+                                                <span class="error-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="popup-footer">
+                                        <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideAddProductPopup()">Hủy</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <!-- Popup Chỉnh sửa sản phẩm -->
+                        <div id="editProductPopup" class="custom-popup">
+                            <div class="popup-header">
+                                <h5>Chỉnh sửa sản phẩm trong lô hàng</h5>
+                                <button type="button" class="close-btn" onclick="hideEditProductPopup()">×</button>
+                            </div>
+                            <div class="popup-body">
+                                <form id="editProductForm" method="post" action="/request-for-quotation/edit-rfq-detail">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <input type="hidden" id="editRfqId" name="rfqId" value=""/>
+                                    <input type="hidden" id="editDetailId" name="detailId" value=""/>
+                                    <div id="editProductRows">
+                                        <!-- Dòng sản phẩm -->
+                                        <div class="form-row" id="edit-row-1">
+                                            <div class="form-group large-field">
+                                                <label class="label" for="edit-product-1">Sản phẩm</label>
+                                                <select class="form-select" id="edit-product-1" name="productId" onchange="loadBrands(1, 'edit')" required>
+                                                    <option value="">Chọn sản phẩm</option>
+                                                    <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group large-field">
+                                                <label class="label" for="edit-brand-1">Thương hiệu</label>
+                                                <select class="form-select" id="edit-brand-1" name="brandId" onchange="loadCategories(1, 'edit')" required>
+                                                    <option value="">Chọn thương hiệu</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group large-field">
+                                                <label class="label" for="edit-category-1">Danh mục</label>
+                                                <select class="form-select" id="edit-category-1" name="categoryId" required>
+                                                    <option value="">Chọn danh mục</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group small-field">
+                                                <label class="label" for="edit-color-1">Màu</label>
+                                                <div class="color-input-wrapper">
+                                                    <input type="text" class="form-control" id="edit-color-1" name="noteColor" placeholder="Chọn màu" required readonly>
+                                                    <button type="button" class="color-picker-btn" id="color-btn-1">
+                                                        <i class="fas fa-palette"></i>
+                                                    </button>
+                                                </div>
+                                                <span class="error-text"></span>
+                                            </div>
+                                            <div class="form-group small-field">
+                                                <label class="label" for="edit-quantity-1">Số lượng</label>
+                                                <input type="number" class="form-control" id="edit-quantity-1" name="quantity" placeholder="Nhập số lượng" min="1" max="20000" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" required>
+                                                <span class="error-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="popup-footer">
+                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideEditProductPopup()">Hủy</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
                 <!-- Phân trang -->
@@ -497,12 +961,271 @@
         </div>
         <div th:replace="~{shared/footer.html :: footer}"></div>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+
+    <!-- Color Modal -->
+    <div id="colorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeColorModal()">×</span>
+            <h3>Chọn Màu</h3>
+            <div class="color-sections">
+                <!-- Mã 1 -->
+                <div class="color-section">
+                    <h4>Mã 1</h4>
+                    <img src="/assert/images/ma1.png" alt="Mã 1 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 001</span><span>S 002</span><span>S 003</span><span>S 004</span><span>S 005</span>
+                        <span>S 006</span><span>S 007</span><span>S 008</span><span>S 009</span><span>S 010</span>
+                        <span>S 011</span><span>S 012</span><span>S 013</span><span>S 014</span><span>S 015</span>
+                        <span>S 016</span><span>S 017</span><span>S 018</span><span>S 019</span><span>S 020</span>
+                        <span>S 021</span><span>S 022</span><span>S 023</span><span>S 024</span><span>S 025</span>
+                        <span>S 026</span><span>S 027</span><span>S 028</span><span>S 029</span><span>S 030</span>
+                        <span>S 031</span><span>S 032</span>
+                    </div>
+                </div>
+
+                <!-- Mã 2 -->
+                <div class="color-section">
+                    <h4>Mã 2</h4>
+                    <img src="/assert/images/ma2.png" alt="Mã 2 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 033</span><span>S 034</span><span>S 035</span><span>S 036</span><span>S 037</span>
+                        <span>S 038</span><span>S 039</span><span>S 040</span><span>S 041</span><span>S 042</span>
+                        <span>S 043</span><span>S 044</span><span>S 045</span><span>S 046</span><span>S 047</span>
+                        <span>S 048</span><span>S 049</span><span>S 050</span><span>S 051</span><span>S 052</span>
+                        <span>S 053</span><span>S 054</span><span>S 055</span><span>S 056</span><span>S 057</span>
+                        <span>S 058</span><span>S 059</span><span>S 060</span><span>S 061</span><span>S 062</span>
+                        <span>S 063</span><span>S 064</span>
+                    </div>
+                </div>
+
+                <!-- Mã 3 -->
+                <div class="color-section">
+                    <h4>Mã 3</h4>
+                    <img src="/assert/images/ma3.png" alt="Mã 3 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 065</span><span>S 066</span><span>S 067</span><span>S 068</span><span>S 069</span>
+                        <span>S 070</span><span>S 071</span><span>S 072</span><span>S 073</span><span>S 074</span>
+                        <span>S 075</span><span>S 076</span><span>S 077</span><span>S 078</span><span>S 079</span>
+                        <span>S 080</span><span>S 081</span><span>S 082</span><span>S 083</span><span>S 084</span>
+                        <span>S 085</span><span>S 086</span><span>S 087</span><span>S 088</span><span>S 089</span>
+                        <span>S 090</span><span>S 091</span><span>S 092</span><span>S 093</span><span>S 094</span>
+                        <span>S 095</span><span>S 096</span>
+                    </div>
+                </div>
+
+                <!-- Mã 4 -->
+                <div class="color-section">
+                    <h4>Mã 4</h4>
+                    <img src="/assert/images/ma4.png" alt="Mã 4 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 097</span><span>S 098</span><span>S 099</span><span>S 100</span><span>S 101</span>
+                        <span>S 102</span><span>S 103</span><span>S 104</span><span>S 105</span><span>S 106</span>
+                        <span>S 107</span><span>S 108</span><span>S 109</span><span>S 110</span><span>S 111</span>
+                        <span>S 112</span><span>S 113</span><span>S 114</span><span>S 115</span><span>S 116</span>
+                        <span>S 117</span><span>S 118</span><span>S 119</span><span>S 120</span><span>S 121</span>
+                        <span>S 122</span><span>S 123</span><span>S 124</span><span>S 125</span><span>S 126</span>
+                        <span>S 127</span><span>S 128</span>
+                    </div>
+                </div>
+
+                <!-- Mã 5 -->
+                <div class="color-section">
+                    <h4>Mã 5</h4>
+                    <img src="/assert/images/ma5.png" alt="Mã 5 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 129</span><span>S 130</span><span>S 131</span><span>S 132</span><span>S 133</span>
+                        <span>S 134</span><span>S 135</span><span>S 136</span><span>S 137</span><span>S 138</span>
+                        <span>S 139</span><span>S 140</span><span>S 141</span><span>S 142</span><span>S 143</span>
+                        <span>S 144</span><span>S 145</span><span>S 146</span><span>S 147</span><span>S 148</span>
+                        <span>S 149</span><span>S 150</span><span>S 151</span><span>S 152</span><span>S 153</span>
+                        <span>S 154</span><span>S 155</span><span>S 156</span><span>S 157</span><span>S 158</span>
+                        <span>S 159</span><span>S 160</span>
+                    </div>
+                </div>
+
+                <!-- Mã 6 -->
+                <div class="color-section">
+                    <h4>Mã 6</h4>
+                    <img src="/assert/images/ma6.png" alt="Mã 6 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 161</span><span>S 162</span><span>S 163</span><span>S 164</span><span>S 165</span>
+                        <span>S 166</span><span>S 167</span><span>S 168</span><span>S 169</span><span>S 170</span>
+                        <span>S 171</span><span>S 172</span><span>S 173</span><span>S 174</span><span>S 175</span>
+                        <span>S 176</span><span>S 177</span><span>S 178</span><span>S 179</span><span>S 180</span>
+                        <span>S 181</span><span>S 182</span><span>S 183</span><span>S 184</span><span>S 185</span>
+                        <span>S 186</span><span>S 187</span><span>S 188</span><span>S 189</span><span>S 190</span>
+                        <span>S 191</span><span>S 192</span>
+                    </div>
+                </div>
+
+                <!-- Mã 7 -->
+                <div class="color-section">
+                    <h4>Mã 7</h4>
+                    <img src="/assert/images/ma7.png" alt="Mã 7 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 193</span><span>S 194</span><span>S 195</span><span>S 196</span><span>S 197</span>
+                        <span>S 198</span><span>S 199</span><span>S 200</span><span>S 201</span><span>S 202</span>
+                        <span>S 203</span><span>S 204</span><span>S 205</span><span>S 206</span><span>S 207</span>
+                        <span>S 208</span><span>S 209</span><span>S 210</span><span>S 211</span><span>S 212</span>
+                        <span>S 213</span><span>S 214</span><span>S 215</span><span>S 216</span><span>S 217</span>
+                        <span>S 218</span><span>S 219</span><span>S 220</span><span>S 221</span><span>S 222</span>
+                        <span>S 223</span><span>S 224</span>
+                    </div>
+                </div>
+
+                <!-- Mã 8 -->
+                <div class="color-section">
+                    <h4>Mã 8</h4>
+                    <img src="/assert/images/ma8.png" alt="Mã 8 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 225</span><span>S 226</span><span>S 227</span><span>S 228</span><span>S 229</span>
+                        <span>S 230</span><span>S 231</span><span>S 232</span><span>S 233</span><span>S 234</span>
+                        <span>S 235</span><span>S 236</span><span>S 237</span><span>S 238</span><span>S 239</span>
+                        <span>S 240</span><span>S 241</span><span>S 242</span><span>S 243</span><span>S 244</span>
+                        <span>S 245</span><span>S 246</span><span>S 247</span><span>S 248</span><span>S 249</span>
+                        <span>S 250</span><span>S 251</span><span>S 252</span><span>S 253</span><span>S 254</span>
+                        <span>S 255</span><span>S 256</span>
+                    </div>
+                </div>
+
+                <!-- Mã 9 -->
+                <div class="color-section">
+                    <h4>Mã 9</h4>
+                    <img src="/assert/images/ma9.png" alt="Mã 9 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 257</span><span>S 258</span><span>S 259</span><span>S 260</span><span>S 261</span>
+                        <span>S 262</span><span>S 263</span><span>S 264</span><span>S 265</span><span>S 266</span>
+                        <span>S 267</span><span>S 268</span><span>S 269</span><span>S 270</span><span>S 271</span>
+                        <span>S 272</span><span>S 273</span><span>S 274</span><span>S 275</span><span>S 276</span>
+                        <span>S 277</span><span>S 278</span><span>S 279</span><span>S 280</span><span>S 281</span>
+                        <span>S 282</span><span>S 283</span><span>S 284</span><span>S 285</span><span>S 286</span>
+                        <span>S 287</span><span>S 288</span>
+                    </div>
+                </div>
+
+                <!-- Mã 10 -->
+                <div class="color-section">
+                    <h4>Mã 10</h4>
+                    <img src="/assert/images/ma10.png" alt="Mã 10 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 289</span><span>S 290</span><span>S 291</span><span>S 292</span><span>S 293</span>
+                        <span>S 294</span><span>S 295</span><span>S 296</span><span>S 297</span><span>S 298</span>
+                        <span>S 299</span><span>S 300</span><span>S 301</span><span>S 302</span><span>S 303</span>
+                        <span>S 304</span><span>S 305</span><span>S 306</span><span>S 307</span><span>S 308</span>
+                        <span>S 309</span><span>S 310</span><span>S 311</span><span>S 312</span><span>S 313</span>
+                        <span>S 314</span><span>S 315</span><span>S 316</span><span>S 317</span><span>S 318</span>
+                        <span>S 319</span><span>S 320</span>
+                    </div>
+                </div>
+
+                <!-- Mã 11 -->
+                <div class="color-section">
+                    <h4>Mã 11</h4>
+                    <img src="/assert/images/ma11.png" alt="Mã 11 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 321</span><span>S 322</span><span>S 323</span><span>S 324</span><span>S 325</span>
+                        <span>S 326</span><span>S 327</span><span>S 328</span><span>S 329</span><span>S 330</span>
+                        <span>S 331</span><span>S 332</span><span>S 333</span><span>S 334</span><span>S 335</span>
+                        <span>S 336</span><span>S 337</span><span>S 338</span><span>S 339</span><span>S 340</span>
+                        <span>S 341</span><span>S 342</span><span>S 343</span><span>S 344</span><span>S 345</span>
+                        <span>S 346</span><span>S 347</span><span>S 348</span><span>S 349</span><span>S 350</span>
+                        <span>S 351</span><span>S 352</span>
+                    </div>
+                </div>
+
+                <!-- Mã 12 -->
+                <div class="color-section">
+                    <h4>Mã 12</h4>
+                    <img src="/assert/images/ma12.png" alt="Mã 12 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 353</span><span>S 354</span><span>S 355</span><span>S 356</span><span>S 357</span>
+                        <span>S 358</span><span>S 359</span><span>S 360</span><span>S 361</span><span>S 362</span>
+                        <span>S 363</span><span>S 364</span><span>S 365</span><span>S 366</span><span>S 367</span>
+                        <span>S 368</span><span>S 369</span><span>S 370</span><span>S 371</span><span>S 372</span>
+                        <span>S 373</span><span>S 374</span><span>S 375</span><span>S 376</span><span>S 377</span>
+                        <span>S 378</span><span>S 379</span><span>S 380</span><span>S 381</span><span>S 382</span>
+                        <span>S 383</span><span>S 384</span>
+                    </div>
+                </div>
+
+                <!-- Mã 13 -->
+                <div class="color-section">
+                    <h4>Mã 13</h4>
+                    <img src="/assert/images/ma13.png" alt="Mã 13 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 385</span><span>S 386</span><span>S 387</span><span>S 388</span><span>S 389</span>
+                        <span>S 390</span><span>S 391</span><span>S 392</span><span>S 393</span><span>S 394</span>
+                        <span>S 395</span><span>S 396</span><span>S 397</span><span>S 398</span><span>S 399</span>
+                        <span>S 400</span><span>S 401</span><span>S 402</span><span>S 403</span><span>S 404</span>
+                        <span>S 405</span><span>S 406</span><span>S 407</span><span>S 408</span><span>S 409</span>
+                        <span>S 410</span><span>S 411</span><span>S 412</span><span>S 413</span><span>S 414</span>
+                        <span>S 415</span><span>S 416</span>
+                    </div>
+                </div>
+
+                <!-- Mã 14 -->
+                <div class="color-section">
+                    <h4>Mã 14</h4>
+                    <img src="/assert/images/ma14.png" alt="Mã 14 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 417</span><span>S 418</span><span>S 419</span><span>S 420</span><span>S 421</span>
+                        <span>S 422</span><span>S 423</span><span>S 424</span><span>S 425</span><span>S 426</span>
+                        <span>S 427</span><span>S 428</span><span>S 429</span><span>S 430</span><span>S 431</span>
+                        <span>S 432</span><span>S 433</span><span>S 434</span><span>S 435</span><span>S 436</span>
+                        <span>S 437</span><span>S 438</span><span>S 439</span><span>S 440</span><span>S 441</span>
+                        <span>S 442</span><span>S 443</span><span>S 444</span><span>S 445</span><span>S 446</span>
+                        <span>S 447</span><span>S 448</span>
+                    </div>
+                </div>
+
+                <!-- Mã 15 -->
+                <div class="color-section">
+                    <h4>Mã 15</h4>
+                    <img src="/assert/images/ma15.png" alt="Mã 15 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 449</span><span>S 450</span><span>S 451</span><span>S 452</span><span>S 453</span>
+                        <span>S 454</span><span>S 455</span><span>S 456</span><span>S 457</span><span>S 458</span>
+                        <span>S 459</span><span>S 460</span><span>S 461</span><span>S 462</span><span>S 463</span>
+                        <span>S 464</span><span>S 465</span><span>S 466</span><span>S 467</span><span>S 468</span>
+                        <span>S 469</span><span>S 470</span><span>S 471</span><span>S 472</span><span>S 473</span>
+                        <span>S 474</span><span>S 475</span><span>S 476</span><span>S 477</span><span>S 478</span>
+                        <span>S 479</span><span>S 480</span>
+                    </div>
+                </div>
+
+                <!-- Mã 16 -->
+                <div class="color-section">
+                    <h4>Mã 16</h4>
+                    <img src="/assert/images/ma16.png" alt="Mã 16 Colors" style="width: 100%; margin-bottom: 10px;">
+                    <div class="color-codes">
+                        <span>S 481</span><span>S 482</span><span>S 483</span><span>S 484</span><span>S 485</span>
+                        <span>S 486</span><span>S 487</span><span>S 488</span><span>S 489</span><span>S 490</span>
+                        <span>S 491</span><span>S 492</span><span>S 493</span><span>S 494</span><span>S 495</span>
+                        <span>S 496</span><span>S 497</span><span>S 498</span><span>S 499</span><span>S 500</span>
+                    </div>
+                </div>
+
+                <div class="color-section">
+                    <h4>Màu Cơ Bản</h4>
+                    <div class="color-codes">
+                        <span>Đen</span>
+                        <span>Trắng</span>
+                    </div>
+                </div>
+
+                <div class="color-section">
+                    <h4>Màu Nguyên Bản</h4>
+                    <div class="color-codes">
+                        <span>Trắng Ngà</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 <div th:if="${saveSuccessMessage}">
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -543,10 +1266,61 @@
         });
     </script>
 </div>
+
+<div th:if="${saveDetailSuccessMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${completed}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${saveDetailFalseMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${saveDetailFalseMessage}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${editRfqDetailSuccessMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${editRfqDetailSuccessMessage}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${editRfqDetailFalseMessage}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${editRfqDetailFalseMessage}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
 <!-- Bootstrap Modal -->
-
-
-
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -724,9 +1498,6 @@
     }
 </script>
 <script th:inline="javascript">
-
-
-//shop popup>
     function showPopup(rfqId) {
         const inputField = document.getElementById("desiredDeliveryDate_" + rfqId);
         if (!inputField) {
@@ -764,7 +1535,6 @@
         }
 
         const spanField = document.getElementById("desiredDeliveryDate_" + rfqId);
-
 
         const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
         const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
@@ -807,21 +1577,408 @@
             });
     }
 
-// Tạo đối tượng Date cho hôm nay
-const today = new Date();
+    // Tạo đối tượng Date cho hôm nay
+    const today = new Date();
 
-// Thêm 3 ngày vào ngày hiện tại
-today.setDate(today.getDate() + 3);
+    // Thêm 3 ngày vào ngày hiện tại
+    today.setDate(today.getDate() + 3);
 
-// Chuyển ngày mới thành định dạng yyyy-mm-dd
-const threeDaysLater = today.toISOString().split("T")[0];
+    // Chuyển ngày mới thành định dạng yyyy-mm-dd
+    const threeDaysLater = today.toISOString().split("T")[0];
 
-// Gán giá trị min cho input
-document.getElementById("editDeliveryDate").setAttribute("min", threeDaysLater);
-
+    // Gán giá trị min cho input
+    document.getElementById("editDeliveryDate").setAttribute("min", threeDaysLater);
 </script>
 
 
+<script>
+
+    function showAddProductPopup(rfqId) {
+        const popup = document.getElementById("addProductPopup");
+        const rfqIdInput = document.getElementById("rfqId");
+        rfqIdInput.value = rfqId; // Gán rfqId vào input ẩn
+        popup.style.display = "block";
+        popup.style.animation = "fadeIn 0.3s ease-in-out";
+
+        // Reset form
+        document.getElementById("addProductForm").reset();
+        document.getElementById("brand-1").innerHTML = '<option value="">Chọn thương hiệu</option>';
+        document.getElementById("category-1").innerHTML = '<option value="">Chọn danh mục</option>';
+    }
+
+    function hideAddProductPopup() {
+        const popup = document.getElementById("addProductPopup");
+        popup.style.display = "none";
+    }
+
+    function loadProducts(rowIndex, context = 'add') {
+        return new Promise((resolve, reject) => {
+            const prefix = context === 'edit' ? 'edit-' : '';
+            const productSelect = document.getElementById(`${prefix}product-${rowIndex}`);
+
+            if (!productSelect) {
+                console.error(`Không tìm thấy phần tử select: ${prefix}product-${rowIndex}`);
+                reject(new Error('Không tìm thấy phần tử select'));
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            if (!csrfToken) {
+                console.warn('Không tìm thấy CSRF token');
+            }
+
+            fetch('/request-for-quotation/products', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+                .then(response => {
+                    console.log(`Phản hồi API /products: status=${response.status}, statusText=${response.statusText}`);
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`Lỗi khi tải danh sách sản phẩm: ${response.status} ${response.statusText}. Chi tiết: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(products => {
+                    console.log("Danh sách sản phẩm:", products);
+                    if (!products || products.length === 0) {
+                        console.warn("Danh sách sản phẩm rỗng");
+                        Swal.fire("Cảnh báo!", "Không có sản phẩm nào được trả về từ server.", "warning");
+                    }
+                    productSelect.innerHTML = '<option value="">Chọn sản phẩm</option>';
+                    products.forEach(product => {
+                        const option = document.createElement("option");
+                        option.value = product.id;
+                        option.text = product.name;
+                        productSelect.appendChild(option);
+                    });
+                    resolve();
+                })
+                .catch(error => {
+                    console.error("Lỗi khi tải sản phẩm:", error);
+                    Swal.fire("Lỗi!", `Không thể tải danh sách sản phẩm: ${error.message}`, "error");
+                    reject(error);
+                });
+        });
+    }
+
+    // Tải danh sách thương hiệu dựa trên sản phẩm được chọn
+    function loadBrands(rowIndex, context = 'add') {
+        return new Promise((resolve, reject) => {
+            const prefix = context === 'edit' ? 'edit-' : '';
+            const productId = document.getElementById(`${prefix}product-${rowIndex}`).value;
+            const brandSelect = document.getElementById(`${prefix}brand-${rowIndex}`);
+            const categorySelect = document.getElementById(`${prefix}category-${rowIndex}`);
+
+            if (!brandSelect || !categorySelect) {
+                console.error(`Không tìm thấy phần tử select: ${prefix}brand-${rowIndex} hoặc ${prefix}category-${rowIndex}`);
+                reject(new Error('Không tìm thấy phần tử select'));
+                return;
+            }
+
+            if (productId) {
+                fetch(`/request-for-quotation/brands?productId=${productId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Lỗi khi tải danh sách thương hiệu');
+                        }
+                        return response.json();
+                    })
+                    .then(brands => {
+                        brandSelect.innerHTML = '<option value="">Chọn thương hiệu</option>';
+                        brands.forEach(brand => {
+                            const option = document.createElement("option");
+                            option.value = brand.id;
+                            option.text = brand.name;
+                            brandSelect.appendChild(option);
+                        });
+                        categorySelect.innerHTML = '<option value="">Chọn danh mục</option>';
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi tải thương hiệu:", error);
+                        reject(error);
+                    });
+            } else {
+                brandSelect.innerHTML = '<option value="">Chọn thương hiệu</option>';
+                categorySelect.innerHTML = '<option value="">Chọn danh mục</option>';
+                resolve(); // Trả về Promise đã resolve
+            }
+        });
+    }
+
+    function loadCategories(rowIndex, context = 'add') {
+        return new Promise((resolve, reject) => {
+            const prefix = context === 'edit' ? 'edit-' : '';
+            const brandId = document.getElementById(`${prefix}brand-${rowIndex}`).value;
+            const categorySelect = document.getElementById(`${prefix}category-${rowIndex}`);
+
+            if (!categorySelect) {
+                console.error(`Không tìm thấy phần tử select: ${prefix}category-${rowIndex}`);
+                reject(new Error('Không tìm thấy phần tử select'));
+                return;
+            }
+
+            if (brandId) {
+                fetch(`/request-for-quotation/categories?brandId=${brandId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Lỗi khi tải danh sách danh mục');
+                        }
+                        return response.json();
+                    })
+                    .then(categories => {
+                        categorySelect.innerHTML = '<option value="">Chọn danh mục</option>';
+                        categories.forEach(category => {
+                            const option = document.createElement("option");
+                            option.value = category.id;
+                            option.text = category.name;
+                            categorySelect.appendChild(option);
+                        });
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi tải danh mục:", error);
+                        reject(error);
+                    });
+            } else {
+                categorySelect.innerHTML = '<option value="">Chọn danh mục</option>';
+                resolve(); // Trả về Promise đã resolve
+            }
+        });
+    }
+
+
+
+
+
+    // Hiển thị popup chỉnh sửa
+    function showEditProductPopup(detailId, rfqId) {
+        const popup = document.getElementById("editProductPopup");
+        const rfqIdInput = document.getElementById("editRfqId");
+        const detailIdInput = document.getElementById("editDetailId");
+
+        if (!popup || !rfqIdInput || !detailIdInput) {
+            console.error("Không tìm thấy phần tử DOM:", { popup, rfqIdInput, detailIdInput });
+            Swal.fire("Lỗi!", "Không tìm thấy các phần tử cần thiết trong giao diện.", "error");
+            return;
+        }
+
+        rfqIdInput.value = rfqId;
+        detailIdInput.value = detailId;
+
+        fetch(`/request-for-quotation/rfq-detail/${detailId}`)
+            .then(response => {
+                console.log("Phản hồi API:", response.status, response.statusText);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Lỗi khi tải chi tiết sản phẩm: ${response.status} ${response.statusText}. Chi tiết: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(detail => {
+                console.log("Dữ liệu chi tiết:", detail);
+                if (!detail || !detail.product || !detail.brand || !detail.cate) {
+                    throw new Error("Dữ liệu chi tiết không đầy đủ: " + JSON.stringify(detail));
+                }
+
+                loadProducts(1, 'edit')
+                    .then(() => {
+                        const productSelect = document.getElementById("edit-product-1");
+                        productSelect.value = detail.product.id;
+                        if (productSelect.value !== detail.product.id.toString()) {
+                            console.warn(`Không tìm thấy sản phẩm với id=${detail.product.id} trong select`);
+                        }
+                        document.getElementById("edit-color-1").value = detail.noteColor;
+                        document.getElementById("edit-quantity-1").value = detail.quantity;
+                        return loadBrands(1, 'edit');
+                    })
+                    .then(() => {
+                        const brandSelect = document.getElementById("edit-brand-1");
+                        brandSelect.value = detail.brand.id;
+                        if (brandSelect.value !== detail.brand.id.toString()) {
+                            console.warn(`Không tìm thấy thương hiệu với id=${detail.brand.id} trong select`);
+                        }
+                        return loadCategories(1, 'edit');
+                    })
+                    .then(() => {
+                        const categorySelect = document.getElementById("edit-category-1");
+                        categorySelect.value = detail.cate.id;
+                        if (categorySelect.value !== detail.cate.id.toString()) {
+                            console.warn(`Không tìm thấy danh mục với id=${detail.cate.id} trong select`);
+                        }
+                        popup.style.display = "block";
+                        popup.style.animation = "fadeIn 0.3s ease-in-out";
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi tải products, brands hoặc categories:", error);
+                        Swal.fire("Lỗi!", `Không thể tải dữ liệu: ${error.message}`, "error");
+                    });
+            })
+            .catch(error => {
+                console.error("Lỗi khi tải chi tiết:", error);
+                Swal.fire("Lỗi!", `Không thể tải chi tiết sản phẩm: ${error.message}`, "error");
+            });
+    }
+
+    // Ẩn popup chỉnh sửa
+    function hideEditProductPopup() {
+        const popup = document.getElementById("editProductPopup");
+        popup.style.display = "none";
+        // Reset form
+        document.getElementById("editProductForm").reset();
+        document.getElementById("edit-brand-1").innerHTML = '<option value="">Chọn thương hiệu</option>';
+        document.getElementById("edit-category-1").innerHTML = '<option value="">Chọn danh mục</option>';
+    }
+
+    // Xử lý submit form chỉnh sửa
+    document.getElementById("editProductForm").addEventListener("submit", function (event) {
+        // Không gọi event.preventDefault(), để browser submit form
+        console.log("Submitting editProductForm...");
+        // Có thể thêm validation nếu cần
+        const productId = document.getElementById("edit-product-1").value;
+        const brandId = document.getElementById("edit-brand-1").value;
+        const categoryId = document.getElementById("edit-category-1").value;
+        const noteColor = document.getElementById("edit-color-1").value;
+        const quantity = document.getElementById("edit-quantity-1").value;
+
+        if (!productId || !brandId || !categoryId || !noteColor || !quantity) {
+            event.preventDefault();
+            Swal.fire("Lỗi!", "Vui lòng điền đầy đủ thông tin.", "error");
+            return;
+        }
+    });
+
+
+
+
+   //màu
+    // Biến toàn cục để lưu row hiện tại
+    let currentRow = 0;
+    let currentContext = 'add'; // Để phân biệt giữa add và edit
+
+    // Mở modal màu
+    function openColorModal(rowNumber, context = 'add') {
+        currentRow = rowNumber;
+        currentContext = context;
+        const modal = document.getElementById('colorModal');
+        modal.style.display = 'block';
+        attachColorClickEvents();
+    }
+
+    // Đóng modal màu
+    function closeColorModal() {
+        const modal = document.getElementById('colorModal');
+        modal.style.display = 'none';
+    }
+
+    // Gắn sự kiện chọn màu trong modal
+    function attachColorClickEvents() {
+        const colorCodes = document.querySelectorAll('.color-codes span');
+        colorCodes.forEach(code => {
+            code.onclick = function() {
+                const colorCode = this.textContent;
+                const prefix = currentContext === 'edit' ? 'edit-' : '';
+                const colorInput = document.getElementById(`${prefix}color-${currentRow}`);
+                colorInput.value = colorCode;
+                closeColorModal();
+            };
+        });
+    }
+
+    // Gắn sự kiện cho các nút "Chọn màu"
+    function attachColorPickerEvents() {
+        $('.color-picker-btn').off('click').on('click', function() {
+            const rowId = $(this).attr('id').split('-').pop();
+            const context = $(this).closest('form').attr('id') === 'editProductForm' ? 'edit' : 'add';
+            openColorModal(rowId, context);
+        });
+    }
+
+    // Validation form
+    function validateForm(formId) {
+        let isValid = true;
+        let firstInvalidField = null;
+        const prefix = formId === 'editProductForm' ? 'edit-' : '';
+
+        // Xóa các thông báo lỗi cũ
+        $(`#${formId} .error-text`).text('');
+
+        // Kiểm tra các trường
+        const productSelect = $(`#${prefix}product-1`);
+        const brandSelect = $(`#${prefix}brand-1`);
+        const categorySelect = $(`#${prefix}category-1`);
+        const colorInput = $(`#${prefix}color-1`);
+        const quantityInput = $(`#${prefix}quantity-1`);
+
+        if (!productSelect.val()) {
+            isValid = false;
+            productSelect.siblings('.error-text').text('Vui lòng chọn sản phẩm');
+            if (!firstInvalidField) firstInvalidField = productSelect;
+        }
+        if (!brandSelect.val()) {
+            isValid = false;
+            brandSelect.siblings('.error-text').text('Vui lòng chọn thương hiệu');
+            if (!firstInvalidField) firstInvalidField = brandSelect;
+        }
+        if (!categorySelect.val()) {
+            isValid = false;
+            categorySelect.siblings('.error-text').text('Vui lòng chọn danh mục');
+            if (!firstInvalidField) firstInvalidField = categorySelect;
+        }
+        if (!colorInput.val()) {
+            isValid = false;
+            colorInput.parent().siblings('.error-text').text('Vui lòng chọn màu');
+            if (!firstInvalidField) firstInvalidField = colorInput;
+        }
+        if (!quantityInput.val() || quantityInput.val() <= 0) {
+            isValid = false;
+            quantityInput.siblings('.error-text').text('Vui lòng nhập số lượng hợp lệ');
+            if (!firstInvalidField) firstInvalidField = quantityInput;
+        }
+
+        if (!isValid && firstInvalidField) {
+            $('html, body').animate({
+                scrollTop: firstInvalidField.offset().top - 100
+            }, 500);
+        }
+
+        return isValid;
+    }
+
+    // Gắn sự kiện ban đầu
+    $(document).ready(function() {
+        attachColorPickerEvents();
+
+        // Submit form thêm sản phẩm
+        $('#addProductForm').on('submit', function(e) {
+            e.preventDefault();
+            if (validateForm('addProductForm')) {
+                this.submit();
+            }
+        });
+
+        // Submit form chỉnh sửa sản phẩm
+        $('#editProductForm').on('submit', function(e) {
+            e.preventDefault();
+            if (validateForm('editProductForm')) {
+                this.submit();
+            }
+        });
+    });
+
+    // Đóng modal khi click bên ngoài
+    window.onclick = function(event) {
+        const modal = document.getElementById('colorModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+</script>
 </body>
 
 </html>

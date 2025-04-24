@@ -16,6 +16,10 @@ import java.util.List;
 public interface WorkOrderService {
     Page<WorkOrder> getAllWorkOrderTeamLeader(Pageable pageable, String workOrderId);
 
+    Page<WorkOrder> getAllWorkOrderPo(Pageable pageable, String workOrderId);
+
+    Page<WorkOrder> getAllWorkOrders(Pageable pageable);
+
     WorkOrder getWorkOrderById(Long id);
 
     WorkOrder getSubmittedWorkOrderById(Long id);

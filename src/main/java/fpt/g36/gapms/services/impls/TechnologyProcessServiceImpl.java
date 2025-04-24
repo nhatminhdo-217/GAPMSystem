@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
+import fpt.g36.gapms.models.entities.TechnologyProcess;
 
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
@@ -283,6 +284,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             System.err.println("Lỗi khi tạo TechnologyProcess cho WorkOrderDetail ID: " + workOrderDetailId + " trong WorkOrder ID: " + workOrderId + " - " + e.getMessage());
             throw e;
         }
+
     }
 
     @Transactional

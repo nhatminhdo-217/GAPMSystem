@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chỉ may Dũng Đông - Thêu màu cuộc sống</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assert/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/assert/css/style/homepage/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+
+    <!-- Custom Styles for Detail Section -->
+    <style>
+        /* Scoped styles to avoid conflicts with template CSS */
+        .dtl-container {
+            padding: 20px;
+            background-color: #fff;
+            max-width: 100%;
+            overflow-x: auto;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .dtl-container h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .dtl-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .dtl-table thead {
+            background-color: #3498db;
+        }
+
+        .dtl-table th {
+            color: #fff;
+            padding: 12px;
+            text-align: center;
+            font-weight: 500;
+            border-bottom: 2px solid #2980b9;
+        }
+
+        .dtl-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .dtl-table tbody tr:hover {
+            background-color: #f5f7fa;
+        }
+
+        .dtl-batch-row {
+            display: none;
+            background-color: #f9f9f9;
+        }
+
+        .dtl-batch-content {
+            padding: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .dtl-batch-content h5 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .dtl-batch-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
+
+        .dtl-batch-table thead {
+            background-color: #dfe6e9;
+        }
+
+        .dtl-batch-table th {
+            color: #2c3e50;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .dtl-batch-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .dtl-status-completed {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .dtl-status-in-progress {
+            color: #e67e22;
+            font-weight: 600;
+        }
+
+        .dtl-status-pending {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .dtl-toggle-details {
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .dtl-toggle-details:hover {
+            text-decoration: underline;
+        }
+
+        .dtl-view-btn {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .dtl-view-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .dtl-back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .dtl-back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Popup styles */
+        .dtl-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1050;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .dtl-modal-content {
+            background-color: #fff;
+            width: 80%;
+            max-width: 1000px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .dtl-modal-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dtl-modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .dtl-modal-header .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .dtl-modal-header .close-btn:hover {
+            color: #ecf0f1;
+        }
+
+        .dtl-modal-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dtl-modal-upper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .dtl-modal-upper-left,
+        .dtl-modal-upper-right {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dtl-modal-upper h4,
+        .dtl-modal-lower h4 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .dtl-modal-upper-left .form-group,
+        .dtl-modal-upper-right .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .dtl-modal-upper-left .form-group label,
+        .dtl-modal-upper-right .form-group label {
+            font-weight: 500;
+            color: #34495e;
+            flex: 1;
+        }
+
+        .dtl-modal-upper-left .form-group span,
+        .dtl-modal-upper-right .form-group span {
+            flex: 1;
+            text-align: right;
+            color: #2c3e50;
+        }
+
+        .dtl-modal-lower {
+            width: 100%;
+        }
+
+        .dtl-dye-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dtl-dye-table thead {
+            background-color: #dfe6e9;
+        }
+
+        .dtl-dye-table th {
+            color: #2c3e50;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .dtl-dye-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .dtl-modal-footer {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            text-align: center;
+            color: #34495e;
+            font-size: 0.9rem;
+        }
+
+        .dtl-badge {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 16px;
+            font-weight: 500;
+            text-align: center;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 80px;
+            transition: transform 0.2s ease;
+        }
+
+        .dtl-badge:hover {
+            transform: scale(1.03);
+        }
+
+        .badgeC {
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            min-width: 100px;
+            text-align: center;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .badgeC:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-action:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background-color: #007bff;
+            border: none;
+            color: white;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f3f5;
+        }
+        .status i { margin-right: 8px; font-size: 16px; }
+        .status-not-started { background: #ffe5e5; color: #dc3545; }
+        .status-not-started i { color: #dc3545; }
+        .status-in-progress { background: #fff3e0; color: #856404; }
+        .status-in-progress i { color: #ffc107; }
+        .status-completed { background: #e6ffe6; color: #155724; }
+        .status-completed i { color: #28a745; }
+        .status-stop { background: #17a2b8; color: #333; }
+        .status-stop i { color: black; }
+        .status-fix { background: #e88cb4; color: rgb(30, 31, 34); }
+        .status-fix i { color: rgba(234, 221, 61, 0.96); }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dtl-container {
+                padding: 15px;
+            }
+
+            .dtl-container h2 {
+                font-size: 1.5rem;
+            }
+
+            .dtl-table th,
+            .dtl-table td {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            .dtl-batch-table th,
+            .dtl-batch-table td {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .dtl-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .dtl-modal {
+                padding: 10px;
+            }
+
+            .dtl-modal-content {
+                width: 90%;
+                max-width: 600px;
+            }
+
+            .dtl-modal-header h3 {
+                font-size: 1.2rem;
+            }
+
+            .dtl-modal-header .close-btn {
+                font-size: 1.2rem;
+            }
+
+            .dtl-modal-upper {
+                flex-direction: column;
+            }
+
+            .dtl-modal-upper-left,
+            .dtl-modal-upper-right {
+                min-width: 100%;
+            }
+
+            .dtl-modal-upper h4,
+            .dtl-modal-lower h4 {
+                font-size: 1rem;
+            }
+
+            .dtl-modal-upper-left .form-group,
+            .dtl-modal-upper-right .form-group {
+                font-size: 0.85rem;
+            }
+
+            .dtl-dye-table th,
+            .dtl-dye-table td {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .dtl-view-btn {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .dtl-badge {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+
+            .badgeC {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 80px;
+            }
+
+            .btn-action {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .dtl-modal-footer {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dtl-table th,
+            .dtl-table td {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+
+            .dtl-batch-table th,
+            .dtl-batch-table td {
+                font-size: 0.7rem;
+                padding: 5px;
+            }
+
+            .dtl-container {
+                padding: 10px;
+            }
+
+            .dtl-modal-content {
+                width: 95%;
+                max-width: 400px;
+            }
+
+            .dtl-modal-header h3 {
+                font-size: 1rem;
+            }
+
+            .dtl-modal-upper-left .form-group,
+            .dtl-modal-upper-right .form-group {
+                font-size: 0.75rem;
+            }
+
+            .dtl-dye-table th,
+            .dtl-dye-table td {
+                font-size: 0.7rem;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <div th:replace="~{shared/sidebar.html :: sidebar}"></div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{shared/navbar.html :: navbar}"></div>
+        <!-- Navbar End -->
+
+        <!-- Main Content Start -->
+        <div class="dtl-container">
+            <h2>Mã lệnh PO-<span th:text="${workOrderId}"></span></h2>
+
+            <table class="dtl-table">
+                <thead>
+                <tr>
+                    <th>Mã quản lý</th>
+                    <th>Sản phẩm</th>
+                    <th>Màu sắc</th>
+                    <th>Số lượng</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Lặp qua danh sách WorkOrderDetail -->
+                <tr th:each="workOrderDetail : ${workOrderDetails}">
+                    <td th:text="'WOD-'+${workOrderDetail.id}">DET001</td>
+                    <td th:text="${workOrderDetail.purchaseOrderDetail.getProduct().getName()} + ' - ' + ${workOrderDetail.purchaseOrderDetail.getBrand().getName()} + ' - ' + ${workOrderDetail.purchaseOrderDetail.getCategory().getName()}"></td>
+                    <td th:text="${workOrderDetail.purchaseOrderDetail.getNote_color()}"></td>
+                    <td th:text="${workOrderDetail.purchaseOrderDetail.getQuantity()}"></td>
+                    <td>
+                        <span th:switch="${workOrderDetail.workStatus}">
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                  th:text="'Đang sản xuất'"
+                                  class="badgeC"
+                                  style="background-color: #ffcc00; color: #333;"></span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                  th:text="'Hoàn thành'"
+                                  class="badgeC"
+                                  style="background-color: #34c759; color: white;"></span>
+                            <span th:case="*"
+                                  th:text="'Chờ sản xuất'"
+                                  class="badgeC"
+                                  style="background-color: #ff3b30; color: white;"></span>
+                        </span>
+                    </td>
+                    <td>
+                        <a th:onclick="'toggleDetails(\'batch-' + ${workOrderDetail.id} + '\')'"
+                           class="btn btn-primary btn-action">
+                            <i class="fas fa-eye"></i> Xem mẻ
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- Hàng chứa danh sách Batch -->
+                <tr th:each="workOrderDetail : ${workOrderDetails}"
+                    th:id="'batch-' + ${workOrderDetail.id}"
+                    class="dtl-batch-row">
+                    <td colspan="6">
+                        <div class="dtl-batch-content">
+                            <h5>Mã quản lý WOD-<span th:text="${workOrderDetail.id}"></span></h5>
+                            <table class="dtl-batch-table" th:each="batch : ${workOrderDetail.dyeStage.dyebatches}">
+                                <thead>
+                                <tr>
+                                    <th>Số mẻ</th>
+                                    <th>Công đoạn</th>
+                                    <th>Ngày bắt đầu</th>
+                                    <th>Ngày kết thúc</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Công đoạn Nhuộm -->
+                                <tr>
+                                    <td rowspan="3" th:text="${batch.batchNumber}"></td>
+                                    <td>Nhuộm</td>
+                                    <td>15/04/2025</td>
+                                    <td>15/04/2025</td>
+                                    <td>
+                                        <span th:switch="${batch.workStatus}">
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                                <i class="fas fa-spinner"></i> Đang Nhuộm
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                                <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
+                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            </span>
+                                            <span th:case="*" class="status status-not-started">
+                                                <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <td rowspan="3">
+                                        <button class="dtl-view-btn" th:onclick="|openPopup('${batch.batchNumber}')|">Xem</button>
+                                    </td>
+                                </tr>
+                                <!-- Công đoạn Đánh côn -->
+                                <tr>
+                                    <td>Đánh côn</td>
+                                    <td>16/04/2025</td>
+                                    <td>17/04/2025</td>
+                                    <td>
+                                        <span th:switch="${batch.windingBatch?.workStatus}">
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                                <i class="fas fa-spinner"></i> Đang Côn
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                                <i class="fas fa-check-circle"></i> Đã Côn
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
+                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            </span>
+                                            <span th:case="*" class="status status-not-started">
+                                                <i class="fas fa-times-circle"></i> Chưa Côn
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <!-- Công đoạn Đóng gói -->
+                                <tr>
+                                    <td>Đóng gói</td>
+                                    <td>18/04/2025</td>
+                                    <td>19/04/2025</td>
+                                    <td>
+                                        <span th:switch="${batch.windingBatch?.packagingBatch?.workStatus}">
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                                <i class="fas fa-spinner"></i> Đang Đóng Gói
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                                <i class="fas fa-check-circle"></i> Đã Đóng Gói
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            </span>
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
+                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            </span>
+                                            <span th:case="*" class="status status-not-started">
+                                                <i class="fas fa-times-circle"></i> Chưa Đóng Gói
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a href="/work-order/production-manager/list" class="dtl-back-link">Quay lại danh sách</a>
+        </div>
+        <!-- Main Content End -->
+
+        <!-- Popup Form -->
+        <div class="dtl-modal" id="updateModal">
+            <div class="dtl-modal-content">
+                <div class="dtl-modal-header">
+                    <h3>Thông Tin Mẻ <span id="batchId"></span></h3>
+                    <button class="close-btn" onclick="closePopup()">✖</button>
+                </div>
+                <div class="dtl-modal-body">
+                    <!-- Nửa trên: Thông tin Quản lý và Thông tin Mẻ -->
+                    <div class="dtl-modal-upper">
+                        <!-- Bên trái: Thông tin Quản lý -->
+                        <div class="dtl-modal-upper-left">
+                            <h4>Thông Tin Quản Lý</h4>
+                            <div class="form-group">
+                                <label>Tên Quản Lý:</label>
+                                <span>Nguyễn Văn A</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Số Điện Thoại:</label>
+                                <span>0123456789</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <span>quanly@example.com</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Địa Chỉ:</label>
+                                <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Chức Vụ:</label>
+                                <span>Quản Lý Sản Xuất</span>
+                            </div>
+                        </div>
+                        <!-- Bên phải: Thông tin Mẻ -->
+                        <div class="dtl-modal-upper-right">
+                            <h4>Thông Tin Mẻ</h4>
+                            <div class="form-group">
+                                <label>Số Mẻ:</label>
+                                <span>1/1</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Khối Lượng:</label>
+                                <span>1.00</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Màu:</label>
+                                <span>Blue</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Chỉ Số:</label>
+                                <span>40/2BGK</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Ghi chú:</label>
+                                <span>N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Nửa dưới: Bảng Thuốc Nhuộm -->
+                    <div class="dtl-modal-lower">
+                        <h4>Thuốc Nhuộm</h4>
+                        <table class="dtl-dye-table">
+                            <thead>
+                            <tr>
+                                <th>TĐ2</th>
+                                <th>nguyên</th>
+                                <th>%*ảnh</th>
+                                <th>Tỷ lệ %</th>
+                                <th>Số gam</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>nguyen</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>Huy</td>
+                                <td>13.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>Long</td>
+                                <td>14.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                                <td>12.00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="dtl-modal-footer">
+                    Footer Placeholder
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
+
+<!-- Custom Javascript for Detail Section -->
+<script>
+    function toggleDetails(id) {
+        const batchRow = document.getElementById(id);
+        const isVisible = batchRow.style.display === 'table-row';
+        document.querySelectorAll('.dtl-batch-row').forEach(row => {
+            row.style.display = 'none';
+        });
+        batchRow.style.display = isVisible ? 'none' : 'table-row';
+    }
+
+    function openPopup(batchId) {
+        document.getElementById('batchId').textContent = batchId;
+        document.getElementById('updateModal').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('updateModal').style.display = 'none';
+    }
+</script>
+</body>
+</html>

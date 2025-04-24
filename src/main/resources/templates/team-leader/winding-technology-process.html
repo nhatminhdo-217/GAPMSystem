@@ -39,6 +39,11 @@
             margin-bottom: 20px;
         }
 
+        .infor-winding {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
         .table th, .table td {
             border: 1px solid #000;
             padding: 8px;
@@ -288,6 +293,7 @@
         }
         .status-btn.in-progress { background: #ffc107; color: #333; }
         .status-btn.completed { background: #28a745; color: white; }
+        .status-btn.stop { background: #17a2b8; color: #333; }
         .status-btn:hover { transform: scale(1.02); }
         .captured-image {
             width: 100%;
@@ -421,18 +427,18 @@
                             <div class="col-md-6">
                                 <div class="equal-height-table">
                                     <div class="section-header">
-                                        <span>THÔNG TIN CHUNG</span>
+                                        <span class="infor-winding">THÔNG TIN CHUNG</span>
                                     </div>
                                     <table class="table table-bordered">
                                         <tbody>
                                         <tr>
-                                            <td>Mã QL</td>
+                                            <td>Mã Quản Lý</td>
                                             <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}">N14597-NAVY</td>
-                                            <td>KL</td>
+                                            <td>Khối Lượng</td>
                                             <td th:text="${technologyProcess.dyeBatch.cone_batch_weight}">9.5</td>
                                         </tr>
                                         <tr>
-                                            <td>Mã KH</td>
+                                            <td>Mã Khách Hàng</td>
                                             <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}">AZU-MHB</td>
                                             <td>Số Mẻ</td>
                                             <td>1/1</td>
@@ -446,7 +452,7 @@
                                         <tr>
                                             <td>Chỉ số</td>
                                             <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">60/3BYA</td>
-                                            <td>Q. Trình</td>
+                                            <td>Quy Trình</td>
                                             <td>3</td>
                                         </tr>
                                         <tr>
@@ -464,9 +470,12 @@
                             <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${technologyProcess.dyeBatch.windingBatch.id} + '\')'">
                                 <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
                             </button>
-                            <button class="back-btn" onclick="window.history.back()">
-                                <i class="fas fa-arrow-left me-2"></i> Back
+                            <button class="back-btn"
+                                    th:onclick="'window.location.href=\'' + @{/work-order/team-leader/Batch/{id}(id=${technologyProcess.dyeBatch.windingBatch.windingStage.id})} + '\''">
+                                <i class="fas fa-arrow-left me-2"></i> Quay Lại
                             </button>
+
+
                         </div>
                     </div>
                 </div>
@@ -503,15 +512,30 @@
                         <label>Cập Nhật Trạng Thái Đánh Côn:</label>
                         <div class="status-buttons">
                             <a th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${technologyProcess.dyeBatch.windingBatch.id})}"
-                               th:classappend="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || technologyProcess.dyeBatch.windingBatch.dyeBatch.pass != true } ? 'disabled-link' : ''"
+                               th:classappend="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).PAUSE || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || technologyProcess.dyeBatch.windingBatch.dyeBatch.pass != true } ? 'disabled-link' : ''"
                                class="status-btn in-progress">
-                                <i class="fas fa-spinner me-2"></i> Bắt đầu Côn
+                                <i class="fas fa-spinner me-2"></i> Bắt đầu
                             </a>
+
+                            <a  th:if="${technologyProcess.dyeBatch.windingBatch.workStatus != T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                                    th:href="@{/work-order/team-leader/winding/change/pause/{id}(id=${technologyProcess.dyeBatch.windingBatch.id})}"
+                               th:classappend="${ technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || technologyProcess.dyeBatch.windingBatch.dyeBatch.pass != true} ? 'disabled-link' : ''"
+                               class="status-btn stop">
+                                <i class="fas fa-pause me-2"></i> Tạm dừng
+                            </a>
+
+                            <a th:if="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                                    th:href="@{/work-order/team-leader/winding/change/in-process/{id}(id=${technologyProcess.dyeBatch.windingBatch.id})}"
+                               th:classappend="${ technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || technologyProcess.dyeBatch.windingBatch.dyeBatch.pass != true} ? 'disabled-link' : ''"
+                               class="status-btn stop">
+                                <i class="fas fa-play me-2"></i> Tiếp tục
+                            </a>
+
                             <button type="button"
                                     class="status-btn completed"
                                     th:onclick="'submitFormWithPhoto(\'form-' + ${technologyProcess.dyeBatch.windingBatch.id} + '\')'"
-                                    th:classappend="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
-                                    th:disabled="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                                    th:classappend="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).PAUSE || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED} ? 'disabled-link' : ''"
+                                    th:disabled="${technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).PAUSE || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FIX || technologyProcess.dyeBatch.windingBatch.workStatus == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                                 <i class="fas fa-check-circle me-2"></i> Hoàn thành
                             </button>
                         </div>
@@ -587,6 +611,20 @@
                 position: "top-end",
                 icon: "success",
                 title: /*[[${complete_winding}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${pause}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${pause}]]*/ "Default message",
                 showConfirmButton: false,
                 timer: 2000
             });

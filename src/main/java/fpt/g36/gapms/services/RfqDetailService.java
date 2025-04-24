@@ -19,4 +19,9 @@ public interface RfqDetailService {
 
     List<RfqDetail> getAllRfqDetailByRfqId(Long rfqId);
 
+    void addRfqDetail(Long rfqId, Long productId, Long brandId, Long categoryId, String noteColor, int quantity);
+
+    void editDetailRfq(Long detailId, Long productId, Long brandId, Long categoryId, String noteColor, int quantity);
+
+    RfqDetail getRfqDetailByIdFetch(Long detailId);
 }

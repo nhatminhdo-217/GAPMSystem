@@ -12,6 +12,8 @@ public interface DyeBatchService {
 
     void changeStatusDyeBatchInProcess(Long dbId, User leader);
 
+    void changeStatusDyeBatchPause(Long dbId);
+
     void changeStatusDyeBatchFinish(Long dbId, String photo, User leader);
 
     DyeBatch getDyeBatchById(Long dbId);

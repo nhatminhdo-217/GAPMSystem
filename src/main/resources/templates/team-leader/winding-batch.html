@@ -179,7 +179,8 @@
         .status-in-progress i { color: #ffc107; }
         .status-completed { background: #e6ffe6; color: #155724; }
         .status-completed i { color: #28a745; }
-
+        .status-stop { background: #17a2b8; color: #333; }
+        .status-stop i { color: black; }
         /* Popup Styles */
         .popup {
             position: fixed;
@@ -450,6 +451,9 @@
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
                                             <i class="fas fa-check-circle"></i> Đã Côn
+                                        </span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                            <i class="fas fa-pause"></i> Tạm Dừng
                                         </span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-not-started">
                                             <i class="fas fa-times-circle"></i> Chờ Sửa

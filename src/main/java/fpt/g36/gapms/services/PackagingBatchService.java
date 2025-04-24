@@ -12,6 +12,8 @@ public interface PackagingBatchService {
 
     void changeStatusPackagingBatchInProcess(Long pbId, User leader);
 
+    void changeStatusPackagingBatchInPause(Long pbId);
+
     void changeStatusPackagingBatchFinish(Long pbId, String photo, User leader);
 
     PackagingBatch getPackagingBatchById(Long pbId);

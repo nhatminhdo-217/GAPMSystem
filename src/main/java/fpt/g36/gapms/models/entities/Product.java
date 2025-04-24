@@ -34,6 +34,7 @@ public class Product extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id")
+    @JsonIgnore
     private Thread thread;
 
     public Product() {

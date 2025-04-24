@@ -5,15 +5,20 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.dto.quotation.QuotationDTO;
+import fpt.g36.gapms.models.entities.Contract;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
+import fpt.g36.gapms.repositories.ContractRepository;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,10 +28,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final PurchaseOrderMapper purchaseOrderMapper;
+   private final ImageService imageService;
+   private final ContractRepository contractRepository;
+   private final UserUtils userUtils;
 
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper, ImageService imageService, ContractRepository contractRepository, UserUtils userUtils) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderMapper = purchaseOrderMapper;
+        this.imageService = imageService;
+        this.contractRepository = contractRepository;
+        this.userUtils = userUtils;
     }
 
     @Override
@@ -158,6 +169,46 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    public PurchaseOrder uploadContract(PurchaseOrder purchaseOrder,String contractCode,  Long purchaseOrderId, User uploadBy, MultipartFile contractImage) throws IOException {
+        String contractFileSave = imageService.saveImageMultiFile(contractImage);
+
+        Contract contract = new Contract();
+        contract.setId(generateNewContractId());
+        contract.setName(userUtils.cleanSpaces(contractCode));
+        contract.setPath(contractFileSave);
+        contract.setStatus(BaseEnum.NOT_APPROVED);
+        contract.setCreateBy(uploadBy);
+        Contract contract_save = contractRepository.save(contract);
+
+        PurchaseOrder purchaseOrder_save = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+        purchaseOrder_save.setContracts(contract_save);
+        purchaseOrder_save.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
+        purchaseOrderRepository.save(purchaseOrder_save);
+        return purchaseOrder_save;
+    }
+
+    @Override
+    public PurchaseOrder reUploadContract(String contractCode, Long purchaseOrderId, MultipartFile contractImage) throws IOException {
+        String contractFileSave = imageService.saveImageMultiFile(contractImage);
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+        Contract contract = contractRepository.findById(purchaseOrder.getContract().getId()).orElseThrow(() -> new RuntimeException("Contract not found"));
+        contract.setName(userUtils.cleanSpaces(contractCode));
+        contract.setPath(contractFileSave);
+        Contract contract_save = contractRepository.save(contract);
+        return purchaseOrder;
+    }
+
+    @Override
+    public PurchaseOrder reUploadContract(String contractCode, Long purchaseOrderId) throws IOException {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+        Contract contract = contractRepository.findById(purchaseOrder.getContract().getId()).orElseThrow(() -> new RuntimeException("Contract not found"));
+        contract.setName(userUtils.cleanSpaces(contractCode));
+        Contract contract_save = contractRepository.save(contract);
+        return purchaseOrder;
+    }
+
+
+    @Override
     public PurchaseOrder getPurchaseOrderDetailByQuotationId(Long Id) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.getPurchaseOrderByQuotationId(Id);
         return purchaseOrder;
@@ -197,5 +248,37 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();
+    }
+
+
+
+
+    private String generateNewContractId() {
+        // Lấy ID lớn nhất hiện có
+        String maxId = contractRepository.findMaxContractId();
+
+        // Sinh ID tiếp theo
+        return createNextId(maxId);
+    }
+
+    private String createNextId(String currentMaxId) {
+
+        if (currentMaxId == null || currentMaxId.isEmpty()) {
+            return "HD0001";
+        }
+
+        // currentMaxId ví dụ: "HD0003"
+        // Tách phần số ra: "0003"
+        String numericPart = currentMaxId.substring(2); // Bỏ 'HD'
+
+        // Chuyển sang int để +1
+        int num = Integer.parseInt(numericPart);
+        num++;
+
+        // Format lại thành 4 chữ số: 4 -> "0004"
+        String nextNumeric = String.format("%04d", num);
+
+        // Ghép chuỗi
+        return "HD" + nextNumeric;
     }
 }
