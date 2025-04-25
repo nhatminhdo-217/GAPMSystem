@@ -105,24 +105,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser) {
-
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-
-        if (currUser.getRole().getName().equals("SALE_STAFF")) {
-            Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-            return productionOrderRepository.findAll(pageable).map(productionOrderMapper::toDTO);
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-        Page<ProductionOrder> productionOrders = productionOrderRepository.findAllByStatus(BaseEnum.WAIT_FOR_APPROVAL, pageable);
-        return productionOrders.map(productionOrderMapper::toDTO);
-
-    }
-
-    @Override
     public ProductionOrderDTO findById(Long id) {
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
@@ -160,20 +142,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         ProductionOrderDetail updatedDetail = productionOrderDetailRepository.save(existingDetail);
 
         return productionOrderMapper.convertToDTO(updatedDetail);
-    }
-
-    @Override
-    public ProductionOrderDTO updateStatusByProductionOrderId(Long id, User currUser) {
-        ProductionOrder po = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Production Order not found"));
-
-        if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED) {
-            po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
-        } else if (getStatusByProductionOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
-            po.setStatus(BaseEnum.APPROVED);
-            po.setApprovedBy(currUser);
-        }
-        return productionOrderMapper.toDTO(productionOrderRepository.save(po));
     }
 
     @Override
