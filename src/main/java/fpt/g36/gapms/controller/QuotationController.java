@@ -1,6 +1,7 @@
 package fpt.g36.gapms.controller;
 
 import fpt.g36.gapms.enums.BaseEnum;
+import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.dto.quotation.*;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
@@ -27,8 +28,9 @@ public class QuotationController {
    private final MailService mailService;
    private final PurchaseOrderService purchaseOrderService;
     private final NotificationUtils notificationUtils;
+    private final SolutionService solutionService;
 
-    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService, MailService mailService, PurchaseOrderService purchaseOrderService, NotificationUtils notificationUtils) {
+    public QuotationController(QuotationService quotationService, UserUtils userUtils, ProductService productService, BrandService brandService, CategoryService categoryService, RfqService rfqService, MailService mailService, PurchaseOrderService purchaseOrderService, NotificationUtils notificationUtils, SolutionService solutionService) {
         this.quotationService = quotationService;
         this.userUtils = userUtils;
         this.productService = productService;
@@ -38,6 +40,7 @@ public class QuotationController {
         this.mailService = mailService;
         this.purchaseOrderService = purchaseOrderService;
         this.notificationUtils = notificationUtils;
+        this.solutionService = solutionService;
     }
 
     @GetMapping("/list")
@@ -93,11 +96,17 @@ public class QuotationController {
 
         QuotationInfoDTO quotation_detail = quotationService.getQuotationInfo(id);
 
+        String phoneNumber = quotationService.getUserPhoneNumberByQuotationId(id);
+
+        Solution solution = solutionService.getSolutionById(quotation_detail.getSolutionId());
+
         userUtils.getOptionalUser(model);
         User currentUser = userUtils.getOptionalUserInfo();
 
         model.addAttribute("quotation_detail", quotation_detail);
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("solution", solution);
+        model.addAttribute("phoneNumber", phoneNumber);
 
         return "quotation/quotation_detail";
     }

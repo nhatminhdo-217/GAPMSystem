@@ -272,8 +272,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             System.err.println("Lỗi khi tạo TechnologyProcess cho WorkOrderDetail ID: " + workOrderDetailId + " trong WorkOrder ID: " + workOrderId + " - " + e.getMessage());
             throw e;
         }
-      
-       @Override
+    }
+
+    @Override
     public TechnologyProcess getByDyeId(Long dyeId) {
         TechnologyProcess  technologyProcess = technologyProcessRepository.getTechnologyProcessByBatchId(dyeId);
         return technologyProcess;

@@ -5,12 +5,9 @@ import fpt.g36.gapms.models.dto.production_order.ProductionOrderDTO;
 import fpt.g36.gapms.models.dto.production_order.ProductionOrderDetailDTO;
 import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDTO;
 import fpt.g36.gapms.models.dto.technical.TechnicalProductionOrderDetailsDTO;
-import fpt.g36.gapms.models.entities.ProductionOrder;
-import fpt.g36.gapms.models.entities.ProductionOrderDetail;
-import fpt.g36.gapms.models.entities.PurchaseOrderDetail;
-import fpt.g36.gapms.models.entities.WorkOrder;
-import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.models.mapper.ProductionOrderMapper;
+import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.ProductionOrderDetailRepository;
 import fpt.g36.gapms.repositories.WorkOrderRepository;
 import fpt.g36.gapms.repositories.ProductionOrderRepository;
@@ -26,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,13 +36,15 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     private final WorkOrderRepository workOrderRepository;
     private final ProductionOrderDetailRepository productionOrderDetailRepository;
     private final PurchaseOrderService purchaseOrderService;
+    private final PurchaseOrderMapper purchaseOrderMapper;
 
-    public ProductionOrderServiceImpl(ProductionOrderRepository productionOrderRepository, ProductionOrderMapper productionOrderMapper, WorkOrderRepository workOrderRepository, ProductionOrderDetailRepository productionOrderDetailRepository, PurchaseOrderService purchaseOrderService) {
+    public ProductionOrderServiceImpl(ProductionOrderRepository productionOrderRepository, ProductionOrderMapper productionOrderMapper, WorkOrderRepository workOrderRepository, ProductionOrderDetailRepository productionOrderDetailRepository, PurchaseOrderService purchaseOrderService, PurchaseOrderMapper purchaseOrderMapper) {
         this.productionOrderRepository = productionOrderRepository;
         this.workOrderRepository = workOrderRepository;
         this.productionOrderMapper = productionOrderMapper;
         this.productionOrderDetailRepository = productionOrderDetailRepository;
         this.purchaseOrderService = purchaseOrderService;
+        this.purchaseOrderMapper = purchaseOrderMapper;
     }
 
     @Override
@@ -101,24 +101,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser) {
-
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-
-        if (currUser.getRole().getName().equals("SALE_STAFF")) {
-            Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-            return productionOrderRepository.findAll(pageable).map(productionOrderMapper::toDTO);
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-        Page<ProductionOrder> productionOrders = productionOrderRepository.findAllByStatus(BaseEnum.WAIT_FOR_APPROVAL, pageable);
-        return productionOrders.map(productionOrderMapper::toDTO);
-
-    }
-
-    @Override
     public ProductionOrderDTO findById(Long id) {
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
@@ -159,26 +141,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public ProductionOrderDTO updateStatusByProductionOrderId(Long id, User currUser) {
-        ProductionOrder po = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Production Order not found"));
-
-        if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED) {
-            po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
-        } else if (getStatusByProductionOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
-            po.setStatus(BaseEnum.APPROVED);
-            po.setApprovedBy(currUser);
-        }
-        return productionOrderMapper.toDTO(productionOrderRepository.save(po));
-    }
-
-    @Override
     public void createProductionOrder(Long id) {
 
         ProductionOrder productionOrder = new ProductionOrder();
 
-        productionOrder.setStatus(BaseEnum.DRAFT);
-        productionOrder.setPurchaseOrder(purchaseOrderService.getPurchaseOrderById(id).get());
+        productionOrder.setStatus(BaseEnum.NOT_APPROVED);
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(id).orElseThrow(
+                () -> new RuntimeException("Không tìm thấy đơn hàng"));
+        productionOrder.setPurchaseOrder(purchaseOrder);
         ProductionOrder savedProductionOrder = productionOrderRepository.save(productionOrder);
 
         List<PurchaseOrderDetail> purchaseOrderDetails = purchaseOrderService.getPurchaseOrderById(id).get().getPurchaseOrderDetails();
@@ -195,22 +165,22 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     @Override
     public BaseEnum getStatusByProductionOrder(Long id) {
         Optional<ProductionOrder> productionOrder = productionOrderRepository.findById(id);
-        return productionOrder.map(ProductionOrder::getStatus).orElse(null);
+        return productionOrder.map(ProductionOrder::getStatus).orElseThrow(
+                () -> new RuntimeException("Không tìm thấy lệnh sản xuất"));
     }
 
     @Override
     public ProductionOrder updateStatus(Long id, User currUser) {
         ProductionOrder po = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Production Order not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lệnh sản xuất"));
 
         if (getStatusByProductionOrderId(id).equals(BaseEnum.DRAFT)) {
             po.setStatus(BaseEnum.NOT_APPROVED);
             po.setCreatedBy(currUser);
         }
         else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED){
-            po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
-        } else if (getStatusByProductionOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
             po.setStatus(BaseEnum.APPROVED);
+            po.setCreatedBy(currUser);
             po.setApprovedBy(currUser);
         }
         return productionOrderRepository.save(po);
@@ -228,6 +198,18 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         productionOrder.setStatus(BaseEnum.CANCELED);
         productionOrderRepository.save(productionOrder);
         return true;
+    }
+
+    @Override
+    public Page<ProductionOrderDTO> getAllProductionOrders(String search, BaseEnum status, int page, int size, String sortField, String sortDir) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ProductionOrder> productionOrders = productionOrderRepository.searchAndFilter(search, status, pageable);
+
+        List<ProductionOrderDTO> productionOrderDTOS = new ArrayList<>(productionOrderMapper.toDTOList(productionOrders.getContent()));
+
+        return new PageImpl<>(productionOrderDTOS, pageable, productionOrders.getTotalElements());
     }
 
     private BaseEnum getStatusByProductionOrderId(Long id) {

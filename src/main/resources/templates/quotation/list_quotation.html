@@ -103,10 +103,10 @@
                                             Khách hàng
                                         </th>
                                         <th scope="col">
-                                            Trạng thái
+                                            Ngày tạo
                                         </th>
                                         <th scope="col">
-                                            Ngày tạo
+                                            Trạng thái
                                         </th>
                                         <th scope="col">
                                             Thao tác
@@ -121,6 +121,7 @@
                                         <th scope="row" th:text="${iterStat.count + quotations.number * quotations.size}"></th>
                                         <td th:text="${quotation.id}"></td>
                                         <td th:text="${quotation.customerName}"></td>
+                                        <td th:text="${#temporals.format(quotation.createAt, 'dd/MM/yyyy')}"></td>
                                         <td>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
@@ -128,7 +129,6 @@
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
                                         </td>
-                                        <td th:text="${#temporals.format(quotation.createAt, 'dd/MM/yyyy')}"></td>
                                         <td>
                                             <a th:href="@{'/quotation/detail/' + ${quotation.id}}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye"></i> Chi tiết
@@ -154,9 +154,10 @@
                                     <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trước</a>
                                 </li>
                                 <li class="page-item" th:each="pageNumber : ${pageNumbers}"
-                                    th:classappend="${pageNumbers == quotations.number ? 'active' : ''}">
-                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${pageNumber} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
-                                       th:text="${pageNumber + 1}"></a>
+                                    th:classappend="${pageNumber == quotations.number ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${pageNumber} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        <span th:text="${pageNumber + 1}"></span>
+                                    </a>
                                 </li>
                                 <li class="page-item" th:classappend="${quotations.number == quotations.totalPages - 1 ? 'disabled' : ''}">
                                     <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number + 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Sau</a>

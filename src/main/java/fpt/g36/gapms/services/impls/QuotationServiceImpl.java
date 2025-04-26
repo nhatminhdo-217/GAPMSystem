@@ -76,25 +76,25 @@ public class QuotationServiceImpl implements QuotationService {
         }
 
         QuotationInfoDTO quotationInfoDTO = new QuotationInfoDTO();
-        quotationInfoDTO.setQuotationId(quotationDetail.get(0).getQuotationId());
-        quotationInfoDTO.setUserName(quotationDetail.get(0).getUserName());
-        quotationInfoDTO.setCompanyName(quotationDetail.get(0).getCompanyName());
-        quotationInfoDTO.setTaxNumber(quotationDetail.get(0).getTaxNumber());
-        quotationInfoDTO.setCompanyAddress(quotationDetail.get(0).getCompanyAddress());
-        quotationInfoDTO.setIsAccepted(quotationDetail.get(0).getIsAccepted().name());
-        quotationInfoDTO.setSolutionId(quotationDetail.get(0).getSolutionId());
-        quotationInfoDTO.setExpectedDate(quotationDetail.get(0).getExpectedDate());
-        quotationInfoDTO.setActualDate(quotationDetail.get(0).getActualDate());
+        quotationInfoDTO.setQuotationId(quotationDetail.get(0).quotationId());
+        quotationInfoDTO.setUserName(quotationDetail.get(0).userName());
+        quotationInfoDTO.setCompanyName(quotationDetail.get(0).companyName());
+        quotationInfoDTO.setTaxNumber(quotationDetail.get(0).taxNumber());
+        quotationInfoDTO.setCompanyAddress(quotationDetail.get(0).companyAddress());
+        quotationInfoDTO.setIsAccepted(quotationDetail.get(0).isAccepted().name());
+        quotationInfoDTO.setSolutionId(quotationDetail.get(0).solutionId());
+        quotationInfoDTO.setExpectedDate(quotationDetail.get(0).expectedDate());
+        quotationInfoDTO.setActualDate(quotationDetail.get(0).actualDate());
 
         List<QuotationDetailDTO> products = quotationDetail.stream()
                 .map(p -> {
                     QuotationDetailDTO product = new QuotationDetailDTO();
-                    product.setProductName(p.getProductName());
-                    product.setBrandName(p.getBrandName());
-                    product.setCategoryName(p.getCategoryName());
-                    product.setPrice(p.getPrice());
-                    product.setNoteColor(p.getNoteColor());
-                    product.setQuantity(p.getQuantity());
+                    product.setProductName(p.productName());
+                    product.setBrandName(p.brandName());
+                    product.setCategoryName(p.categoryName());
+                    product.setPrice(p.price());
+                    product.setNoteColor(p.noteColor());
+                    product.setQuantity(p.quantity());
                     return product;
                 })
                 .toList();
@@ -312,7 +312,7 @@ return quotation;
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.DRAFT);
+        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -337,6 +337,7 @@ return quotation;
         }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
             quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
             quotation.setUpdateAt(LocalDateTime.now());
+            quotation.setCreatedBy(currentUser);
         }else {
             throw new RuntimeException("Quotation status cannot valid");
         }
@@ -364,11 +365,20 @@ return quotation;
 
         List<QuotationDTO> quotationDTOs = new ArrayList<>(quotationMapper.toListDTO(rawResults));
 
-        System.err.println("quotationDTOs: " + quotationDTOs.size());
-
-        sortQuotationDTOs(quotationDTOs, sortDir);
+//        sortQuotationDTOs(quotationDTOs, sortDir);
 
         return new PageImpl<>(quotationDTOs, pageable, rawResults.getTotalElements());
+    }
+
+    @Override
+    public String getUserPhoneNumberByQuotationId(Long id) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+        User user = quotation.getRfq().getCreateBy();
+        if (user != null) {
+            return user.getPhoneNumber();
+        }
+        return "";
     }
 
     private void sortQuotationDTOs(List<QuotationDTO> content, String sortDir) {
