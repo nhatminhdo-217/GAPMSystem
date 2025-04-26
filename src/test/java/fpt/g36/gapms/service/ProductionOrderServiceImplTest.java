@@ -492,9 +492,11 @@ class ProductionOrderServiceImplTest {
             when(purchaseOrderService.getPurchaseOrderById(999L)).thenReturn(Optional.empty());
 
             // Act & Assert
-            assertThrows(RuntimeException.class, () -> {
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
                 productionOrderService.createProductionOrder(999L);
             });
+
+            assertEquals("Không tìm thấy đơn hàng", exception.getMessage());
 
             verify(purchaseOrderService).getPurchaseOrderById(999L);
             verifyNoInteractions(productionOrderRepository);
@@ -522,16 +524,18 @@ class ProductionOrderServiceImplTest {
         }
 
         @Test
-        @DisplayName("Should return null when production order not found")
+        @DisplayName("Should throw exception when production order not found")
         void shouldReturnNullWhenProductionOrderNotFound() {
             // Arrange
             when(productionOrderRepository.findById(999L)).thenReturn(Optional.empty());
 
             // Act
-            BaseEnum result = productionOrderService.getStatusByProductionOrder(999L);
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+                BaseEnum result = productionOrderService.getStatusByProductionOrder(999L);
+            });
 
             // Assert
-            assertNull(result);
+            assertEquals("Không tìm thấy lệnh sản xuất", exception.getMessage());
 
             verify(productionOrderRepository).findById(999L);
         }
@@ -597,7 +601,7 @@ class ProductionOrderServiceImplTest {
                 productionOrderService.updateStatus(999L, user);
             });
 
-            assertEquals("Production Order not found", exception.getMessage());
+            assertEquals("Không tìm thấy lệnh sản xuất", exception.getMessage());
 
             verify(productionOrderRepository).findById(999L);
         }
@@ -726,6 +730,44 @@ class ProductionOrderServiceImplTest {
 
             verify(productionOrderRepository).searchAndFilter(search, status, pageable);
             verify(productionOrderMapper).toDTOList(List.of());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when page is less than 0")
+        void shouldThrowExceptionWhenPageIsLessThanZero() {
+            // Arrange
+            String search = "test";
+            BaseEnum status = BaseEnum.NOT_APPROVED;
+            int page = -1;
+            int size = 10;
+            String sortField = "createAt";
+            String sortDir = "desc";
+
+            // Act & Assert
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+                productionOrderService.getAllProductionOrders(search, status, page, size, sortField, sortDir);
+            });
+
+            assertEquals("Page index must not be less than zero", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when size is less than 1")
+        void shouldThrowExceptionWhenSizeIsLessThanOne() {
+            // Arrange
+            String search = "test";
+            BaseEnum status = BaseEnum.NOT_APPROVED;
+            int page = 0;
+            int size = 0;
+            String sortField = "createAt";
+            String sortDir = "desc";
+
+            // Act & Assert
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+                productionOrderService.getAllProductionOrders(search, status, page, size, sortField, sortDir);
+            });
+
+            assertEquals("Page size must not be less than one", exception.getMessage());
         }
     }
 }
