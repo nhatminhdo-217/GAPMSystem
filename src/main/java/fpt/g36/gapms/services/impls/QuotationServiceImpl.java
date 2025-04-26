@@ -150,7 +150,7 @@ public class QuotationServiceImpl implements QuotationService {
     private List<QuotationListDTO> getListDTOS(String sortDir, Map<Long, QuotationListDTO> quotationMap) {
         List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
 
-        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // Sort by getIsAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
         // and then by createAt
         content.sort((q1, q2) -> {
             int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());
@@ -312,7 +312,7 @@ return quotation;
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.DRAFT);
+        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -337,6 +337,7 @@ return quotation;
         }  else if (getStatusByQuotationId(id) == BaseEnum.NOT_APPROVED){
             quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
             quotation.setUpdateAt(LocalDateTime.now());
+            quotation.setCreatedBy(currentUser);
         }else {
             throw new RuntimeException("Quotation status cannot valid");
         }
@@ -369,8 +370,19 @@ return quotation;
         return new PageImpl<>(quotationDTOs, pageable, rawResults.getTotalElements());
     }
 
+    @Override
+    public String getUserPhoneNumberByQuotationId(Long id) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+        User user = quotation.getRfq().getCreateBy();
+        if (user != null) {
+            return user.getPhoneNumber();
+        }
+        return "";
+    }
+
     private void sortQuotationDTOs(List<QuotationDTO> content, String sortDir) {
-        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // Sort by getIsAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
         // and then by createAt
         content.sort((q1, q2) -> {
             int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());

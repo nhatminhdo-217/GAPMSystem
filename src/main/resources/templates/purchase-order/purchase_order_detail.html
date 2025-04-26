@@ -94,25 +94,29 @@
                         </div>
                         <div class="card-body">
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Tên khách hàng:</div>
-                                <div class="col-7 col-md-8 fw-bold" th:text="${orderInfo.customerName}"></div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Tên khách hàng:</div>
+                                <div class="col-7 col-md-8" th:text="${orderInfo.customerName}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Công ty:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">SĐT:</div>
+                                <div class="col-7 col-md-8" th:text="${phoneNumber}"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 col-md-4 text-muted fw-bold">Công ty:</div>
                                 <div class="col-7 col-md-8" th:text="${orderInfo.companyName}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Mã thuế:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Mã thuế:</div>
                                 <div class="col-7 col-md-8" th:text="${orderInfo.taxNumber}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Địa chỉ:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Địa chỉ:</div>
                                 <div class="col-7 col-md-8" th:text="${orderInfo.companyAddress}"></div>
                             </div>
 
                             <!-- Contract Information -->
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Hợp đồng:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Hợp đồng:</div>
                                 <div class="col-7 col-md-8">
                                     <div th:if="${currUser.role.name == 'SALE_STAFF'}">
                                         <div th:if="${orderInfo.status.name() ==  'DRAFT'}">
@@ -122,16 +126,14 @@
                                             <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
                                             </a>
-                                            <a th:unless="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/upload'}" class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-upload"></i> Tải ảnh lên
-                                            </a>
+                                            <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi khách tải ảnh lên</span>
                                         </div>
                                     </div>
                                     <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
                                         <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
                                         </a>
-                                        <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi nhân viên tải ảnh lên</span>
+                                        <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi khách tải ảnh lên</span>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +149,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Trạng thái:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Trạng thái:</div>
                                 <div class="col-7 col-md-8">
                                     <span th:switch="${orderInfo.status}" class="status-badge"
                                           th:classappend="${
@@ -164,21 +166,61 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Ngày giao mong muốn:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày giao mong muốn:</div>
                                 <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Ngày thực giao:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày thực giao:</div>
                                 <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted">Giải pháp:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Giải pháp:</div>
                                 <div class="col-7 col-md-8">
-                                    <a th:href="@{'/purchase-order/detail/solution/' + ${orderInfo.solutionId}}" class="btn btn-sm btn-outline-info">
-                                        <i class="bi bi-info-circle"></i> Xem chi tiết
-                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#solutionModal">
+                                        <i class="fas fa-eye me-1"></i>Xem chi tiết
+                                    </button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solution Modal Popup -->
+            <div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="solutionModalLabel">Chi tiết giải pháp</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Solution information -->
+                            <div class="row mb-3">
+                                <div class="col-md-4 fw-bold">Lý do:</div>
+                                <div class="col-md-8" th:text="${solution.reason ?: 'N/A'}"></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 fw-bold">Ngày giao hàng thực tế:</div>
+                                <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 fw-bold">Chi tiết:</div>
+                                <div class="col-md-8">
+                                    <p th:text="${solution.description ?: 'N/A'}" style="white-space: pre-line;"></p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 fw-bold">Tạo bởi:</div>
+                                <div class="col-md-8" th:text="${solution.createBy.username ?: 'N/A'}"></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 fw-bold">Tạo vào:</div>
+                                <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd-MM-yyyy HH:mm')}"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>
@@ -194,7 +236,7 @@
                 </div>
                 <div class="card-body p-0">
                     <!-- Desktop Table View -->
-                    <div class="table-responsive desktop-table">
+                    <div class="table-responsive desktop-table" style="width: 100%">
                         <table class="table table-hover m-0">
                             <thead class="table-light">
                             <tr>

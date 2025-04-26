@@ -54,7 +54,7 @@ public class RfqSolutionController {
             model.addAttribute("solution", solutions);
         }
         userUtils.getOptionalUser(model);
-        return "/sale-staff/view-all-rfq-solution";
+        return "sale-staff/view-all-rfq-solution";
     }
 
     @GetMapping("/rfq-solution-details/{id}")
@@ -71,6 +71,6 @@ public class RfqSolutionController {
         userUtils.getOptionalUser(model);
         model.addAttribute("solution", solution);
         model.addAttribute("company", company);
-        return "/sale-staff/rfq-solution-details";
+        return "sale-staff/rfq-solution-details";
     }
 }
