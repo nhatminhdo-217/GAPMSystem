@@ -144,7 +144,7 @@ public class PurchaseOrderController {
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
                 contractService.updateContractStatus(id, currUser);
-                productionOrderService.createProductionOrder(id);
+                productionOrderService.createProductionOrder(id, currUser);
                 redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
                 redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");
             } else {

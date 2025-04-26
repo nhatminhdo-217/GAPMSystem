@@ -208,7 +208,7 @@
                     </div>
                   </td>
                   <td class="text-center" data-label="Số lượng" th:text="${product.quantity}"></td>
-                  <td class="text-end" data-label="Giá theo cuộn" th:text="${#numbers.formatDecimal(product.price * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
+                  <td class="text-center" data-label="Giá theo cuộn" th:text="${#numbers.formatDecimal(product.price * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
                 </tr>
                 </tbody>
               </table>

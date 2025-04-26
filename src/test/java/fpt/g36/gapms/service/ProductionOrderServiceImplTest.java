@@ -476,7 +476,7 @@ class ProductionOrderServiceImplTest {
             when(purchaseOrderService.getPurchaseOrderDetailById(1L)).thenReturn(purchaseOrderDetail);
 
             // Act
-            productionOrderService.createProductionOrder(1L);
+            productionOrderService.createProductionOrder(1L, user);
 
             // Assert
             verify(purchaseOrderService, times(2)).getPurchaseOrderById(1L);
@@ -493,7 +493,7 @@ class ProductionOrderServiceImplTest {
 
             // Act & Assert
             RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-                productionOrderService.createProductionOrder(999L);
+                productionOrderService.createProductionOrder(999L, user);
             });
 
             assertEquals("Không tìm thấy đơn hàng", exception.getMessage());

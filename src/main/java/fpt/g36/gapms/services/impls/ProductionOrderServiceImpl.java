@@ -140,7 +140,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public void createProductionOrder(Long id) {
+    public void createProductionOrder(Long id, User currUser) {
 
         ProductionOrder productionOrder = new ProductionOrder();
 
@@ -148,6 +148,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(id).orElseThrow(
                 () -> new RuntimeException("Không tìm thấy đơn hàng"));
         productionOrder.setPurchaseOrder(purchaseOrder);
+        productionOrder.setCreatedBy(currUser);
         ProductionOrder savedProductionOrder = productionOrderRepository.save(productionOrder);
 
         List<PurchaseOrderDetail> purchaseOrderDetails = purchaseOrderService.getPurchaseOrderById(id).get().getPurchaseOrderDetails();
@@ -179,7 +180,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         }
         else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED){
             po.setStatus(BaseEnum.APPROVED);
-            po.setCreatedBy(currUser);
             po.setApprovedBy(currUser);
         }
         return productionOrderRepository.save(po);
