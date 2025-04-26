@@ -31,7 +31,7 @@ public interface PurchaseOrderService {
 
     List<PurchaseOrderDTO> getAllPurchaseOrderByRole(User currUser);
 
-    Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year);
+    Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year, String sanitizedSearchQuery);
 
     PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id);
 

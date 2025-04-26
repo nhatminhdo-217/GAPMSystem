@@ -118,8 +118,10 @@ public class WindingStageServiceImpl implements WindingStageService {
                     .allMatch(windingBatch -> windingBatch.getTestStatus() == TestEnum.TESTED && windingBatch.getPass());
             if (allTested) {
                 windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.FINISHED);
+                windingRiskAssessment_save.getWindingBatch().getWindingStage().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
             }else {
                 windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.IN_PROGRESS);
+                windingRiskAssessment_save.getWindingBatch().getWindingStage().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
             }
         }
         windingRiskAssessmentRepository.save(windingRiskAssessment_save);

@@ -354,31 +354,33 @@ public class PurchaseOrderController {
     public String getAllPurchaseOrderByUserId(Model model,
                                               @RequestParam(value = "page", defaultValue = "0") String pageStr,
                                               @RequestParam(value = "size", defaultValue = "5") String sizeStr,
-                                              @RequestParam(value = "year", required = false, defaultValue = "2025") String yearStr) {
+                                              @RequestParam(value = "year", required = false, defaultValue = "2025") String yearStr,
+                                              @RequestParam(value = "searchQuery", required = false) String searchQuery) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Xử lý page
+        // Handle page
         int page;
         try {
             page = Integer.parseInt(pageStr);
-            if (page < 0) { // Không cho phép page âm
-                page = 0; // Đặt về mặc định nếu không hợp lệ
+            if (page < 0) {
+                page = 0;
             }
         } catch (NumberFormatException e) {
-            page = 0; // Nếu không parse được (ví dụ: "l"), đặt về 0
+            page = 0;
         }
 
-        // Xử lý size
+        // Handle size
         int size;
         try {
             size = Integer.parseInt(sizeStr);
-            if (size <= 0 || size > 100) { // Giới hạn size từ 1 đến 100
-                size = 5; // Đặt về mặc định nếu không hợp lệ
+            if (size <= 0 || size > 100) {
+                size = 5;
             }
         } catch (NumberFormatException e) {
-            size = 5; // Nếu không parse được (ví dụ: "l"), đặt về 5
+            size = 5;
         }
 
+        // Handle year
         Integer year = null;
         if (yearStr != null && !yearStr.trim().isEmpty()) {
             try {
@@ -390,22 +392,28 @@ public class PurchaseOrderController {
                 year = null;
             }
         }
-        Page<PurchaseOrder> purchaseOrders = Page.empty(); // Khởi tạo danh sách rỗng mặc định
+
+
+        String sanitizedSearchQuery = (searchQuery != null && !searchQuery.trim().isEmpty()) ? searchQuery.trim() : null;
+
+        Page<PurchaseOrder> purchaseOrders = Page.empty();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
                 Pageable pageable = PageRequest.of(page, size);
                 purchaseOrders = purchaseOrderService.getAllPurchaseOrderByUserId(
-                        optionalUser.get().getId(), pageable, year); // Gọi service với year có thể null
+                        optionalUser.get().getId(), pageable, year, sanitizedSearchQuery);
             }
         }
+
         model.addAttribute("currentPage", purchaseOrders.getNumber());
         model.addAttribute("totalPages", purchaseOrders.getTotalPages());
         model.addAttribute("totalItems", purchaseOrders.getTotalElements());
         model.addAttribute("pageSize", size);
         model.addAttribute("purchaseOrders", purchaseOrders);
-        model.addAttribute("selectedYear", year != null ? year : ""); // Trả về năm đã xử lý hoặc rỗng // Trả về năm đã xử lý hoặc rỗng
+        model.addAttribute("selectedYear", year != null ? year : "");
+        model.addAttribute("searchQuery", sanitizedSearchQuery != null ? sanitizedSearchQuery : "");
 
         userUtils.getOptionalUser(model);
         return "purchase-order/purchase-order-list-customer";

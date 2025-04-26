@@ -19,9 +19,14 @@ import java.util.Optional;
 
 @Repository
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
-    @Query("SELECT wo FROM WorkOrder wo " +
-            "WHERE  wo.isProduction != fpt.g36.gapms.enums.WorkEnum.FINISHED and (:workOrderId IS NULL OR wo.id = :workOrderId) " +
+    /*@Query("SELECT wo FROM WorkOrder wo " +
+            "WHERE  wo.isProduction != fpt.g36.gapms.enums.WorkEnum.FINISHED and (:workOrderId IS NULL OR wo.id = :workOrderId)" +
             "ORDER BY wo.createAt DESC, CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 ELSE 1 END")
+    Page<WorkOrder> getAllWorkOrderTeamLeader(@Param("workOrderId") Long workOrderId, Pageable pageable);*/
+
+    @Query("SELECT DISTINCT wo FROM WorkOrder wo " + "JOIN wo.workOrderDetails wod " + "JOIN wod.dyeStage ds " + "JOIN ds.dyebatches db " +
+            "WHERE wo.isProduction != fpt.g36.gapms.enums.WorkEnum.FINISHED " + "AND (:workOrderId IS NULL OR wo.id = :workOrderId) " +
+            "AND db.technologyProcess IS NOT NULL " + "ORDER BY wo.createAt DESC, " + "CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 ELSE 1 END")
     Page<WorkOrder> getAllWorkOrderTeamLeader(@Param("workOrderId") Long workOrderId, Pageable pageable);
 
     @Query("SELECT wo FROM WorkOrder wo " +

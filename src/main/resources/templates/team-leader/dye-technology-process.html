@@ -147,10 +147,52 @@
             margin-right: 8px;
         }
 
-        /* Căn các nút sang bên phải */
+        /* Căn giữa các nút */
         .button-container {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center; /* Căn giữa các nút */
+            gap: 10px; /* Khoảng cách giữa các nút */
+            margin-top: 20px;
+        }
+
+        /* CSS cho trạng thái */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f3f5;
+        }
+        .status i { margin-right: 8px; font-size: 16px; }
+        .status-not-started { background: #ffe5e5; color: #dc3545; }
+        .status-not-started i { color: #dc3545; }
+        .status-in-progress { background: #fff3e0; color: #856404; }
+        .status-in-progress i { color: #ffc107; }
+        .status-completed { background: #e6ffe6; color: #155724; }
+        .status-completed i { color: #28a745; }
+        .status-stop { background: #17a2b8; color: #333; }
+        .status-stop i { color: black; }
+        .status-fix { background: #e88cb4; color: rgb(30, 31, 34); }
+        .status-fix i { color: rgba(234, 221, 61, 0.96); }
+
+        /* CSS để căn giữa tiêu đề và đặt trạng thái ở góc phải trên */
+        .header-container {
+            position: relative;
+            text-align: center; /* Căn giữa tiêu đề */
+            margin-bottom: 20px;
+        }
+        .header-title {
+            display: inline-block; /* Đảm bảo tiêu đề không bị đẩy lệch */
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .status-container {
+            position: absolute;
+            right: 0;
+            top: 0;
         }
 
         /* Responsive cho màn hình điện thoại */
@@ -203,14 +245,30 @@
             }
 
             .back-btn {
-                margin-left: 4%;
+                margin-left: 0; /* Xóa margin-left để căn giữa */
             }
 
             .button-container {
-                justify-content: space-between;
+                justify-content: center; /* Căn giữa trên điện thoại */
+                gap: 8px; /* Khoảng cách nhỏ hơn trên điện thoại */
+            }
+
+            /* Đặt trạng thái dưới tiêu đề trên màn hình điện thoại */
+            .status-container {
+                position: static; /* Xóa position absolute để nằm trong luồng bình thường */
+                display: flex;
+                justify-content: center; /* Căn giữa trạng thái */
+                margin-top: 10px; /* Khoảng cách giữa tiêu đề và trạng thái */
+            }
+
+            .status {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .status i {
+                font-size: 14px;
             }
         }
-
 
         /* Popup Styles */
         .popup {
@@ -413,8 +471,29 @@
             <div class="row g-4">
                 <div class="col-12">
                     <div class="bg-light rounded h-100 p-4">
-                        <!-- Tiêu đề -->
-                        <div class="header-title text-center mb-4">ĐƠN CÔNG NGHỆ SẢN XUẤT</div>
+                        <!-- Căn giữa tiêu đề và đặt trạng thái ở góc phải trên (máy tính) hoặc dưới tiêu đề (điện thoại) -->
+                        <div class="header-container">
+                            <div class="header-title">ĐƠN CÔNG NGHỆ SẢN XUẤT</div>
+                            <div class="status-container">
+                                <span th:switch="${technologyProcess.dyeBatch.workStatus}">
+                                    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                        <i class="fas fa-spinner"></i> Đang Nhuộm
+                                    </span>
+                                    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                        <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                    </span>
+                                    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                        <i class="fas fa-pause"></i> Tạm Dừng
+                                    </span>
+                                    <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
+                                        <i class="fas fa-wrench"></i> Chờ Sửa
+                                    </span>
+                                    <span th:case="*" class="status status-not-started">
+                                        <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
 
                         <!-- Phần Thông Tin Chung và Hóa Chất - Chất Trợ -->
                         <div class="table-container row">
@@ -429,27 +508,27 @@
                                         <tbody>
                                         <tr>
                                             <td>Mã Quản Lý</td>
-                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}">N14597-NAVY</td>
+                                            <td >WO-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.id}"></span></td>
                                             <td>Khối Lượng</td>
                                             <td th:text="${technologyProcess.dyeBatch.cone_batch_weight}">9.5</td>
                                         </tr>
                                         <tr>
                                             <td>Mã Khách Hàng</td>
-                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}">AZU-MHB</td>
-                                            <td>Số Mẻ</td>
-                                            <td>1/1</td>
+                                            <td th:text="'KH-'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}">AZU-MHB</td>
+                                            <td>Mẻ số</td>
+                                            <td th:text="${technologyProcess.dyeBatch.batchNumber}"></td>
                                         </tr>
                                         <tr>
                                             <td>Màu</td>
                                             <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">C136-D(w)</td>
-                                            <td>Mã Máy</span></td>
-                                            <td class="highlight-cell"><span class="highlight" th:text="${technologyProcess.dyeBatch.dyeStage.dyeMachine.id}"></td>
+                                            <td>Mã Máy</td>
+                                            <td class="highlight-cell"><span  th:text="'MB-'+${technologyProcess.dyeBatch.dyeStage.dyeMachine.id}"></span></td>
                                         </tr>
                                         <tr>
                                             <td>Chỉ Số</td>
                                             <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">60/3BYA</td>
                                             <td>Quy Trình</td>
-                                            <td>3</td>
+                                            <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id}">3</td>
                                         </tr>
                                         <tr>
                                             <td>Ghi chú</td>
@@ -492,7 +571,7 @@
                                             <td>Univadin DFM</td>
                                             <td th:text="${technologyProcess.dfm}">46</td>
                                             <td>Dung Tỷ</td>
-                                            <td >1/6</td>
+                                            <td>1/6</td>
                                         </tr>
                                         <tr>
                                             <td>Giặt khử</td>
@@ -514,7 +593,7 @@
                                     <th colspan="6" class="table-header">THUỐC NHUỘM</th>
                                 </tr>
                                 <tr>
-                                    <th>TQD2</th>
+                                    <th>Tên Thuốc</th>
                                     <th>%+ánh</th>
                                     <th>Tỷ lệ %</th>
                                     <th>Số gam</th>
@@ -531,7 +610,7 @@
                             </table>
                         </div>
 
-                        <!-- Nút Cập nhật trạng thái và Back (Căn sang bên phải) -->
+                        <!-- Nút Cập nhật trạng thái và Back (Căn giữa) -->
                         <div class="button-container">
                             <button class="update-btn" th:onclick="'showUpdatePopup(\'popup-' + ${technologyProcess.dyeBatch.id} + '\')'">
                                 <i class="fas fa-edit me-2"></i> Cập nhật trạng thái
@@ -620,7 +699,7 @@
                             </button>
                         </div>
                         <div th:if="${technologyProcess.dyeBatch.dyePhoto != null}">
-                            <img th:src="'/uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
+                            <img th:src="'/Uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
                         <div th:id="'photoPreview-' + ${technologyProcess.dyeBatch.id}"></div>
                         <input type="file" th:id="'photoInput-' + ${technologyProcess.dyeBatch.id}" name="photo" style="display: none;">
