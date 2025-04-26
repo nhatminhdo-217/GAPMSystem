@@ -13,9 +13,6 @@
     </div>
 
     <div class="navbar-nav align-items-center ms-auto" th:if="${#authorization.expression('isAuthenticated()')}">
-        <div class="nav-item dropdown" th:if="${!#authorization.expression('hasRole(''CUSTOMER'')')}">
-
-        </div>
         <div class="nav-item dropdown">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

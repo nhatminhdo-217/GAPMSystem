@@ -287,7 +287,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     /**
      * Initializes a new WorkOrder with basic properties.
      */
-    private WorkOrder initializeWorkOrder(ProductionOrder productionOrder, User createBy) {
+    public WorkOrder initializeWorkOrder(ProductionOrder productionOrder, User createBy) {
         WorkOrder workOrder = new WorkOrder();
         workOrder.setCreateAt(LocalDateTime.now());
         workOrder.setCreatedBy(createBy);
