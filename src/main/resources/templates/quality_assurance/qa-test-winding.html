@@ -572,13 +572,13 @@
                                     <div class="checklist-item">
                                         <label>Số cuộn chỉ hoàn thiện:</label>
                                         <input type="number" id="qcValueTrue" name="trueCone" th:field="*{trueCone}"
-                                               min="0" oninput="validateNumber(this)">
+                                               min="0" step="1"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                     </div>
 
                                     <div class="checklist-item">
                                         <label>Số cuộn chỉ lỗi:</label>
                                         <input type="number" id="qcValueFalse" name="falseCone" th:field="*{falseCone}"
-                                               min="0" oninput="validateNumber(this)">
+                                               min="0" step="1"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                     </div>
 
                                     <div class="checklist-item">
@@ -658,12 +658,15 @@
                                                 <img th:src="'/uploads/' + ${photo.photo}" class="captured-image"
                                                      alt="Ảnh xác thực">
                                                 <button type="button" class="delete-btn"
-                                                        onclick="deletePhoto(this, true)">
+                                                        th:if="${pass_check_delete == null}"
+                                                        th:onclick="'deletePhoto(this, true)'"
+                                                        th:class="'delete-btn'">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="deletedPhotos" id="deletedPhotos">
                                     <input type="file" id="photoInput" name="photos" multiple style="display: none;">
                                 </div>
 
@@ -921,21 +924,61 @@
             updatePhotoInput();
         });
 
+        // Xóa ảnh
         window.deletePhoto = function (button, isExisting) {
             const photoItem = button.parentElement;
             const imgSrc = photoItem.querySelector('img').src;
+            const photoName = photoItem.getAttribute('data-photo-name');
 
             if (isExisting) {
-                const photoName = photoItem.getAttribute('data-photo-name');
-                if (photoName) {
-                    deletedPhotos.push(photoName);
-                }
+                Swal.fire({
+                    title: 'Xác nhận',
+                    text: 'Bạn có chắc muốn xóa ảnh này?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+                        const headers = { 'Content-Type': 'application/json' };
+                        if (csrfToken && csrfHeader) {
+                            headers[csrfHeader] = csrfToken;
+                        }
+                        fetch('/work-order/quality_assurance/delete-photo', {
+                            method: 'DELETE',
+                            headers: headers,
+                            body: JSON.stringify({ photoName: photoName })
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! Status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    photoItem.remove();
+                                    // Không cần thêm vào deletedPhotos nếu xóa ngay
+                                    Swal.fire('Thành công!', 'Ảnh đã được xóa.', 'success');
+                                } else {
+                                    Swal.fire('Lỗi!', data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Lỗi khi xóa ảnh:', error);
+                                Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi xóa ảnh.', 'error');
+                            });
+                    }
+                });
             } else {
+                // Nếu là ảnh mới chụp, xóa khỏi capturedPhotos
                 capturedPhotos = capturedPhotos.filter(photo => photo !== imgSrc);
                 updatePhotoInput();
+                photoItem.remove();
             }
 
-            photoItem.remove();
         };
 
         function updatePhotoInput() {
@@ -1005,6 +1048,8 @@
             input.value = 0;
         }
     }
+
+
 </script>
 
 <script>

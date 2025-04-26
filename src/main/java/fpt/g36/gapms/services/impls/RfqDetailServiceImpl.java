@@ -1,7 +1,6 @@
 package fpt.g36.gapms.services.impls;
 
-import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.RfqDetail;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.RfqDetailRepository;
 import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.utils.UserUtils;
@@ -134,6 +133,44 @@ public class RfqDetailServiceImpl implements RfqDetailService {
     public List<RfqDetail> getAllRfqDetailByRfqId(Long rfqId) {
         List<RfqDetail> rfqDetails = rfqDetailRepository.getAllRfqDetailByRfqId(rfqId);
         return rfqDetails;
+    }
+
+    @Override
+    public RfqDetail getRfqDetailByIdFetch(Long detailId) {
+        return rfqDetailRepository.findByIdWithDetails(detailId).orElse(null);
+    }
+
+    @Override
+    public void addRfqDetail(Long rfqId, Long productId, Long brandId, Long categoryId, String noteColor, int quantity) {
+           Rfq rfq = rfqService.getRfqById(rfqId);
+        Product product = productService.getProductById(productId);
+        Brand brand = brandService.getBrandById(brandId);
+        Category category = categoryService.getCategoryById(categoryId);
+
+
+           RfqDetail rfqDetail = new RfqDetail();
+        rfqDetail.setProduct(product);
+        rfqDetail.setBrand(brand);
+        rfqDetail.setCate(category);
+        rfqDetail.setRfq(rfq);
+        rfqDetail.setNoteColor(noteColor);
+        rfqDetail.setQuantity(quantity);
+        rfqDetailRepository.save(rfqDetail);
+    }
+
+    @Override
+    public void editDetailRfq(Long detailId, Long productId, Long brandId, Long categoryId, String noteColor, int quantity) {
+        RfqDetail rfqDetail = rfqDetailRepository.findById(detailId).orElseThrow(() -> new RuntimeException("RFQ Detail not found"));
+        Product product = productService.getProductById(productId);
+        Brand brand = brandService.getBrandById(brandId);
+        Category category = categoryService.getCategoryById(categoryId);
+
+        rfqDetail.setProduct(product);
+        rfqDetail.setBrand(brand);
+        rfqDetail.setCate(category);
+        rfqDetail.setNoteColor(noteColor);
+        rfqDetail.setQuantity(quantity);
+        rfqDetailRepository.save(rfqDetail);
     }
 
 }

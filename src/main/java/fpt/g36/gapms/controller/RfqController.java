@@ -4,12 +4,15 @@ package fpt.g36.gapms.controller;
 import ch.qos.logback.classic.Logger;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
+import fpt.g36.gapms.models.dto.ProductDTO;
+import fpt.g36.gapms.models.dto.RfqDetailDTO;
 import fpt.g36.gapms.models.dto.RfqFormDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.services.BrandService;
 import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -55,9 +58,9 @@ public class RfqController {
 
     @Autowired
     private RfqDetailService rfqDetailService;
-    private Logger log;
 
 
+    private static final Logger log = (Logger) LoggerFactory.getLogger(RfqController.class);
     public RfqController(UserUtils userUtils) {
         this.userUtils = userUtils;
     }
@@ -77,6 +80,7 @@ public class RfqController {
                 rfqs.forEach(rfq -> {
                     System.err.println("User rfq" + rfq.getIsSent());
                 });
+                model.addAttribute("products", productService.getAllProducts());
                 model.addAttribute("rfqs", rfqs.getContent());
                 model.addAttribute("currentPage", rfqs.getNumber()); // Trang hiện tại
                 model.addAttribute("totalPages", rfqs.getTotalPages());
@@ -160,6 +164,27 @@ public class RfqController {
         } catch (Exception e) {
             System.out.println("Error in getBrandsByProductId: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>()); // Trả về danh sách rỗng nếu lỗi
+        }
+    }
+
+    @GetMapping("/products")
+    @ResponseBody
+    public ResponseEntity<List<ProductDTO>> getProduct() {
+        try {
+            log.info("Yêu cầu lấy danh sách sản phẩm");
+            List<Product> products = productService.getAllProducts();
+            if (products == null) {
+                log.warn("Danh sách sản phẩm trả về null");
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+            List<ProductDTO> productDTOs = products.stream()
+                    .map(p -> new ProductDTO(p.getId(), p.getName()))
+                    .collect(Collectors.toList());
+            log.info("Trả về {} sản phẩm", productDTOs.size());
+            return ResponseEntity.ok(productDTOs);
+        } catch (Exception e) {
+            log.error("Lỗi khi lấy danh sách sản phẩm: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
 
@@ -369,12 +394,83 @@ public class RfqController {
         return "redirect:/request-for-quotation/view-list";
     }
 
+   /*add new rfq detail*/
+    @PostMapping("/add-rfq-detail")
+    public String addProductToRfq(@RequestParam("rfqId") Long rfqId,
+                                                  @RequestParam("productId") Long productId,
+                                                  @RequestParam("brandId") Long brandId,
+                                                  @RequestParam("categoryId") Long categoryId,
+                                                  @RequestParam("noteColor") String noteColor,
+                                                  @RequestParam("quantity") Integer quantity, RedirectAttributes redirectAttributes) {
+        try {
+            rfqDetailService.addRfqDetail(rfqId,  productId, brandId, categoryId, noteColor, quantity);
+            redirectAttributes.addFlashAttribute("saveDetailSuccessMessage", "Tạo thành công yêu cầu báo giá mới");
+            return "redirect:/request-for-quotation/view-list";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("saveDetailFalseMessage", "Không thể thêm sản phẩm vào lô hàng");
+            return "redirect:/request-for-quotation/view-list";
 
-    /*@GetMapping("/edit/brands")
-    public ResponseEntity<List<Brand>> getBrandsByProductIdEdit(@RequestParam("productId") Long productId) {
-        Product product = productService.getProductById(productId);
-        List<Brand> brands = new ArrayList<>(product.getBrands()); // Lấy danh sách Brand từ Product
-        return ResponseEntity.ok(brands);
-    }*/
+        }
+    }
+
+
+
+    @GetMapping("/rfq-detail/{detailId}")
+    @ResponseBody
+    public ResponseEntity<RfqDetailDTO> getRfqDetail(@PathVariable Long detailId) {
+        try {
+
+            RfqDetail detail = rfqDetailService.getRfqDetailById(detailId);
+            if (detail == null) {
+
+                return ResponseEntity.notFound().build();
+            }
+
+            RfqDetailDTO dto = new RfqDetailDTO();
+            dto.setId(detail.getId());
+            dto.setRfqId(detail.getRfq().getId());
+            dto.setProductId(detail.getProduct().getId());
+            dto.setBrandId(detail.getBrand().getId());
+            dto.setCategoryId(detail.getCate().getId());
+            dto.setNoteColor(detail.getNoteColor());
+            dto.setQuantity(detail.getQuantity());
+            dto.setProductName(detail.getProduct().getName());
+            dto.setBrandName(detail.getBrand().getName());
+            dto.setCategoryName(detail.getCate().getName());
+
+            // Thêm các đối tượng lồng nhau
+            RfqDetailDTO.NestedObject product = new RfqDetailDTO.NestedObject(detail.getProduct().getId(), detail.getProduct().getName());
+            RfqDetailDTO.NestedObject brand = new RfqDetailDTO.NestedObject(detail.getBrand().getId(), detail.getBrand().getName());
+            RfqDetailDTO.NestedObject cate = new RfqDetailDTO.NestedObject(detail.getCate().getId(), detail.getCate().getName());
+            dto.setProduct(product);
+            dto.setBrand(brand);
+            dto.setCate(cate);
+
+
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+    @PostMapping("/edit-rfq-detail")
+    public String EditRfqDetail(@RequestParam("detailId") Long detailId,
+                                  @RequestParam("productId") Long productId,
+                                  @RequestParam("brandId") Long brandId,
+                                  @RequestParam("categoryId") Long categoryId,
+                                  @RequestParam("noteColor") String noteColor,
+                                  @RequestParam("quantity") Integer quantity, RedirectAttributes redirectAttributes) {
+        try {
+            rfqDetailService.editDetailRfq(detailId,  productId, brandId, categoryId, noteColor, quantity);
+            redirectAttributes.addFlashAttribute("editRfqDetailSuccessMessage", "Đơn hàng đã được chỉnh sửa");
+            return "redirect:/request-for-quotation/view-list";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("editRfqDetailFalseMessage", "Không thể  chỉnh sửa sản phẩm ");
+            return "redirect:/request-for-quotation/view-list";
+
+        }
+    }
 }
 

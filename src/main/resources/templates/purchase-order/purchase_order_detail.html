@@ -256,8 +256,8 @@
                                 <td th:text="${item.category.name}"></td>
                                 <td th:text="${item.note_color}"></td>
                                 <td th:text="${item.quantity}"></td>
-                                <td th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 0, 'POINT')}"></td>
-                                <td th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${#numbers.formatDecimal(item.totalPrice    * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -290,11 +290,11 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Giá (VND):</div>
-                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 0, 'POINT')}"></div>
+                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-5 label">Thành tiền:</div>
-                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
                                     </div>
                                 </div>
                             </div>
@@ -315,7 +315,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 col-md-3 text-muted">Tổng tiền:</div>
-                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0), 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
+                        <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0)* 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
                     </div>
                 </div>
             </div>

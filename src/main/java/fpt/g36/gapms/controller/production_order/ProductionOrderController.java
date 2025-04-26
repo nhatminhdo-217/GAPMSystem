@@ -131,7 +131,7 @@ public class ProductionOrderController {
 
         ProductionOrderDetailDTO dto = productionOrderService.updateProductionOrderDetail(productionOrderDetailDTO);
 
-        return "redirect:/production-order/detail/" + id;
+        return "redirect:/production-order/detail/" + dto.getProductionOrderId();
     }
 
 

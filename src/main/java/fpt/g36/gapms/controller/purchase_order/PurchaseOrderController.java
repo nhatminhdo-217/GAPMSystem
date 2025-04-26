@@ -420,4 +420,36 @@ public class PurchaseOrderController {
         model.addAttribute("purchaseOrder",purchaseOrder);
         return "purchase-order/purchase-order-customer-detail";
     }
+
+
+    @PostMapping("/upload-contract")
+    public String uploadContract(@ModelAttribute("purchaseOrder") PurchaseOrder purchaseOrder, @RequestParam("purchaseOrderId") Long purchaseOrderId, @RequestParam("contractCode") String contractCode, Model model, RedirectAttributes redirectAttributes, @RequestParam("contractImage") MultipartFile contractImage) throws IOException {
+        userUtils.getOptionalUser(model);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String emailOrPhone = authentication.getName();
+            optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+        }
+
+        PurchaseOrder purchaseOrder_save = purchaseOrderService.uploadContract(purchaseOrder, contractCode, purchaseOrderId,optionalUser.get(), contractImage);
+
+        redirectAttributes.addFlashAttribute("contractUploadSuccess", "Tạo hợp đồng thành công cho lô hàng PO-" + purchaseOrder_save.getId());
+        return "redirect:/purchase-order/customer/detail/" + purchaseOrder_save.getId();
+    }
+
+
+    @PostMapping("/re-upload-contract")
+    public String reUploadContract(@RequestParam("purchaseOrderId") Long purchaseOrderId, @RequestParam("contractCode") String contractCode, Model model, RedirectAttributes redirectAttributes, @RequestParam("contractImage") MultipartFile contractImage) throws IOException {
+        PurchaseOrder purchaseOrder_save;
+        if (contractImage == null || contractImage.isEmpty()) {
+            purchaseOrder_save = purchaseOrderService.reUploadContract(contractCode, purchaseOrderId);
+        } else {
+            purchaseOrder_save = purchaseOrderService.reUploadContract(contractCode, purchaseOrderId, contractImage);
+        }
+
+        redirectAttributes.addFlashAttribute("contractReUploadSuccess", "Cập nhật hợp đồng thành công cho lô hàng PO-" + purchaseOrder_save.getId());
+        return "redirect:/purchase-order/customer/detail/" + purchaseOrder_save.getId();
+    }
+
 }

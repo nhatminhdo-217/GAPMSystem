@@ -106,11 +106,11 @@
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-java8time</artifactId>
-			<version>3.0.4.RELEASE</version> <!-- Phiên bản mới nhất tương thích với Thymeleaf của bạn -->
-		</dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <version>3.0.4.RELEASE</version> <!-- Phiên bản mới nhất tương thích với Thymeleaf của bạn -->
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.webjars/sockjs-client -->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -123,7 +123,17 @@
             <version>2.3.4</version>
         </dependency>
         <dependency>
-            <groupId>com.twilio.sdk</groupId>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+          <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
             <version>9.2.5</version>
         </dependency>
@@ -133,7 +143,17 @@
             <artifactId>azure-storage-blob</artifactId>
             <version>12.29.0</version>
         </dependency>
-	</dependencies>
+      <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -184,6 +204,8 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
