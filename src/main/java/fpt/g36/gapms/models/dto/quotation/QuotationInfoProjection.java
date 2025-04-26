@@ -4,7 +4,6 @@ import fpt.g36.gapms.enums.BaseEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 public interface QuotationInfoProjection {
     Long getQuotationId();

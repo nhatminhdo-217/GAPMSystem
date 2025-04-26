@@ -45,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification saveAndSendNotification(NotificationDTO notificationDTO) {
         User targetUser = userRepository.findById(notificationDTO.getTargetUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + notificationDTO.getTargetUserId()));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với id: " + notificationDTO.getTargetUserId()));
 
         Notification notification = new Notification();
         notification.setMessage(notificationDTO.getMessage());
@@ -85,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public Notification markNotificationAsRead(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new RuntimeException("Notification not found with id: " + notificationId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo với id: " + notificationId));
 
         notification.setRead(true);
         notification.setUpdateAt(LocalDateTime.now());
@@ -117,7 +117,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification saveAndSendMultiChannelNotification(NotificationDTO notificationDTO, boolean sendSms) {
 
         User targetUser = userRepository.findById(notificationDTO.getTargetUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + notificationDTO.getTargetUserId()));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với id: " + notificationDTO.getTargetUserId()));
 
         Notification notification = saveAndSendNotification(notificationDTO);
 

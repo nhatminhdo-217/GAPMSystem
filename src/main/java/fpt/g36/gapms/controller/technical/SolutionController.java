@@ -61,6 +61,6 @@ public class SolutionController {
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("solution", solution);
-        return "/technical/solution-details";
+        return "technical/solution-details";
     }
 }

@@ -45,8 +45,6 @@ public interface TechnologyProcessService {
 
     TechnologyProcess getByDyeId(Long dyeId);
 
-    Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createdBy);
-
     Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy);
 
     TechnologyProcess getTechnologyProcessByIdAndCreatedBy(Long id, User createdBy);

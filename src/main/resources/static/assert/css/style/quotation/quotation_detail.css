@@ -295,4 +295,11 @@ body {
     .content-wrapper {
         padding-bottom: 120px;
     }
+
+    /* Add this to your CSS file */
+    .modal-body .row {
+        border-bottom: 1px solid #eee;
+        padding: 8px 0;
+    }
+
 }
