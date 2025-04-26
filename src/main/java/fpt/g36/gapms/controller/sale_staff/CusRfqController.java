@@ -49,7 +49,7 @@ public class CusRfqController {
             model.addAttribute("rfqs", rfq);
         }
         userUtils.getOptionalUser(model);
-        return "/sale-staff/view-all-cus-rfq";
+        return "sale-staff/view-all-cus-rfq";
     }
 
     @GetMapping("/cus-rfq-details/{id}")
@@ -62,7 +62,7 @@ public class CusRfqController {
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
         model.addAttribute("company", company);
-        return "/sale-staff/cus-rfq-details";
+        return "sale-staff/cus-rfq-details";
     }
 
     @PostMapping("/submit-rfq/{id}")
@@ -74,7 +74,7 @@ public class CusRfqController {
 
         if (optionalUser.isEmpty()) {
             model.addAttribute("error", "Tài khoản đang dùng không còn tồn tại.");
-            return "/sale-staff/cus-rfq-details";
+            return "sale-staff/cus-rfq-details";
         }
 
         User currentUser = optionalUser.get();
@@ -82,7 +82,7 @@ public class CusRfqController {
         if (rfq == null) {
             model.addAttribute("error", "RFQ không tồn tại.");
             model.addAttribute("rfq", null);
-            return "/sale-staff/cus-rfq-details";
+            return "sale-staff/cus-rfq-details";
         }
 
         model.addAttribute("rfq", rfq);
@@ -102,6 +102,6 @@ public class CusRfqController {
             model.addAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
-        return "/sale-staff/cus-rfq-details";
+        return "sale-staff/cus-rfq-details";
     }
 }

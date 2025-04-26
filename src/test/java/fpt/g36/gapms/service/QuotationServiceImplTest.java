@@ -171,12 +171,12 @@ class QuotationServiceImplTest {
 
         // Create mock projections
         mockProjection1 = new MockQuotationInfoProjection(
-                3L, // quotationId
+                3L, // getuotationId
                 "testUser", // userName
                 "Test Company", // companyName
                 "1234567890", // taxNumber
                 "123 Test St", // companyAddress
-                BaseEnum.APPROVED, // isAccepted
+                BaseEnum.APPROVED, // getIsAccepted
                 1L, // solutionId
                 "Product 1", // productName
                 "Brand 1", // brandName
@@ -189,12 +189,12 @@ class QuotationServiceImplTest {
         );
 
         mockProjection2 = new MockQuotationInfoProjection(
-                3L, // quotationId
+                3L, // getuotationId
                 "testUser", // userName
                 "Test Company", // companyName
                 "1234567890", // taxNumber
                 "123 Test St", // companyAddress
-                BaseEnum.APPROVED, // isAccepted
+                BaseEnum.APPROVED, // getIsAccepted
                 1L, // solutionId
                 "Product 2", // productName
                 "Brand 2", // brandName
@@ -506,11 +506,11 @@ class QuotationServiceImplTest {
     }
 
     // Inner class for mocking QuotationInfoProjection
-        private record MockQuotationInfoProjection(Long quotationId, String userName, String companyName, String taxNumber,
-                                                   String companyAddress, BaseEnum isAccepted, Long solutionId,
-                                                   String productName, String brandName, String categoryName,
-                                                   Integer quantity, BigDecimal price, String noteColor,
-                                                   LocalDate expectedDate,
-                                                   LocalDate actualDate) implements QuotationInfoProjection {
+        private record MockQuotationInfoProjection(Long getQuotationId, String getUserName, String getCompanyName, String getTaxNumber,
+                                                   String getCompanyAddress, BaseEnum getIsAccepted, Long getSolutionId,
+                                                   String getProductName, String getBrandName, String getCategoryName,
+                                                   Integer getQuantity, BigDecimal getPrice, String getNoteColor,
+                                                   LocalDate getExpectedDate,
+                                                   LocalDate getActualDate) implements QuotationInfoProjection {
         }
 }

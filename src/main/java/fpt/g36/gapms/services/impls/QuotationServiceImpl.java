@@ -76,25 +76,25 @@ public class QuotationServiceImpl implements QuotationService {
         }
 
         QuotationInfoDTO quotationInfoDTO = new QuotationInfoDTO();
-        quotationInfoDTO.setQuotationId(quotationDetail.get(0).quotationId());
-        quotationInfoDTO.setUserName(quotationDetail.get(0).userName());
-        quotationInfoDTO.setCompanyName(quotationDetail.get(0).companyName());
-        quotationInfoDTO.setTaxNumber(quotationDetail.get(0).taxNumber());
-        quotationInfoDTO.setCompanyAddress(quotationDetail.get(0).companyAddress());
-        quotationInfoDTO.setIsAccepted(quotationDetail.get(0).isAccepted().name());
-        quotationInfoDTO.setSolutionId(quotationDetail.get(0).solutionId());
-        quotationInfoDTO.setExpectedDate(quotationDetail.get(0).expectedDate());
-        quotationInfoDTO.setActualDate(quotationDetail.get(0).actualDate());
+        quotationInfoDTO.setQuotationId(quotationDetail.get(0).getQuotationId());
+        quotationInfoDTO.setUserName(quotationDetail.get(0).getUserName());
+        quotationInfoDTO.setCompanyName(quotationDetail.get(0).getCompanyName());
+        quotationInfoDTO.setTaxNumber(quotationDetail.get(0).getTaxNumber());
+        quotationInfoDTO.setCompanyAddress(quotationDetail.get(0).getCompanyAddress());
+        quotationInfoDTO.setIsAccepted(quotationDetail.get(0).getIsAccepted().name());
+        quotationInfoDTO.setSolutionId(quotationDetail.get(0).getSolutionId());
+        quotationInfoDTO.setExpectedDate(quotationDetail.get(0).getExpectedDate());
+        quotationInfoDTO.setActualDate(quotationDetail.get(0).getActualDate());
 
         List<QuotationDetailDTO> products = quotationDetail.stream()
                 .map(p -> {
                     QuotationDetailDTO product = new QuotationDetailDTO();
-                    product.setProductName(p.productName());
-                    product.setBrandName(p.brandName());
-                    product.setCategoryName(p.categoryName());
-                    product.setPrice(p.price());
-                    product.setNoteColor(p.noteColor());
-                    product.setQuantity(p.quantity());
+                    product.setProductName(p.getProductName());
+                    product.setBrandName(p.getBrandName());
+                    product.setCategoryName(p.getCategoryName());
+                    product.setPrice(p.getPrice());
+                    product.setNoteColor(p.getNoteColor());
+                    product.setQuantity(p.getQuantity());
                     return product;
                 })
                 .toList();
@@ -150,7 +150,7 @@ public class QuotationServiceImpl implements QuotationService {
     private List<QuotationListDTO> getListDTOS(String sortDir, Map<Long, QuotationListDTO> quotationMap) {
         List<QuotationListDTO> content = new ArrayList<>(quotationMap.values());
 
-        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // Sort by getIsAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
         // and then by createAt
         content.sort((q1, q2) -> {
             int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());
@@ -382,7 +382,7 @@ return quotation;
     }
 
     private void sortQuotationDTOs(List<QuotationDTO> content, String sortDir) {
-        // Sort by isAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
+        // Sort by getIsAccepted priority: DRAFT -> NOT_APPROVED -> WAIT_FOR_APPROVAL -> APPROVED -> CANCELED
         // and then by createAt
         content.sort((q1, q2) -> {
             int statusCompare = compareStatus(q1.getIsAccepted(), q2.getIsAccepted());
