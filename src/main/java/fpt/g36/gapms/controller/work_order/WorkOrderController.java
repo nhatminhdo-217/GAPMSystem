@@ -141,25 +141,31 @@ public class WorkOrderController {
             userUtils.getOptionalUser(model);
             List<DyeBatch> dyeBatches = dyeBatchService.getAllDyeBatchForDyeLead(id);
             Long woId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getId();
             model.addAttribute("dyeBatches", dyeBatches);
             model.addAttribute("StageId", id);
             model.addAttribute("woId", woId);
+            model.addAttribute("wodId", wodId);
             return "team-leader/dye-batch";
         } else if (role.equalsIgnoreCase("LEAD_WINDING")) {
             userUtils.getOptionalUser(model);
             List<WindingBatch> windingBatches = windingBatchService.getAllWindingBatchForWindingLead(id);
             Long woId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getId();
             model.addAttribute("windingBatches",windingBatches);
             model.addAttribute("StageId", id);
             model.addAttribute("woId", woId);
+            model.addAttribute("wodId", wodId);
             return "team-leader/winding-batch";
         } else {
             userUtils.getOptionalUser(model);
             List<PackagingBatch> packagingBatches = packagingBatchService.getAllPackagingBatchForPackagingLead(id);
             Long woId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getId();
             model.addAttribute("packagingBatches", packagingBatches);
             model.addAttribute("woId", woId);
             model.addAttribute("StageId", id);
+            model.addAttribute("wodId", wodId);
             return "team-leader/packaging-batch";
         }
     }
@@ -502,25 +508,31 @@ public class WorkOrderController {
             userUtils.getOptionalUser(model);
             List<DyeBatch> dyeBatches = dyeBatchService.getAllDyeBatchForDyeLead(id);
             Long woId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getId();
             model.addAttribute("dyeBatches", dyeBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);
+            model.addAttribute("wodId", wodId);
             return "quality_assurance/qa-dye-batch";
         } else if (role.equalsIgnoreCase("QA_WINDING")) {
             userUtils.getOptionalUser(model);
             List<WindingBatch> windingBatches = windingBatchService.getAllWindingBatchForWindingLead(id);
             Long woId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getId();
             model.addAttribute("windingBatches",windingBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);
+            model.addAttribute("wodId", wodId);
             return "quality_assurance/qa-winding-batch";
         } else {
             userUtils.getOptionalUser(model);
             List<PackagingBatch> packagingBatches = packagingBatchService.getAllPackagingBatchForPackagingLead(id);
             Long woId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getId();
+            Long wodId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getId();
             model.addAttribute("packagingBatches", packagingBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);
+            model.addAttribute("wodId", wodId);
             return "quality_assurance/qa-packaging-batch";
         }
     }
@@ -580,6 +592,22 @@ public class WorkOrderController {
                         !dyeRiskAssessment.getMedicineSafe())) {
 
                     redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
+                }
+            }
+        }
+
+        if(dyeRiskAssessment.getPass() != null){
+            if(!dyeRiskAssessment.getPass()) {
+                if ((dyeRiskAssessment.getColorFading() &&
+                        dyeRiskAssessment.getColorTrue() &&
+                        dyeRiskAssessment.getHumidity() &&
+                        dyeRiskAssessment.getLightTrue() &&
+                        dyeRiskAssessment.getIndustrialCleaningStains() &&
+                        dyeRiskAssessment.getMedication() &&
+                        dyeRiskAssessment.getMedicineSafe())) {
+
+                    redirectAttributes.addFlashAttribute("check_false_when_all_pass", "Không thể đánh false khi tất cả các trường đã đạt chuẩn");
                     return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
                 }
             }
@@ -714,6 +742,19 @@ public class WorkOrderController {
                         !packagingRiskAssessment.getKcsStamp())
                 ) {
                     redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
+                }
+            }
+        }
+
+        if(packagingRiskAssessment.getPass() != null){
+            if(!packagingRiskAssessment.getPass()) {
+                if ((packagingRiskAssessment.getFirstStamp() &&
+                        packagingRiskAssessment.getCoreStamp()&&
+                        packagingRiskAssessment.getDozenStamp() &&
+                        packagingRiskAssessment.getKcsStamp())
+                ) {
+                    redirectAttributes.addFlashAttribute("check_false_when_all_pass", "Không thể đánh false khi tất cả các trường đã đạt chuẩn");
                     return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
                 }
             }

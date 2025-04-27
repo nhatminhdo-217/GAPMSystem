@@ -143,6 +143,7 @@ public class DyeStageServiceImpl implements DyeStageService {
 
                 RiskSolution riskSolution = new RiskSolution();
                 riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
+                riskSolution.setWeightNeed(dyeRiskAssessment.getDyeBatch().getCone_batch_weight());
                 riskSolution.setDyeRiskAssessment(dyeRiskAssessment);
                 riskSolutionRepository.save(riskSolution);
                 if(dyeRiskAssessment_save.getErrorLevel()){
@@ -152,14 +153,14 @@ public class DyeStageServiceImpl implements DyeStageService {
                 }
             }
 
-            List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
+            /*List<DyeBatch> dyeBatches = dyeBatchRepository.getAllDyeBatchByDyeStageId(dyeRiskAssessment.getDyeBatch().getDyeStage().getId());
                 boolean allTested = dyeBatches.stream()
                         .allMatch(dyeBatch -> dyeBatch.getTestStatus() == TestEnum.TESTED && dyeBatch.getPass());
                 if (allTested) {
                     dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
                 }else{
                     dyeRiskAssessment_save.getDyeBatch().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
-                }
+                }*/
         }
         dyeRiskAssessmentRepository.save(dyeRiskAssessment_save);
 

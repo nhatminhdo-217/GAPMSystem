@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +105,17 @@ public class WindingStageServiceImpl implements WindingStageService {
                 RiskSolution riskSolution = new RiskSolution();
                 riskSolution.setApproveStatus(BaseEnum.NOT_APPROVED);
                 riskSolution.setWindingRiskAssessment(windingRiskAssessment);
+                BigDecimal falseCone = BigDecimal.valueOf(windingRiskAssessment.getFalseCone());
+                BigDecimal convertRate = windingRiskAssessment.getWindingBatch()
+                        .getWindingStage()
+                        .getWorkOrderDetail()
+                        .getPurchaseOrderDetail()
+                        .getProduct()
+                        .getThread()
+                        .getConvert_rate();
+
+                riskSolution.setWeightNeed(falseCone.multiply(convertRate));
+
                 riskSolutionRepository.save(riskSolution);
 
                 if(windingRiskAssessment_save.getErrorLevel()){
@@ -118,8 +130,10 @@ public class WindingStageServiceImpl implements WindingStageService {
                     .allMatch(windingBatch -> windingBatch.getTestStatus() == TestEnum.TESTED && windingBatch.getPass());
             if (allTested) {
                 windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.FINISHED);
+                windingRiskAssessment_save.getWindingBatch().getWindingStage().getDyeStage().setWorkStatus(WorkEnum.FINISHED);
             }else {
                 windingRiskAssessment_save.getWindingBatch().getWindingStage().setWorkStatus(WorkEnum.IN_PROGRESS);
+                windingRiskAssessment_save.getWindingBatch().getWindingStage().getDyeStage().setWorkStatus(WorkEnum.IN_PROGRESS);
             }
         }
         windingRiskAssessmentRepository.save(windingRiskAssessment_save);

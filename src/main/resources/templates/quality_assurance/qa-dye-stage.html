@@ -661,7 +661,7 @@
                             <tr>
                                 <th>Trạng Thái</th>
                                 <th>Mã sản phẩm nhuộm</th>
-                                <th>Thời Gian Kết thúc</th>
+                                <th>Thời gian hoàn thiện</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
                                 <th>Khối lượng</th>
@@ -685,12 +685,12 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${dy.id}"></span></td>
-                                <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
+                                <td>WD-<span th:text="${dy.workOrderDetail.id}"></span></td>
+                                <td th:text="${#temporals.format(dy.deadline, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                 <td th:text="${dy.cone_weight}">31.2</td>
-                                <td>na</td>
+                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
                                 <td th:text="${dy.cone_quantity}"></td>
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"

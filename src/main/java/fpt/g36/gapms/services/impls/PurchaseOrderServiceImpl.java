@@ -128,8 +128,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year) {
-        return purchaseOrderRepository.getAllPurchaseOrdersByUserIdAndYear(userId, year, pageable);
+    public Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year, String sanitizedSearchQuery) {
+        return purchaseOrderRepository.getAllPurchaseOrdersByUserIdAndSearch(userId, year,sanitizedSearchQuery, pageable);
     }
 
     @Override
