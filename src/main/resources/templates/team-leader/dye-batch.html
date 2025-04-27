@@ -220,7 +220,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WD-<span th:text="${StageId}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WO-<span th:text="${woId}"></span>/WD-<span th:text="${wodId}"></span></h2>
                         <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
@@ -231,12 +231,11 @@
                                 <th>Trạng thái kiểm tra </th>
                                 <th>Thứ tự mẻ nhuộm</th>
                                 <th>Thiết bị</th>
-                                <th>Thời Gian Bắt Đầu</th>
+                                <th>Thời gian hoàn thiện</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
                                 <th>Khối lượng</th>
                                 <th>Ánh Sáng</th>
-                                <th>Ghi chú kế hoạch</th>
                                 <th>Số lít nước tối thiểu</th>
                                 <th>Số lít nước</th>
                                 <th>Số quả</th>
@@ -279,19 +278,18 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>Mẻ-<span th:text="${iterStat.count}"></span></td>
+                                <td>Mẻ-<span th:text="${dy.batchNumber}"></span></td>
                                 <td>MB-<span th:text="${dy.dyeStage.dyeMachine.id}"></span></td>
-                                <td th:text="${#temporals.format(dy.startAt, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#temporals.format(dy.deadline, 'dd/MM/yyyy')}">N/A</td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
                                 <td th:text="${dy.cone_batch_weight}">31.2</td>
-                                <td>na</td>
-                                <td>na</td>
+                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}"></td>
                                 <td th:text="${dy.liters_min}">160</td>
                                 <td th:text="${dy.liters}">187</td>
-                                <td th:text="${dy.dyeStage.cone_quantity}"></td>
+                                <td th:text="${dy.plannedOutput}"></td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.brand.name}">na</td>
-                                <td>na</td>
+                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id}">na</td>
                                 <td>
                                     <a th:href="@{/work-order/technology-process/{id}(id=${dy.id})}"
                                        class="btn btn-dye-stage btn-action">

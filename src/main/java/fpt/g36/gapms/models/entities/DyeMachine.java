@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "dye_machine")
 public class DyeMachine extends BaseEntity {
 
-    @OneToOne(mappedBy = "dyeMachine")
-    private DyeStage dyeStage;
+    @OneToMany(mappedBy = "dyeMachine")
+    private List<DyeStage> dyeStage;
 
     @NotNull
     private BigDecimal diameter; // Đường kính
@@ -50,7 +51,7 @@ public class DyeMachine extends BaseEntity {
     public DyeMachine() {
     }
 
-    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, DyeStage dyeStage, BigDecimal diameter, BigDecimal pile, BigDecimal conePerPile, BigDecimal maxWeight, BigDecimal littersMin, BigDecimal littersMax, BigDecimal coneMin, BigDecimal coneMax, BigDecimal capacity, String description, boolean isActive) {
+    public DyeMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, List<DyeStage> dyeStage, BigDecimal diameter, BigDecimal pile, BigDecimal conePerPile, BigDecimal maxWeight, BigDecimal littersMin, BigDecimal littersMax, BigDecimal coneMin, BigDecimal coneMax, BigDecimal capacity, String description, boolean isActive) {
         super(id, createAt, updateAt);
         this.dyeStage = dyeStage;
         this.diameter = diameter;
@@ -66,11 +67,11 @@ public class DyeMachine extends BaseEntity {
         this.isActive = isActive;
     }
 
-    public DyeStage getDyeStage() {
+    public List<DyeStage> getDyeStage() {
         return dyeStage;
     }
 
-    public void setDyeStage(DyeStage dyeStage) {
+    public void setDyeStage(List<DyeStage> dyeStage) {
         this.dyeStage = dyeStage;
     }
 

@@ -19,4 +19,8 @@ public interface RiskSolutionService {
     RiskSolution approveRiskSolution(Long rsId, User user);
 
     RiskSolution approveEasyRiskSolution(Long rsId, User user);
+
+    int getDyeRiskFalse(Long draId);
+
+    int getWindingRiskFalse(Long wraId);
 }

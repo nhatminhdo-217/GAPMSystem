@@ -3,6 +3,7 @@ package fpt.g36.gapms.controller;
 import fpt.g36.gapms.models.dto.notification.NotificationDTO;
 import fpt.g36.gapms.models.entities.Notification;
 import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.NotificationService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
@@ -11,11 +12,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,10 +29,12 @@ public class NotificationController {
 
     private final UserUtils userUtils;
     private final NotificationService notificationService;
+    private final UserRepository userRepository;
 
-    public NotificationController(UserUtils userUtils, NotificationService notificationService) {
+    public NotificationController(UserUtils userUtils, NotificationService notificationService, UserRepository userRepository) {
         this.userUtils = userUtils;
         this.notificationService = notificationService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -107,6 +114,24 @@ public class NotificationController {
     @MessageMapping("/send-notification")
     public void sendNotification(@Payload NotificationDTO notificationDTO) {
         notificationService.saveAndSendNotification(notificationDTO);
+    }
+
+    @GetMapping("/api/dropdown")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getDropdownNotifications() {
+        User currentUser = userUtils.getOptionalUserInfo();
+        if (currentUser == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Notification> notifications = notificationService.getRecentNotifications(currentUser.getId(), 5);
+        List<NotificationDTO> notificationDTOs = notificationService.mapToDTO(notifications);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("notifications", notificationDTOs);
+        response.put("unreadCount", notificationService.countUnreadNotifications(currentUser.getId()));
+
+        return ResponseEntity.ok(response);
     }
 
 }

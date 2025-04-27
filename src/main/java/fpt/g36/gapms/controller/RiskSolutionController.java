@@ -59,7 +59,24 @@ public class RiskSolutionController {
     @GetMapping("/technical/detail/{id}")
      public String getDetail(@PathVariable("id") Long riskSolutionId, Model model) {
         RiskSolution riskSolution = riskSolutionService.getRiskSolutionById(riskSolutionId);
+        int countDyeRiskFalse;
+        int countWingdingRiskFalse;
+        if(riskSolution.getDyeRiskAssessment() != null){
+            countDyeRiskFalse = riskSolutionService.getDyeRiskFalse(riskSolution.getDyeRiskAssessment().getDyeBatch().getId());
+            countWingdingRiskFalse = riskSolutionService.getWindingRiskFalse(riskSolution.getDyeRiskAssessment().getDyeBatch().getWindingBatch().getId());
+        }else if(riskSolution.getWindingRiskAssessment() != null){
+            countDyeRiskFalse = riskSolutionService.getDyeRiskFalse(riskSolution.getWindingRiskAssessment().getWindingBatch().getDyeBatch().getId());
+            countWingdingRiskFalse = riskSolutionService.getWindingRiskFalse(riskSolution.getWindingRiskAssessment().getWindingBatch().getId());
+        }else{
+            countDyeRiskFalse = 0;
+            countWingdingRiskFalse = 0;
+        }
+
+        int totalBatchFalse = countDyeRiskFalse + countWingdingRiskFalse;
+
+
         model.addAttribute("riskSolution", riskSolution);
+        model.addAttribute("totalBatchFalse", totalBatchFalse);
         userUtils.getOptionalUser(model);
         return "risk-solution/view-detail-technical-risk-solution";
     }

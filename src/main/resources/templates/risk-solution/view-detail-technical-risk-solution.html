@@ -439,32 +439,37 @@
                                     <h3 class="section-title">Thông tin mẻ lỗi</h3>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
+                                            <strong>Mã mẻ:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.batchNumber}"></span>
+                                        </div>
+                                        <div class="col-md-4">
                                             <strong>Tên màu:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Loại sợi:</strong> <span
                                                 th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
                                         </div>
+
+                                    </div>
+                                    <div class="row mb-3">
                                         <div class="col-md-4">
                                             <strong>Khối Lượng:</strong> <span
                                                 th:text="${riskSolution.dyeRiskAssessment.dyeBatch.cone_batch_weight}">na</span>
                                         </div>
-                                    </div>
-                                    <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Ánh Sáng:</strong> <span >na</span>
+                                            <strong>Ánh Sáng:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số lít nước tối thiểu:</strong> <span
                                                 th:text="${riskSolution.dyeRiskAssessment.dyeBatch.liters_min}"></span>
                                         </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
                                         <div class="col-md-4">
                                             <strong>Số lít nước:</strong> <span
                                                 th:text="${riskSolution.dyeRiskAssessment.dyeBatch.liters}"></span>
                                         </div>
-                                    </div>
-
-                                    <div class="row mb-3">
                                         <div class="col-md-4">
                                             <strong>Số quả:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.cone_quantity}"></span>
                                         </div>
@@ -472,30 +477,76 @@
                                             <strong>Nhãn hiệu:</strong> <span
                                                 th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.brand.name}"></span>
                                         </div>
-                                        <div class="col-md-4">
-                                            <strong>Quy trình đánh hồ:</strong> <span
-                                                >na</span>
-                                        </div>
+
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Ghi chú kế hoạch:</strong> <span>na</span>
+                                            <strong>Quy trình đánh hồ:</strong> <span th:text="${riskSolution.dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id}"
+                                        >na</span>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <strong>Số lần lỗi của mẻ:</strong> <span th:text="${totalBatchFalse}" style="color: red"
+                                        ></span>
                                         </div>
                                     </div>
                                 </div>
 
 
+                                <!-- Cus Info -->
                                 <div class="customer-info" th:if="${riskSolution.windingRiskAssessment != null}">
                                     <h3 class="section-title">Thông tin mẻ lỗi</h3>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
+                                            <strong>Mã mẻ:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.batchNumber}"></span>
+                                        </div>
+                                        <div class="col-md-4">
                                             <strong>Tên màu:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <strong>loại hàng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></span>
+                                            <strong>Loại sợi:</strong> <span
+                                                th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Khối Lượng:</strong> <span
+                                                th:text="${riskSolution.windingRiskAssessment.windingBatch.dyeBatch.cone_batch_weight}">na</span>
                                         </div>
                                         <div class="col-md-4">
-                                            <strong>số lượng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></span>
+                                            <strong>Ánh Sáng:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số lít nước tối thiểu:</strong> <span
+                                                th:text="${riskSolution.windingRiskAssessment.windingBatch.dyeBatch.liters_min}"></span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Số lít nước:</strong> <span
+                                                th:text="${riskSolution.windingRiskAssessment.windingBatch.dyeBatch.liters}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Số quả:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.plannedOutput}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Nhãn hiệu:</strong> <span
+                                                th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.brand.name}"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Quy trình đánh hồ:</strong> <span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id}"
+                                        >na</span>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <strong>Số lần lỗi của mẻ:</strong> <span th:text="${totalBatchFalse}" style="color: red"
+                                        ></span>
                                         </div>
                                     </div>
                                 </div>
@@ -640,7 +691,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Ngày tạo:</strong>
-                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd-MM-yyyy')}"></span>
+                                            <span th:text="${#temporals.format(riskSolution.createAt, 'dd/MM/yyyy')}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Trạng thái gửi:</strong>
@@ -766,9 +817,16 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="weightNeed"  class="form-label"><strong>Khối lượng cần cấp (kg):</strong></label>
-                            <input type="text" th:field="*{weightNeed}" class="form-control" id="weightNeed" name="weightNeed" placeholder="Nhập khối lượng cần cấp (ví dụ: 20,8)" required>
+                            <label for="weightNeed" th:if="${riskSolution.dyeRiskAssessment != null}" class="form-label"><strong>Khối lượng cần cấp (kg):</strong></label>
+                            <label for="weightNeed" th:if="${riskSolution.windingRiskAssessment != null}" class="form-label"><strong>Khối lượng cần cấp (kg): </strong></label>
+                            <div th:if="${riskSolution.windingRiskAssessment != null}" style="font-style: italic; font-size: 0.9em;">
+                                (số cuộn lỗi (<span th:text="${riskSolution.windingRiskAssessment.falseCone}"></span>) * định mức (<span th:text="${riskSolution.windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.convert_rate}"></span>))
+                            </div>
+
+                            <input type="text" th:field="*{weightNeed}" class="form-control" id="weightNeed" name="weightNeed" placeholder="Nhập khối lượng cần cấp (ví dụ: 20.8)" required>
                         </div>
+
+
                         <div class="form-group">
                             <label for="note" class="form-label"><strong>Ghi chú:</strong></label>
                             <textarea class="form-control" th:field="*{note}" id="note" name="note" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
@@ -798,7 +856,7 @@
 
                         <div class="form-group">
                             <label for="note" class="form-label"><strong>Ghi chú:</strong></label>
-                            <textarea class="form-control" th:field="*{note}" id="noteEasy" name="note" rows="3" placeholder="Nhập ghi chú (Bắt Buộc)" required></textarea>
+                            <textarea class="form-control" th:field="*{note}" id="noteEasy" name="note" rows="3" placeholder="Nhập ghi chú"></textarea>
                         </div>
                         <div class="modal-footer d-flex justify-content-center">
                             <button type="submit" class="btn btn-custom btn-confirm">Xác nhận</button>
