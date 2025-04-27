@@ -588,10 +588,10 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         return null;
     }*/
 
-    @Override
+    /*@Override
     public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
         return null;
-    }
+    }*/
 
     @Override
     public Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {
