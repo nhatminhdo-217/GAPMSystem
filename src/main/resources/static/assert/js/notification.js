@@ -178,20 +178,26 @@ function loadNotificationDropdown() {
             //     </a>`;
             var item =
             `
-                <div class="notification-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
-                    <div class="notification-header">
-                        <span class="notification-source">${notification.source || 'Hệ thống'}</span>
-                        <span class="notification-time"> ${formatDateAndTime(notification.timestamp)} </span>
+                <div class="dropdown-item-text notification-dropdown-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
+                    <div class="d-flex justify-content-between">
+                        <small class="fw-bold"> ${notification.source || 'Hệ thống'} </small>
+                        <small class="text-muted"> ${formatTimeShort(notification.timestamp)} </small>
                     </div>
-                    <div class="notification-message">${notification.message || 'Không có nội dung'}</div>
-                    <div class="notification-actions">
-                        ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary">Xem</a>' : ''}
-                        ${notification.read ? '' : '<button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Đã đọc</button>'}
+                    <p class="mb-1 notification-text"> ${notification.message || 'Không có nội dung'} </p>
+                    <div class="d-flex ${notification.targetUrl ? 'justify-content-between' : 'justify-content-end'} mt-1">
+                        ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary px-2 py-0">Xem</a>' : ''}
+                        ${notification.read ? '' : '<button class="btn btn-sm btn-link px-2 py-0 mark-as-read-btn">Đã đọc</button>'}
                     </div>
-                </div>                   
+                </div>
+                <li><hr class="dropdown-divider my-1"></li>             
             `
 
             $('#notification-dropdown-items').append(item);
+
+            // Show empty state if no notifications
+            if (data.notifications.length === 0) {
+                $('#notification-dropdown-items').html('<div class="text-center p-3 text-muted"><small>Không có thông báo nào</small></div>');
+            }
         });
 
         // Cập nhật số thông báo chưa đọc
@@ -206,6 +212,27 @@ function loadNotificationDropdown() {
         console.error("Response:", xhr.responseText);  // Thêm chi tiết lỗi
         $('#notification-dropdown-items').empty().append('<div class="dropdown-item text-center">Lỗi tải thông báo</div>');
     });
+}
+
+function formatTimeShort(timestamp) {
+    var date = new Date(timestamp);
+    var now = new Date();
+    var diffMs = now - date;
+    var diffMins = Math.round(diffMs / 60000);
+    var diffHours = Math.round(diffMs / 3600000);
+    var diffDays = Math.round(diffMs / 86400000);
+
+    if (diffMins < 1) {
+        return 'vừa xong';
+    } else if (diffMins < 60) {
+        return diffMins + ' phút trước';
+    } else if (diffHours < 24) {
+        return diffHours + ' giờ trước';
+    } else if (diffDays < 7) {
+        return diffDays + ' ngày trước';
+    } else {
+        return date.toLocaleDateString();
+    }
 }
 
 function formatDateAndTime(timestamp) {
