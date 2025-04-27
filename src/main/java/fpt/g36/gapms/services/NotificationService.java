@@ -28,4 +28,8 @@ public interface NotificationService {
     Long countUnreadNotifications(Long userId);
 
     Notification saveAndSendMultiChannelNotification(NotificationDTO notificationDTO, boolean sendSms);
+
+    List<Notification> getRecentNotifications(Long userId, int limit);
+
+    List<NotificationDTO> mapToDTO(List<Notification> notifications);
 }

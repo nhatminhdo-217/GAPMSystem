@@ -8,18 +8,34 @@ function connectWebSocket() {
     stompClient.connect({}, function(frame) {
         console.log('Connected to WebSocket: ' + frame);
 
-        // Lấy ID của user hiện tại từ dữ liệu được thiết lập trong HTML
+        // Lấy ID của user hiện tại
         var userId = $('#current-user-id').val();
+        console.log("Current user ID for WebSocket subscription:", userId);  // Thêm log
+
+        if (!userId) {
+            console.error("User ID not found in the page");
+            return;
+        }
 
         // Subscribe đến channel cá nhân của user
         stompClient.subscribe('/user/' + userId + '/queue/notifications', function(notification) {
-            var notificationData = JSON.parse(notification.body);
-            displayNotification(notificationData);
-            updateNotificationCount();
+            console.log("Received WebSocket notification:", notification);  // Thêm log
+
+            try {
+                var notificationData = JSON.parse(notification.body);
+                displayNotification(notificationData);
+                updateNotificationCount();
+
+                // Refresh dropdown nếu đang mở
+                if ($('#notificationDropdown').hasClass('show')) {
+                    loadNotificationDropdown();
+                }
+            } catch (e) {
+                console.error("Error processing notification:", e);
+            }
         });
     }, function(error) {
         console.log('Error connecting to WebSocket: ' + error);
-        // Cố gắng kết nối lại sau 5 giây
         setTimeout(connectWebSocket, 5000);
     });
 }
@@ -100,32 +116,83 @@ function markAllAsRead() {
     });
 }
 
-function loadNotifications(page = 0) {
-    $.get("/notifications/api/list?page=" + page, function(data) {
-        // Xóa danh sách thông báo hiện tại
-        $('#notifications-list').empty();
+// function loadNotifications(page = 0) {
+//     $.get("/notifications/api/list?page=" + page, function(data) {
+//         // Xóa danh sách thông báo hiện tại
+//         $('#notifications-list').empty();
+//
+//         // Thêm các thông báo mới
+//         data.notifications.forEach(function(notification) {
+//             var item =
+//                 '<div class="notification-item ' + (notification.read ? '' : 'unread') + '" data-id="' + notification.id + '">' +
+//                 '<div class="notification-header">' +
+//                 '<span class="notification-source">' + notification.source + '</span>' +
+//                 '<span class="notification-time">' + formatTime(notification.createAt) + '</span>' +
+//                 '</div>' +
+//                 '<div class="notification-message">' + notification.message + '</div>' +
+//                 '<div class="notification-actions">' +
+//                 (notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary">View</a>' : '') +
+//                 (notification.read ? '' : '<button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Mark as read</button>') +
+//                 '</div>' +
+//                 '</div>';
+//
+//             $('#notification-dropdown-items').append(item);
+//             $('#notifications-list').append(item);
+//         });
+//
+//         // Cập nhật phân trang
+//         updatePagination(data.currentPage, data.totalPages);
+//
+//         // Cập nhật số thông báo chưa đọc
+//         if (data.unreadCount > 0) {
+//             $('#notification-badge').text(data.unreadCount).show();
+//         } else {
+//             $('#notification-badge').hide();
+//         }
+//     });
+// }
 
-        // Thêm các thông báo mới
+// Trong notification.js - Hàm tải dropdown notifications
+function loadNotificationDropdown() {
+    $.get("/notifications/api/dropdown", function(data) {
+        console.log("Received notifications data:", data);  // Thêm log này để gỡ lỗi
+
+        $('#notification-dropdown-items').empty();
+
+        if (!data.notifications || data.notifications.length === 0) {
+            $('#notification-dropdown-items').append('<div class="dropdown-item text-center">Không có thông báo mới</div>');
+            return;
+        }
+
+        // Thêm các thông báo mới ${formatTime(notification.timestamp)}
         data.notifications.forEach(function(notification) {
+            console.log("Processing notification:", notification);  // Thêm log cho từng thông báo
+
+            // var item = `
+            //     <a href="${notification.targetUrl || '#'}" class="dropdown-item notification-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
+            //         <div class="notification-header">
+            //             <span class="notification-source">${notification.source || 'Hệ thống'}</span>
+            //             <span class="notification-time">${formatTime(notification.timestamp)}</span>
+            //         </div>
+            //         <div class="notification-message">${notification.message || 'Không có nội dung'}</div>
+            //     </a>`;
             var item =
-                '<div class="notification-item ' + (notification.read ? '' : 'unread') + '" data-id="' + notification.id + '">' +
-                '<div class="notification-header">' +
-                '<span class="notification-source">' + notification.source + '</span>' +
-                '<span class="notification-time">' + formatTime(notification.createAt) + '</span>' +
-                '</div>' +
-                '<div class="notification-message">' + notification.message + '</div>' +
-                '<div class="notification-actions">' +
-                (notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary">View</a>' : '') +
-                (notification.read ? '' : '<button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Mark as read</button>') +
-                '</div>' +
-                '</div>';
+            `
+                <div class="notification-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
+                    <div class="notification-header">
+                        <span class="notification-source">${notification.source || 'Hệ thống'}</span>
+                        <span class="notification-time"> ${formatDateAndTime(notification.timestamp)} </span>
+                    </div>
+                    <div class="notification-message">${notification.message || 'Không có nội dung'}</div>
+                    <div class="notification-actions">
+                        ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary">Xem</a>' : ''}
+                        ${notification.read ? '' : '<button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Đã đọc</button>'}
+                    </div>
+                </div>                   
+            `
 
             $('#notification-dropdown-items').append(item);
-            $('#notifications-list').append(item);
         });
-
-        // Cập nhật phân trang
-        updatePagination(data.currentPage, data.totalPages);
 
         // Cập nhật số thông báo chưa đọc
         if (data.unreadCount > 0) {
@@ -133,7 +200,22 @@ function loadNotifications(page = 0) {
         } else {
             $('#notification-badge').hide();
         }
+
+    }).fail(function(xhr, status, error) {
+        console.error("Error loading notifications:", error);
+        console.error("Response:", xhr.responseText);  // Thêm chi tiết lỗi
+        $('#notification-dropdown-items').empty().append('<div class="dropdown-item text-center">Lỗi tải thông báo</div>');
     });
+}
+
+function formatDateAndTime(timestamp) {
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month} ${hours}:${minutes}`;
 }
 
 function updatePagination(currentPage, totalPages) {
@@ -169,7 +251,8 @@ $(document).ready(function() {
     connectWebSocket();
 
     // Tải danh sách thông báo khi trang được tải
-    loadNotifications();
+    // loadNotifications();
+    loadNotificationDropdown();
 
     // Cập nhật số thông báo chưa đọc
     updateNotificationCount();
