@@ -69,11 +69,12 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     Page<PurchaseOrder> getAllPurchaseOrdersByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT po FROM PurchaseOrder po " +
+            "LEFT JOIN po.contract contract " +
             "WHERE po.customer.id = :userId " +
             "AND (:year IS NULL OR YEAR(po.createAt) = :year) " +
             "AND (:searchQuery IS NULL OR " +
             "LOWER(CONCAT('PO-', po.id)) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR " +
-            "LOWER(po.contract.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))) " +
+            "LOWER(contract.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))) " +
             "ORDER BY po.createAt DESC")
     Page<PurchaseOrder> getAllPurchaseOrdersByUserIdAndSearch(@Param("userId") Long userId,
                                                               @Param("year") Integer year,

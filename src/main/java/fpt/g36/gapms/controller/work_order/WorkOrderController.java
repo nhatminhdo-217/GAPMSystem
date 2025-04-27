@@ -597,6 +597,22 @@ public class WorkOrderController {
             }
         }
 
+        if(dyeRiskAssessment.getPass() != null){
+            if(!dyeRiskAssessment.getPass()) {
+                if ((dyeRiskAssessment.getColorFading() &&
+                        dyeRiskAssessment.getColorTrue() &&
+                        dyeRiskAssessment.getHumidity() &&
+                        dyeRiskAssessment.getLightTrue() &&
+                        dyeRiskAssessment.getIndustrialCleaningStains() &&
+                        dyeRiskAssessment.getMedication() &&
+                        dyeRiskAssessment.getMedicineSafe())) {
+
+                    redirectAttributes.addFlashAttribute("check_false_when_all_pass", "Không thể đánh false khi tất cả các trường đã đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + dyeRiskAssessment.getDyeBatch().getId();
+                }
+            }
+        }
+
         try {
             DyeRiskAssessment dyeRiskAssessment_save = dyeStageService.saveTestDye(id, dyeRiskAssessment, optionalUser.get(), photos);
             redirectAttributes.addFlashAttribute("save_dye", "Đã lưu thông tin kiểm tra");
@@ -726,6 +742,19 @@ public class WorkOrderController {
                         !packagingRiskAssessment.getKcsStamp())
                 ) {
                     redirectAttributes.addFlashAttribute("check_pass_when_false", "Chỉ có thể đánh Pass khi các trường đêu trong trạng thái đạt chuẩn");
+                    return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
+                }
+            }
+        }
+
+        if(packagingRiskAssessment.getPass() != null){
+            if(!packagingRiskAssessment.getPass()) {
+                if ((packagingRiskAssessment.getFirstStamp() &&
+                        packagingRiskAssessment.getCoreStamp()&&
+                        packagingRiskAssessment.getDozenStamp() &&
+                        packagingRiskAssessment.getKcsStamp())
+                ) {
+                    redirectAttributes.addFlashAttribute("check_false_when_all_pass", "Không thể đánh false khi tất cả các trường đã đạt chuẩn");
                     return "redirect:/work-order/technology-process/" + packagingRiskAssessment.getPackagingBatch().getWindingBatch().getDyeBatch().getId();
                 }
             }

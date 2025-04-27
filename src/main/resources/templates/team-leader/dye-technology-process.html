@@ -699,7 +699,7 @@
                             </button>
                         </div>
                         <div th:if="${technologyProcess.dyeBatch.dyePhoto != null}">
-                            <img th:src="'/Uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
+                            <img th:src="'/uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
                         <div th:id="'photoPreview-' + ${technologyProcess.dyeBatch.id}"></div>
                         <input type="file" th:id="'photoInput-' + ${technologyProcess.dyeBatch.id}" name="photo" style="display: none;">

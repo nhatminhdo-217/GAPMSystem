@@ -1258,5 +1258,21 @@
         });
     </script>
 </div>
+
+
+<div th:if="${check_false_when_all_pass}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Lỗi",
+                text: /*[[${check_false_when_all_pass}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 </body>
 </html>

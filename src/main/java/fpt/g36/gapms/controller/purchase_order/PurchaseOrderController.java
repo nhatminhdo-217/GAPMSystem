@@ -354,7 +354,7 @@ public class PurchaseOrderController {
     @GetMapping("/customer/list")
     public String getAllPurchaseOrderByUserId(Model model,
                                               @RequestParam(value = "page", defaultValue = "0") String pageStr,
-                                              @RequestParam(value = "size", defaultValue = "5") String sizeStr,
+                                              @RequestParam(value = "size", defaultValue = "10") String sizeStr,
                                               @RequestParam(value = "year", required = false, defaultValue = "2025") String yearStr,
                                               @RequestParam(value = "searchQuery", required = false) String searchQuery) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
