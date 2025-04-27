@@ -589,6 +589,11 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
     }*/
 
     @Override
+    public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
+        return null;
+    }
+
+    @Override
     public Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {
         System.err.println("Lấy TechnologyProcess với trạng thái " + status + " do user " + createdBy.getUsername() + " tạo, page: " + pageable.getPageNumber() + ", size: " + pageable.getPageSize());
         return technologyProcessRepository.findByStatusAndCreatedBy(status, createdBy, pageable);

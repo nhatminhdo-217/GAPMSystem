@@ -33,10 +33,10 @@ public class UserUtils {
                 if (avatar != null && !avatar.startsWith("http")) {
                     model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
                 } else {
-                    System.err.println("Avatar URL: " + avatar);
                     model.addAttribute("avatar", avatar);
                 }
 
+                model.addAttribute("userRole", optionalUser.get().getRole().getName());
 
                 Long unreadNotifications = notificationService.countUnreadNotifications(optionalUser.get().getId());
                 model.addAttribute("unreadNotifications", unreadNotifications);
