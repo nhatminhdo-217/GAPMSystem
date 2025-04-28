@@ -12,6 +12,7 @@ import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.UserServiceImpl;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -45,14 +46,16 @@ public class PurchaseOrderController {
     private final UserService userService;
     private static String latestImagePath = null;
     private final ProductionOrderService productionOrderService;
+    private final NotificationUtils notificationUtils;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService, NotificationUtils notificationUtils) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.contractService = contractService;
         this.userService = userService;
         this.productionOrderService = productionOrderService;
+        this.notificationUtils = notificationUtils;
     }
 
     @GetMapping("/list")
@@ -145,8 +148,8 @@ public class PurchaseOrderController {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
                 contractService.updateContractStatus(id, currUser);
                 productionOrderService.createProductionOrder(id, currUser);
-                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
-                redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");
+                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt, Lệnh sản xuất đã được tạo");
+                /*redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");*/
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
             }
@@ -167,7 +170,7 @@ public class PurchaseOrderController {
         boolean isCancel = purchaseOrderService.cancelPurchaseOrder(id);
 
         if (isCancel) {
-            redirectAttributes.addFlashAttribute("success", "Hủy đơn hàng thành công");
+            redirectAttributes.addFlashAttribute("success", "Đã hủy đơn hàng");
         } else {
             redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được phê duyệt, không thể hủy");
         }
@@ -441,6 +444,7 @@ public class PurchaseOrderController {
         }
 
         PurchaseOrder purchaseOrder_save = purchaseOrderService.uploadContract(purchaseOrder, contractCode, purchaseOrderId,optionalUser.get(), contractImage);
+
 
         redirectAttributes.addFlashAttribute("contractUploadSuccess", "Tạo hợp đồng thành công cho lô hàng PO-" + purchaseOrder_save.getId());
         return "redirect:/purchase-order/customer/detail/" + purchaseOrder_save.getId();

@@ -50,7 +50,7 @@
         <!-- Navbar End -->
 
         <div class="container-fluid py-3">
-            <!-- Alerts Section -->
+            <!--&lt;!&ndash; Alerts Section &ndash;&gt;
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
@@ -64,7 +64,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Breadcrumbs Section -->
             <nav aria-label="breadcrumb" class="mb-3">
@@ -147,9 +147,11 @@
                             </button>
                         </form>
                         <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
-                              th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post" class="mb-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-check me-1"></i> Phê duyệt
+                              th:action="@{'/production-order/detail/' + ${productionOrder.id}}"
+                              method="post"
+                              onsubmit="return confirmSendProduction(event)">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i> Gửi lệnh sản xuất
                             </button>
                         </form>
                     </div>
@@ -248,9 +250,11 @@
                                 </button>
                             </form>
                             <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
-                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}"
+                                  method="post"
+                                  onsubmit="return confirmSendProduction(event)">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check me-1"></i> Phê duyệt
+                                    <i class="fas fa-check me-1"></i> Gửi lệnh sản xuất
                                 </button>
                             </form>
                         </div>
@@ -272,8 +276,19 @@
 </div>
 
 <!-- Content End -->
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${success}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -285,7 +300,29 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmSendProduction(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
 
+        Swal.fire({
+            title: 'Xác nhận gửi lệnh sản xuất',
+            text: 'Bạn có chắc chắn muốn gửi lệnh sản xuất này?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Có, gửi!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+</script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script th:inline="javascript">
