@@ -835,9 +835,18 @@ public class WorkOrderController {
     public String getWorkOrderDetailForPo(Model model, @PathVariable("id") Long woId) {
 
         List<WorkOrderDetail> workOrderDetails = workOrderDetailService.getAllByWoId(woId);
+        WorkOrder workOrder = workOrderService.getWorkOrderById(woId);
         model.addAttribute("workOrderDetails",workOrderDetails);
         model.addAttribute("workOrderId",woId);
+        model.addAttribute("workOrder",workOrder);
         userUtils.getOptionalUser(model);
         return "production-manager/view-work-order-detail";
+    }
+
+    @PostMapping("/production-manager/cancel-work-order/{id}")
+    public String cancelWorkOrder(@PathVariable("id") Long woId, RedirectAttributes redirectAttributes){
+            WorkOrder workOrder = workOrderService.cancelWorkOrder(woId);
+        redirectAttributes.addFlashAttribute("cancel_work_order", "Đã hủy sản xuất lô hàng mã PO-"+woId);
+        return "redirect:/work-order/production-manager/detail/" + woId;
     }
 }

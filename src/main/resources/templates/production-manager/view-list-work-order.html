@@ -177,7 +177,7 @@
             <div class="container">
 
                 <div style="padding: 20px 0;">
-                    <form th:action="@{/work-order/team-leader/list}" method="get" id="searchForm">
+                    <form th:action="@{/work-order/production-manager/list}" method="get" id="searchForm">
                         <div class="input-group mb-3" style="max-width: 500px;">
                             <input type="text"
                                    class="form-control"
@@ -225,10 +225,19 @@
                                               th:text="'Hoàn thành'"
                                               class="badgeC"
                                               style="background-color: #34c759; color: white;"></span>
-                                        <span th:case="*"
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}"
                                               th:text="'Chờ sản xuất'"
                                               class="badgeC"
+                                              style="background-color: #e68239; color: white;"></span>
+
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).CANCELED}"
+                                              th:text="'Hủy sản xuất'"
+                                              class="badgeC"
                                               style="background-color: #ff3b30; color: white;"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                                              th:text="'Tạm Dừng'"
+                                              class="badgeC"
+                                              style="background-color: #4992e6; color: white;"></span>
                                     </span>
                                 </td>
                                 <td>
