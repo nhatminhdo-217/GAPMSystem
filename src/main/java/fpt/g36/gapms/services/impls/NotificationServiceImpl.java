@@ -10,6 +10,7 @@ import fpt.g36.gapms.services.SmsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -45,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification saveAndSendNotification(NotificationDTO notificationDTO) {
         User targetUser = userRepository.findById(notificationDTO.getTargetUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + notificationDTO.getTargetUserId()));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với id: " + notificationDTO.getTargetUserId()));
 
         Notification notification = new Notification();
         notification.setMessage(notificationDTO.getMessage());
@@ -85,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public Notification markNotificationAsRead(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new RuntimeException("Notification not found with id: " + notificationId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo với id: " + notificationId));
 
         notification.setRead(true);
         notification.setUpdateAt(LocalDateTime.now());
@@ -117,7 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification saveAndSendMultiChannelNotification(NotificationDTO notificationDTO, boolean sendSms) {
 
         User targetUser = userRepository.findById(notificationDTO.getTargetUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + notificationDTO.getTargetUserId()));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với id: " + notificationDTO.getTargetUserId()));
 
         Notification notification = saveAndSendNotification(notificationDTO);
 
@@ -134,6 +136,16 @@ public class NotificationServiceImpl implements NotificationService {
         return notification;
     }
 
+    @Override
+    public List<Notification> getRecentNotifications(Long userId, int limit) {
+        return notificationRepository.findTopByTargetUser_IdOrderByCreateAtDesc(userId, PageRequest.of(0, limit));
+    }
+
+    @Override
+    public List<NotificationDTO> mapToDTO(List<Notification> notifications) {
+        return notifications.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
 
     // Private Method
     private static NotificationDTO getNotificationDTO(Notification savedNotification) {
@@ -147,6 +159,19 @@ public class NotificationServiceImpl implements NotificationService {
         responseDTO.setTargetUserId(savedNotification.getTargetUser().getId());
         responseDTO.setSource(savedNotification.getSource());
         return responseDTO;
+    }
+
+    private NotificationDTO convertToDTO(Notification notification) {
+        NotificationDTO dto = new NotificationDTO();
+        dto.setId(notification.getId().toString());
+        dto.setMessage(notification.getMessage());
+        dto.setType(notification.getType());
+        dto.setTargetUrl(notification.getTargetUrl());
+        dto.setRead(notification.isRead());
+        dto.setSource(notification.getSource());
+        dto.setTimestamp(notification.getCreateAt());
+        dto.setTargetUserId(notification.getTargetUser().getId());
+        return dto;
     }
 
     private String createShortUrl(String longUrl) {

@@ -5,17 +5,14 @@ import fpt.g36.gapms.models.dto.contract.ContractDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
-import fpt.g36.gapms.models.entities.Contract;
-import fpt.g36.gapms.models.entities.Company;
-import fpt.g36.gapms.models.entities.PurchaseOrder;
-import fpt.g36.gapms.models.entities.Rfq;
-import fpt.g36.gapms.models.entities.User;
+import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.ContractService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.PurchaseOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.impls.UserServiceImpl;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -49,14 +46,16 @@ public class PurchaseOrderController {
     private final UserService userService;
     private static String latestImagePath = null;
     private final ProductionOrderService productionOrderService;
+    private final NotificationUtils notificationUtils;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService) {
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService, NotificationUtils notificationUtils) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.contractService = contractService;
         this.userService = userService;
         this.productionOrderService = productionOrderService;
+        this.notificationUtils = notificationUtils;
     }
 
     @GetMapping("/list")
@@ -110,15 +109,20 @@ public class PurchaseOrderController {
         User currUser = userUtils.getOptionalUserInfo(model);
 
         Optional<PurchaseOrderInfoDTO> data = purchaseOrderService.getPurchaseOrderInfoDTOById(id);
-        /*List<PurchaseOrderItemsDTO> items = purchaseOrderService.getPurchaseOrderItemsDTOById(id);*/
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderCustomerDetail(id);
         PurchaseOrderInfoDTO purchaseOrderInfoDTO = data.get();
+
+        String phoneNumber = purchaseOrderService.getUserPhoneNumberByQuotationId(id);
+
+        Solution solution = purchaseOrder.getSolution();
 
         model.addAttribute("orderInfo", purchaseOrderInfoDTO);
         /*model.addAttribute("items", items);*/
         model.addAttribute("currUser", currUser);
         model.addAttribute("purchaseOrderId", id);
         model.addAttribute("purchaseOrder", purchaseOrder);
+        model.addAttribute("phoneNumber", phoneNumber);
+        model.addAttribute("solution", solution);
 
         return "purchase-order/purchase_order_detail";
     }
@@ -143,9 +147,9 @@ public class PurchaseOrderController {
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
                 contractService.updateContractStatus(id, currUser);
-                productionOrderService.createProductionOrder(id);
-                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt");
-                redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");
+                productionOrderService.createProductionOrder(id, currUser);
+                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt, Lệnh sản xuất đã được tạo");
+                /*redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");*/
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");
             }
@@ -166,7 +170,7 @@ public class PurchaseOrderController {
         boolean isCancel = purchaseOrderService.cancelPurchaseOrder(id);
 
         if (isCancel) {
-            redirectAttributes.addFlashAttribute("success", "Hủy đơn hàng thành công");
+            redirectAttributes.addFlashAttribute("success", "Đã hủy đơn hàng");
         } else {
             redirectAttributes.addFlashAttribute("error", "Đơn hàng đã được phê duyệt, không thể hủy");
         }
@@ -353,32 +357,34 @@ public class PurchaseOrderController {
     @GetMapping("/customer/list")
     public String getAllPurchaseOrderByUserId(Model model,
                                               @RequestParam(value = "page", defaultValue = "0") String pageStr,
-                                              @RequestParam(value = "size", defaultValue = "5") String sizeStr,
-                                              @RequestParam(value = "year", required = false, defaultValue = "2025") String yearStr) {
+                                              @RequestParam(value = "size", defaultValue = "10") String sizeStr,
+                                              @RequestParam(value = "year", required = false, defaultValue = "2025") String yearStr,
+                                              @RequestParam(value = "searchQuery", required = false) String searchQuery) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Xử lý page
+        // Handle page
         int page;
         try {
             page = Integer.parseInt(pageStr);
-            if (page < 0) { // Không cho phép page âm
-                page = 0; // Đặt về mặc định nếu không hợp lệ
+            if (page < 0) {
+                page = 0;
             }
         } catch (NumberFormatException e) {
-            page = 0; // Nếu không parse được (ví dụ: "l"), đặt về 0
+            page = 0;
         }
 
-        // Xử lý size
+        // Handle size
         int size;
         try {
             size = Integer.parseInt(sizeStr);
-            if (size <= 0 || size > 100) { // Giới hạn size từ 1 đến 100
-                size = 5; // Đặt về mặc định nếu không hợp lệ
+            if (size <= 0 || size > 100) {
+                size = 5;
             }
         } catch (NumberFormatException e) {
-            size = 5; // Nếu không parse được (ví dụ: "l"), đặt về 5
+            size = 5;
         }
 
+        // Handle year
         Integer year = null;
         if (yearStr != null && !yearStr.trim().isEmpty()) {
             try {
@@ -390,22 +396,28 @@ public class PurchaseOrderController {
                 year = null;
             }
         }
-        Page<PurchaseOrder> purchaseOrders = Page.empty(); // Khởi tạo danh sách rỗng mặc định
+
+
+        String sanitizedSearchQuery = (searchQuery != null && !searchQuery.trim().isEmpty()) ? searchQuery.trim() : null;
+
+        Page<PurchaseOrder> purchaseOrders = Page.empty();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String emailOrPhone = authentication.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (optionalUser.isPresent()) {
                 Pageable pageable = PageRequest.of(page, size);
                 purchaseOrders = purchaseOrderService.getAllPurchaseOrderByUserId(
-                        optionalUser.get().getId(), pageable, year); // Gọi service với year có thể null
+                        optionalUser.get().getId(), pageable, year, sanitizedSearchQuery);
             }
         }
+
         model.addAttribute("currentPage", purchaseOrders.getNumber());
         model.addAttribute("totalPages", purchaseOrders.getTotalPages());
         model.addAttribute("totalItems", purchaseOrders.getTotalElements());
         model.addAttribute("pageSize", size);
         model.addAttribute("purchaseOrders", purchaseOrders);
-        model.addAttribute("selectedYear", year != null ? year : ""); // Trả về năm đã xử lý hoặc rỗng // Trả về năm đã xử lý hoặc rỗng
+        model.addAttribute("selectedYear", year != null ? year : "");
+        model.addAttribute("searchQuery", sanitizedSearchQuery != null ? sanitizedSearchQuery : "");
 
         userUtils.getOptionalUser(model);
         return "purchase-order/purchase-order-list-customer";
@@ -432,6 +444,7 @@ public class PurchaseOrderController {
         }
 
         PurchaseOrder purchaseOrder_save = purchaseOrderService.uploadContract(purchaseOrder, contractCode, purchaseOrderId,optionalUser.get(), contractImage);
+
 
         redirectAttributes.addFlashAttribute("contractUploadSuccess", "Tạo hợp đồng thành công cho lô hàng PO-" + purchaseOrder_save.getId());
         return "redirect:/purchase-order/customer/detail/" + purchaseOrder_save.getId();

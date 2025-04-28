@@ -206,7 +206,17 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <h2><i class="me-2"></i> Danh Sách Đơn Đặt Hàng</h2>
-                        <!-- Dropdown lọc theo năm -->
+
+
+                        <div class="input-group w-auto me-3">
+                            <input type="text" id="searchQuery" class="form-control" placeholder="Tìm theo mã đơn, hợp đồng, trạng thái"
+                                   th:value="${searchQuery}" onkeypress="if(event.key === 'Enter') searchPurchaseOrders()">
+                            <button class="btn btn-primary" onclick="searchPurchaseOrders()">
+                                <i class="fas fa-search"></i> Tìm
+                            </button>
+                        </div>
+
+
                         <div class="d-flex align-items-center">
                             <label for="yearFilter" class="me-2">Lọc theo năm:</label>
                             <select id="yearFilter" class="form-select w-auto" onchange="filterByYear(this.value)">
@@ -276,22 +286,22 @@
             <!-- Phân trang -->
             <nav aria-label="Page navigation" th:if="${totalItems > 0}">
                 <ul class="pagination justify-content-center">
-                    <!-- Nút Previous -->
+                    <!-- Previous -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/purchase-order/customer/list(page=${currentPage - 1}, size=${pageSize}, year=${selectedYear})}">Previous</a>
+                           th:href="@{/purchase-order/customer/list(page=${currentPage - 1}, size=${pageSize}, year=${selectedYear}, searchQuery=${searchQuery})}">Previous</a>
                     </li>
-                    <!-- Các trang -->
+                    <!-- Pages -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:classappend="${i == currentPage} ? 'active'">
                         <a class="page-link"
-                           th:href="@{/purchase-order/customer/list(page=${i}, size=${pageSize}, year=${selectedYear})}"
+                           th:href="@{/purchase-order/customer/list(page=${i}, size=${pageSize}, year=${selectedYear}, searchQuery=${searchQuery})}"
                            th:text="${i + 1}"></a>
                     </li>
-                    <!-- Nút Next -->
+                    <!-- Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/purchase-order/customer/list(page=${currentPage + 1}, size=${pageSize}, year=${selectedYear})}">Next</a>
+                           th:href="@{/purchase-order/customer/list(page=${currentPage + 1}, size=${pageSize}, year=${selectedYear}, searchQuery=${searchQuery})}">Next</a>
                     </li>
                 </ul>
             </nav>
@@ -336,6 +346,14 @@
         const url = new URL(window.location.href);
         url.searchParams.set('year', year);
         url.searchParams.set('page', 0); // Reset về trang đầu tiên khi lọc
+        window.location.href = url.toString();
+    }
+
+    function searchPurchaseOrders() {
+        const query = document.getElementById('searchQuery').value.trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set('searchQuery', query);
+        url.searchParams.set('page', 0); // Reset to first page when searching
         window.location.href = url.toString();
     }
 </script>

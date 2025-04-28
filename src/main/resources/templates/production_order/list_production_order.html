@@ -120,7 +120,7 @@
                                     <tr th:each="data, iterStat : ${pageData.content}">
                                         <th scope="row" th:text="${iterStat.count + pageData.number * pageData.size}"></th>
                                         <td th:text="${data.purchaseOrderId}"></td>
-                                        <td th:text="${#temporals.format(data.createAt, 'dd-MM-yyyy')}"></td>
+                                        <td th:text="${#temporals.format(data.createAt, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${data.createdBy}"></td>
                                         <td th:text="${data.approvedBy != null ? data.approvedBy : 'N/A'}"></td>
                                         <td>
@@ -207,7 +207,7 @@
                         </div>
                         <div class="info-row">
                             <div class="info-label">Ngày tạo:</div>
-                            <div th:text="${#temporals.format(po.createAt, 'dd-MM-yyyy')}"></div>
+                            <div th:text="${#temporals.format(po.createAt, 'dd/MM/yyyy')}"></div>
                         </div>
                     </div>
 

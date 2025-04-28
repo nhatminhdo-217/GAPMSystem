@@ -31,7 +31,7 @@ public interface PurchaseOrderService {
 
     List<PurchaseOrderDTO> getAllPurchaseOrderByRole(User currUser);
 
-    Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year);
+    Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year, String sanitizedSearchQuery);
 
     PurchaseOrder getPurchaseOrderCustomerDetail(Long purchase_order_id);
 
@@ -51,4 +51,6 @@ public interface PurchaseOrderService {
     Page<PurchaseOrderDTO> getAllPurchaseOrderWithSearchFilter(String search, BaseEnum status, int page, int size, String sortField, String sortDir);
 
     Page<PurchaseOrderDTO> getAllByRole(User currUser, String search, BaseEnum status, int page, int size, String sortField, String sortDir);
+
+    String getUserPhoneNumberByQuotationId(Long id);
 }

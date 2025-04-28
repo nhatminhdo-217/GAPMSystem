@@ -69,8 +69,11 @@
       </div>
       <div class="d-flex flex-column align-items-center mt-3">
 
-        <div>
+        <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
           <img th:src="@{'/uploads/' + ${contract.path}}" alt="Hợp đồng" style="max-width: 100%; height: auto">
+        </div>
+        <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+          <img th:src="@{${contract.path}}" alt="Hợp đồng" style="max-width: 100%; height: auto">
         </div>
 
         <div class="mt-3">

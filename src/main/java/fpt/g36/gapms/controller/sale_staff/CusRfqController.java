@@ -152,7 +152,7 @@ public class CusRfqController {
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
         model.addAttribute("company", company);
-        return "/sale-staff/cus-rfq-details";
+        return "sale-staff/cus-rfq-details";
     }
 
     @PostMapping("/submit-rfq/{id}")

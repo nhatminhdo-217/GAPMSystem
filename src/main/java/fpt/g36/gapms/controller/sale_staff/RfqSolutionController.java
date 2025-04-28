@@ -142,7 +142,7 @@ public class RfqSolutionController {
         userUtils.getOptionalUser(model);
         model.addAttribute("solution", solution);
         model.addAttribute("company", company);
-        return "/sale-staff/rfq-solution-details";
+        return "sale-staff/rfq-solution-details";
     }
 
     private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {

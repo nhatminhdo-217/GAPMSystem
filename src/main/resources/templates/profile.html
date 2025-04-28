@@ -141,7 +141,13 @@
         <div class="container mt-5">
             <h1 class="text-center mb-4">Thông tin cá nhân</h1>
             <div class="card text-center p-4 shadow-sm">
-                <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img mb-3">
+                <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
+                    <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img mb-3">
+                </div>
+                <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+                    <img th:src="${avatar}" alt="Profile Image" class="img-thumbnail profile-img mb-3">
+                </div>
+
                 <p><strong>Tên người dùng:</strong> <span th:text="${user.username}"></span></p>
                 <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
                 <p><strong>Số điện thoại:</strong> <span th:text="${user.phoneNumber}"></span></p>

@@ -285,6 +285,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             throw e;
         }
 
+
     }
 
     @Transactional
@@ -581,6 +582,16 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         System.err.println("Lấy tất cả TechnologyProcess do user " + createdBy.getUsername() + " tạo, page: " + pageable.getPageNumber() + ", size: " + pageable.getPageSize());
         return technologyProcessRepository.findByCreatedBy(createdBy, pageable);
     }
+
+    /*@Override
+    public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
+        return null;
+    }*/
+
+    /*@Override
+    public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
+        return null;
+    }*/
 
     @Override
     public Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {

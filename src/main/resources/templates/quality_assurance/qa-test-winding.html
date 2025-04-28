@@ -530,8 +530,7 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Côn-WD-<span
-                                    th:text="${windingRiskAssessment.windingBatch.windingStage.id}"></span>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Côn-WO-<span th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.id}"></span>
                             </h2>
                             <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${windingRiskAssessment.windingBatch.windingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
@@ -543,6 +542,9 @@
                                     <tr>
                                         <th>Phụ trách bắt đầu</th>
                                         <th>Phụ trách kết thúc</th>
+                                        <th>Mã khách hàng</th>
+                                        <th>Mã mẻ</th>
+                                        <th>Thời gian hoàn thiện</th>
                                         <th>Tên Màu</th>
                                         <th>Số Lượng</th>
                                         <th>Loại Hàng</th>
@@ -552,8 +554,11 @@
                                     <tr>
                                         <td th:text="${windingRiskAssessment.windingBatch?.leaderStart?.username ?: 'n/a'}"></td>
                                         <td th:text="${windingRiskAssessment.windingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td> KH-<span th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
+                                        <td>Mẻ-<span th:text="${windingRiskAssessment.windingBatch.batchNumber}"></span></td>
+                                        <td th:text="${#temporals.format(windingRiskAssessment.windingBatch.deadline, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${windingRiskAssessment.windingBatch.plannedOutput}"></td>
                                         <td th:text="${windingRiskAssessment.windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>
@@ -739,6 +744,9 @@
                                     <tr>
                                         <th>Phụ trách bắt đầu</th>
                                         <th>Phụ trách kết thúc</th>
+                                        <th>Mã khách hàng</th>
+                                        <th>Mã mẻ</th>
+                                        <th>Thời gian hoàn thiện</th>
                                         <th>Tên Màu</th>
                                         <th>Số Lượng</th>
                                         <th>Loại Hàng</th>
@@ -748,8 +756,11 @@
                                     <tr>
                                         <td th:text="${windingBatch?.leaderStart?.username ?: 'n/a'}"></td>
                                         <td th:text="${windingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td> KH-<span th:text="${windingBatch.windingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
+                                        <td>Mẻ-<span th:text="${windingBatch.batchNumber}"></span></td>
+                                        <td th:text="${#temporals.format(windingBatch.deadline, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                                        <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.quantity}"></td>
+                                        <td th:text="${windingBatch.plannedOutput}"></td>
                                         <td th:text="${windingBatch.windingStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
                                     </tr>
                                     </tbody>

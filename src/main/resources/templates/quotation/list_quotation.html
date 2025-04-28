@@ -154,9 +154,10 @@
                                     <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number - 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trước</a>
                                 </li>
                                 <li class="page-item" th:each="pageNumber : ${pageNumbers}"
-                                    th:classappend="${pageNumbers == quotations.number ? 'active' : ''}">
-                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${pageNumber} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
-                                       th:text="${pageNumber + 1}"></a>
+                                    th:classappend="${pageNumber == quotations.number ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/quotation/list?page=' + ${pageNumber} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                        <span th:text="${pageNumber + 1}"></span>
+                                    </a>
                                 </li>
                                 <li class="page-item" th:classappend="${quotations.number == quotations.totalPages - 1 ? 'disabled' : ''}">
                                     <a class="page-link" th:href="@{'/quotation/list?page=' + ${quotations.number + 1} + '&size=' + ${quotations.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Sau</a>

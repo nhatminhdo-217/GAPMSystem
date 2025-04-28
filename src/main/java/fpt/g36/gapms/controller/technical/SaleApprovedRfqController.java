@@ -145,7 +145,7 @@ public class SaleApprovedRfqController {
         }
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     @PostMapping("/submit-solution/{id}")
@@ -157,7 +157,7 @@ public class SaleApprovedRfqController {
 
         if (optionalUser.isEmpty()) {
             model.addAttribute("error", "Tài khoản đang dùng không còn tồn tại.");
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         User currentUser = optionalUser.get();
@@ -165,14 +165,14 @@ public class SaleApprovedRfqController {
         if (rfq == null) {
             model.addAttribute("error", "RFQ không tồn tại.");
             model.addAttribute("rfq", null);
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         model.addAttribute("rfq", rfq);
 
         if (result.hasErrors()) {
             model.addAttribute("validationErrors", result.getAllErrors());
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         try {
@@ -186,7 +186,7 @@ public class SaleApprovedRfqController {
             model.addAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     @GetMapping("/update-solution/{id}")
@@ -198,7 +198,7 @@ public class SaleApprovedRfqController {
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
         model.addAttribute("solution", rfq.getSolution());
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     @GetMapping("/submit-solution-final/{id}")
@@ -210,7 +210,7 @@ public class SaleApprovedRfqController {
         userUtils.getOptionalUser(model);
         model.addAttribute("rfq", rfq);
         model.addAttribute("solution", rfq.getSolution());
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     @PostMapping("/update-solution/{id}")
@@ -220,14 +220,14 @@ public class SaleApprovedRfqController {
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
             model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         model.addAttribute("rfq", rfq);
 
         if (result.hasErrors()) {
             model.addAttribute("validationErrors", result.getAllErrors());
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         try {
@@ -241,7 +241,7 @@ public class SaleApprovedRfqController {
             model.addAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     @PostMapping("/submit-solution-final/{id}")
@@ -251,7 +251,7 @@ public class SaleApprovedRfqController {
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
             model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
-            return "/technical/rfq-details";
+            return "technical/rfq-details";
         }
 
         model.addAttribute("rfq", rfq);
@@ -265,14 +265,14 @@ public class SaleApprovedRfqController {
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
-            /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), quotationId);*/
+            /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), getuotationId);*/
 
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
             model.addAttribute("success", "Solution và Quotation đã được gửi thành công!");
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         }
-        return "/technical/rfq-details";
+        return "technical/rfq-details";
     }
 
     private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {

@@ -13,6 +13,7 @@ import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.ContractRepository;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    private final ImageService imageService;
    private final ContractRepository contractRepository;
    private final UserUtils userUtils;
+    private final NotificationUtils notificationUtils;
 
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper, ImageService imageService, ContractRepository contractRepository, UserUtils userUtils) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper, ImageService imageService, ContractRepository contractRepository, UserUtils userUtils, NotificationUtils notificationUtils) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderMapper = purchaseOrderMapper;
         this.imageService = imageService;
         this.contractRepository = contractRepository;
         this.userUtils = userUtils;
+        this.notificationUtils = notificationUtils;
     }
 
     @Override
@@ -70,6 +73,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         else if (getStatusByPurchaseOrderId(id) == BaseEnum.NOT_APPROVED){
             po.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
+            po.setManageBy(currUser);
         } else if (getStatusByPurchaseOrderId(id) == BaseEnum.WAIT_FOR_APPROVAL) {
             po.setStatus(BaseEnum.APPROVED);
             po.setApprovedBy(currUser);
@@ -127,8 +131,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year) {
-        return purchaseOrderRepository.getAllPurchaseOrdersByUserIdAndYear(userId, year, pageable);
+    public Page<PurchaseOrder> getAllPurchaseOrderByUserId(Long userId, Pageable pageable, Integer year, String sanitizedSearchQuery) {
+        return purchaseOrderRepository.getAllPurchaseOrdersByUserIdAndSearch(userId, year,sanitizedSearchQuery, pageable);
     }
 
     @Override
@@ -184,7 +188,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder_save.setContracts(contract_save);
         purchaseOrder_save.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
         purchaseOrderRepository.save(purchaseOrder_save);
+        notificationUtils.sentContractFromCustomerToDyeSM(purchaseOrder_save.getQuotation().getRfq().getId(), purchaseOrder_save.getId());
         return purchaseOrder_save;
+
     }
 
     @Override
@@ -243,6 +249,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 //        sortPurchaseOrderDTOs(purchaseOrderDTOS, sortDir);
 
         return new PageImpl<>(purchaseOrderDTOS, pageable, purchaseOrders.getTotalElements());
+    }
+
+    @Override
+    public String getUserPhoneNumberByQuotationId(Long id) {
+        Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
+        if (purchaseOrder.isPresent()) {
+            return purchaseOrder.get().getQuotation().getRfq().getCreateBy().getPhoneNumber();
+        }
+        return "";
     }
 
     private boolean isPurchaseOrderContract(Long id){

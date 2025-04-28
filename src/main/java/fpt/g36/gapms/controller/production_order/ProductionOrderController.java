@@ -97,7 +97,7 @@ public class ProductionOrderController {
 
         if (status.equals(BaseEnum.NOT_APPROVED)) {
             ProductionOrder po = productionOrderService.updateStatus(id, currUser);
-            redirectAttributes.addFlashAttribute("success", "Phê duyệt lệnh sản xuất thành công");
+            redirectAttributes.addFlashAttribute("success", "Gửi lệnh sản xuất thành công");
             return "redirect:/production-order/detail/" + po.getId();
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {

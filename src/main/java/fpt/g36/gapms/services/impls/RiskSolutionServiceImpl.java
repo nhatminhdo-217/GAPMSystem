@@ -108,5 +108,17 @@ public class RiskSolutionServiceImpl implements RiskSolutionService {
         return riskSolution;
     }
 
+    @Override
+    public int getDyeRiskFalse(Long draId) {
+        System.err.println(riskSolutionRepository.getDysRiskFalse(draId));
+        return riskSolutionRepository.getDysRiskFalse(draId);
+    }
+
+    @Override
+    public int getWindingRiskFalse(Long wraId) {
+        System.err.println(riskSolutionRepository.getWindingRiskFalse(wraId));
+        return riskSolutionRepository.getWindingRiskFalse(wraId);
+    }
+
 
 }

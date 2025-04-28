@@ -50,7 +50,7 @@
         <!-- Navbar End -->
 
         <div class="container-fluid py-3">
-            <!-- Alerts Section -->
+            <!--&lt;!&ndash; Alerts Section &ndash;&gt;
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
@@ -64,7 +64,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Breadcrumbs Section -->
             <nav aria-label="breadcrumb" class="mb-3">
@@ -107,7 +107,7 @@
                 <div class="card-body p-0">
                     <p class="mobile-scroll-hint"><i class="fas fa-hand-point-right me-1"></i>Vuốt qua để xem toàn bộ bảng</p>
                     <div class="table-responsive">
-                        <table id="order-table" class="table table-hover table-striped mb-0">
+                        <table id="order-table" class="table table-hover table-striped mb-0 text-center">
                             <thead class="bg-light">
                             <tr>
                                 <th>Loại hàng</th>
@@ -136,31 +136,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons (Desktop) -->
-            <div class="card mb-4 action-buttons-container" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')') || #authorization.expression('hasRole(''SALE_MANAGER'')')}">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-wrap gap-2 action-buttons">
-                        <div th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}" class="d-flex flex-wrap gap-2">
-                            <form th:if="${productionOrder.status.name() == 'DRAFT'}"
-                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-check me-1"></i> Xác nhận
-                                </button>
-                            </form>
-                            <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
-                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check me-1"></i> Phê duyệt
-                                </button>
-                            </form>
-                        </div>
-                        <a th:href="@{/production-order/list}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Trở lại
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Fixed Action Buttons (Mobile) -->
             <div class="fixed-action-bar" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')') || #authorization.expression('hasRole(''SALE_MANAGER'')')}">
                 <div class="action-buttons">
@@ -172,9 +147,11 @@
                             </button>
                         </form>
                         <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
-                              th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post" class="mb-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-check me-1"></i> Phê duyệt
+                              th:action="@{'/production-order/detail/' + ${productionOrder.id}}"
+                              method="post"
+                              onsubmit="return confirmSendProduction(event)">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i> Gửi lệnh sản xuất
                             </button>
                         </form>
                     </div>
@@ -260,6 +237,33 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Action Buttons (Desktop) -->
+            <div class="card mb-4 action-buttons-container" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')') || #authorization.expression('hasRole(''SALE_MANAGER'')')}">
+                <div class="card-body p-3">
+                    <div class="d-flex flex-wrap gap-2 action-buttons">
+                        <div th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}" class="d-flex flex-wrap gap-2">
+                            <form th:if="${productionOrder.status.name() == 'DRAFT'}"
+                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}" method="post">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check me-1"></i> Xác nhận
+                                </button>
+                            </form>
+                            <form th:if="${productionOrder.status.name() == 'NOT_APPROVED'}"
+                                  th:action="@{'/production-order/detail/' + ${productionOrder.id}}"
+                                  method="post"
+                                  onsubmit="return confirmSendProduction(event)">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check me-1"></i> Gửi lệnh sản xuất
+                                </button>
+                            </form>
+                        </div>
+                        <a th:href="@{/production-order/list}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Trở lại
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -272,8 +276,19 @@
 </div>
 
 <!-- Content End -->
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${success}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -285,7 +300,29 @@
 <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmSendProduction(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
 
+        Swal.fire({
+            title: 'Xác nhận gửi lệnh sản xuất',
+            text: 'Bạn có chắc chắn muốn gửi lệnh sản xuất này?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Có, gửi!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+</script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script th:inline="javascript">

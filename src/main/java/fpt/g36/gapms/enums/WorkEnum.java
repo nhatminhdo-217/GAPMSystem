@@ -6,5 +6,5 @@ public enum WorkEnum {
     FINISHED,
     FIX,
     PAUSE,
-    CANCELLED
+    CANCELED
 }

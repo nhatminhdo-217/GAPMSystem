@@ -644,7 +644,7 @@
                         </p>
                         <p>
                             <i class="fas fa-truck me-1"></i>
-                            <strong>Ngày giao:</strong>
+                            <strong>Ngày hoàn thành dự kiến:</strong>
                             <span th:text="${#temporals.format(purchaseOrder.quotation.rfq.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
                         </p>
                     </div>
@@ -653,13 +653,14 @@
                     <div class="card-header">
                         <h4><i class="fas fa-boxes me-2"></i> Chi tiết đơn hàng</h4>
                         <span class="total-price">
-                            Tổng cộng: <span th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                            Tổng cộng: <span th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0) * 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
                         </span>
                     </div>
                     <div class="card-body product-list">
                         <div th:if="${purchaseOrder.purchaseOrderDetails != null and not #lists.isEmpty(purchaseOrder.purchaseOrderDetails)}" th:each="pod: ${purchaseOrder.purchaseOrderDetails}" class="product-item">
                             <div class="product-details">
                                 <div class="details-titles">
+                                    <p>Mã sản phẩm</p>
                                     <p>Sản phẩm</p>
                                     <p>Nhãn hiệu</p>
                                     <p>Loại hàng</p>
@@ -669,6 +670,7 @@
                                     <p>Thành tiền</p>
                                 </div>
                                 <div class="details-values">
+                                    <p th:text="${pod.id}"></p>
                                     <p th:text="${pod.product.name}"></p>
                                     <p th:text="${pod.brand.name}"></p>
                                     <p th:text="${pod.category.name}"></p>
@@ -678,12 +680,13 @@
                                     <p th:text="${#numbers.formatDecimal(pod.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></p>
                                 </div>
                                 <div class="details-left">
+                                    <p><strong>Mã sản phẩm:</strong> <span th:text="${pod.id}"></span></p>
                                     <p><strong>Sản phẩm:</strong> <span th:text="${pod.product.name}"></span></p>
                                     <p><strong>Nhãn hiệu:</strong> <span th:text="${pod.brand.name}"></span></p>
                                     <p><strong>Loại hàng:</strong> <span th:text="${pod.category.name}"></span></p>
-                                    <p><strong>Màu:</strong> <span th:text="${pod.note_color}"></span></p>
                                 </div>
                                 <div class="details-right">
+                                    <p><strong>Màu:</strong> <span th:text="${pod.note_color}"></span></p>
                                     <p><strong>Số lượng:</strong> <span th:text="${pod.quantity}"></span></p>
                                     <p><strong>Đơn giá:</strong> <span th:text="${#numbers.formatDecimal(pod.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></span></p>
                                     <p><strong>Thành tiền:</strong> <span th:text="${#numbers.formatDecimal(pod.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></span></p>
@@ -704,9 +707,7 @@
                                     <div class="step-circle"><i class="fas fa-hammer"></i></div>
                                     <strong>Đánh côn</strong>
                                     <span th:switch="${pod?.workOrderDetail?.windingStage?.workStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background
-
--color: #808080; color: #333;"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
                                         <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
@@ -789,8 +790,11 @@
                         </div>
                         <div class="col-md-6 text-center">
                             <h5>Ảnh Hợp Đồng</h5>
-                            <div id="imagePreview_waitForApproval" class="contract-placeholder">
+                            <div id="imagePreview_waitForApproval" class="contract-placeholder" th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
                                 <img th:src="@{'/uploads/' + ${purchaseOrder.contract.path}}" alt="Ảnh hợp đồng">
+                            </div>
+                            <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+                                <img th:src="@{${purchaseOrder.contract.path}}" alt="Hợp đồng" style="max-width: 100%; height: auto">
                             </div>
                         </div>
                     </div>

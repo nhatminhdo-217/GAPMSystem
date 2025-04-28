@@ -538,8 +538,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WD-<span
-                                th:text="${dyeRiskAssessment.dyeBatch.dyeStage.id}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.id}"></span></h2>
                         <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="card-body">
@@ -550,6 +549,8 @@
                                 <tr>
                                     <th>Phụ trách bắt đầu</th>
                                     <th>Phụ trách kết thúc</th>
+                                    <th>Thời gian hoàn thiện</th>
+                                    <th>Mã mẻ</th>
                                     <th>Tên màu</th>
                                     <th>Loại sợi</th>
                                     <th>Khối lượng</th>
@@ -561,11 +562,13 @@
                                 <tr>
                                     <td th:text="${dyeRiskAssessment.dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                    <td th:text="${#temporals.format(dyeRiskAssessment.dyeBatch.deadline, 'dd/MM/yyyy')}"></td>
+                                    <td>Mẻ-<span th:text="${dyeRiskAssessment.dyeBatch.batchNumber}"></span></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
-                                    <td>na</td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.cone_quantity}"></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.plannedOutput}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -841,8 +844,7 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WD-<span
-                                    th:text="${dyeBatch.dyeStage.id}"></span></h2>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${dyeBatch.dyeStage.workOrderDetail.id}"></span></h2>
                             <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
@@ -853,6 +855,8 @@
                                     <tr>
                                         <th>Phụ trách bắt đầu</th>
                                         <th>Phụ trách kết thúc</th>
+                                        <th>Thời gian hoàn thiện</th>
+                                        <th>Mã mẻ</th>
                                         <th>Tên màu</th>
                                         <th>Loại sợi</th>
                                         <th>Khối lượng</th>
@@ -864,11 +868,13 @@
                                     <tr>
                                         <td th:text="${dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
                                         <td th:text="${dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td th:text="${#temporals.format(dyeBatch.deadline, 'dd/MM/yyyy')}"></td>
+                                        <td>Mẻ-<span th:text="${dyeBatch.batchNumber}"></span></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                         <td th:text="${dyeBatch.cone_batch_weight}"></td>
-                                        <td>na</td>
-                                        <td th:text="${dyeBatch.dyeStage.cone_quantity}"></td>
+                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
+                                        <td th:text="${dyeBatch.plannedOutput}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -1246,6 +1252,22 @@
                 icon: "error",
                 title: "Lỗi",
                 text: /*[[${errorMessage}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
+
+
+<div th:if="${check_false_when_all_pass}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Lỗi",
+                text: /*[[${check_false_when_all_pass}]]*/ "Default message",
                 showConfirmButton: true,
                 timer: 3000
             });
