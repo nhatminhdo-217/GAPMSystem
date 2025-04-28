@@ -30,6 +30,8 @@ public class Rfq extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BaseEnum isSent;
 
+    private LocalDate deadlineSolution;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_by", nullable = false)
@@ -51,16 +53,25 @@ public class Rfq extends BaseEntity {
     public Rfq() {
     }
 
-    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, User createBy, User approvedBy, Quotation quotation, List<RfqDetail> rfqDetails, Solution solution) {
+    public Rfq(Long id, LocalDateTime createAt, LocalDateTime updateAt, LocalDate expectDeliveryDate, SendEnum isApproved, BaseEnum isSent, LocalDate deadlineSolution, User createBy, User approvedBy, Quotation quotation, List<RfqDetail> rfqDetails, Solution solution) {
         super(id, createAt, updateAt);
         this.expectDeliveryDate = expectDeliveryDate;
         this.isApproved = isApproved;
         this.isSent = isSent;
+        this.deadlineSolution = deadlineSolution;
         this.createBy = createBy;
         this.approvedBy = approvedBy;
         this.quotation = quotation;
         this.rfqDetails = rfqDetails;
         this.solution = solution;
+    }
+
+    public LocalDate getDeadlineSolution() {
+        return deadlineSolution;
+    }
+
+    public void setDeadlineSolution(LocalDate deadlineSolution) {
+        this.deadlineSolution = deadlineSolution;
     }
 
     public LocalDate getExpectDeliveryDate() {

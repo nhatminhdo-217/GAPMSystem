@@ -363,7 +363,8 @@ public class TechnicalProcessController {
             String emailOrPhone = principal.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
             if (!optionalUser.isPresent()) {
-                System.err.println("Không tìm thấy User với email/phone: " + emailOrPhone + ", chuyển hướng đến trang login.");
+                System.err.println("Không tìm thấy User với email/phone: "
+                        + emailOrPhone + ", chuyển hướng đến trang login.");
                 return "redirect:/login";
             }
             User currentUser = optionalUser.get();
@@ -384,15 +385,21 @@ public class TechnicalProcessController {
                         model.addAttribute("previousStatus", status != null ? status : "DRAFT");
                     } catch (RuntimeException e) {
                         technologyProcessPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                        model.addAttribute("error", "Không tìm thấy Technology Process với ID: " + searchId + " cho user: " + currentUser.getUsername());
-                        String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
+                        model.addAttribute("error",
+                                "Không tìm thấy Technology Process với ID: "
+                                        + searchId + " cho user: " + currentUser.getUsername());
+                        String fallbackStatus =
+                                (previousStatus != null && !previousStatus.isEmpty())
+                                        ? previousStatus : (status != null ? status : "DRAFT");
                         model.addAttribute("selectedStatus", fallbackStatus);
                         model.addAttribute("previousStatus", fallbackStatus);
                     }
                 } catch (NumberFormatException e) {
                     model.addAttribute("error", "Mã Technology Process phải là số.");
                     technologyProcessPage = technologyProcessService.getAllTechnologyProcessesByCreatedBy(pageable, currentUser);
-                    String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
+                    String fallbackStatus =
+                            (previousStatus != null && !previousStatus.isEmpty())
+                                    ? previousStatus : (status != null ? status : "DRAFT");
                     model.addAttribute("selectedStatus", fallbackStatus);
                     model.addAttribute("previousStatus", fallbackStatus);
                 }
@@ -421,7 +428,7 @@ public class TechnicalProcessController {
             model.addAttribute("technologyProcesses", technologyProcessPage.getContent());
             model.addAttribute("technologyProcessPage", technologyProcessPage);
             model.addAttribute("search", search);
-  
+
             return "dye-technical/view-all-technology-process";
         }
         System.err.println("User chưa đăng nhập, chuyển hướng đến trang login.");
@@ -435,7 +442,8 @@ public class TechnicalProcessController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userUtils.getOptionalUser(model);
 
-        System.out.println("Bắt đầu updateTechnologyProcess: workOrderId=" + form.getWorkOrderId() + ", workOrderDetailId=" + form.getWorkOrderDetailId());
+        System.out.println("Bắt đầu updateTechnologyProcess: workOrderId="
+                + form.getWorkOrderId() + ", workOrderDetailId=" + form.getWorkOrderDetailId());
         System.out.println("dyeTypesForFirstBatches: " + form.getDyeTypesForFirstBatches());
         System.out.println("dyeTypesForLastBatch: " + form.getDyeTypesForLastBatch());
 
@@ -444,7 +452,8 @@ public class TechnicalProcessController {
                 String emailOrPhone = principal.getName();
                 Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
                 if (!optionalUser.isPresent()) {
-                    System.err.println("Không tìm thấy User với email/phone: " + emailOrPhone + ", chuyển hướng đến trang login.");
+                    System.err.println("Không tìm thấy User với email/phone: "
+                            + emailOrPhone + ", chuyển hướng đến trang login.");
                     return "redirect:/login";
                 }
                 User currentUser = optionalUser.get();
@@ -452,7 +461,8 @@ public class TechnicalProcessController {
                 // Validate dyeTypesForFirstBatches
                 if (form.getDyeTypesForFirstBatches() == null || form.getDyeTypesForFirstBatches().isEmpty()) {
                     System.err.println("Lỗi ở dyeTypesForFirstBatches: " + form.getDyeTypesForFirstBatches());
-                    redirectAttributes.addFlashAttribute("error", "Dye Types cho các mẻ đầu không được để trống.");
+                    redirectAttributes.addFlashAttribute("error",
+                            "Dye Types cho các mẻ đầu không được để trống.");
                     return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
                 }
 
@@ -461,7 +471,8 @@ public class TechnicalProcessController {
                 WorkOrderDetail workOrderDetail = workOrder.getWorkOrderDetails().stream()
                         .filter(detail -> detail.getId().equals(form.getWorkOrderDetailId()))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy WorkOrderDetail với ID: " + form.getWorkOrderDetailId()));
+                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy WorkOrderDetail với ID: "
+                                + form.getWorkOrderDetailId()));
 
                 int dyeBatchCount = workOrderDetail.getDyeStage().getDyebatches() != null
                         ? workOrderDetail.getDyeStage().getDyebatches().size()
@@ -471,7 +482,8 @@ public class TechnicalProcessController {
                 // Validate dyeTypesForLastBatch nếu có nhiều hơn 1 mẻ
                 if (dyeBatchCount > 1) {
                     if (form.getDyeTypesForLastBatch() == null || form.getDyeTypesForLastBatch().isEmpty()) {
-                        redirectAttributes.addFlashAttribute("error", "Dye Types cho mẻ cuối không được để trống khi có nhiều hơn 1 dye batch.");
+                        redirectAttributes.addFlashAttribute("error",
+                                "Dye Types cho mẻ cuối không được để trống khi có nhiều hơn 1 dye batch.");
                         return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
                     }
                 }
@@ -480,14 +492,16 @@ public class TechnicalProcessController {
                 for (DyeTypeDTO dto : form.getDyeTypesForFirstBatches()) {
                     validateDyeTypeDTO(dto, "mẻ đầu", model, form.getWorkOrderId());
                 }
-                validateDispergatorN(form.getDispergatorNForFirstBatches(), "mẻ đầu", model, form.getWorkOrderId());
+                validateDispergatorN(form.getDispergatorNForFirstBatches(),
+                        "mẻ đầu", model, form.getWorkOrderId());
 
                 // Validate dyeTypesForLastBatch nếu có
                 if (form.getDyeTypesForLastBatch() != null && !form.getDyeTypesForLastBatch().isEmpty()) {
                     for (DyeTypeDTO dto : form.getDyeTypesForLastBatch()) {
                         validateDyeTypeDTO(dto, "mẻ cuối", model, form.getWorkOrderId());
                     }
-                    validateDispergatorN(form.getDispergatorNForLastBatch(), "mẻ cuối", model, form.getWorkOrderId());
+                    validateDispergatorN(form.getDispergatorNForLastBatch(),
+                            "mẻ cuối", model, form.getWorkOrderId());
                 }
 
                 // Gọi service để cập nhật TechnologyProcess
@@ -501,14 +515,16 @@ public class TechnicalProcessController {
                         currentUser
                 );
 
-                redirectAttributes.addFlashAttribute("success", "Cập nhật Hành Trình Công Nghệ thành công!");
+                redirectAttributes.addFlashAttribute("success",
+                        "Cập nhật Hành Trình Công Nghệ thành công!");
             } catch (IllegalArgumentException e) {
                 redirectAttributes.addFlashAttribute("error", e.getMessage());
                 return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
             } catch (Exception e) {
                 System.err.println("Lỗi xảy ra: " + e.getMessage());
                 e.printStackTrace();
-                redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật Hành Trình Công Nghệ: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error",
+                        "Lỗi khi cập nhật Hành Trình Công Nghệ: " + e.getMessage());
             }
             return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
         }

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,4 +34,38 @@ public interface RfqRepository extends JpaRepository<Rfq, Long> {
     Optional<Rfq> findById(Long id);
 
     Rfq findBySolution_Id(Long solutionId);
+
+    @Query("SELECT r FROM Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.createBy.id = :userId AND r.isSent = :status " +
+            "ORDER BY r.createAt DESC")
+    Page<Rfq> getRfqsByUserIdAndStatus(@Param("userId") Long userId, @Param("status") BaseEnum status, Pageable pageable);
+
+    //
+    @Query("SELECT r FROM Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.isSent = :status " +
+            "ORDER BY r.createAt DESC")
+    Page<Rfq> getRfqsByStatus(@Param("status") BaseEnum status, Pageable pageable);
+
+    @Query("SELECT r FROM Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.isSent = fpt.g36.gapms.enums.BaseEnum.APPROVED AND s IS NULL " +
+            "ORDER BY r.createAt DESC")
+    Page<Rfq> getApprovedRfqsWithoutSolution(Pageable pageable);
+
+    @Query("SELECT r FROM Rfq r JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.isSent = fpt.g36.gapms.enums.BaseEnum.APPROVED " +
+            "ORDER BY r.createAt DESC")
+    Page<Rfq> getApprovedRfqsWithSolution(Pageable pageable);
+
+    @Query("SELECT r FROM Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.id = :rfqId AND r.isSent = :status")
+    Optional<Rfq> getRfqByIdAndStatus(@Param("rfqId") Long rfqId, @Param("status") BaseEnum status);
+
+    @Query("SELECT r FROM Rfq r LEFT JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.id = :rfqId AND r.isSent = fpt.g36.gapms.enums.BaseEnum.APPROVED AND s IS NULL")
+    Optional<Rfq> getApprovedRfqWithoutSolutionById(@Param("rfqId") Long rfqId);
+
+    @Query("SELECT r FROM Rfq r JOIN r.solution s ON r.id = s.rfq.id " +
+            "WHERE r.id = :rfqId AND r.isSent = fpt.g36.gapms.enums.BaseEnum.APPROVED")
+    Optional<Rfq> getApprovedRfqWithSolutionById(@Param("rfqId") Long rfqId);
+
 }

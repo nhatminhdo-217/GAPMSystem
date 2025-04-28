@@ -23,6 +23,8 @@ public interface ProductionOrderService {
 
     ProductionOrder getProductionOrderById(Long id);
 
+    Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser);
+  
     ProductionOrderDTO findById(Long id);
 
     List<ProductionOrderDetailDTO> findDetailByProductionOrderId(Long id);
@@ -40,4 +42,10 @@ public interface ProductionOrderService {
     boolean cancelProductionOrder(Long id);
 
     Page<ProductionOrderDTO> getAllProductionOrders(String search, BaseEnum status, int page, int size, String sortField, String sortDir);
+
+    Page<TechnicalProductionOrderDTO> getApprovedProductionOrdersWithoutWorkOrder(Pageable pageable);
+
+    Page<TechnicalProductionOrderDTO> getApprovedProductionOrdersWithWorkOrder(Pageable pageable);
+
+    TechnicalProductionOrderDTO getTechnicalProductionOrderById(Long id);
 }

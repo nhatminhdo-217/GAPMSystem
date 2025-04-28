@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>6.4.2</version> <!-- Đảm bảo phiên bản phù hợp với Spring Boot -->
+            <version>6.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -134,7 +134,7 @@
             <version>3.5.3</version>
         </dependency>
         <dependency>
-          <groupId>com.twilio.sdk</groupId>
+            <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
             <version>9.2.5</version>
         </dependency>
@@ -144,7 +144,6 @@
             <artifactId>azure-storage-blob</artifactId>
             <version>12.29.0</version>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -206,8 +205,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
