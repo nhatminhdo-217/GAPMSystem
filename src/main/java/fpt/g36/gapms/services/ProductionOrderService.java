@@ -23,7 +23,7 @@ public interface ProductionOrderService {
 
     ProductionOrder getProductionOrderById(Long id);
 
-    Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser);
+   /* Page<ProductionOrderDTO> findPaginatedByRoles(Integer page, Integer pageSize, String sortField, String sortDir, User currUser);*/
   
     ProductionOrderDTO findById(Long id);
 

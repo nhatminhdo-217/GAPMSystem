@@ -128,7 +128,7 @@ public class MachineController {
                             ds.getWorkStatus() == WorkEnum.FINISHED ||
                                     ds.getWorkStatus() == WorkEnum.FIX ||
                                     ds.getWorkStatus() == WorkEnum.PAUSE ||
-                                    ds.getWorkStatus() == WorkEnum.CANCELLED
+                                    ds.getWorkStatus() == WorkEnum.CANCELED
                     );
                 }
                 model.addAttribute("dyeMachine", dyeMachine);
@@ -162,7 +162,7 @@ public class MachineController {
                             ws.getWorkStatus() == WorkEnum.FINISHED ||
                                     ws.getWorkStatus() == WorkEnum.FIX ||
                                     ws.getWorkStatus() == WorkEnum.PAUSE ||
-                                    ws.getWorkStatus() == WorkEnum.CANCELLED
+                                    ws.getWorkStatus() == WorkEnum.CANCELED
                     );
                 }
                 model.addAttribute("windingMachine", windingMachine);

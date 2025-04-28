@@ -104,7 +104,7 @@ public class MachineServiceImpl implements MachineService {
                 if (stage.getWorkStatus() != WorkEnum.FINISHED &&
                         stage.getWorkStatus() != WorkEnum.FIX &&
                         stage.getWorkStatus() != WorkEnum.PAUSE &&
-                        stage.getWorkStatus() != WorkEnum.CANCELLED) {
+                        stage.getWorkStatus() != WorkEnum.CANCELED) {
                     throw new IllegalStateException("Không thể cập nhật máy nhuộm vì máy đang ở trạng thái không hợp lệ: " + stage.getWorkStatus());
                 }
             }
@@ -137,7 +137,7 @@ public class MachineServiceImpl implements MachineService {
                 if (stage.getWorkStatus() != WorkEnum.FINISHED &&
                         stage.getWorkStatus() != WorkEnum.FIX &&
                         stage.getWorkStatus() != WorkEnum.PAUSE &&
-                        stage.getWorkStatus() != WorkEnum.CANCELLED) {
+                        stage.getWorkStatus() != WorkEnum.CANCELED) {
                     throw new IllegalStateException("Không thể cập nhật máy cuốn vì máy đang ở trạng thái không hợp lệ: " + stage.getWorkStatus());
                 }
             }
@@ -164,7 +164,7 @@ public class MachineServiceImpl implements MachineService {
                 if (stage.getWorkStatus() != WorkEnum.FINISHED &&
                         stage.getWorkStatus() != WorkEnum.FIX &&
                         stage.getWorkStatus() != WorkEnum.PAUSE &&
-                        stage.getWorkStatus() != WorkEnum.CANCELLED) {
+                        stage.getWorkStatus() != WorkEnum.CANCELED) {
                     throw new IllegalStateException("Không thể cập nhật trạng thái máy nhuộm vì máy đang ở trạng thái không hợp lệ: " + stage.getWorkStatus());
                 }
             }
@@ -187,7 +187,7 @@ public class MachineServiceImpl implements MachineService {
                 if (stage.getWorkStatus() != WorkEnum.FINISHED &&
                         stage.getWorkStatus() != WorkEnum.FIX &&
                         stage.getWorkStatus() != WorkEnum.PAUSE &&
-                        stage.getWorkStatus() != WorkEnum.CANCELLED) {
+                        stage.getWorkStatus() != WorkEnum.CANCELED) {
                     throw new IllegalStateException("Không thể cập nhật trạng thái máy cuốn vì máy đang ở trạng thái không hợp lệ: " + stage.getWorkStatus());
                 }
             }
@@ -211,7 +211,7 @@ public class MachineServiceImpl implements MachineService {
         for (DyeMachine machine : activeMachines) {
             // Kiểm tra xem máy có đang được sử dụng bởi bất kỳ DyeStage nào không
             List<DyeStage> activeDyeStages = dyeStageRepository.findActiveDyeStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là rảnh nếu không có DyeStage nào đang sử dụng nó
             boolean isMachineFree = activeDyeStages.isEmpty();
@@ -243,7 +243,7 @@ public class MachineServiceImpl implements MachineService {
         for (WindingMachine machine : activeMachines) {
             // Kiểm tra xem máy có đang được sử dụng bởi bất kỳ WindingStage nào không
             List<WindingStage> activeWindingStages = windingStageRepository.findActiveWindingStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là rảnh nếu không có WindingStage nào đang sử dụng nó
             boolean isMachineFree = activeWindingStages.isEmpty();
@@ -318,7 +318,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi DyeStage nào không
             List<DyeStage> activeDyeStages = dyeStageRepository.findActiveDyeStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là rảnh nếu không có hàng đợi chồng lấn và không có DyeStage đang sử dụng
             if (overlappingQueues.isEmpty() && activeDyeStages.isEmpty()) {
@@ -345,7 +345,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi DyeStage nào không
             List<DyeStage> activeDyeStages = dyeStageRepository.findActiveDyeStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là khả dụng nếu có trong hàng đợi, không chồng lấn, không có DyeStage đang sử dụng, và thỏa mãn thời gian giao hàng
             if (!queues.isEmpty() && overlappingQueues.isEmpty() && activeDyeStages.isEmpty() && meetsDeliveryDate) {
@@ -368,7 +368,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi WindingStage nào không
             List<WindingStage> activeWindingStages = windingStageRepository.findActiveWindingStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là rảnh nếu không có hàng đợi chồng lấn và không có WindingStage đang sử dụng
             if (overlappingQueues.isEmpty() && activeWindingStages.isEmpty()) {
@@ -395,7 +395,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi WindingStage nào không
             List<WindingStage> activeWindingStages = windingStageRepository.findActiveWindingStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Máy được coi là khả dụng nếu có trong hàng đợi, không chồng lấn, không có WindingStage đang sử dụng, và thỏa mãn thời gian giao hàng
             if (!queues.isEmpty() && overlappingQueues.isEmpty() && activeWindingStages.isEmpty() && meetsDeliveryDate) {
@@ -421,7 +421,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi DyeStage nào không
             List<DyeStage> activeDyeStages = dyeStageRepository.findActiveDyeStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Điều kiện: Không có hàng đợi chồng lấn, không có DyeStage đang sử dụng, và deadline trước ngày giao hàng
             boolean meetsDeliveryDate = deadline.isBefore(actualDeliveryDate);
@@ -449,7 +449,7 @@ public class MachineServiceImpl implements MachineService {
 
             // Kiểm tra xem máy có đang được sử dụng bởi WindingStage nào không
             List<WindingStage> activeWindingStages = windingStageRepository.findActiveWindingStagesByMachine(
-                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELLED);
+                    machine.getId(), plannedStart, deadline, WorkEnum.FINISHED, WorkEnum.PAUSE, WorkEnum.CANCELED);
 
             // Điều kiện: Không có hàng đợi chồng lấn, không có WindingStage đang sử dụng, và deadline trước ngày giao hàng
             boolean meetsDeliveryDate = deadline.isBefore(actualDeliveryDate);
