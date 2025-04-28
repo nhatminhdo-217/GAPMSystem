@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "winding_machine")
 public class WindingMachine extends BaseEntity {
 
-    @OneToOne(mappedBy = "windingMachine")
-    private WindingStage windingStage;
+    @OneToMany(mappedBy = "windingMachine")
+    private List<WindingStage> windingStage;
 
     @NotNull
     private BigDecimal motor_speed;
@@ -39,7 +40,7 @@ public class WindingMachine extends BaseEntity {
     public WindingMachine() {
     }
 
-    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, WindingStage windingStage, BigDecimal motor_speed, BigDecimal spindle, BigDecimal capacity, String description, boolean isActive) {
+    public WindingMachine(Long id, LocalDateTime createAt, LocalDateTime updateAt, List<WindingStage> windingStage, BigDecimal motor_speed, BigDecimal spindle, BigDecimal capacity, String description, boolean isActive) {
         super(id, createAt, updateAt);
         this.windingStage = windingStage;
         this.motor_speed = motor_speed;
@@ -49,11 +50,11 @@ public class WindingMachine extends BaseEntity {
         this.isActive = isActive;
     }
 
-    public WindingStage getWindingStage() {
+    public List<WindingStage> getWindingStage() {
         return windingStage;
     }
 
-    public void setWindingStage(WindingStage windingStage) {
+    public void setWindingStage(List<WindingStage> windingStage) {
         this.windingStage = windingStage;
     }
 

@@ -53,4 +53,8 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
             @Param("search") String search,
             @Param("status") BaseEnum status,
             Pageable pageable);
+
+    Page<ProductionOrder> findAllByStatusAndWorkOrderIsNull(BaseEnum status, Pageable pageable);
+
+    Page<ProductionOrder> findAllByStatusAndWorkOrderIsNotNull(BaseEnum status, Pageable pageable);
 }

@@ -21,14 +21,16 @@ public interface DyeStageRepository extends JpaRepository<DyeStage, Long> {
 
     @Query("SELECT ds FROM DyeStage ds " +
             "WHERE ds.dyeMachine.id = :machineId " +
-            "AND ds.workStatus != :finishedStatus " +
+            "AND ds.workStatus NOT IN (:finishedStatus, :pauseStatus, :cancelledStatus) " +
             "AND ((ds.plannedStart <= :deadline AND ds.deadline >= :plannedStart) " +
             "OR (ds.startAt IS NOT NULL AND ds.completeAt IS NULL))")
     List<DyeStage> findActiveDyeStagesByMachine(
             @Param("machineId") Long machineId,
             @Param("plannedStart") LocalDateTime plannedStart,
             @Param("deadline") LocalDateTime deadline,
-            @Param("finishedStatus") WorkEnum finishedStatus);
+            @Param("finishedStatus") WorkEnum finishedStatus,
+            @Param("pauseStatus") WorkEnum pauseStatus,
+            @Param("cancelledStatus") WorkEnum cancelledStatus);
 
     Iterable<DyeStage> findByWorkOrderDetail_WorkOrder(WorkOrder workOrderDetailWorkOrder);
 
@@ -44,4 +46,21 @@ public interface DyeStageRepository extends JpaRepository<DyeStage, Long> {
     @Modifying
     @Query(value = "DELETE FROM dye_stage_qa WHERE dye_stage_id IN :stageIds", nativeQuery = true)
     void deleteQaByDyeStageIds(@Param("stageIds") List<Long> stageIds);
+
+    //Các chức năng cho update máy móc
+    @Query("SELECT ds FROM DyeStage ds " +
+            "WHERE ds.dyeMachine.id = :machineId " +
+            "AND ds.workStatus NOT IN (:finishedStatus, :pauseStatus, :cancelledStatus) " +
+            "AND ((ds.plannedStart <= :deadline AND ds.deadline >= :plannedStart) " +
+            "OR (ds.startAt IS NOT NULL AND ds.completeAt IS NULL))")
+    List<DyeStage> findActiveDyeStagesByMachineForUpdate(
+            @Param("machineId") Long machineId,
+            @Param("plannedStart") LocalDateTime plannedStart,
+            @Param("deadline") LocalDateTime deadline,
+            @Param("finishedStatus") WorkEnum finishedStatus,
+            @Param("pauseStatus") WorkEnum pauseStatus,
+            @Param("cancelledStatus") WorkEnum cancelledStatus);
+
+    @Query("SELECT ds FROM DyeStage ds WHERE ds.dyeMachine.id = :machineId")
+    List<DyeStage> findDyeStagesByMachineId(@Param("machineId") Long machineId);
 }

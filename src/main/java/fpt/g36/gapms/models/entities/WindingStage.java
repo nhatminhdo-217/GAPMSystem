@@ -37,7 +37,7 @@ public class WindingStage extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private WorkEnum workStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winding_machine_id")
     private WindingMachine windingMachine;
 

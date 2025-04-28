@@ -39,10 +39,6 @@ public interface TechnologyProcessService {
 
     void submitTechnologyProcesses(Long workOrderId);
 
-    Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createBy);
-
-    Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy);
-
     TechnologyProcess getByDyeId(Long dyeId);
 
     Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createdBy);

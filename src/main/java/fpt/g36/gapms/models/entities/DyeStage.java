@@ -50,7 +50,7 @@ public class DyeStage extends BaseEntity {
     @OneToOne(mappedBy = "dyeStage")
     private WindingStage windingStage;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "dye_machine_id")
     private DyeMachine dyeMachine;
 

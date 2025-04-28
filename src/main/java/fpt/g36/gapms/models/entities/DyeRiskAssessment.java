@@ -8,31 +8,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class DyeRiskAssessment extends BaseEntity{
+public class DyeRiskAssessment extends BaseEntity {
 
-      // độ ẩm
-      private Boolean isHumidity;
+    // độ ẩm
+    private Boolean isHumidity;
 
-      //màu đúng
-      private Boolean isColorTrue;
+    //màu đúng
+    private Boolean isColorTrue;
 
-      // ánh sáng
-      private Boolean isLightTrue;
+    // ánh sáng
+    private Boolean isLightTrue;
 
+    // loang màu
+    private Boolean isColorFading;
 
-      // loang màu
-      private Boolean isColorFading;
+    // bám thuốc
+    private Boolean isMedication;
 
-      // bám thuốc
-      private Boolean isMedication;
+    // két thuốc
+    private Boolean isMedicineSafe;
 
-      // két thuốc
-      private Boolean isMedicineSafe;
+    //bẩn vệ sinh công nghiệp
+    private Boolean isIndustrialCleaningStains;
 
-      //bẩn vệ sinh công nghiệp
-      private Boolean isIndustrialCleaningStains;
-
-      private Boolean isPass;
+    private Boolean isPass;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dye_batch_id")
@@ -42,14 +41,14 @@ public class DyeRiskAssessment extends BaseEntity{
     private List<PhotoStage> photo;
 
 
-      @ManyToOne(fetch = FetchType.LAZY, optional = false)
-      @JoinColumn(name = "create_by")
-      private User createBy;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "create_by")
+    private User createBy;
 
-     @Column(columnDefinition = "TEXT")
-      private String errorDetails;
+    @Column(columnDefinition = "TEXT")
+    private String errorDetails;
 
-      private Boolean errorLevel;
+    private Boolean errorLevel;
 
     @OneToOne(mappedBy = "dyeRiskAssessment", fetch = FetchType.LAZY)
     private RiskSolution riskSolution;
@@ -75,31 +74,31 @@ public class DyeRiskAssessment extends BaseEntity{
 
     public DyeRiskAssessment() {
 
-      }
+    }
 
-      public Boolean getHumidity() {
-            return isHumidity;
-      }
+    public Boolean getHumidity() {
+        return isHumidity;
+    }
 
-      public void setHumidity(Boolean humidity) {
-            isHumidity = humidity;
-      }
+    public void setHumidity(Boolean humidity) {
+        isHumidity = humidity;
+    }
 
-      public Boolean getColorTrue() {
-            return isColorTrue;
-      }
+    public Boolean getColorTrue() {
+        return isColorTrue;
+    }
 
-      public void setColorTrue(Boolean colorTrue) {
-            isColorTrue = colorTrue;
-      }
+    public void setColorTrue(Boolean colorTrue) {
+        isColorTrue = colorTrue;
+    }
 
-      public Boolean getLightTrue() {
-            return isLightTrue;
-      }
+    public Boolean getLightTrue() {
+        return isLightTrue;
+    }
 
-      public void setLightTrue(Boolean lightTrue) {
-            isLightTrue = lightTrue;
-      }
+    public void setLightTrue(Boolean lightTrue) {
+        isLightTrue = lightTrue;
+    }
 
 
     public DyeBatch getDyeBatch() {
@@ -122,49 +121,49 @@ public class DyeRiskAssessment extends BaseEntity{
         return createBy;
     }
 
-      public void setCreateBy(User createBy) {
-            this.createBy = createBy;
-      }
+    public void setCreateBy(User createBy) {
+        this.createBy = createBy;
+    }
 
-      public Boolean getColorFading() {
-            return isColorFading;
-      }
+    public Boolean getColorFading() {
+        return isColorFading;
+    }
 
-      public void setColorFading(Boolean colorFading) {
-            isColorFading = colorFading;
-      }
+    public void setColorFading(Boolean colorFading) {
+        isColorFading = colorFading;
+    }
 
-      public Boolean getMedication() {
-            return isMedication;
-      }
+    public Boolean getMedication() {
+        return isMedication;
+    }
 
-      public void setMedication(Boolean medication) {
-            isMedication = medication;
-      }
+    public void setMedication(Boolean medication) {
+        isMedication = medication;
+    }
 
-      public Boolean getMedicineSafe() {
-            return isMedicineSafe;
-      }
+    public Boolean getMedicineSafe() {
+        return isMedicineSafe;
+    }
 
-      public void setMedicineSafe(Boolean medicineSafe) {
-            isMedicineSafe = medicineSafe;
-      }
+    public void setMedicineSafe(Boolean medicineSafe) {
+        isMedicineSafe = medicineSafe;
+    }
 
-      public Boolean getIndustrialCleaningStains() {
-            return isIndustrialCleaningStains;
-      }
+    public Boolean getIndustrialCleaningStains() {
+        return isIndustrialCleaningStains;
+    }
 
-      public void setIndustrialCleaningStains(Boolean industrialCleaningStains) {
-            isIndustrialCleaningStains = industrialCleaningStains;
-      }
+    public void setIndustrialCleaningStains(Boolean industrialCleaningStains) {
+        isIndustrialCleaningStains = industrialCleaningStains;
+    }
 
-      public Boolean getPass() {
-            return isPass;
-      }
+    public Boolean getPass() {
+        return isPass;
+    }
 
-      public void setPass(Boolean pass) {
-            isPass = pass;
-      }
+    public void setPass(Boolean pass) {
+        isPass = pass;
+    }
 
     public String getErrorDetails() {
         return errorDetails;

@@ -1,5 +1,6 @@
 package fpt.g36.gapms.services;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.entities.Rfq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,24 +12,31 @@ import java.util.Optional;
 public interface RfqService {
 
     Page<Rfq> getAllRfqsByUserId(Long userId, Pageable pageable);
-    List<Rfq> getAllRfqsByUserId(Long userId);
 
     Rfq saveRfq(Rfq rfq);
 
     void deleteRfqById(Long rfqId);
 
-    Rfq  getRfqById(Long rfqId);
+    Rfq getRfqById(Long rfqId);
+
     Rfq getRfqByIdAndUserId(Long rfqId, Long UserId);
 
     Rfq editRfq(Long rfqId, LocalDate newDate);
 
-    List<Rfq> getAllApprovedRfqs();
+    Rfq submitRfq(Long rfqId, Long userId, LocalDate deadlineSolution);
 
-    Rfq getRfqBySolutionId(Long solutionId);
+    Page<Rfq> getRfqsByStatus(BaseEnum status, Pageable pageable);
 
-    List<Rfq> getAllRfq();
+    //
+    Page<Rfq> getApprovedRfqsWithoutSolution(Pageable pageable);
 
-    Rfq submitRfq(Long rfqId, Long userId);
+    Page<Rfq> getApprovedRfqsWithSolution(Pageable pageable);
+    //
 
+    Rfq getRfqByIdAndStatus(Long rfqId, BaseEnum status);
+
+    Rfq getApprovedRfqWithoutSolutionById(Long rfqId);
+
+    Rfq getApprovedRfqWithSolutionById(Long rfqId);
 
 }

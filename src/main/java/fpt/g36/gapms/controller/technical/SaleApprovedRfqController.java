@@ -1,11 +1,15 @@
 package fpt.g36.gapms.controller.technical;
 
+import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +48,93 @@ public class SaleApprovedRfqController {
     }
 
     @GetMapping("/view-all-rfq")
-    public String getApprovedRfqsViewList(Model model) {
+    public String getApprovedRfqsViewList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "all-approved-no-solution") String activeTab,
+            @RequestParam(required = false) String previousTab,
+            Model model,
+            Principal principal
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            List<Rfq> rfqs = rfqService.getAllApprovedRfqs();
-            model.addAttribute("rfqs", rfqs);
-        }
         userUtils.getOptionalUser(model);
-        return "technical/view-all-rfq";
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            page = Math.max(0, page);
+            size = Math.max(1, size);
+            Pageable pageable = PageRequest.of(page, size);
+
+            Page<Rfq> allApprovedNoSolutionPage;
+            Page<Rfq> withSolutionPage;
+            Page<Rfq> searchResultPage = null;
+
+            // Xử lý tìm kiếm theo ID
+            if (search != null && !search.trim().isEmpty()) {
+                try {
+                    Long searchId = Long.parseLong(search.trim());
+                    try {
+                        // Tìm RFQ theo ID
+                        Rfq rfq = rfqService.getRfqById(searchId);
+                        if (rfq.getIsSent() != BaseEnum.APPROVED) {
+                            throw new RuntimeException("RFQ không có trạng thái APPROVED.");
+                        }
+
+                        // Tìm trong tab 1: Tất cả RFQ chưa có giải pháp
+                        if (rfq.getSolution() == null) {
+                            allApprovedNoSolutionPage = new PageImplWrapper<>(Collections.singletonList(rfq), pageable, 1);
+                            withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
+                            activeTab = "all-approved-no-solution";
+                            model.addAttribute("previousTab", activeTab);
+                        }
+                        // Tìm trong tab 2: Đã có giải pháp
+                        else {
+                            allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
+                            withSolutionPage = new PageImplWrapper<>(Collections.singletonList(rfq), pageable, 1);
+                            activeTab = "with-solution";
+                            model.addAttribute("previousTab", activeTab);
+                        }
+                        searchResultPage = new PageImplWrapper<>(Collections.singletonList(rfq), pageable, 1);
+                    } catch (RuntimeException e) {
+                        // Không tìm thấy RFQ hoặc không phù hợp
+                        allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
+                        withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
+                        searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
+                        model.addAttribute("error", "Không tìm thấy RFQ với ID: " + searchId);
+                        activeTab = "search-results";
+                        model.addAttribute("previousTab", activeTab);
+                    }
+                } catch (NumberFormatException e) {
+                    // ID không hợp lệ
+                    model.addAttribute("error", "Mã RFQ phải là số.");
+                    allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
+                    withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
+                    searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
+                    activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "all-approved-no-solution";
+                    model.addAttribute("previousTab", activeTab);
+                }
+            } else {
+                // Nếu không tìm kiếm, lấy dữ liệu cho các tab
+                allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
+                withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
+                model.addAttribute("previousTab", activeTab);
+            }
+
+            // Thêm dữ liệu vào model cho các tab
+            model.addAttribute("allApprovedNoSolution", allApprovedNoSolutionPage.getContent());
+            model.addAttribute("allApprovedNoSolutionPage", allApprovedNoSolutionPage);
+            model.addAttribute("withSolution", withSolutionPage.getContent());
+            model.addAttribute("withSolutionPage", withSolutionPage);
+            if (searchResultPage != null) {
+                model.addAttribute("searchResults", searchResultPage.getContent());
+                model.addAttribute("searchResultPage", searchResultPage);
+            }
+            model.addAttribute("search", search);
+            model.addAttribute("activeTab", activeTab);
+
+            return "technical/view-all-rfq";
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/rfq-details/{id}")
@@ -188,5 +273,11 @@ public class SaleApprovedRfqController {
             model.addAttribute("error", e.getMessage());
         }
         return "/technical/rfq-details";
+    }
+
+    private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {
+        public PageImplWrapper(List<T> content, Pageable pageable, long total) {
+            super(content, pageable, total);
+        }
     }
 }

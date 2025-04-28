@@ -40,7 +40,9 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
 
     WorkOrder findByIdAndSendStatus(Long id, @NotNull SendEnum sendStatus);
 
-    Page<WorkOrder> findByStatusAndSendStatus(@NotNull BaseEnum status, @NotNull SendEnum sendStatus, Pageable pageable);
+    Page<WorkOrder> findByStatusAndSendStatus(@NotNull BaseEnum status,
+                                              @NotNull SendEnum sendStatus,
+                                              Pageable pageable);
 
     Optional<WorkOrder> findByIdAndCreatedBy(Long id, User createdBy);
 
@@ -62,13 +64,27 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
             "AND (wod.dyeStage IS NULL OR db IS NULL OR tp IS NULL)")
     Page<WorkOrder> findApprovedWorkOrdersWithoutTechnologyProcess(@Param("status") BaseEnum status, Pageable pageable);
 
-    @Query("SELECT wo FROM WorkOrder wo " +
-            "JOIN wo.workOrderDetails wod " +
-            "JOIN wod.dyeStage ds " +
-            "JOIN ds.dyebatches db " +
-            "JOIN db.technologyProcess tp " +
-            "WHERE tp.createdBy = :createdBy " +
-            "ORDER BY tp.updateAt DESC")
+    @Query("SELECT DISTINCT wo FROM WorkOrder wo " +
+            "WHERE NOT EXISTS (" +
+            "    SELECT db FROM WorkOrderDetail wod " +
+            "    JOIN wod.dyeStage ds " +
+            "    JOIN ds.dyebatches db " +
+            "    WHERE wod.workOrder = wo " +
+            "    AND db.technologyProcess IS NULL" +
+            ") " +
+            "AND EXISTS (" +
+            "    SELECT tp FROM WorkOrderDetail wod2 " +
+            "    JOIN wod2.dyeStage ds2 " +
+            "    JOIN ds2.dyebatches db2 " +
+            "    JOIN db2.technologyProcess tp " +
+            "    WHERE wod2.workOrder = wo " +
+            "    AND tp.createdBy = :createdBy" +
+            ") " +
+            "ORDER BY (SELECT MAX(tp2.updateAt) FROM WorkOrderDetail wod3 " +
+            "          JOIN wod3.dyeStage ds3 " +
+            "          JOIN ds3.dyebatches db3 " +
+            "          JOIN db3.technologyProcess tp2 " +
+            "          WHERE wod3.workOrder = wo) DESC")
     Page<WorkOrder> findWorkOrdersWithTechnologyProcessByCreatedBy(@Param("createdBy") User createdBy, Pageable pageable);
 
     Optional<WorkOrder> findByIdAndStatus(Long id, BaseEnum status);

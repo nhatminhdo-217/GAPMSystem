@@ -47,36 +47,7 @@
         .parent-row {
             background-color: #ffffff;
             padding: 12px 15px;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .collapse {
-            display: none;
-        }
-
-        .collapse.show {
-            display: block;
-        }
-
-        .toggle-btn {
-            font-size: 12px;
-            color: #dc3545;
-            padding: 4px 8px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-        .toggle-btn:focus {
-            outline: none;
-            box-shadow: none;
+            border-radius: 8px;
         }
 
         .text-start strong {
@@ -95,18 +66,6 @@
             line-height: 1.4;
         }
 
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            background-color: #ffffff;
-        }
-
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #e9ecef;
-        }
-
         .text-start.me-3 {
             flex: 1;
             text-align: center;
@@ -116,7 +75,7 @@
         /* Điều chỉnh các cột trong content-section để Mã RFQ và Trạng thái gửi được tối ưu */
         .content-section {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: wrap几种,
             justify-content: space-between;
             width: 100%;
             gap: 5px; /* Giảm khoảng cách giữa các cột để tiết kiệm không gian */
@@ -184,14 +143,6 @@
             text-align: center;
         }
 
-        /* Container cho card và nút toggle */
-        .card-wrapper {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            gap: 0;
-        }
-
         .card-body {
             flex-grow: 1;
             display: flex;
@@ -202,52 +153,82 @@
             border-radius: 8px;
         }
 
-        .toggle-container {
-            padding: 5px;
-            min-width: 30px;
-        }
-
-        /* Style cho phần chi tiết (detail table) */
-        .detail-table {
-            background-color: #ffffff;
-            border-radius: 0 0 8px 8px;
-            padding: 0;
-        }
-
-        .card-body.detail-table {
-            background-color: #f9fafc;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-            border-radius: 0 0 8px 8px;
-        }
-
-        /* CSS cho phần thông tin giải pháp */
-        .solution-details {
-            background-color: #f8f9fc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e7f0;
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .solution-details p {
-            margin: 0;
-            font-size: 14px;
+        /* Style cho tabstrip */
+        .nav-tabs .nav-link {
+            font-size: 16px;
+            font-weight: 500;
             color: #495057;
-            display: flex;
-            justify-content: space-between;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
         }
-        .solution-details strong {
-            color: #333;
-            font-weight: 600;
-            flex: 0 0 50%;
+
+        .nav-tabs .nav-link:hover {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
         }
-        .solution-details span {
-            color: #212529;
-            text-align: right;
-            flex: 0 0 50%;
+
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            background-color: transparent;
+        }
+
+        .tab-content {
+            padding-top: 20px;
+        }
+
+        /* Style cho phân trang */
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.disabled .page-link {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Style cho toast */
+        .toast {
+            opacity: 0.9;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastError {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        /* Style cho trạng thái gửi */
+        .status-sent {
+            color: #10b981;
+            font-weight: 500;
+            background-color: #ecfdf5;
+        }
+
+        .status-not-sent {
+            color: #ef4444;
+            font-weight: 500;
+            background-color: #fef2f2;
         }
 
         /* Responsive design */
@@ -256,64 +237,59 @@
                 flex-direction: column;
                 width: 100%;
             }
+
             .text-start.me-3 {
                 width: 100%;
                 margin-bottom: 8px;
                 text-align: left;
             }
+
             .text-start.me-3.rfq-id {
                 flex: 1; /* Trở lại linh hoạt trên mobile */
                 max-width: none;
             }
+
             .text-start.me-3.status-sent {
                 flex: 1; /* Trở lại linh hoạt trên mobile */
                 max-width: none;
             }
+
             .search-container {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 15px;
             }
+
             .search-input {
                 max-width: 100%;
                 margin-top: 10px;
                 margin-left: 0;
             }
+
             .card-body {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 10px;
             }
+
             .content-section {
                 flex-direction: column;
             }
+
             .index-in-card {
                 margin-bottom: 8px;
                 margin-right: 0;
             }
-            .toggle-container {
-                margin-top: 8px;
-                margin-left: 0;
-            }
-            .card-wrapper {
-                flex-direction: column;
-                gap: 0;
-            }
-            .solution-details p {
-                flex-direction: column;
-                text-align: left;
-            }
-            .solution-details strong, .solution-details span {
-                flex: none;
-                width: 100%;
-            }
-            .solution-details span {
-                text-align: left;
+
+            .nav-tabs .nav-link {
+                font-size: 14px;
+                padding: 8px 12px;
             }
         }
     </style>
 </head>
 <body>
+<div th:if="${error}" id="hiddenError" style="display:none;" th:text="${error}"></div>
 <div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -337,99 +313,181 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4">
-                <!-- Search and title in the same row -->
+                <!-- Search form -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách giải pháp</h6>
-                    <input type="text" class="form-control search-input" placeholder="Search...">
+                    <form method="get" action="/technical/view-all-solution"
+                          class="d-flex align-items-center flex-grow-1">
+                        <input type="text" name="search" class="form-control search-input" id="searchInput"
+                               placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="previousTab" th:value="${activeTab}">
+                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                    </form>
                 </div>
-                <div class="row g-3">
-                    <div class="col-12" th:if="${solution == null or solution.isEmpty()}">
-                        <div class="alert alert-info text-center">
-                            <p>Không có giải pháp nào được tạo.</p>
+
+                <!-- Tabstrip -->
+                <div class="d-flex align-items-center" style="margin-bottom:20px; flex-wrap:wrap;">
+                    <ul class="nav nav-tabs" id="solutionTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link"
+                               th:classappend="${activeTab == 'not-sent-solutions-content'} ? 'active' : ''"
+                               id="not-sent-solutions-tab" data-bs-toggle="tab" href="#not-sent-solutions-content"
+                               role="tab"
+                               aria-controls="not-sent-solutions-content"
+                               aria-selected="${activeTab == 'not-sent-solutions-content'}">Chưa gửi</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link"
+                               th:classappend="${activeTab == 'sent-solutions-content'} ? 'active' : ''"
+                               id="sent-solutions-tab" data-bs-toggle="tab" href="#sent-solutions-content"
+                               role="tab" aria-controls="sent-solutions-content"
+                               aria-selected="${activeTab == 'sent-solutions-content'}">Đã gửi</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab content -->
+                <div class="tab-content" id="solutionTabContent">
+                    <!-- Tab 1: Chưa gửi -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'not-sent-solutions-content'} ? 'show active' : ''"
+                         id="not-sent-solutions-content" role="tabpanel" aria-labelledby="not-sent-solutions-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${notSentSolutions == null or notSentSolutions.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không có giải pháp chưa gửi nào.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="solution, iterStat : ${notSentSolutions}">
+                                <div class="card" th:data-solution-id="${solution.id}">
+                                    <div class="card-body parent-row">
+                                        <span class="index-in-card"
+                                              th:text="${iterStat.count + notSentSolutionsPage.number * notSentSolutionsPage.size}"></span>
+                                        <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
+                                             style="width: 100%;">
+                                            <div class="text-start me-3 rfq-id">
+                                                <strong>Mã RFQ</strong><br>
+                                                <span th:text="${solution.rfq.id}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Lý do</strong><br>
+                                                <span th:text="${solution.reason}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Người tạo</strong><br>
+                                                <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Ngày tạo giải pháp</strong><br>
+                                                <span th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Ngày cập nhật gần nhất</strong><br>
+                                                <span th:text="${#temporals.format(solution.updateAt, 'dd/MM/yyyy')}"></span>
+                                            </div>
+                                            <div class="text-start me-3 status-sent">
+                                                <strong>Trạng thái gửi</strong><br>
+                                                <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
+                                                      th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Phân trang cho tab Chưa gửi -->
+                        <nav th:if="${notSentSolutionsPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${notSentSolutionsPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number - 1},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, notSentSolutionsPage.totalPages - 1)}"
+                                    th:classappend="${i == notSentSolutionsPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${i},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${notSentSolutionsPage.number == notSentSolutionsPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number + 1},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
-                    <div class="col-12" th:each="solution, iterStat : ${solution}">
-                        <div class="card-wrapper">
-                            <div class="card" th:data-solution-id="${solution.id}">
-                                <div class="card-body parent-row">
-                                    <span class="index-in-card" th:text="${iterStat.count}"></span>
-                                    <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                         style="width: 100%;">
-                                        <div class="text-start me-3 rfq-id">
-                                            <strong>Mã RFQ</strong><br>
-                                            <span th:text="${solution.rfq.id}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Lý do</strong><br>
-                                            <span th:text="${solution.reason}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Người tạo</strong><br>
-                                            <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Ngày tạo giải pháp</strong><br>
-                                            <span th:text="${#temporals.format(solution.createAt, 'yyyy-MM-dd')}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Ngày cập nhật gần nhất</strong><br>
-                                            <span th:text="${#temporals.format(solution.updateAt, 'yyyy-MM-dd')}"></span>
-                                        </div>
-                                        <div class="text-start me-3 status-sent">
-                                            <strong>Trạng thái gửi</strong><br>
-                                            <span th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : (solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : solution.isSent)) : 'Chưa gửi'}"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" th:id="'details-' + ${iterStat.count}">
-                                    <div class="card-body detail-table">
-                                        <!-- Thông tin chi tiết RFQ -->
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                            <tr class="text-dark">
-                                                <th>Số thứ tự</th>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Màu</th>
-                                                <th>Số lượng đặt</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="detail, detailIter : ${solution.rfq.rfqDetails}">
-                                                <td th:text="${detailIter.count}"></td>
-                                                <td th:text="${detail.id}"></td>
-                                                <td th:text="${detail.product.name} + ' - ' + ${detail.brand.name} + ' - ' + ${detail.cate.name}"></td>
-                                                <td th:text="${detail.noteColor}"></td>
-                                                <td th:text="${detail.quantity}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <!-- Thông tin giải pháp và RFQ -->
-                                        <div class="solution-details">
-                                            <p><strong>Ngày mong muốn nhận hàng:</strong>
-                                                <span th:text="${#temporals.format(solution.rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
-                                            </p>
-                                            <p><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
-                                            </p>
-                                            <p><strong>Chi tiết giải pháp:</strong>
-                                                <span th:text="${solution.description}"></span>
-                                            </p>
-                                            <p><strong>Nhân viên phụ trách RFQ:</strong>
-                                                <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
-                                            </p>
-                                        </div>
-                                    </div>
+
+                    <!-- Tab 2: Đã gửi -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'sent-solutions-content'} ? 'show active' : ''"
+                         id="sent-solutions-content" role="tabpanel" aria-labelledby="sent-solutions-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${sentSolutions == null or sentSolutions.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không có giải pháp đã gửi nào.</p>
                                 </div>
                             </div>
-                            <div class="toggle-container">
-                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                        th:data-target="'#details-' + ${iterStat.count}"
-                                        style="padding: 0; color: #dc3545; text-decoration: none;">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <div class="col-12" th:each="solution, iterStat : ${sentSolutions}">
+                                <div class="card" th:data-solution-id="${solution.id}">
+                                    <div class="card-body parent-row">
+                                        <span class="index-in-card"
+                                              th:text="${iterStat.count + sentSolutionsPage.number * sentSolutionsPage.size}"></span>
+                                        <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
+                                             style="width: 100%;">
+                                            <div class="text-start me-3 rfq-id">
+                                                <strong>Mã RFQ</strong><br>
+                                                <span th:text="${solution.rfq.id}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Lý do</strong><br>
+                                                <span th:text="${solution.reason}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Người tạo</strong><br>
+                                                <span th:text="${solution.createBy != null ? solution.createBy.username : 'N/A'}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Ngày tạo giải pháp</strong><br>
+                                                <span th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></span>
+                                            </div>
+                                            <div class="text-start me-3">
+                                                <strong>Ngày cập nhật gần nhất</strong><br>
+                                                <span th:text="${#temporals.format(solution.updateAt, 'dd/MM/yyyy')}"></span>
+                                            </div>
+                                            <div class="text-start me-3 status-sent">
+                                                <strong>Trạng thái gửi</strong><br>
+                                                <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
+                                                      th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Đã gửi -->
+                        <nav th:if="${sentSolutionsPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${sentSolutionsPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number - 1},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, sentSolutionsPage.totalPages - 1)}"
+                                    th:classappend="${i == sentSolutionsPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${i},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${sentSolutionsPage.number == sentSolutionsPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number + 1},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -450,33 +508,47 @@
     $(document).ready(function () {
         // Xử lý nhấp vào card để chuyển hướng sang solution-details
         $('.card').on('click', function (event) {
-            if (!$(event.target).closest('.toggle-btn').length) {
-                var solutionId = $(this).data('solution-id');
-                window.location.href = '/technical/solution-details/' + solutionId; // Chuyển hướng tới trang chi tiết giải pháp
-            }
+            var solutionId = $(this).data('solution-id');
+            window.location.href = '/technical/solution-details/' + solutionId;
         });
+    });
 
-        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
-        $('.toggle-btn').click(function (event) {
-            event.stopPropagation();
-            var target = $(this).data('target');
-            var icon = $(this).find('i');
-            $(target).collapse('toggle');
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
-            }
-        });
+    // Xử lý hiển thị toast lỗi và tab active
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hiển thị toast lỗi nếu có
+        const errorMessage = document.getElementById('hiddenError')?.textContent;
+        if (errorMessage && errorMessage.trim() !== '') {
+            const toastHTML = `
+                <div class="toast error-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Lỗi</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${errorMessage}
+                    </div>
+                </div>
+            `;
+            const toastContainer = document.createElement('div');
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '1050';
+            toastContainer.innerHTML = toastHTML;
+            document.body.appendChild(toastContainer);
+            const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+            toast.show();
+        }
 
-        // Tìm kiếm theo client-side
-        $('.search-input').on('keyup', function () {
-            var searchValue = $(this).val().toLowerCase();
-            $('.card-wrapper').each(function () {
-                var cardText = $(this).text().toLowerCase();
-                $(this).toggle(cardText.indexOf(searchValue) > -1);
-            });
-        });
+        // Đảm bảo tab active được kích hoạt
+        var activeTab = '[[${activeTab}]]';
+        if (activeTab) {
+            const tabElement = document.querySelector(`#${activeTab}-tab`);
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
     });
 </script>
 </body>
