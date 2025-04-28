@@ -54,7 +54,7 @@
         <!-- Navbar End -->
 
         <div class="container-fluid pt-4 px-4">
-            <!-- Alerts -->
+           <!-- &lt;!&ndash; Alerts &ndash;&gt;
             <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
                 <span th:text="${success}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -66,7 +66,7 @@
             <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
                 <span th:text="${error}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            </div>-->
 
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="mb-3">
@@ -167,11 +167,11 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Ngày giao mong muốn:</div>
-                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd-MM-yyyy')}"></div>
+                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Ngày thực giao:</div>
-                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Giải pháp:</div>
@@ -202,7 +202,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Ngày giao hàng thực tế:</div>
-                                <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                                <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Chi tiết:</div>
@@ -216,7 +216,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Tạo vào:</div>
-                                <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd-MM-yyyy HH:mm')}"></div>
+                                <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -344,13 +344,17 @@
                 <!-- SALE_MANAGER Actions -->
                 <div th:if="${currUser.role.name == 'SALE_MANAGER'}" class="d-flex gap-2">
                     <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
-                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}" method="post">
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id}}"
+                          method="post"
+                          onsubmit="return confirmApproval(event)">
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-check-lg me-1"></i> Phê duyệt
                         </button>
                     </form>
                     <form th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}"
-                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post">
+                          th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}"
+                          method="post"
+                          onsubmit="return confirmRejection(event)">
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-x-lg me-1"></i> Từ chối
                         </button>
@@ -411,8 +415,20 @@
     </div>
 </div>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${success}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -427,7 +443,51 @@
 
     <!-- Template Javascript -->
     <script src="/assert/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmApproval(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
 
+        Swal.fire({
+            title: 'Xác nhận phê duyệt',
+            text: 'Bạn có chắc chắn muốn phê duyệt đơn hàng này?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'phê duyệt!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+
+
+    function confirmRejection(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
+
+        Swal.fire({
+            title: 'Xác nhận từ chối',
+            text: 'Bạn có chắc chắn muốn từ chối đơn hàng này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Có, từ chối!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+</script>
 <script>
     // Toggle between table and card view on mobile
     document.addEventListener('DOMContentLoaded', function() {

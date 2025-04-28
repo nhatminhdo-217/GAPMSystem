@@ -117,11 +117,11 @@
                   </div>
                   <div class="info-item">
                     <div class="info-label" style="width: 172px">Ngày giao mong muốn:</div>
-                    <div class="info-value" th:text="${#temporals.format(quotation_detail.expectedDate, 'dd-MM-yyyy')}">-</div>
+                    <div class="info-value" th:text="${#temporals.format(quotation_detail.expectedDate, 'dd/MM/yyyy')}">-</div>
                   </div>
                   <div class="info-item">
                     <div class="info-label">Ngày giao đề xuất:</div>
-                    <div class="info-value" th:text="${#temporals.format(quotation_detail.actualDate, 'dd-MM-yyyy')}">-</div>
+                    <div class="info-value" th:text="${#temporals.format(quotation_detail.actualDate, 'dd/MM/yyyy')}">-</div>
                   </div>
                   <div class="info-item">
                     <div class="info-label">Giải pháp:</div>
@@ -152,7 +152,7 @@
                   </div>
                   <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Ngày giao hàng thực tế:</div>
-                    <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd-MM-yyyy')}"></div>
+                    <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                   </div>
                   <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Chi tiết:</div>
@@ -166,7 +166,7 @@
                   </div>
                   <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Tạo vào:</div>
-                    <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd-MM-yyyy HH:mm')}"></div>
+                    <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></div>
                   </div>
                 </div>
                 <div class="modal-footer">

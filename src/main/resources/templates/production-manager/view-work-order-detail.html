@@ -31,7 +31,7 @@
 
     <!-- Custom Styles for Detail Section -->
     <style>
-        /* Scoped styles to avoid conflicts with template CSS */
+        /* Scoped styles to avoid conflicts with deficits */
         .dtl-container {
             padding: 20px;
             background-color: #fff;
@@ -40,12 +40,71 @@
             font-family: 'Heebo', sans-serif;
         }
 
+        .dtl-header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .dtl-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .dtl-container h2 {
             color: #2c3e50;
-            text-align: center;
-            margin-bottom: 25px;
             font-size: 1.8rem;
             font-weight: 600;
+            margin: 0;
+        }
+
+        .dtl-action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dtl-cancel-btn, .dtl-pause-btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: #fff;
+        }
+
+        .dtl-cancel-btn {
+            background-color: #c0392b;
+        }
+
+        .dtl-cancel-btn:hover:not(:disabled) {
+            background-color: #a93226;
+            transform: scale(1.03);
+        }
+
+        .dtl-cancel-btn:disabled {
+            background-color: #e57373;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .dtl-pause-btn {
+            background-color: #e67e22;
+        }
+
+        .dtl-pause-btn:hover:not(:disabled) {
+            background-color: #d35400;
+            transform: scale(1.03);
+        }
+
+        .dtl-pause-btn:disabled {
+            background-color: #f4a261;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         .dtl-table {
@@ -164,18 +223,27 @@
             background-color: #2980b9;
         }
 
-        .dtl-back-link {
-            display: block;
+        .dtl-back-btn {
+            display: inline-block;
             text-align: center;
             margin-top: 20px;
-            color: #3498db;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .dtl-back-link:hover {
-            text-decoration: underline;
+        .dtl-back-btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.03);
+        }
+
+        .dtl-back-container {
+            text-align: right;
         }
 
         /* Popup styles */
@@ -242,6 +310,8 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            max-height: 60vh; /* Set a max height to trigger scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
 
         .dtl-modal-upper {
@@ -251,7 +321,8 @@
         }
 
         .dtl-modal-upper-left,
-        .dtl-modal-upper-right {
+        .dtl-modal-upper-right,
+        .dtl-modal-upper-inspection {
             flex: 1;
             min-width: 300px;
             background-color: #f9f9f9;
@@ -269,25 +340,47 @@
             text-align: center;
         }
 
-        .dtl-modal-upper-left .form-group,
-        .dtl-modal-upper-right .form-group {
+        .dtl-modal-upper-left .form-group {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
             font-size: 0.95rem;
         }
 
-        .dtl-modal-upper-left .form-group label,
-        .dtl-modal-upper-right .form-group label {
+        .dtl-modal-upper-left .form-group label {
             font-weight: 500;
             color: #34495e;
             flex: 1;
         }
 
-        .dtl-modal-upper-left .form-group span,
-        .dtl-modal-upper-right .form-group span {
+        .dtl-modal-upper-left .form-group span {
             flex: 1;
             text-align: right;
+            color: #2c3e50;
+        }
+
+        .dtl-modal-upper-right table,
+        .dtl-modal-upper-inspection table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #f9f9f9;
+        }
+
+        .dtl-modal-upper-right th,
+        .dtl-modal-upper-inspection th {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-weight: 500;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .dtl-modal-upper-right td,
+        .dtl-modal-upper-inspection td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+            text-align: left;
             color: #2c3e50;
         }
 
@@ -411,6 +504,23 @@
                 padding: 15px;
             }
 
+            .dtl-header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .dtl-header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .dtl-action-buttons {
+                justify-content: flex-end;
+                width: 100%;
+            }
+
             .dtl-container h2 {
                 font-size: 1.5rem;
             }
@@ -455,7 +565,8 @@
             }
 
             .dtl-modal-upper-left,
-            .dtl-modal-upper-right {
+            .dtl-modal-upper-right,
+            .dtl-modal-upper-inspection {
                 min-width: 100%;
             }
 
@@ -465,7 +576,8 @@
             }
 
             .dtl-modal-upper-left .form-group,
-            .dtl-modal-upper-right .form-group {
+            .dtl-modal-upper-right td,
+            .dtl-modal-upper-inspection td {
                 font-size: 0.85rem;
             }
 
@@ -500,6 +612,16 @@
             .dtl-modal-footer {
                 font-size: 0.8rem;
             }
+
+            .dtl-cancel-btn, .dtl-pause-btn {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+
+            .dtl-back-btn {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -529,7 +651,8 @@
             }
 
             .dtl-modal-upper-left .form-group,
-            .dtl-modal-upper-right .form-group {
+            .dtl-modal-upper-right td,
+            .dtl-modal-upper-inspection td {
                 font-size: 0.75rem;
             }
 
@@ -537,6 +660,16 @@
             .dtl-dye-table td {
                 font-size: 0.7rem;
                 padding: 5px;
+            }
+
+            .dtl-cancel-btn, .dtl-pause-btn {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+
+            .dtl-back-btn {
+                font-size: 0.8rem;
+                padding: 5px 10px;
             }
         }
     </style>
@@ -565,7 +698,61 @@
 
         <!-- Main Content Start -->
         <div class="dtl-container">
-            <h2>Mã lệnh PO-<span th:text="${workOrderId}"></span></h2>
+            <div class="dtl-header-container">
+                <div class="dtl-header-left">
+                    <h2>Mã lệnh PO-<span th:text="${workOrderId}"></span></h2>
+                    <span th:switch="${workOrder.isProduction}">
+                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                              th:text="'Đang sản xuất'"
+                              class="badgeC"
+                              style="background-color: #ffcc00; color: #333;"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                              th:text="'Hoàn thành'"
+                              class="badgeC"
+                              style="background-color: #34c759; color: white;"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}"
+                              th:text="'Chờ sản xuất'"
+                              class="badgeC"
+                              style="background-color: #e68239; color: white;"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).CANCELED}"
+                              th:text="'Hủy sản xuất'"
+                              class="badgeC"
+                              style="background-color: #ff3b30; color: white;"></span>
+                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                              th:text="'Tạm Dừng'"
+                              class="badgeC"
+                              style="background-color: #4992e6; color: white;"></span>
+                    </span>
+                </div>
+                <div class="dtl-action-buttons">
+                    <form th:action="@{'/work-order/production-manager/cancel-work-order/' + ${workOrderId}}"
+                          method="post"
+                          onsubmit="return cancelProductionProcess(event)">
+                        <button type="submit" class="dtl-cancel-btn"
+                                th:disabled="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).CANCELED || workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                            <i class="fa fa-times me-1"></i> Hủy Sản Xuất
+                        </button>
+                    </form>
+                    <form th:if="${workOrder.isProduction != T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                          th:action="@{'/work-order/production-manager/pause-work-order/' + ${workOrderId}}"
+                          method="post"
+                          onsubmit="return PauseProductionProcess(event)">
+                        <button type="submit" class="dtl-pause-btn"
+                                th:disabled="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).CANCELED || workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
+                            <i class="fa fa-hourglass-half me-1"></i> Tạm Dừng Sản Xuất
+                        </button>
+                    </form>
+                    <form th:if="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                          th:action="@{'/work-order/production-manager/resume-work-order/' + ${workOrderId}}"
+                          method="post"
+                          onsubmit="return PauseProductionProcess(event)">
+                        <button type="submit" class="dtl-pause-btn"
+                                th:disabled="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).FINISHED || workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).CANCELED}">
+                            <i class="fa fa-play me-1"></i> Tiếp tục Sản Xuất
+                        </button>
+                    </form>
+                </div>
+            </div>
 
             <table class="dtl-table">
                 <thead>
@@ -595,10 +782,18 @@
                                   th:text="'Hoàn thành'"
                                   class="badgeC"
                                   style="background-color: #34c759; color: white;"></span>
-                            <span th:case="*"
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}"
                                   th:text="'Chờ sản xuất'"
                                   class="badgeC"
+                                  style="background-color: #e68239; color: white;"></span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).CANCELED}"
+                                  th:text="'Hủy sản xuất'"
+                                  class="badgeC"
                                   style="background-color: #ff3b30; color: white;"></span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                                  th:text="'Tạm Dừng'"
+                                  class="badgeC"
+                                  style="background-color: #4992e6; color: white;"></span>
                         </span>
                     </td>
                     <td>
@@ -632,8 +827,8 @@
                                 <tr>
                                     <td rowspan="3" th:text="${batch.batchNumber}"></td>
                                     <td>Nhuộm</td>
-                                    <td>15/04/2025</td>
-                                    <td>15/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.plannedStart, 'dd/MM/yyyy')}">15/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.deadline, 'dd/MM/yyyy')}">15/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.workStatus}">
                                             <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -660,8 +855,8 @@
                                 <!-- Công đoạn Đánh côn -->
                                 <tr>
                                     <td>Đánh côn</td>
-                                    <td>16/04/2025</td>
-                                    <td>17/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.windingBatch.plannedStart, 'dd/MM/yyyy')}">16/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.windingBatch.deadline, 'dd/MM/yyyy')}">17/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.windingBatch?.workStatus}">
                                             <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -685,8 +880,8 @@
                                 <!-- Công đoạn Đóng gói -->
                                 <tr>
                                     <td>Đóng gói</td>
-                                    <td>18/04/2025</td>
-                                    <td>19/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.windingBatch.packagingBatch.plannedStart, 'dd/MM/yyyy')}">18/04/2025</td>
+                                    <td th:text="${#temporals.format(batch.windingBatch.packagingBatch.deadline, 'dd/MM/yyyy')}">19/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.windingBatch?.packagingBatch?.workStatus}">
                                             <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
@@ -714,7 +909,11 @@
                 </tr>
                 </tbody>
             </table>
-            <a href="/work-order/production-manager/list" class="dtl-back-link">Quay lại danh sách</a>
+            <div class="dtl-back-container">
+                <a href="/work-order/production-manager/list" class="dtl-back-btn">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+            </div>
         </div>
         <!-- Main Content End -->
 
@@ -726,14 +925,13 @@
                     <button class="close-btn" onclick="closePopup()">✖</button>
                 </div>
                 <div class="dtl-modal-body">
-                    <!-- Nửa trên: Thông tin Quản lý và Thông tin Mẻ -->
+                    <!-- Nửa trên: Thông tin Quản lý -->
                     <div class="dtl-modal-upper">
-                        <!-- Bên trái: Thông tin Quản lý -->
                         <div class="dtl-modal-upper-left">
                             <h4>Thông Tin Quản Lý</h4>
                             <div class="form-group">
-                                <label>Tên Quản Lý:</label>
-                                <span>Nguyễn Văn A</span>
+                                <label>Quản Lý Lô Hàng:</label>
+                                <span></span>
                             </div>
                             <div class="form-group">
                                 <label>Số Điện Thoại:</label>
@@ -752,31 +950,78 @@
                                 <span>Quản Lý Sản Xuất</span>
                             </div>
                         </div>
-                        <!-- Bên phải: Thông tin Mẻ -->
-                        <div class="dtl-modal-upper-right">
-                            <h4>Thông Tin Mẻ</h4>
-                            <div class="form-group">
-                                <label>Số Mẻ:</label>
-                                <span>1/1</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Khối Lượng:</label>
-                                <span>1.00</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Màu:</label>
-                                <span>Blue</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Chỉ Số:</label>
-                                <span>40/2BGK</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Ghi chú:</label>
-                                <span>N/A</span>
-                            </div>
-                        </div>
                     </div>
+
+                    <!-- Thông tin mẻ (Table with 4 columns per row) -->
+                    <div class="dtl-modal-upper-right">
+                        <h4>Thông Tin Mẻ</h4>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Tên màu: S 032</td>
+                                <td>Loại sợi: 40/2BGK</td>
+                                <td>Khối lượng: 25.00</td>
+                                <td>Ảnh sáng: na</td>
+                            </tr>
+                            <tr>
+                                <td>Số lít nước tơi thiểu: 97.50</td>
+                                <td>Số lít nước: 150.00</td>
+                                <td>Số qua: 320.32</td>
+                                <td>Nhãn hiệu: NORATEX</td>
+                            </tr>
+                            <tr>
+                                <td>Quy trình đánh hồ: na</td>
+                                <td>Ghi chú kế hoạch: na</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Thông tin sau kiểm tra (Table with 4 columns per row) -->
+                    <div class="dtl-modal-upper-inspection">
+                        <h4>Thông Tin Sau Kiểm Tra</h4>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Màu nhuộm: Đạt</td>
+                                <td>Ảnh sáng: Không đạt</td>
+                                <td>Độ ẩm sợi sau sấy: Đạt</td>
+                                <td>Lỗi loang màu: Đạt</td>
+                            </tr>
+                            <tr>
+                                <td>Lỗi bẩn thuộc: Đạt</td>
+                                <td>Lỗi kết thuộc: Đạt</td>
+                                <td>Lỗi bẩn VSCN: Đạt</td>
+                                <td>Mức độ lỗi: Nặng</td>
+                            </tr>
+                            <tr>
+                                <td>Ghi chú: d</td>
+                                <td>Nguời kiểm tra: QA dye</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <!-- Nửa dưới: Bảng Thuốc Nhuộm -->
                     <div class="dtl-modal-lower">
                         <h4>Thuốc Nhuộm</h4>
@@ -827,11 +1072,21 @@
         <!-- Footer End -->
     </div>
     <!-- Content End -->
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 
+<div th:if="${cancel_work_order}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${cancel_work_order}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -845,7 +1100,56 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function cancelProductionProcess(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
 
+        Swal.fire({
+            title: 'Xác nhận Hủy lệnh sản xuất',
+            text: 'Bạn có chắc chắn muốn Hủy lệnh sản xuất này? hành động không thể hoàn tác',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xác nhận hủy lệnh!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+
+    function PauseProductionProcess(event) {
+        event.preventDefault(); // Ngăn submit form ngay lập tức
+
+        const buttonText = event.target.querySelector('button').textContent.trim();
+        const isPause = buttonText.includes('Tạm Dừng');
+        const title = isPause ? 'Xác nhận Tạm dừng lệnh sản xuất' : 'Xác nhận Tiếp tục lệnh sản xuất';
+        const text = isPause ? 'Bạn có chắc chắn muốn Tạm dừng lệnh sản xuất này?' : 'Bạn có chắc chắn muốn Tiếp tục lệnh sản xuất này?';
+        const confirmText = isPause ? 'Xác nhận tạm dừng!' : 'Xác nhận tiếp tục!';
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Submit form nếu người dùng xác nhận
+            }
+        });
+
+        return false; // Ngăn submit mặc định
+    }
+</script>
 <!-- Custom Javascript for Detail Section -->
 <script>
     function toggleDetails(id) {

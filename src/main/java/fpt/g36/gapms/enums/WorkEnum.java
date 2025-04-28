@@ -5,5 +5,6 @@ public enum WorkEnum {
     IN_PROGRESS,
     FINISHED,
     FIX,
-    PAUSE
+    PAUSE,
+    CANCELED
 }

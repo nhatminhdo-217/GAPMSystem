@@ -13,6 +13,7 @@ import fpt.g36.gapms.models.mapper.PurchaseOrderMapper;
 import fpt.g36.gapms.repositories.ContractRepository;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    private final ImageService imageService;
    private final ContractRepository contractRepository;
    private final UserUtils userUtils;
+    private final NotificationUtils notificationUtils;
 
-    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper, ImageService imageService, ContractRepository contractRepository, UserUtils userUtils) {
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderMapper purchaseOrderMapper, ImageService imageService, ContractRepository contractRepository, UserUtils userUtils, NotificationUtils notificationUtils) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderMapper = purchaseOrderMapper;
         this.imageService = imageService;
         this.contractRepository = contractRepository;
         this.userUtils = userUtils;
+        this.notificationUtils = notificationUtils;
     }
 
     @Override
@@ -185,7 +188,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder_save.setContracts(contract_save);
         purchaseOrder_save.setStatus(BaseEnum.WAIT_FOR_APPROVAL);
         purchaseOrderRepository.save(purchaseOrder_save);
+        notificationUtils.sentContractFromCustomerToDyeSM(purchaseOrder_save.getQuotation().getRfq().getId(), purchaseOrder_save.getId());
         return purchaseOrder_save;
+
     }
 
     @Override

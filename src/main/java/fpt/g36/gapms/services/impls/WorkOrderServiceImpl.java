@@ -4,7 +4,9 @@ import fpt.g36.gapms.enums.*;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.models.entities.Thread;
 import fpt.g36.gapms.repositories.*;
+import fpt.g36.gapms.services.DyeBatchService;
 import fpt.g36.gapms.services.MachineService;
+import fpt.g36.gapms.services.WorkOrderDetailService;
 import fpt.g36.gapms.services.WorkOrderService;
 import jakarta.persistence.EntityManager;
 
@@ -65,6 +67,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Autowired
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private WorkOrderDetailService workOrderDetailService;
+    @Autowired
+    private DyeBatchService dyeBatchService;
 
 
     @Override
@@ -1508,5 +1514,55 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             throw new RuntimeException("WorkOrder với ID: " + id + " không có TechnologyProcess do bạn tạo.");
         }
         return workOrder;
+    }
+
+    @Transactional
+    public WorkOrder cancelWorkOrder(Long woId) {
+        // Lấy WorkOrder từ repository
+        WorkOrder workOrder = workOrderRepository.findById(woId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + woId));
+
+        // Cập nhật trạng thái của WorkOrder
+        workOrder.setIsProduction(WorkEnum.CANCELED);
+
+        // Lấy danh sách WorkOrderDetails trực tiếp từ WorkOrder
+        List<WorkOrderDetail> workOrderDetails = workOrder.getWorkOrderDetails();
+
+        // Cập nhật trạng thái cho từng WorkOrderDetail và các stage liên quan
+        for (WorkOrderDetail workOrderDetail : workOrderDetails) {
+            workOrderDetail.setWorkStatus(WorkEnum.CANCELED);
+
+            // Cập nhật trạng thái cho các stage
+            if (workOrderDetail.getDyeStage() != null) {
+                workOrderDetail.getDyeStage().setWorkStatus(WorkEnum.CANCELED);
+
+                // Lấy danh sách DyeBatches trực tiếp từ DyeStage (collection được Hibernate quản lý)
+                List<DyeBatch> dyeBatches = workOrderDetail.getDyeStage().getDyebatches();
+
+                // Cập nhật trạng thái cho từng DyeBatch và các batch liên quan
+                for (DyeBatch dyeBatch : dyeBatches) {
+                    dyeBatch.setWorkStatus(WorkEnum.CANCELED);
+                    if (dyeBatch.getWindingBatch() != null) {
+                        dyeBatch.getWindingBatch().setWorkStatus(WorkEnum.CANCELED);
+                        if (dyeBatch.getWindingBatch().getPackagingBatch() != null) {
+                            dyeBatch.getWindingBatch().getPackagingBatch().setWorkStatus(WorkEnum.CANCELED);
+                        }
+                    }
+                }
+
+
+            }
+
+            if (workOrderDetail.getWindingStage() != null) {
+                workOrderDetail.getWindingStage().setWorkStatus(WorkEnum.CANCELED);
+            }
+            if (workOrderDetail.getPackagingStage() != null) {
+                workOrderDetail.getPackagingStage().setWorkStatus(WorkEnum.CANCELED);
+            }
+        }
+
+        // Lưu WorkOrder đã cập nhật
+        WorkOrder workOrderChanged = workOrderRepository.save(workOrder);
+        return workOrderChanged;
     }
 }
