@@ -24,13 +24,4 @@ public interface DyeMachineRepository extends JpaRepository<DyeMachine, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     DyeMachine findByIdWithLock(@Param("id") Long id);
 
-    Page<DyeMachine> findByDyeStageIsNull(Pageable pageable);
-
-    @Query("SELECT dm FROM DyeMachine dm " +
-            "WHERE dm.id NOT IN (SELECT ds.dyeMachine.id FROM DyeStage ds " +
-            "WHERE ds.plannedStart BETWEEN :plannedStart AND :plannedEnd) " +
-            "ORDER BY dm.createAt DESC")
-    Page<DyeMachine> findAvailableDyeMachines(LocalDate plannedStart, LocalDate plannedEnd, Pageable pageable);
-
-
 }

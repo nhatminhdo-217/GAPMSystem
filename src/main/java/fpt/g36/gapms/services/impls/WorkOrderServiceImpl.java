@@ -486,17 +486,23 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         BigDecimal convertRate = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
 
         BigDecimal coneBatchWeight;
-        BigDecimal dyeBatches;
+        int dyeBatches;
 
         // Chia ra từng trường hợp để xử lý cho tính toán số mẻ
         if (maxWeight.compareTo(coneWeight) >= 0) {
-            dyeBatches = BigDecimal.ONE;
+            dyeBatches = 1;
             coneBatchWeight = coneWeight;
         } else {
             BigDecimal maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN);
             int maxProductInt = maxProductPerBatch.intValue();
             coneBatchWeight = convertRate.multiply(BigDecimal.valueOf(maxProductInt));
-            dyeBatches = coneWeight.divide(coneBatchWeight, 2, BigDecimal.ROUND_UP);
+            BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.FLOOR);
+            BigDecimal remainder = coneWeight.remainder(coneBatchWeight);
+            if (remainder.compareTo(BigDecimal.ZERO) == 0) {
+                dyeBatches = division.intValue();
+            } else {
+                dyeBatches = division.setScale(0, RoundingMode.UP).intValue();
+            }
         }
 
         BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -509,7 +515,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 + " - coneWeight: " + coneWeight
                 + ", coneBatchWeight: " + coneBatchWeight
                 + ", dyeBatches: " + dyeBatches);
-        return new BigDecimal[]{coneWeight, coneBatchWeight, dyeBatches,
+        return new BigDecimal[]{coneWeight, coneBatchWeight, BigDecimal.valueOf(dyeBatches),
                 littersBatch, coneBatchQuantity, coneQuantity, litters};
     }
 
@@ -617,7 +623,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                     && remainingConeWeight.compareTo(coneBatchWeight) < 0)
                     ? remainingConeWeight : coneBatchWeight;
             //
-            dyeBatch.setPlannedOutput(currentConeBatchWeight.divide(dyeStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread().getConvert_rate(), 0, RoundingMode.CEILING).intValue());
+            dyeBatch.setPlannedOutput(currentConeBatchWeight.divide
+                    (dyeStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread()
+                            .getConvert_rate(), 0, RoundingMode.CEILING).intValue());
             //
             dyeBatch.setCone_batch_weight(currentConeBatchWeight);
             dyeBatch.setLiters_min(dyeMachine.getLittersMin());
@@ -757,7 +765,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             //
             windingBatch.setBatchNumber(i + 1);
             //
-            windingBatch.setPlannedOutput(dyeBatch.getCone_batch_weight().divide(windingStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread().getConvert_rate(), 0, RoundingMode.CEILING).intValue());
+            windingBatch.setPlannedOutput
+                    (dyeBatch.getCone_batch_weight().divide(windingStage.getWorkOrderDetail().
+                            getPurchaseOrderDetail().getProduct().getThread()
+                            .getConvert_rate(), 0, RoundingMode.CEILING).intValue());
             //
             windingBatch.setCreateAt(LocalDateTime.now());
             windingBatch.setWindingStage(windingStage);
@@ -833,7 +844,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         // Tính toán lại số sản phẩm có trong mẻ
         BigDecimal convertRate = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
         for (DyeBatch dyeBatch : workOrderDetail.getDyeStage().getDyebatches()) {
-            BigDecimal productsInBatch = dyeBatch.getCone_batch_weight().divide(convertRate);
+            BigDecimal productsInBatch = dyeBatch.getCone_batch_weight().
+                    divide(convertRate, 0, RoundingMode.CEILING);
             totalPackagingDurationMinutes = totalPackagingDurationMinutes.add(productsInBatch.multiply(packagingTimePerProduct));
         }
 
@@ -879,7 +891,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         List<WindingBatch> windingBatches = windingStage.getWindingbatches();
 
         //
-        BigDecimal convertRate = packagingStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
+        BigDecimal convertRate = packagingStage.getWorkOrderDetail().getPurchaseOrderDetail().
+                getProduct().getThread().getConvert_rate();
         BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.5);
 
         //
@@ -894,8 +907,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             //
             packagingBatch.setBatchNumber(i + 1);
             //
-            BigDecimal productsInBatch = packagingStage.getWorkOrderDetail().getDyeStage().getDyebatches().get(i).
-                    getCone_batch_weight().divide(convertRate);
+            BigDecimal productsInBatch = packagingStage.getWorkOrderDetail()
+                    .getDyeStage().getDyebatches().get(i).getCone_batch_weight()
+                    .divide(convertRate, 0, RoundingMode.CEILING);
             //
             packagingBatch.setPlannedOutput(productsInBatch.intValue());
             //

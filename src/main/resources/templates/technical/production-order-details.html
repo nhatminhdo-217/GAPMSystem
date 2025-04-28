@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết Production Order</title>
+    <title>Chi tiết Lệnh sản xuất</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -280,21 +280,21 @@
                 <div class="container-fluid">
                     <div class="card" th:if="${productionOrder}">
                         <div class="card-body">
-                            <h2 class="text-center mb-4">Chi tiết Production Order</h2>
+                            <h2 class="text-center mb-4">Chi tiết Lệnh sản xuất</h2>
 
                             <!-- Thông báo lỗi nếu có -->
                             <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
 
                             <!-- Production Order Info -->
                             <div class="production-order-info">
-                                <h3 class="section-title">Thông tin Production Order</h3>
+                                <h3 class="section-title">Thông tin Lệnh sản xuất</h3>
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <strong>Mã Production Order:</strong> <span
+                                        <strong>Mã Lệnh sản xuất:</strong> <span
                                             th:text="${productionOrder.id}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Mã Purchase Order:</strong> <span
+                                        <strong>Mã Đơn đặt hàng:</strong> <span
                                             th:text="${productionOrder.purchaseOrder?.id ?: 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
@@ -322,7 +322,7 @@
                                             th:text="${productionOrder.updateAt != null ? #temporals.format(productionOrder.updateAt, 'yyyy-MM-dd') : 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Work Order Status:</strong>
+                                        <strong>Trạng thái Kế hoạch sản xuất:</strong>
                                         <span th:if="${productionOrder.workOrder == null}" class="work-order-status"
                                               th:text="'CHƯA CÓ'"></span>
                                         <span th:if="${productionOrder.workOrder != null}"
@@ -333,49 +333,44 @@
 
                             <!-- Production Order Details -->
                             <div class="production-order-details">
-                                <h3 class="section-title">Danh sách chi tiết Production Order</h3>
+                                <h3 class="section-title">Danh sách chi tiết Lệnh sản xuất</h3>
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr class="text-dark">
                                         <th>ID</th>
-                                        <th>Thread Mass</th>
-                                        <th>Light Environment</th>
-                                        <th>Description</th>
-                                        <th>Work Order Detail</th>
+                                        <th>Khối lượng sợi</th>
+                                        <th>Môi trường ánh sáng</th>
+                                        <th>Mô tả</th>
+                                        <th>Chi tiết Kế hoạch sản xuất</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="detail : ${productionOrder.productionOrderDetails}">
                                         <td th:text="${detail.id}"></td>
                                         <td th:text="${detail.threadMass}"></td>
-                                        <td th:text="${detail.lightEnv} ? 'Natural Light (TN)' : 'Artificial Light (AD)'"></td>
+                                        <td th:text="${detail.lightEnv} ? 'Ánh sáng tự nhiên (TN)' : 'Ánh sáng nhân tạo (AD)'"></td>
                                         <td th:text="${detail.description ?: 'N/A'}"></td>
                                         <td>
-                                            <span th:if="${detail.hasWorkOrderDetail}">
-                                                <a th:href="@{/technical/work-order-details/{id}(id=${detail.workOrderDetail.workOrder.id})}"
-                                                   class="btn-custom view-work-order">
-                                                    <i class="fas fa-eye"></i> Xem Work Order Detail
-                                                </a>
-                                            </span>
-                                            <span th:unless="${detail.hasWorkOrderDetail}" th:text="'Chưa có'"></span>
+                                            <span th:if="${detail.hasWorkOrderDetail}" th:text="'Có'"></span>
+                                            <span th:unless="${detail.hasWorkOrderDetail}" th:text="'Không có'"></span>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Nút Thêm/Xem Work Order và Quay lại -->
+                            <!-- Nút Thêm/Xem Kế hoạch sản xuất và Quay lại -->
                             <div class="btn-container">
                                 <div th:if="${productionOrder.workOrder == null}">
                                     <a th:href="@{/technical/create-work-order(productionOrderId=${productionOrder.id})}"
                                        class="btn-custom add-work-order">
-                                        <i class="fas fa-plus"></i> Thêm Work Order
+                                        <i class="fas fa-plus"></i> Thêm Kế hoạch sản xuất
                                     </a>
                                 </div>
                                 <div th:if="${productionOrder.workOrder != null}">
                                     <a th:href="@{/technical/work-order-details/{id}(id=${productionOrder.workOrder.id})}"
                                        class="btn-custom view-work-order">
-                                        <i class="fas fa-eye"></i> Xem Work Order Detail
+                                        <i class="fas fa-eye"></i> Xem Chi tiết Kế hoạch sản xuất
                                     </a>
                                 </div>
                                 <a th:href="@{/technical/view-approved-production-order}" class="btn-secondary">

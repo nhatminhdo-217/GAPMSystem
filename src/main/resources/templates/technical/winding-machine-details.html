@@ -316,7 +316,7 @@
                         <div class="btn-container">
                             <button type="button" class="btn btn-custom" data-bs-toggle="modal"
                                     data-bs-target="#editWindingMachineModal"
-                                    th:disabled="${windingMachine.windingStage != null}">
+                                    th:disabled="${!canEdit}">
                                 Chỉnh sửa
                             </button>
                             <a href="/technical/view-all-machine" class="btn btn-custom"

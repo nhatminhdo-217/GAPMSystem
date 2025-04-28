@@ -1,7 +1,10 @@
 package fpt.g36.gapms.controller.technical;
 
+import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.entities.DyeMachine;
+import fpt.g36.gapms.models.entities.DyeStage;
 import fpt.g36.gapms.models.entities.WindingMachine;
+import fpt.g36.gapms.models.entities.WindingStage;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/technical")
@@ -116,7 +120,19 @@ public class MachineController {
             }
             try {
                 DyeMachine dyeMachine = machineService.getDyeMachinesById(id);
+                // Kiểm tra xem có thể chỉnh sửa máy không
+                boolean canEdit = true;
+                List<DyeStage> dyeStages = dyeMachine.getDyeStage();
+                if (dyeStages != null && !dyeStages.isEmpty()) {
+                    canEdit = dyeStages.stream().allMatch(ds ->
+                            ds.getWorkStatus() == WorkEnum.FINISHED ||
+                                    ds.getWorkStatus() == WorkEnum.FIX ||
+                                    ds.getWorkStatus() == WorkEnum.PAUSE ||
+                                    ds.getWorkStatus() == WorkEnum.CANCELED
+                    );
+                }
                 model.addAttribute("dyeMachine", dyeMachine);
+                model.addAttribute("canEdit", canEdit);
                 return "technical/dye-machine-details";
             } catch (RuntimeException e) {
                 model.addAttribute("error", e.getMessage());
@@ -138,7 +154,19 @@ public class MachineController {
             }
             try {
                 WindingMachine windingMachine = machineService.getWindingMachinesById(id);
+                // Kiểm tra xem có thể chỉnh sửa máy không
+                boolean canEdit = true;
+                List<WindingStage> windingStages = windingMachine.getWindingStage();
+                if (windingStages != null && !windingStages.isEmpty()) {
+                    canEdit = windingStages.stream().allMatch(ws ->
+                            ws.getWorkStatus() == WorkEnum.FINISHED ||
+                                    ws.getWorkStatus() == WorkEnum.FIX ||
+                                    ws.getWorkStatus() == WorkEnum.PAUSE ||
+                                    ws.getWorkStatus() == WorkEnum.CANCELED
+                    );
+                }
                 model.addAttribute("windingMachine", windingMachine);
+                model.addAttribute("canEdit", canEdit);
                 return "technical/winding-machine-details";
             } catch (RuntimeException e) {
                 model.addAttribute("error", e.getMessage());
@@ -226,7 +254,6 @@ public class MachineController {
                     throw new IllegalArgumentException("Giá trị của litter max phải lớn hơn litters min " +
                             "và giá trị của cone max phải lớn hơn cone min");
                 }
-                ;
                 DyeMachine updatedDyeMachine = machineService.updateDyeMachine(id, dyeMachine);
                 model.addAttribute("dyeMachine", updatedDyeMachine);
                 model.addAttribute("success", "Cập nhật máy nhuộm thành công!");
@@ -273,7 +300,7 @@ public class MachineController {
             } catch (IllegalArgumentException e) {
                 model.addAttribute("error", e.getMessage());
                 model.addAttribute("windingMachine", machineService.getWindingMachinesById(id));
-                return "technical/edit-winding-machine";
+                return "technical/winding-machine-details";
             } catch (Exception e) {
                 model.addAttribute("error", "Có lỗi xảy ra khi cập nhật máy: " + e.getMessage());
                 return "redirect:/technical/view-all-machine";
@@ -297,6 +324,8 @@ public class MachineController {
                 boolean newStatus = !dyeMachine.isActive();
                 machineService.updateDyeMachineStatus(id, newStatus);
                 redirectAttributes.addFlashAttribute("success", "Trạng thái máy nhuộm đã được cập nhật!");
+            } catch (IllegalStateException e) {
+                redirectAttributes.addFlashAttribute("error", e.getMessage());
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật trạng thái: " + e.getMessage());
             }
@@ -320,6 +349,8 @@ public class MachineController {
                 boolean newStatus = !windingMachine.isActive();
                 machineService.updateWindingMachineStatus(id, newStatus);
                 redirectAttributes.addFlashAttribute("success", "Trạng thái máy cuốn đã được cập nhật!");
+            } catch (IllegalStateException e) {
+                redirectAttributes.addFlashAttribute("error", e.getMessage());
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật trạng thái: " + e.getMessage());
             }

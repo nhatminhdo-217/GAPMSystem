@@ -21,14 +21,16 @@ public interface WindingStageRepository extends JpaRepository<WindingStage, Long
 
     @Query("SELECT ws FROM WindingStage ws " +
             "WHERE ws.windingMachine.id = :machineId " +
-            "AND ws.workStatus != :finishedStatus " +
+            "AND ws.workStatus NOT IN (:finishedStatus, :pauseStatus, :cancelledStatus) " +
             "AND ((ws.plannedStart <= :deadline AND ws.deadline >= :plannedStart) " +
             "OR (ws.startAt IS NOT NULL AND ws.completeAt IS NULL))")
     List<WindingStage> findActiveWindingStagesByMachine(
             @Param("machineId") Long machineId,
             @Param("plannedStart") LocalDateTime plannedStart,
             @Param("deadline") LocalDateTime deadline,
-            @Param("finishedStatus") WorkEnum finishedStatus);
+            @Param("finishedStatus") WorkEnum finishedStatus,
+            @Param("pauseStatus") WorkEnum pauseStatus,
+            @Param("cancelledStatus") WorkEnum cancelledStatus);
 
     @Modifying
     @Query("DELETE FROM WindingStage ws WHERE ws.workOrderDetail IN :workOrderDetails")
@@ -42,4 +44,22 @@ public interface WindingStageRepository extends JpaRepository<WindingStage, Long
     @Modifying
     @Query(value = "DELETE FROM winding_stage_qa WHERE winding_stage_id IN :stageIds", nativeQuery = true)
     void deleteQaByWindingStageIds(@Param("stageIds") List<Long> stageIds);
+
+    //
+    @Query("SELECT ws FROM WindingStage ws " +
+            "WHERE ws.windingMachine.id = :machineId " +
+            "AND ws.workStatus NOT IN (:finishedStatus, :pauseStatus, :cancelledStatus) " +
+            "AND ((ws.plannedStart <= :deadline AND ws.deadline >= :plannedStart) " +
+            "OR (ws.startAt IS NOT NULL AND ws.completeAt IS NULL))")
+    List<WindingStage> findActiveWindingStagesByMachineForUpdate(
+            @Param("machineId") Long machineId,
+            @Param("plannedStart") LocalDateTime plannedStart,
+            @Param("deadline") LocalDateTime deadline,
+            @Param("finishedStatus") WorkEnum finishedStatus,
+            @Param("pauseStatus") WorkEnum pauseStatus,
+            @Param("cancelledStatus") WorkEnum cancelledStatus);
+
+    // Thêm phương thức mới để lấy tất cả WindingStage của một WindingMachine
+    @Query("SELECT ws FROM WindingStage ws WHERE ws.windingMachine.id = :machineId")
+    List<WindingStage> findWindingStagesByMachineId(@Param("machineId") Long machineId);
 }

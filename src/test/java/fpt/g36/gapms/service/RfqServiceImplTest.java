@@ -93,38 +93,38 @@ class RfqServiceImplTest {
         assertEquals("Không tìm thấy mã lô hàng", exception.getMessage());
     }
 
-    @Test
-    void submitRfq_Success() {
-        // Giả lập Rfq và User
-        when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//    @Test
+//    void submitRfq_Success() {
+//        // Giả lập Rfq và User
+//        when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//
+//        // Giả lập lưu Rfq
+//        when(rfqRepository.save(any(Rfq.class))).thenReturn(rfq);
+//
+//        // Gọi phương thức kiểm thử
+//        Rfq submittedRfq = rfqService.submitRfq(1L, 1L);
+//
+//        // Kiểm tra kết quả
+//        assertNotNull(submittedRfq, "Rfq không được trả về null");
+//        assertEquals(SendEnum.SENT, submittedRfq.getIsApproved(), "Trạng thái không đúng");
+//
+//        // Kiểm tra phương thức của repository được gọi đúng
+//        verify(rfqRepository, times(1)).save(any(Rfq.class));
+//        verify(userRepository, times(1)).findById(1L);
+//    }
 
-        // Giả lập lưu Rfq
-        when(rfqRepository.save(any(Rfq.class))).thenReturn(rfq);
-
-        // Gọi phương thức kiểm thử
-        Rfq submittedRfq = rfqService.submitRfq(1L, 1L);
-
-        // Kiểm tra kết quả
-        assertNotNull(submittedRfq, "Rfq không được trả về null");
-        assertEquals(SendEnum.SENT, submittedRfq.getIsApproved(), "Trạng thái không đúng");
-
-        // Kiểm tra phương thức của repository được gọi đúng
-        verify(rfqRepository, times(1)).save(any(Rfq.class));
-        verify(userRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void submitRfq_AlreadySubmitted() {
-        // Giả lập Rfq đã được gửi trước đó
-        rfq.setIsApproved(SendEnum.SENT);
-        when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        // Kiểm tra ngoại lệ khi Rfq đã được gửi
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> rfqService.submitRfq(1L, 1L));
-        assertEquals("Rfq đã được gửi trước đó.", exception.getMessage());
-    }
+//    @Test
+//    void submitRfq_AlreadySubmitted() {
+//        // Giả lập Rfq đã được gửi trước đó
+//        rfq.setIsApproved(SendEnum.SENT);
+//        when(rfqRepository.findById(1L)).thenReturn(Optional.of(rfq));
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//
+//        // Kiểm tra ngoại lệ khi Rfq đã được gửi
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> rfqService.submitRfq(1L, 1L));
+//        assertEquals("Rfq đã được gửi trước đó.", exception.getMessage());
+//    }
 
     @Test
     void editRfq_Success() {

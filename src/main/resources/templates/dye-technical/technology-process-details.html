@@ -225,7 +225,7 @@
         }
 
         #pdf-content .qr-code canvas {
-            max-width: 60px; /* Reduce QR Code size for PDF */
+            max-width: 80px; /* Tăng kích thước tối đa của mã QR trong PDF */
         }
 
         #pdf-content h3 {
@@ -605,7 +605,12 @@
             if (urlToEncode && urlToEncode.trim() !== '') {
                 // Set willReadFrequently to true to improve performance
                 qrCanvas.setAttribute('willReadFrequently', 'true');
-                QRCode.toCanvas(qrCanvas, urlToEncode, {width: 60, height: 60}, function (error) {
+                QRCode.toCanvas(qrCanvas, urlToEncode, {
+                    width: 80,  // Tăng kích thước mã QR
+                    height: 80,
+                    errorCorrectionLevel: 'H',  // Tăng mức sửa lỗi để mã QR rõ nét hơn
+                    margin: 1
+                }, function (error) {
                     if (error) {
                         console.error('Lỗi khi tạo mã QR trong PDF:', error);
                         qrCanvas.parentElement.innerHTML = 'Không thể tạo mã QR';
@@ -635,7 +640,7 @@
                 margin: 0.5,
                 filename: 'TechnologyProcess_' + (technologyProcessId || 'unknown') + '.pdf',
                 image: {type: 'jpeg', quality: 0.98},
-                html2canvas: {scale: 2, useCORS: false},
+                html2canvas: {scale: 3, useCORS: false},  // Tăng scale để cải thiện độ nét
                 jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'},
                 pagebreak: {mode: ['avoid-all', 'css', 'legacy']}
             };
