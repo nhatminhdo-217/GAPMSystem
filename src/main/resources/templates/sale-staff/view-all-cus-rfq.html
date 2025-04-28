@@ -2,9 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-
-    <title>Chỉ may Dũng Đông - Danh sách RFQ </title>
-
+    <title>Chỉ may Dũng Đông - Danh sách RFQ</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -49,36 +47,7 @@
         .parent-row {
             background-color: #ffffff;
             padding: 12px 15px;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .collapse {
-            display: none;
-        }
-
-        .collapse.show {
-            display: block;
-        }
-
-        .toggle-btn {
-            font-size: 12px;
-            color: #dc3545;
-            padding: 4px 8px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-        .toggle-btn:focus {
-            outline: none;
-            box-shadow: none;
+            border-radius: 8px;
         }
 
         .text-start strong {
@@ -115,7 +84,6 @@
             min-width: 0;
         }
 
-        /* Style cho thanh search */
         .search-container {
             display: flex;
             justify-content: space-between;
@@ -143,7 +111,6 @@
             border-color: #007bff;
         }
 
-        /* Style cho số thứ tự trong card */
         .index-in-card {
             margin-right: 12px;
             font-size: 16px;
@@ -153,12 +120,10 @@
             text-align: center;
         }
 
-        /* Container cho card và nút toggle */
         .card-wrapper {
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 0;
         }
 
         .card-body {
@@ -171,109 +136,144 @@
             border-radius: 8px;
         }
 
-        .toggle-container {
-            padding: 5px;
-            min-width: 30px;
-        }
-
-        /* Style cho phần chi tiết (detail table) */
-        .detail-table {
-            background-color: #ffffff;
-            border-radius: 0 0 8px 8px;
-            padding: 0;
-        }
-
-        .card-body.detail-table {
-            background-color: #f9fafc;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-            border-radius: 0 0 8px 8px;
-        }
-
-        /* CSS cho phần thông tin giải pháp */
-        .solution-details {
-            background-color: #f8f9fc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e7f0;
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column; /* Sắp xếp dọc */
-            gap: 8px; /* Khoảng cách giữa các mục */
-        }
-        .solution-details p {
-            margin: 0;
-            font-size: 14px;
+        .nav-tabs .nav-link {
+            font-size: 16px;
+            font-weight: 500;
             color: #495057;
-            display: flex;
-            justify-content: space-between; /* Căn đều giữa nhãn và giá trị */
-        }
-        .solution-details strong {
-            color: #333;
-            font-weight: 600;
-            flex: 0 0 50%; /* Nhãn chiếm 50% chiều rộng */
-        }
-        .solution-details span {
-            color: #212529;
-            text-align: right;
-            flex: 0 0 50%; /* Giá trị chiếm 50% chiều rộng */
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
         }
 
-        /* Responsive design */
+        .nav-tabs .nav-link:hover {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            background-color: transparent;
+        }
+
+        .tab-content {
+            padding-top: 20px;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.disabled .page-link {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .toast {
+            opacity: 0.9;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastError {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            zIndex: 1050;
+            min-width: 300px;
+        }
+
+        /* Status-specific styling */
+        .status-not-approved {
+            color: #ef4444;
+            font-weight: 500;
+            background-color: #fef2f2;
+        }
+
+        .status-approved {
+            color: #10b981;
+            font-weight: 500;
+            background-color: #ecfdf5;
+        }
+
+        .content-section {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
         @media (max-width: 768px) {
             .content-section {
                 flex-direction: column;
                 width: 100%;
+                align-items: flex-start;
             }
+
             .text-start.me-3 {
                 width: 100%;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
+                text-align: left;
             }
+
             .search-container {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 15px;
+                padding: 10px;
             }
+
             .search-input {
                 max-width: 100%;
                 margin-top: 10px;
                 margin-left: 0;
+                width: 100%;
             }
+
             .card-body {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 10px;
             }
-            .content-section {
-                flex-direction: column;
-            }
-            .index-in-card {
-                margin-bottom: 8px;
-                margin-right: 0;
-            }
-            .toggle-container {
-                margin-top: 8px;
-                margin-left: 0;
-            }
+
             .card-wrapper {
                 flex-direction: column;
-                gap: 0;
+                align-items: flex-start;
             }
-            .solution-details p {
-                flex-direction: column; /* Khi màn hình nhỏ, chuyển thành dọc hoàn toàn */
+
+            .index-in-card {
+                margin-bottom: 10px;
+                margin-right: 0;
                 text-align: left;
             }
-            .solution-details strong, .solution-details span {
-                flex: none;
-                width: 100%;
-            }
-            .solution-details span {
-                text-align: left;
+
+            .nav-tabs .nav-link {
+                font-size: 14px;
+                padding: 8px 12px;
             }
         }
     </style>
 </head>
 <body>
+<!-- Hidden data -->
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
 <div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -297,97 +297,281 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4">
-                <!-- Search and title in the same row -->
+                <!-- Search and title -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách RFQ</h6>
-                    <input type="text" class="form-control search-input" placeholder="Search...">
+                    <form method="get" action="/sale-staff/view-all-cus-rfq"
+                          class="d-flex align-items-center flex-grow-1">
+                        <input type="text" name="search" class="form-control search-input" id="searchInput"
+                               placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="previousTab" th:value="${activeTab}">
+                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                    </form>
                 </div>
-                <div class="row g-3">
-                    <div class="col-12" th:if="${rfqs == null or rfqs.isEmpty()}">
-                        <div class="alert alert-info text-center">
-                            <p>Không có RFQ.</p>
+
+                <!-- Tabstrip -->
+                <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
+                    <ul class="nav nav-tabs" id="rfqTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${activeTab == 'not-approved-content'} ? 'active' : ''"
+                               id="not-approved-tab" data-bs-toggle="tab" href="#not-approved-content"
+                               role="tab" aria-controls="not-approved-content"
+                               aria-selected="${activeTab == 'not-approved-content'}">Chưa phê duyệt</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link"
+                               th:classappend="${activeTab == 'approved-no-solution-content'} ? 'active' : ''"
+                               id="approved-no-solution-tab" data-bs-toggle="tab" href="#approved-no-solution-content"
+                               role="tab" aria-controls="approved-no-solution-content"
+                               aria-selected="${activeTab == 'approved-no-solution-content'}">Đã phê duyệt (Chưa có giải
+                                pháp)</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link"
+                               th:classappend="${activeTab == 'approved-with-solution-content'} ? 'active' : ''"
+                               id="approved-with-solution-tab" data-bs-toggle="tab"
+                               href="#approved-with-solution-content"
+                               role="tab" aria-controls="approved-with-solution-content"
+                               aria-selected="${activeTab == 'approved-with-solution-content'}">Đã phê duyệt (Có giải
+                                pháp)</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab content -->
+                <div class="tab-content" id="rfqTabContent">
+                    <!-- Tab 1: RFQ chưa được phê duyệt -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'not-approved-content'} ? 'show active' : ''"
+                         id="not-approved-content" role="tabpanel" aria-labelledby="not-approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${rfqsNotApproved == null or rfqsNotApproved.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không có RFQ chưa được phê duyệt.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="rfq, iterStat : ${rfqsNotApproved}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id} + '\''"
+                                         th:data-rfq-id="${rfq.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + rfqsNotApprovedPage.number * rfqsNotApprovedPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lô</strong><br>
+                                                    <span th:text="${rfq.getId()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Số lượng sản phẩm</strong><br>
+                                                    <span th:text="${rfq.getRfqDetails().size()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo đơn</strong><br>
+                                                    <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Người tạo</strong><br>
+                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Nhân viên phụ trách</strong><br>
+                                                    <span th:text="${rfq.getApprovedBy() != null ? rfq.getApprovedBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái đơn hàng</strong><br>
+                                                    <span th:classappend="'status-not-approved'"
+                                                          th:text="'Chưa phê duyệt'"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Phân trang cho tab 1 -->
+                        <nav th:if="${rfqsNotApprovedPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${rfqsNotApprovedPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsNotApprovedPage.number - 1}, size=${rfqsNotApprovedPage.size}, search=${search}, activeTab='not-approved-content', previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, rfqsNotApprovedPage.totalPages - 1)}"
+                                    th:classappend="${i == rfqsNotApprovedPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${i}, size=${rfqsNotApprovedPage.size}, search=${search}, activeTab='not-approved-content', previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${rfqsNotApprovedPage.number == rfqsNotApprovedPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsNotApprovedPage.number + 1}, size=${rfqsNotApprovedPage.size}, search=${search}, activeTab='not-approved-content', previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
-                    <div class="col-12" th:each="rfq, iterStat : ${rfqs}">
-                        <div class="card-wrapper">
-                            <div class="card" th:data-rfq-id="${rfq.id}" th:onclick="'window.location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id}\'">
-                                <div class="card-body parent-row">
-                                    <span class="index-in-card" th:text="${iterStat.count}"></span>
-                                    <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                         style="width: 100%;">
-                                        <div class="text-start me-3">
-                                            <strong>Mã lô</strong><br>
-                                            <span th:text="${rfq.getId()}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Số lượng sản phẩm</strong><br>
-                                            <span th:text="${rfq.getRfqDetails().size()}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Ngày tạo đơn</strong><br>
-                                            <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Nhân viên phụ trách</strong><br>
-                                            <span th:text="${rfq.getApprovedBy() != null ? rfq.getApprovedBy().getUsername() : 'N/A'}"></span>
-                                        </div>
-                                        <div class="text-start me-3">
-                                            <strong>Trạng thái đơn hàng</strong><br>
-                                            <span th:text="${rfq.getIsSent() != null ? (rfq.getIsSent().name() == 'APPROVE' ? 'Đã chấp nhận' : (rfq.getIsSent().name() == 'NOT_APPROVE' ? 'Chưa chấp nhận' : rfq.getIsSent())) : 'Chưa chấp nhận'}" style="color: #28a745;"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" th:id="'details-' + ${iterStat.count}">
-                                    <div class="card-body detail-table">
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                            <tr class="text-dark">
-                                                <th>Số thứ tự</th>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Màu</th>
-                                                <th>Số lượng đặt</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="detail, detailIter : ${rfq.rfqDetails}">
-                                                <td th:text="${detailIter.count}"></td>
-                                                <td th:text="${detail.getId()}"></td>
-                                                <td th:text="${detail.getProduct().getName()} + ' - ' + ${detail.getBrand().getName()} + ' - ' + ${detail.getCate().getName()}"></td>
-                                                <td th:text="${detail.getNoteColor()}"></td>
-                                                <td th:text="${detail.getQuantity()}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="solution-details">
-                                            <p><strong>Ngày mong muốn nhận hàng:</strong>
-                                                <span th:text="${#temporals.format(rfq.getExpectDeliveryDate(), 'dd/MM/yyyy')}"></span>
-                                            </p>
-                                            <p th:if="${rfq.solution != null}"><strong>Ngày có thể giao hàng dự kiến:</strong>
-                                                <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
-                                            </p>
-                                            <p th:if="${rfq.solution != null}"><strong>Trạng thái gửi:</strong>
-                                                <span th:text="${rfq.solution.isSent != null ? (rfq.solution.isSent.name() == 'SENT' ? 'Đã gửi' : (rfq.solution.isSent.name() == 'NOT_SENT' ? 'Chưa gửi' : rfq.solution.isSent)) : 'Chưa gửi'}"></span>
-                                            </p>
-                                        </div>
-                                    </div>
+
+                    <!-- Tab 2: RFQ đã phê duyệt nhưng chưa có giải pháp -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'approved-no-solution-content'} ? 'show active' : ''"
+                         id="approved-no-solution-content" role="tabpanel" aria-labelledby="approved-no-solution-tab">
+                        <div class="row g-3">
+                            <div class="col-12"
+                                 th:if="${rfqsApprovedNoSolution == null or rfqsApprovedNoSolution.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không có RFQ đã phê duyệt chưa có giải pháp.</p>
                                 </div>
                             </div>
-                            <div class="toggle-container">
-                                <button class="btn btn-link toggle-btn" data-toggle="collapse"
-                                        th:data-target="'#details-' + ${iterStat.count}"
-                                        style="padding: 0; color: #dc3545; text-decoration: none;">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <div class="col-12" th:each="rfq, iterStat : ${rfqsApprovedNoSolution}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id} + '\''"
+                                         th:data-rfq-id="${rfq.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + rfqsApprovedNoSolutionPage.number * rfqsApprovedNoSolutionPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lô</strong><br>
+                                                    <span th:text="${rfq.getId()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Số lượng sản phẩm</strong><br>
+                                                    <span th:text="${rfq.getRfqDetails().size()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo đơn</strong><br>
+                                                    <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Người tạo</strong><br>
+                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Nhân viên phụ trách</strong><br>
+                                                    <span th:text="${rfq.getApprovedBy() != null ? rfq.getApprovedBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái đơn hàng</strong><br>
+                                                    <span th:classappend="'status-approved'"
+                                                          th:text="'Đã phê duyệt'"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab 2 -->
+                        <nav th:if="${rfqsApprovedNoSolutionPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${rfqsApprovedNoSolutionPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsApprovedNoSolutionPage.number - 1}, size=${rfqsApprovedNoSolutionPage.size}, search=${search}, activeTab='approved-no-solution-content', previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, rfqsApprovedNoSolutionPage.totalPages - 1)}"
+                                    th:classappend="${i == rfqsApprovedNoSolutionPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${i}, size=${rfqsApprovedNoSolutionPage.size}, search=${search}, activeTab='approved-no-solution-content', previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${rfqsApprovedNoSolutionPage.number == rfqsApprovedNoSolutionPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsApprovedNoSolutionPage.number + 1}, size=${rfqsApprovedNoSolutionPage.size}, search=${search}, activeTab='approved-no-solution-content', previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- Tab 3: RFQ đã phê duyệt và có giải pháp -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'approved-with-solution-content'} ? 'show active' : ''"
+                         id="approved-with-solution-content" role="tabpanel"
+                         aria-labelledby="approved-with-solution-tab">
+                        <div class="row g-3">
+                            <div class="col-12"
+                                 th:if="${rfqsApprovedWithSolution == null or rfqsApprovedWithSolution.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không có RFQ đã phê duyệt và có giải pháp.</p>
+                                </div>
+                            </div>
+                            <div class="col-12" th:each="rfq, iterStat : ${rfqsApprovedWithSolution}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/sale-staff/cus-rfq-details/' + ${rfq.id} + '\''"
+                                         th:data-rfq-id="${rfq.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + rfqsApprovedWithSolutionPage.number * rfqsApprovedWithSolutionPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lô</strong><br>
+                                                    <span th:text="${rfq.getId()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Số lượng sản phẩm</strong><br>
+                                                    <span th:text="${rfq.getRfqDetails().size()}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo đơn</strong><br>
+                                                    <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Người tạo</strong><br>
+                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Nhân viên phụ trách</strong><br>
+                                                    <span th:text="${rfq.getApprovedBy() != null ? rfq.getApprovedBy().getUsername() : 'N/A'}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái đơn hàng</strong><br>
+                                                    <span th:classappend="'status-approved'"
+                                                          th:text="'Đã phê duyệt'"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Phân trang cho tab 3 -->
+                        <nav th:if="${rfqsApprovedWithSolutionPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${rfqsApprovedWithSolutionPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsApprovedWithSolutionPage.number - 1}, size=${rfqsApprovedWithSolutionPage.size}, search=${search}, activeTab='approved-with-solution-content', previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, rfqsApprovedWithSolutionPage.totalPages - 1)}"
+                                    th:classappend="${i == rfqsApprovedWithSolutionPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${i}, size=${rfqsApprovedWithSolutionPage.size}, search=${search}, activeTab='approved-with-solution-content', previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${rfqsApprovedWithSolutionPage.number == rfqsApprovedWithSolutionPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/sale-staff/view-all-cus-rfq(page=${rfqsApprovedWithSolutionPage.number + 1}, size=${rfqsApprovedWithSolutionPage.size}, search=${search}, activeTab='approved-with-solution-content', previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Content End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 
 <!-- JavaScript Libraries -->
@@ -397,28 +581,46 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-<script>
-    $(document).ready(function () {
-        // Xử lý nhấp vào card để chuyển hướng, nhưng bỏ qua nút toggle
-        $('.card').on('click', function (event) {
-            if (!$(event.target).closest('.toggle-btn').length) {
-                var rfqId = $(this).data('rfq-id');
-                window.location.href = '/sale-staff/cus-rfq-details/' + rfqId;
-            }
-        });
 
-        // Xử lý nhấp vào nút toggle để hiển thị chi tiết
-        $('.toggle-btn').click(function (event) {
-            event.stopPropagation();
-            var target = $(this).data('target');
-            var icon = $(this).find('i');
-            $(target).collapse('toggle');
-            if ($(target).hasClass('show')) {
-                icon.removeClass('fa-plus').addClass('fa-minus');
-            } else {
-                icon.removeClass('fa-minus').addClass('fa-plus');
+<!-- Toast script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMessage = document.getElementById('hiddenError')?.textContent;
+
+        if (errorMessage && errorMessage.trim() !== '') {
+            const toastHTML = `
+                <div class="toast error-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Lỗi</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${errorMessage}
+                    </div>
+                </div>
+            `;
+
+            const toastContainer = document.createElement('div');
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '1050';
+            toastContainer.innerHTML = toastHTML;
+            document.body.appendChild(toastContainer);
+
+            const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+            toast.show();
+        }
+
+        // Đảm bảo tab được kích hoạt đúng khi tải trang
+        var activeTab = '[[${activeTab}]]';
+        if (activeTab) {
+            const tabElement = document.querySelector(`#${activeTab}-tab`);
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
             }
-        });
+        }
     });
 </script>
 </body>

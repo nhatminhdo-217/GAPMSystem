@@ -12,11 +12,14 @@ import fpt.g36.gapms.services.SolutionService;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SolutionServiceImpl implements SolutionService {
@@ -30,6 +33,7 @@ public class SolutionServiceImpl implements SolutionService {
     private EntityManager entityManager;
     @Autowired
     private UserUtils userUtils;
+
     @Override
     @Transactional
     public Solution addSolution(Long rfqId, Long userId, SolutionDTO solutionDTO) {
@@ -122,5 +126,25 @@ public class SolutionServiceImpl implements SolutionService {
         return solutionRepository.findAllSentAndApprovedByUserId(SendEnum.SENT, userId);
     }
 
+    @Override
+    public Page<Solution> getAllSentedAndApproveByUserIDSolutions(Long userId, Pageable pageable) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        return solutionRepository.findAllSentAndApprovedByUserId(SendEnum.SENT, userId, pageable);
+    }
 
+    @Override
+    public Page<Solution> getAllSentedSolutions(Pageable pageable) {
+        return solutionRepository.findAllByIsSent(SendEnum.SENT, pageable);
+    }
+
+    @Override
+    public Page<Solution> getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(Long createById, SendEnum sentStatus, Pageable pageable) {
+        return solutionRepository.findAllByCreateByIdAndIsSentOrderByRfqDeadline(createById, sentStatus, pageable);
+    }
+
+    @Override
+    public Optional<Solution> findSolutionByIdAndCreateById(Long id, Long createById) {
+        return solutionRepository.findByIdAndCreateById(id, createById);
+    }
 }

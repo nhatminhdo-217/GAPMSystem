@@ -63,29 +63,26 @@
             background-color: #4A90E2;
         }
 
-        /* Container cho 2 phần thông tin khách hàng và RFQ */
         .info-container {
             display: flex;
-            gap: 20px; /* Khoảng cách giữa 2 phần */
+            gap: 20px;
             margin-bottom: 30px;
         }
 
-        /* Phần Thông tin khách hàng */
         .customer-info {
             background-color: #f8f9fa;
             border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 20px;
-            flex: 1; /* Chia đều không gian */
+            flex: 1;
         }
 
-        /* Phần Thông tin RFQ */
         .rfq-info {
             background-color: #ffffff;
             border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 20px;
-            flex: 1; /* Chia đều không gian */
+            flex: 1;
         }
 
         .row {
@@ -213,7 +210,7 @@
         .modal-body p {
             font-size: 15px;
             color: #495057;
-            margin-bottom: 0;
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -228,6 +225,12 @@
             width: 100%;
         }
 
+        .form-control:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+        }
+
         .modal-footer {
             padding: 15px 0;
             border-top: 1px solid #e9ecef;
@@ -238,6 +241,12 @@
         .toast {
             opacity: 0.9;
             border-radius: 5px;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .toast.show {
+            display: block !important;
+            opacity: 1 !important;
         }
 
         .success-toast {
@@ -287,15 +296,32 @@
             bottom: 80px;
         }
 
-        /* Responsive */
+        .error-message {
+            color: #721c24;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .expect-delivery-info {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .expect-delivery-info strong {
+            color: #333;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .info-container {
-                flex-direction: column; /* Xếp chồng trên mobile */
-                gap: 15px; /* Giảm khoảng cách giữa 2 phần */
+                flex-direction: column;
+                gap: 15px;
             }
 
             .customer-info, .rfq-info {
-                padding: 15px; /* Giảm padding trên mobile */
+                padding: 15px;
             }
 
             .card-body {
@@ -354,6 +380,10 @@
                 padding: 10px 0;
                 gap: 10px;
             }
+
+            .expect-delivery-info {
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -361,6 +391,61 @@
 <!-- Hidden data -->
 <div th:if="${success}" id="hiddenSuccess" style="display: none;" th:text="${success}"></div>
 <div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
+<!-- Hidden input chứa expectDeliveryDate -->
+<input type="hidden" id="expectDeliveryDate" th:value="${#temporals.format(rfq.expectDeliveryDate, 'yyyy-MM-dd')}">
+
+<!-- Thêm script để kiểm tra success ngay lập tức -->
+<script th:inline="javascript">
+    console.log("Giá trị success từ server: " + [[${success}]]);
+    console.log("Giá trị error từ server: " + [[${error}]]);
+    const successMessage = [[${success}]];
+    const errorMessage = [[${error}]];
+    if (successMessage) {
+        console.log("Hiển thị toast thành công với nội dung: " + successMessage);
+        const toastSuccessElement = document.getElementById('toastSuccess');
+        const successMessageElement = document.getElementById('successMessage');
+        if (toastSuccessElement && successMessageElement) {
+            console.log("Phần tử toastSuccess và successMessage tồn tại trong DOM");
+            try {
+                const successToast = new bootstrap.Toast(toastSuccessElement);
+                successMessageElement.textContent = successMessage;
+                successToast.show();
+                console.log("Toast thành công đã được hiển thị");
+                setTimeout(() => {
+                    successToast.hide();
+                    console.log("Toast thành công đã được ẩn sau 5 giây");
+                }, 5000);
+            } catch (e) {
+                console.error("Lỗi khi hiển thị toast thành công: ", e);
+            }
+        } else {
+            console.error("Không tìm thấy phần tử toastSuccess hoặc successMessage trong DOM");
+        }
+    }
+    if (errorMessage) {
+        console.log("Hiển thị toast lỗi với nội dung: " + errorMessage);
+        const toastErrorElement = document.getElementById('toastError');
+        const errorMessageElement = document.getElementById('errorMessage');
+        if (toastErrorElement && errorMessageElement) {
+            console.log("Phần tử toastError và errorMessage tồn tại trong DOM");
+            try {
+                const errorToast = new bootstrap.Toast(toastErrorElement);
+                errorMessageElement.textContent = errorMessage;
+                errorToast.show();
+                console.log("Toast lỗi đã được hiển thị");
+                setTimeout(() => {
+                    errorToast.hide();
+                    console.log("Toast lỗi đã được ẩn sau 5 giây");
+                }, 5000);
+            } catch (e) {
+                console.error("Lỗi khi hiển thị toast lỗi: ", e);
+            }
+        } else {
+            console.error("Không tìm thấy phần tử toastError hoặc errorMessage trong DOM");
+        }
+    }
+</script>
 
 <div class="container-fluid position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
@@ -396,7 +481,8 @@
                                     <h3 class="section-title">Thông tin khách hàng</h3>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Tên khách hàng:</strong> <span th:text="${rfq.createBy.username}"></span>
+                                            <strong>Tên khách hàng:</strong> <span
+                                                th:text="${rfq.createBy.username}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số điện thoại cá nhân:</strong> <span
@@ -409,7 +495,8 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Tên công ty khách hàng:</strong> <span th:text="${company.name}"></span>
+                                            <strong>Tên công ty khách hàng:</strong> <span
+                                                th:text="${company.name}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số điện thoại công ty:</strong> <span
@@ -537,19 +624,33 @@
                 <div class="modal-body">
                     <form id="submitRfqForm" th:action="@{/sale-staff/submit-rfq/{id}(id=${rfq.id})}" method="post">
                         <input type="hidden" name="rfqId" th:value="${rfq.id}">
-                        <p>Bạn có chắc chắn muốn gửi RFQ này không?</p>
+                        <p>Nhập thời hạn giải pháp trước khi gửi RFQ:</p>
+                        <p class="expect-delivery-info">
+                            <strong>Ngày dự kiến giao hàng tối đa:</strong>
+                            <span th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                        </p>
+                        <p class="expect-delivery-info">
+                            <strong>Thời hạn giải pháp tối đa (2 ngày sau ngày hiện tại):</strong>
+                            <span id="maxDeadline"></span>
+                        </p>
+                        <div class="form-group">
+                            <label for="deadlineSolution" class="form-label">Thời hạn giải pháp:</label>
+                            <input type="date" id="deadlineSolution" name="deadlineSolution" class="form-control"
+                                   required>
+                            <div id="deadlineError" class="error-message"></div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" form="submitRfqForm" class="btn btn-primary">Gửi RFQ</button>
+                    <button type="submit" id="submitRfqFormBtn" class="btn btn-primary" disabled>Gửi RFQ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Toast -->
-    <div id="toastSuccess" class="toast success-toast" style="display: none;">
+    <div id="toastSuccess" class="toast success-toast">
         <div class="toast-header">
             <strong class="me-auto">Thành công</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -559,7 +660,7 @@
         </div>
     </div>
 
-    <div id="toastError" class="toast error-toast" style="display: none;">
+    <div id="toastError" class="toast error-toast">
         <div class="toast-header">
             <strong class="me-auto">Lỗi</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -572,7 +673,7 @@
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
@@ -594,32 +695,91 @@
             return false;
         });
 
-        // Open modal
+        // Hàm định dạng ngày thành dd-MM-yyyy
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        // Open modal và hiển thị maxDeadline
         $('#submitRfqBtn').click(function () {
             $('#submitRfqModal').modal('show');
+
+            // Tính và hiển thị maxDeadline (2 ngày sau ngày hiện tại)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const maxDeadline = new Date(today);
+            maxDeadline.setDate(today.getDate() + 2);
+            $('#maxDeadline').text(formatDate(maxDeadline));
         });
 
         // Close modal
         $('.btn-close, .btn[data-bs-dismiss="modal"]').click(function () {
             $('#submitRfqModal').modal('hide');
+            $('#deadlineSolution').val(''); // Reset giá trị khi đóng modal
+            $('#deadlineError').text('').hide(); // Xóa thông báo lỗi
+            $('#submitRfqFormBtn').prop('disabled', true); // Vô hiệu hóa nút Gửi RFQ
         });
 
-        // Toast notifications
-        const hiddenSuccess = document.getElementById('hiddenSuccess');
-        if (hiddenSuccess && hiddenSuccess.textContent.trim()) {
-            const successToast = new bootstrap.Toast(document.getElementById('toastSuccess'));
-            document.getElementById('successMessage').textContent = hiddenSuccess.textContent.trim();
-            successToast.show();
-            setTimeout(() => successToast.hide(), 3000);
-        }
+        // Validate deadlineSolution
+        $('#deadlineSolution').on('input change', function () {
+            const deadlineInput = $(this);
+            const deadlineValue = deadlineInput.val();
+            const errorMessage = $('#deadlineError');
+            const submitBtn = $('#submitRfqFormBtn');
+            const expectDeliveryDateStr = $('#expectDeliveryDate').val();
 
-        const hiddenError = document.getElementById('hiddenError');
-        if (hiddenError && hiddenError.textContent.trim()) {
-            const errorToast = new bootstrap.Toast(document.getElementById('toastError'));
-            document.getElementById('errorMessage').textContent = hiddenError.textContent.trim();
-            errorToast.show();
-            setTimeout(() => errorToast.hide(), 3000);
-        }
+            // Reset thông báo lỗi
+            errorMessage.text('').hide();
+            submitBtn.prop('disabled', true);
+
+            // Kiểm tra 1: Deadline không được để trống
+            if (!deadlineValue) {
+                errorMessage.text('Thời hạn giải pháp không được để trống.').show();
+                return;
+            }
+
+            const selectedDate = new Date(deadlineValue);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Kiểm tra 2: Deadline không được là ngày trong quá khứ
+            if (selectedDate < today) {
+                errorMessage.text('Thời hạn giải pháp không được là ngày trong quá khứ.').show();
+                return;
+            }
+
+            // Kiểm tra 3: Deadline không được vượt quá expectDeliveryDate
+            const expectDeliveryDate = new Date(expectDeliveryDateStr);
+            if (selectedDate > expectDeliveryDate) {
+                const formattedExpectDate = expectDeliveryDate.toISOString().split('T')[0];
+                errorMessage.text('Thời hạn giải pháp không được vượt quá ngày dự kiến giao hàng (' + formattedExpectDate + ').').show();
+                return;
+            }
+
+            // Kiểm tra 4: Deadline không được vượt quá 2 ngày sau ngày hiện tại
+            const maxDeadline = new Date(today);
+            maxDeadline.setDate(today.getDate() + 2);
+            if (selectedDate > maxDeadline) {
+                const formattedMaxDeadline = maxDeadline.toISOString().split('T')[0];
+                errorMessage.text('Thời hạn giải pháp không được vượt quá 2 ngày sau ngày hiện tại (' + formattedMaxDeadline + ').').show();
+                return;
+            }
+
+            // Nếu tất cả kiểm tra đều hợp lệ, kích hoạt nút Gửi RFQ
+            submitBtn.prop('disabled', false);
+        });
+
+        // Submit form khi nhấn nút Gửi RFQ
+        $('#submitRfqFormBtn').click(function (e) {
+            e.preventDefault();
+            const errorMessage = $('#deadlineError');
+            if (errorMessage.text() === '' && !$('#submitRfqFormBtn').prop('disabled')) {
+                $('#submitRfqForm').submit();
+            }
+        });
     });
 </script>
 

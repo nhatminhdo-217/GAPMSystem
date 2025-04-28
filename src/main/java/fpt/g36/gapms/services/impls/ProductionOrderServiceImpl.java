@@ -177,8 +177,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         if (getStatusByProductionOrderId(id).equals(BaseEnum.DRAFT)) {
             po.setStatus(BaseEnum.NOT_APPROVED);
             po.setCreatedBy(currUser);
-        }
-        else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED){
+        } else if (getStatusByProductionOrderId(id) == BaseEnum.NOT_APPROVED) {
             po.setStatus(BaseEnum.APPROVED);
             po.setApprovedBy(currUser);
         }
@@ -220,6 +219,27 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         PurchaseOrderDetail purchaseOrderDetail = purchaseOrderService.getPurchaseOrderDetailById(id);
 
         return purchaseOrderDetail.getProduct().getThread().getConvert_rate().multiply(new BigDecimal(purchaseOrderDetail.getQuantity()));
+    }
+
+    @Override
+    public Page<TechnicalProductionOrderDTO> getApprovedProductionOrdersWithoutWorkOrder(Pageable pageable) {
+        Page<ProductionOrder> productionOrders = productionOrderRepository.findAllByStatusAndWorkOrderIsNull(BaseEnum.APPROVED, pageable);
+        List<TechnicalProductionOrderDTO> dtos = productionOrders.getContent().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageable, productionOrders.getTotalElements());
+    }
+
+    @Override
+    public Page<TechnicalProductionOrderDTO> getApprovedProductionOrdersWithWorkOrder(Pageable pageable) {
+        Page<ProductionOrder> productionOrders = productionOrderRepository.findAllByStatusAndWorkOrderIsNotNull(BaseEnum.APPROVED, pageable);
+        List<TechnicalProductionOrderDTO> dtos = productionOrders.getContent().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageable, productionOrders.getTotalElements());
+    }
+
+    @Override
+    public TechnicalProductionOrderDTO getTechnicalProductionOrderById(Long id) {
+        ProductionOrder productionOrder = productionOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Production Order với ID: " + id));
+        return convertToDTO(productionOrder);
     }
 
 }

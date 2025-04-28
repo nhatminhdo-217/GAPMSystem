@@ -1042,5 +1042,18 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function () {
+        // Kiểm tra nếu có phần tử success-message
+        if ($('.success-message').length) {
+            // Ẩn sau 3 giây (3000ms)
+            setTimeout(function () {
+                $('.success-message').fadeOut('slow', function () {
+                    $(this).remove(); // Xóa hoàn toàn khỏi DOM sau khi ẩn
+                });
+            }, 3000);
+        }
+    });
+</script>
 </body>
 </html>

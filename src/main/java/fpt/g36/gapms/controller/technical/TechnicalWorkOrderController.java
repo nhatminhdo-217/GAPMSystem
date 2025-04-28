@@ -5,14 +5,12 @@ import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.models.dto.technical.CreateWorkOrderForm;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.WorkOrderDetailsRepository;
-import fpt.g36.gapms.repositories.WorkOrderRepository;
 import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.WorkOrderService;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,17 +40,14 @@ public class TechnicalWorkOrderController {
     private final ProductionOrderService productionOrderService;
     private final MachineService machineService;
     private final UserService userService;
-    private final WorkOrderRepository workOrderRepository;
     private final WorkOrderDetailsRepository workOrderDetailsRepository;
 
-    @Autowired
-    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService, WorkOrderRepository workOrderRepository, WorkOrderDetailsRepository workOrderDetailsRepository) {
+    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService, WorkOrderDetailsRepository workOrderDetailsRepository) {
         this.workOrderService = workOrderService;
         this.userUtils = userUtils;
         this.productionOrderService = productionOrderService;
         this.machineService = machineService;
         this.userService = userService;
-        this.workOrderRepository = workOrderRepository;
         this.workOrderDetailsRepository = workOrderDetailsRepository;
     }
 
@@ -91,19 +86,18 @@ public class TechnicalWorkOrderController {
                         model.addAttribute("selectedStatus", foundStatus);
                         // Trả về chỉ Work Order tìm thấy
                         workOrderPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
-                        // Lưu trạng thái trước đó (status hiện tại trước khi tìm kiếm)
+                        // Lưu trạng thái trước đó
                         model.addAttribute("previousStatus", status != null ? status : "DRAFT");
                     } catch (RuntimeException e) {
                         workOrderPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
                         model.addAttribute("error", "Không tìm thấy Work Order với ID: " + searchId + " cho user: " + currentUser.getUsername());
-                        // Nếu không tìm thấy, quay về tab trước đó (previousStatus)
+                        // Nếu không tìm thấy, quay về tab trước đó
                         String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
                         model.addAttribute("selectedStatus", fallbackStatus);
                         model.addAttribute("previousStatus", fallbackStatus);
                     }
                 } catch (NumberFormatException e) {
                     model.addAttribute("error", "Mã Work Order phải là số.");
-                    // Lấy tất cả WorkOrder của user đang đăng nhập
                     workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
                     String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
                     model.addAttribute("selectedStatus", fallbackStatus);
@@ -114,20 +108,20 @@ public class TechnicalWorkOrderController {
             else if (status != null && !status.trim().isEmpty()) {
                 try {
                     BaseEnum statusEnum = BaseEnum.valueOf(status.trim());
-                    // Lấy WorkOrder theo status và createdBy
+                    //
                     workOrderPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(statusEnum, pageable, currentUser);
                     model.addAttribute("selectedStatus", status);
-                    // Lưu trạng thái trước đó
+                    //
                     model.addAttribute("previousStatus", status);
                 } catch (IllegalArgumentException e) {
                     model.addAttribute("error", "Trạng thái không hợp lệ: " + status);
-                    // Lấy tất cả WorkOrder của user đang đăng nhập
+                    //
                     workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
                     model.addAttribute("selectedStatus", "DRAFT");
                     model.addAttribute("previousStatus", "DRAFT");
                 }
             }
-            // Trường hợp mặc định: hiển thị tất cả WorkOrder của user đang đăng nhập
+            //
             else {
                 workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
                 model.addAttribute("selectedStatus", "DRAFT");
@@ -184,13 +178,19 @@ public class TechnicalWorkOrderController {
                 LocalDateTime plannedStartAt = LocalDateTime.now().plusHours(2);
                 LocalDateTime plannedEndAt = productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate().minusDays(1).atTime(LocalTime.MAX);
 
-                List<DyeMachine> freeDyeMachines = machineService.findFreeDyeMachines(plannedStartAt, plannedEndAt);
-                List<WindingMachine> freeWindingMachines = machineService.findFreeWindingMachines(plannedStartAt, plannedEndAt);
-                List<DyeMachine> queuedDyeMachines = machineService.findQueuedDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-                List<WindingMachine> queuedWindingMachines = machineService.findQueuedWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
+                List<DyeMachine> freeDyeMachines = machineService.
+                        findFreeDyeMachines(plannedStartAt, plannedEndAt);
+                List<WindingMachine> freeWindingMachines = machineService.
+                        findFreeWindingMachines(plannedStartAt, plannedEndAt);
+                List<DyeMachine> queuedDyeMachines = machineService.
+                        findQueuedDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
+                List<WindingMachine> queuedWindingMachines = machineService.
+                        findQueuedWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
 
-                if (freeDyeMachines.isEmpty() && queuedDyeMachines.isEmpty() || freeWindingMachines.isEmpty() && queuedWindingMachines.isEmpty()) {
-                    model.addAttribute("queueMessage", "Không có máy nào khả dụng (rảnh hoặc trong hàng chờ).");
+                if (freeDyeMachines.isEmpty() && queuedDyeMachines.isEmpty()
+                        || freeWindingMachines.isEmpty() && queuedWindingMachines.isEmpty()) {
+                    model.addAttribute("queueMessage",
+                            "Không có máy nào khả dụng (rảnh hoặc trong hàng chờ).");
                 }
 
                 model.addAttribute("productionOrder", productionOrder);
@@ -225,7 +225,9 @@ public class TechnicalWorkOrderController {
         Map<String, Object> response = new HashMap<>();
         try {
             ProductionOrder productionOrder = productionOrderService.getProductionOrderById(productionOrderId);
-            if (productionOrder == null || productionOrder.getPurchaseOrder() == null || productionOrder.getPurchaseOrder().getSolution() == null || productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate() == null) {
+            if (productionOrder == null || productionOrder.getPurchaseOrder() == null
+                    || productionOrder.getPurchaseOrder().getSolution() == null
+                    || productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate() == null) {
                 response.put("success", false);
                 response.put("message", "Production Order hoặc ngày giao hàng không hợp lệ.");
                 response.put("deadlines", new HashMap<>());
@@ -241,10 +243,14 @@ public class TechnicalWorkOrderController {
             }
 
             LocalDateTime plannedStartAt = LocalDateTime.now().plusHours(2);
-            LocalDateTime plannedEndAt = productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate().minusDays(1).atTime(LocalTime.MAX);
+            LocalDateTime plannedEndAt = productionOrder.getPurchaseOrder().getSolution()
+                    .getActualDeliveryDate().minusDays(1).atTime(LocalTime.MAX);
 
-            List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-            DyeMachine dyeMachine = availableDyeMachines.stream().filter(m -> m.getId().equals(dyeMachineId)).findFirst().orElse(null);
+            List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachinesForProductionOrder
+                    (productionOrder, plannedStartAt, plannedEndAt);
+            DyeMachine dyeMachine = availableDyeMachines.stream().
+                    filter(m -> m.getId().equals(dyeMachineId))
+                    .findFirst().orElse(null);
             if (dyeMachine == null) {
                 response.put("success", false);
                 response.put("message", "Máy nhuộm không khả dụng.");
@@ -252,15 +258,20 @@ public class TechnicalWorkOrderController {
                 return ResponseEntity.ok(response);
             }
 
-            BigDecimal threadMass = detail.getThread_mass() != null && !detail.getThread_mass().equals(BigDecimal.ZERO) ? detail.getThread_mass() : detail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate().multiply(BigDecimal.valueOf(detail.getPurchaseOrderDetail().getQuantity()));
+            BigDecimal threadMass = detail.getThread_mass() != null
+                    && !detail.getThread_mass().equals(BigDecimal.ZERO)
+                    ? detail.getThread_mass() : detail.getPurchaseOrderDetail().getProduct().getThread()
+                    .getConvert_rate().multiply(BigDecimal.valueOf(detail.getPurchaseOrderDetail().getQuantity()));
 
             // Kiểm tra giới hạn của additionalWeight
             BigDecimal minAdditionalWeight = BigDecimal.valueOf(0.4);
-            BigDecimal maxAdditionalWeight = threadMass.divide(BigDecimal.valueOf(10), 2, BigDecimal.ROUND_DOWN); // 1/10 của threadMass
+            BigDecimal maxAdditionalWeight = threadMass.divide(BigDecimal.valueOf(10), 2, BigDecimal.ROUND_DOWN);
 
-            if (additionalWeight.compareTo(minAdditionalWeight) < 0 || additionalWeight.compareTo(maxAdditionalWeight) > 0) {
+            if (additionalWeight.compareTo(minAdditionalWeight) < 0
+                    || additionalWeight.compareTo(maxAdditionalWeight) > 0) {
                 response.put("success", false);
-                response.put("message", "Giá trị additionalWeight phải nằm trong khoảng [" + minAdditionalWeight + ", " + maxAdditionalWeight + "].");
+                response.put("message", "Giá trị additionalWeight phải nằm trong khoảng ["
+                        + minAdditionalWeight + ", " + maxAdditionalWeight + "].");
                 response.put("deadlines", new HashMap<>());
                 return ResponseEntity.ok(response);
             }
@@ -279,7 +290,13 @@ public class TechnicalWorkOrderController {
                 BigDecimal maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN);
                 int maxProductInt = maxProductPerBatch.intValue();
                 coneBatchWeight = convertRate.multiply(BigDecimal.valueOf(maxProductInt));
-                dyeBatches = coneWeight.divide(coneBatchWeight, 2, BigDecimal.ROUND_UP).intValue();
+                BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.FLOOR);
+                BigDecimal remainder = coneWeight.remainder(coneBatchWeight);
+                if (remainder.compareTo(BigDecimal.ZERO) == 0) {
+                    dyeBatches = division.intValue();
+                } else {
+                    dyeBatches = division.setScale(0, RoundingMode.UP).intValue();
+                }
             }
 
             BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -291,8 +308,10 @@ public class TechnicalWorkOrderController {
             BigDecimal coneMin = dyeMachine.getConeMin();
             BigDecimal coneMax = dyeMachine.getConeMax();
 
-            boolean isLittersBatchValid = littersBatch.compareTo(littersMin) >= 0 && littersBatch.compareTo(littersMax) <= 0;
-            boolean isConeBatchQuantityValid = coneBatchQuantity.compareTo(coneMin) >= 0 && coneBatchQuantity.compareTo(coneMax) <= 0;
+            boolean isLittersBatchValid = littersBatch.compareTo(littersMin) >= 0
+                    && littersBatch.compareTo(littersMax) <= 0;
+            boolean isConeBatchQuantityValid = coneBatchQuantity.compareTo(coneMin) >= 0
+                    && coneBatchQuantity.compareTo(coneMax) <= 0;
 
             Map<String, Object> dyeMachineInfo = new HashMap<>();
             dyeMachineInfo.put("maxWeight", dyeMachine.getMaxWeight());
@@ -312,10 +331,12 @@ public class TechnicalWorkOrderController {
             if (!isLittersBatchValid || !isConeBatchQuantityValid) {
                 StringBuilder errorMessage = new StringBuilder("Máy nhuộm không hợp lệ: ");
                 if (!isLittersBatchValid) {
-                    errorMessage.append("Litters Batch (").append(littersBatch).append(") không nằm trong khoảng [").append(littersMin).append(", ").append(littersMax).append("]. ");
+                    errorMessage.append("Litters Batch (").append(littersBatch).append(") " +
+                            "không nằm trong khoảng [").append(littersMin).append(", ").append(littersMax).append("]. ");
                 }
                 if (!isConeBatchQuantityValid) {
-                    errorMessage.append("Cone Batch Quantity (").append(coneBatchQuantity).append(") không nằm trong khoảng [").append(coneMin).append(", ").append(coneMax).append("].");
+                    errorMessage.append("Cone Batch Quantity (").append(coneBatchQuantity).append(") " +
+                            "không nằm trong khoảng [").append(coneMin).append(", ").append(coneMax).append("].");
                 }
                 response.put("success", false);
                 response.put("message", errorMessage.toString());
@@ -335,15 +356,21 @@ public class TechnicalWorkOrderController {
             if (windingMachineId == null) {
                 boolean dyeMeetsDeadline = !dyeDeadline.isAfter(plannedEndAt);
                 response.put("success", dyeMeetsDeadline);
-                response.put("message", dyeMeetsDeadline ? "Máy nhuộm khả dụng." : "Máy nhuộm không phù hợp do deadline vượt quá giới hạn.");
+                response.put("message", dyeMeetsDeadline ? "Máy nhuộm khả dụng."
+                        : "Máy nhuộm không phù hợp do deadline vượt quá giới hạn.");
                 response.put("dyeMachine", dyeMachineInfo);
                 response.put("dyeCalculations", dyeCalculations);
                 response.put("deadlines", deadlines);
                 return ResponseEntity.ok(response);
             }
 
-            List<WindingMachine> availableWindingMachines = machineService.findAvailableWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-            WindingMachine windingMachine = availableWindingMachines.stream().filter(m -> m.getId().equals(windingMachineId)).findFirst().orElse(null);
+            List<WindingMachine> availableWindingMachines =
+                    machineService.findAvailableWindingMachinesForProductionOrder
+                            (productionOrder, plannedStartAt, plannedEndAt);
+            WindingMachine windingMachine = availableWindingMachines.stream()
+                    .filter(m -> m.getId().equals(windingMachineId))
+                    .findFirst().orElse(null);
+
             if (windingMachine == null) {
                 response.put("success", false);
                 response.put("message", "Máy cuốn không khả dụng.");
@@ -364,16 +391,23 @@ public class TechnicalWorkOrderController {
             BigDecimal remainingConeWeight = coneWeight;
 
             for (int i = 0; i < packagingBatches; i++) {
-                BigDecimal currentConeBatchWeight = (i == packagingBatches - 1 && remainingConeWeight.compareTo(coneBatchWeight) < 0) ? remainingConeWeight : coneBatchWeight;
-                BigDecimal productsInBatch = currentConeBatchWeight.divide(convertRate);
-                totalPackagingDurationMinutes = totalPackagingDurationMinutes.add(productsInBatch.multiply(packagingTimePerProduct));
+                BigDecimal currentConeBatchWeight = (i == packagingBatches - 1
+                        && remainingConeWeight.compareTo(coneBatchWeight) < 0)
+                        ? remainingConeWeight : coneBatchWeight;
+                //
+                BigDecimal productsInBatch = currentConeBatchWeight.divide(convertRate, 0, RoundingMode.CEILING);
+                //
+                totalPackagingDurationMinutes = totalPackagingDurationMinutes.
+                        add(productsInBatch.multiply(packagingTimePerProduct));
                 remainingConeWeight = remainingConeWeight.subtract(currentConeBatchWeight);
             }
 
             LocalDateTime packagingStart = packagingBatches > 1 ? windingStart.plusMinutes(150) : windingDeadline;
             LocalDateTime packagingDeadline = packagingStart.plusMinutes(totalPackagingDurationMinutes.longValue());
 
-            boolean meetsDeadline = !dyeDeadline.isAfter(plannedEndAt) && !windingDeadline.isAfter(plannedEndAt) && !packagingDeadline.isAfter(plannedEndAt);
+            boolean meetsDeadline = !dyeDeadline.isAfter(plannedEndAt)
+                    && !windingDeadline.isAfter(plannedEndAt)
+                    && !packagingDeadline.isAfter(plannedEndAt);
             response.put("success", meetsDeadline);
             response.put("message", meetsDeadline ? "Máy khả dụng." : "Không phù hợp do deadline vượt quá giới hạn.");
 
@@ -407,7 +441,8 @@ public class TechnicalWorkOrderController {
             try {
                 String emailOrPhone = authentication.getName();
                 Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
-                User createBy = optionalUser.orElseThrow(() -> new IllegalStateException("Không tìm thấy thông tin người dùng hiện tại."));
+                User createBy = optionalUser.orElseThrow(()
+                        -> new IllegalStateException("Không tìm thấy thông tin người dùng hiện tại."));
 
                 ProductionOrder productionOrder = productionOrderService.getProductionOrderById(productionOrderId);
                 if (productionOrder == null) {
@@ -421,7 +456,8 @@ public class TechnicalWorkOrderController {
                         productionOrder.getPurchaseOrder().getSolution() == null ||
                         productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate() == null) {
                     System.err.println("Purchase Order Id " + productionOrder.getPurchaseOrder() +
-                            " Actual Delivery Date " + productionOrder.getPurchaseOrder().getSolution().getActualDeliveryDate());
+                            " Actual Delivery Date " + productionOrder.getPurchaseOrder().getSolution()
+                            .getActualDeliveryDate());
                     model.addAttribute("error", "Ngày giao hàng thực tế không hợp lệ.");
                     return "technical/create-work-order";
                 }
@@ -485,9 +521,13 @@ public class TechnicalWorkOrderController {
                     return "technical/create-work-order";
                 }
 
-                if (form.getSelectedDyeMachineIds().size() != productionOrder.getProductionOrderDetails().size() || form.getSelectedWindingMachineIds().size() != productionOrder.getProductionOrderDetails().size()) {
+                if (form.getSelectedDyeMachineIds().size()
+                        != productionOrder.getProductionOrderDetails().size()
+                        || form.getSelectedWindingMachineIds().size()
+                        != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Selected Dye machine ids " + form.getSelectedDyeMachineIds());
-                    model.addAttribute("error", "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
+                    model.addAttribute("error",
+                            "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
                     return "technical/create-work-order";
                 }
 
@@ -495,7 +535,8 @@ public class TechnicalWorkOrderController {
                 if (additionalWeights == null || additionalWeights.isEmpty() ||
                         additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Additional Weights: " + additionalWeights);
-                    model.addAttribute("error", "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
+                    model.addAttribute("error",
+                            "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
                     return "technical/create-work-order";
                 }
 
@@ -504,7 +545,9 @@ public class TechnicalWorkOrderController {
                     BigDecimal weight = additionalWeights.get(i);
                     if (weight == null || weight.compareTo(BigDecimal.valueOf(0.4)) < 0) {
                         System.err.println("Additional Weight at index " + i + ": " + weight);
-                        model.addAttribute("error", "Trọng lượng bổ sung tại Detail " + (i + 1) + " phải lớn hơn hoặc bằng 0.4 kg.");
+                        model.addAttribute("error",
+                                "Trọng lượng bổ sung tại Detail " + (i + 1)
+                                        + " phải lớn hơn hoặc bằng 0.4 kg.");
                         return "technical/create-work-order";
                     }
                     // Kiểm tra nếu trọng lượng bổ sung vượt quá 1/10 threadMass của detail tương ứng
@@ -548,7 +591,8 @@ public class TechnicalWorkOrderController {
             // Gọi service để gửi Work Order
             WorkOrder workOrder = workOrderService.submitWorkOrder(id);
             // Thêm thông báo thành công
-            redirectAttributes.addFlashAttribute("success", "Work Order đã được gửi thành công!");
+            redirectAttributes.addFlashAttribute("success",
+                    "Work Order đã được gửi thành công!");
         } catch (IllegalArgumentException e) {
             // Nếu Work Order không tồn tại
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -557,7 +601,8 @@ public class TechnicalWorkOrderController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
             // Xử lý các lỗi khác
-            redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi gửi Work Order: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error",
+                    "Đã xảy ra lỗi khi gửi Work Order: " + e.getMessage());
         }
 
         // Chuyển hướng về trang chi tiết Work Order
@@ -578,7 +623,8 @@ public class TechnicalWorkOrderController {
                 }
 
                 if (workOrder.getStatus() != BaseEnum.WAIT_FOR_UPDATE) {
-                    model.addAttribute("error", "Work order không ở trạng thái có thể cập nhật");
+                    model.addAttribute("error",
+                            "Work order không ở trạng thái có thể cập nhật");
                     return "redirect:/technical/work-order-details/" + workOrderId;
                 }
 
@@ -599,14 +645,19 @@ public class TechnicalWorkOrderController {
                 LocalDateTime plannedEndAt = productionOrder.getPurchaseOrder().getSolution()
                         .getActualDeliveryDate().minusDays(1).atTime(LocalTime.MAX);
 
-                List<DyeMachine> freeDyeMachines = machineService.findFreeDyeMachines(plannedStartAt, plannedEndAt);
-                List<WindingMachine> freeWindingMachines = machineService.findFreeWindingMachines(plannedStartAt, plannedEndAt);
-                List<DyeMachine> queuedDyeMachines = machineService.findQueuedDyeMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
-                List<WindingMachine> queuedWindingMachines = machineService.findQueuedWindingMachinesForProductionOrder(productionOrder, plannedStartAt, plannedEndAt);
+                List<DyeMachine> freeDyeMachines = machineService.findFreeDyeMachines
+                        (plannedStartAt, plannedEndAt);
+                List<WindingMachine> freeWindingMachines = machineService.findFreeWindingMachines
+                        (plannedStartAt, plannedEndAt);
+                List<DyeMachine> queuedDyeMachines = machineService.findQueuedDyeMachinesForProductionOrder
+                        (productionOrder, plannedStartAt, plannedEndAt);
+                List<WindingMachine> queuedWindingMachines = machineService.findQueuedWindingMachinesForProductionOrder
+                        (productionOrder, plannedStartAt, plannedEndAt);
 
                 if (freeDyeMachines.isEmpty() && queuedDyeMachines.isEmpty() ||
                         freeWindingMachines.isEmpty() && queuedWindingMachines.isEmpty()) {
-                    model.addAttribute("queueMessage", "Không có máy nào khả dụng (rảnh hoặc trong hàng chờ).");
+                    model.addAttribute("queueMessage",
+                            "Không có máy nào khả dụng (rảnh hoặc trong hàng chờ).");
                 }
 
                 model.addAttribute("workOrder", workOrder);
@@ -704,21 +755,24 @@ public class TechnicalWorkOrderController {
 
                 if (selectedDyeMachineIds.size() != productionOrder.getProductionOrderDetails().size() ||
                         selectedWindingMachineIds.size() != productionOrder.getProductionOrderDetails().size()) {
-                    model.addAttribute("error", "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
+                    model.addAttribute("error",
+                            "Số lượng máy được chọn không khớp với số lượng Production Order Details.");
                     return "technical/update-work-order";
                 }
 
                 if (additionalWeights == null || additionalWeights.isEmpty() ||
                         additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Additional Weights: " + additionalWeights);
-                    model.addAttribute("error", "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
+                    model.addAttribute("error",
+                            "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
                     return "technical/update-work-order";
                 }
 
                 if (additionalWeights == null || additionalWeights.isEmpty() ||
                         additionalWeights.size() != productionOrder.getProductionOrderDetails().size()) {
                     System.err.println("Additional Weights: " + additionalWeights);
-                    model.addAttribute("error", "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
+                    model.addAttribute("error",
+                            "Số lượng trọng lượng bổ sung không khớp với số lượng Production Order Details.");
                     return "technical/update-work-order";
                 }
 
@@ -726,14 +780,20 @@ public class TechnicalWorkOrderController {
                     BigDecimal weight = additionalWeights.get(i);
                     if (weight == null || weight.compareTo(BigDecimal.valueOf(0.4)) < 0) {
                         System.err.println("Additional Weight at index " + i + ": " + weight);
-                        model.addAttribute("error", "Trọng lượng bổ sung tại Detail " + (i + 1) + " phải lớn hơn hoặc bằng 0.4 kg.");
+                        model.addAttribute("error",
+                                "Trọng lượng bổ sung tại Detail " + (i + 1)
+                                        + " phải lớn hơn hoặc bằng 0.4 kg.");
                         return "technical/update-work-order";
                     }
                     ProductionOrderDetail detail = productionOrder.getProductionOrderDetails().get(i);
-                    BigDecimal maxAdditionalWeight = detail.getThread_mass().divide(BigDecimal.TEN, 2, RoundingMode.HALF_UP);
+                    BigDecimal maxAdditionalWeight = detail.getThread_mass().divide
+                            (BigDecimal.TEN, 2, RoundingMode.HALF_UP);
                     if (weight.compareTo(maxAdditionalWeight) > 0) {
-                        System.err.println("Additional Weight at index " + i + ": " + weight + " exceeds max " + maxAdditionalWeight);
-                        model.addAttribute("error", "Trọng lượng bổ sung tại Detail " + (i + 1) + " không được vượt quá " + maxAdditionalWeight + " kg (1/10 threadMass).");
+                        System.err.println("Additional Weight at index " + i + ": " + weight + " exceeds max "
+                                + maxAdditionalWeight);
+                        model.addAttribute("error",
+                                "Trọng lượng bổ sung tại Detail " + (i + 1) + " không được vượt quá "
+                                        + maxAdditionalWeight + " kg (1/10 threadMass).");
                         return "technical/update-work-order";
                     }
                 }
@@ -743,7 +803,8 @@ public class TechnicalWorkOrderController {
                         selectedDyeMachineIds,
                         selectedWindingMachineIds,
                         additionalWeights);
-                redirectAttributes.addFlashAttribute("success", "Cập nhật Work Order thành công!");
+                redirectAttributes.addFlashAttribute("success",
+                        "Cập nhật Work Order thành công!");
                 return "redirect:/technical/work-order-details/" + updatedWorkOrder.getId();
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
@@ -755,7 +816,8 @@ public class TechnicalWorkOrderController {
                 return "technical/update-work-order";
             } catch (Exception e) {
                 System.err.println(e.getMessage());
-                model.addAttribute("error", "Có lỗi khi cập nhật Work Order: " + e.getMessage());
+                model.addAttribute("error",
+                        "Có lỗi khi cập nhật Work Order: " + e.getMessage());
                 return "technical/update-work-order";
             }
         }
@@ -783,7 +845,8 @@ public class TechnicalWorkOrderController {
 
                 if (!canDelete) {
                     redirectAttributes.addFlashAttribute("error",
-                            "Chỉ có thể xóa Work Order Details khi ở trạng thái DRAFT và NOT_SENT, hoặc NOT_APPROVED và SENT.");
+                            "Chỉ có thể xóa Work Order Details khi ở trạng thái DRAFT và NOT_SENT, " +
+                                    "hoặc NOT_APPROVED và SENT.");
                     return "redirect:/technical/work-order-details/" + workOrderId;
                 }
 
@@ -793,10 +856,12 @@ public class TechnicalWorkOrderController {
                 long detailCount = workOrderDetailsRepository.countByWorkOrder_Id(workOrderId);
                 System.err.println("Số lượng WorkOrderDetail còn lại trong DB: " + detailCount);
                 if (detailCount == 0) {
-                    redirectAttributes.addFlashAttribute("success", "Xóa Work Order Details thành công!");
+                    redirectAttributes.addFlashAttribute("success",
+                            "Xóa Work Order Details thành công!");
                 } else {
                     System.err.println("sau khi xoá lỗi: " + detailCount);
-                    redirectAttributes.addFlashAttribute("error", "Xóa Work Order Details không hoàn tất. Vẫn còn " + detailCount + " dữ liệu tồn tại.");
+                    redirectAttributes.addFlashAttribute("error",
+                            "Xóa Work Order Details không hoàn tất. Vẫn còn " + detailCount + " dữ liệu tồn tại.");
                 }
                 return "redirect:/technical/work-order-details/" + workOrderId;
 
