@@ -137,7 +137,7 @@ public class CusRfqController {
             model.addAttribute("search", search);
             model.addAttribute("activeTab", activeTab);
 
-            return "/sale-staff/view-all-cus-rfq";
+            return "sale-staff/view-all-cus-rfq";
         }
         return "redirect:/login";
     }

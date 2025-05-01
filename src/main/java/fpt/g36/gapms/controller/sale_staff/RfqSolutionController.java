@@ -123,7 +123,7 @@ public class RfqSolutionController {
             model.addAttribute("search", search);
             model.addAttribute("activeTab", activeTab);
 
-            return "/sale-staff/view-all-rfq-solution";
+            return "sale-staff/view-all-rfq-solution";
         }
         return "redirect:/login";
     }

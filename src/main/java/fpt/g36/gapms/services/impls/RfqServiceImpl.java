@@ -82,63 +82,63 @@ public class RfqServiceImpl implements RfqService {
     @Override
     @Transactional
     public Rfq submitRfq(Long rfqId, Long userId, LocalDate deadlineSolution) {
-        System.err.println("=== Bắt đầu xử lý submitRfq trong service ===");
-        System.err.println("ID RFQ: " + rfqId + ", User ID: " + userId + ", Deadline Solution: " + deadlineSolution);
+        // System.err.println("=== Bắt đầu xử lý submitRfq trong service ===");
+        // System.err.println("ID RFQ: " + rfqId + ", User ID: " + userId + ", Deadline Solution: " + deadlineSolution);
 
         // Tìm RFQ
         Rfq rfq = rfqRepository.findById(rfqId)
                 .orElseThrow(() -> {
-                    System.err.println("Không tìm thấy RFQ với ID: " + rfqId);
+                    // System.err.println("Không tìm thấy RFQ với ID: " + rfqId);
                     return new RuntimeException("Rfq not found with id: " + rfqId);
                 });
-        System.err.println("RFQ tìm thấy: " + rfq.getId() + ", Trạng thái gửi: " + rfq.getIsApproved() + ", Ngày dự kiến giao hàng: " + rfq.getExpectDeliveryDate());
+        // System.err.println("RFQ tìm thấy: " + rfq.getId() + ", Trạng thái gửi: " + rfq.getIsApproved() + ", Ngày dự kiến giao hàng: " + rfq.getExpectDeliveryDate());
 
         // Tìm User
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    System.err.println("Không tìm thấy User với ID: " + userId);
+                    // System.err.println("Không tìm thấy User với ID: " + userId);
                     return new RuntimeException("User not found with id: " + userId);
                 });
-        System.err.println("User tìm thấy: " + user.getUsername() + " (ID: " + user.getId() + ")");
+        // System.err.println("User tìm thấy: " + user.getUsername() + " (ID: " + user.getId() + ")");
 
         // Kiểm tra nếu RFQ đã được gửi
         if (rfq.getIsApproved() == SendEnum.SENT) {
-            System.err.println("RFQ đã được gửi trước đó. Trạng thái: " + rfq.getIsApproved());
+            // System.err.println("RFQ đã được gửi trước đó. Trạng thái: " + rfq.getIsApproved());
             throw new RuntimeException("Rfq đã được gửi trước đó.");
         }
 
         // Kiểm tra deadlineSolution không được để trống
         if (deadlineSolution == null) {
-            System.err.println("Deadline solution không được để trống.");
+            // System.err.println("Deadline solution không được để trống.");
             throw new RuntimeException("Deadline solution không được để trống.");
         }
 
         LocalDate today = LocalDate.now();
-        System.err.println("Ngày hiện tại: " + today);
+        // System.err.println("Ngày hiện tại: " + today);
 
         // Kiểm tra: Deadline không được là ngày trong quá khứ
         if (deadlineSolution.isBefore(today)) {
-            System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " nhỏ hơn ngày hiện tại " + today);
+            // System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " nhỏ hơn ngày hiện tại " + today);
             throw new RuntimeException("Deadline solution không được là ngày trong quá khứ.");
         }
 
         // Kiểm tra: Deadline không được vượt quá expectDeliveryDate
         LocalDate expectDeliveryDate = rfq.getExpectDeliveryDate();
         if (deadlineSolution.isAfter(expectDeliveryDate)) {
-            System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " vượt quá ngày dự kiến giao hàng " + expectDeliveryDate);
+            // System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " vượt quá ngày dự kiến giao hàng " + expectDeliveryDate);
             throw new RuntimeException("Deadline solution không được vượt quá ngày dự kiến giao hàng (" + expectDeliveryDate + ").");
         }
 
         // Kiểm tra: Deadline phải nằm trong khoảng hợp lệ (tối đa 2 ngày sau ngày hiện tại)
         LocalDate maxDeadline = today.plusDays(2);
-        System.err.println("Kiểm tra deadlineSolution có nằm trong khoảng từ " + today + " đến " + maxDeadline);
+        // System.err.println("Kiểm tra deadlineSolution có nằm trong khoảng từ " + today + " đến " + maxDeadline);
         if (deadlineSolution.isAfter(maxDeadline)) {
-            System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " vượt quá " + maxDeadline);
+            // System.err.println("Deadline solution không hợp lệ: " + deadlineSolution + " vượt quá " + maxDeadline);
             throw new RuntimeException("Deadline solution không được vượt quá 2 ngày sau ngày hiện tại (" + maxDeadline + ").");
         }
 
         // Cập nhật RFQ
-        System.err.println("Cập nhật RFQ: Đặt trạng thái SENT, cập nhật ApprovedBy và DeadlineSolution");
+        // System.err.println("Cập nhật RFQ: Đặt trạng thái SENT, cập nhật ApprovedBy và DeadlineSolution");
         rfq.setIsApproved(SendEnum.SENT);
         rfq.setUpdateAt(LocalDateTime.now());
         rfq.setApprovedBy(user);
@@ -148,21 +148,21 @@ public class RfqServiceImpl implements RfqService {
         // Lưu RFQ
         Rfq submittedRfq = rfqRepository.save(rfq);
         rfqRepository.flush();
-        System.err.println("Lưu RFQ thành công: " + submittedRfq.getId() + ", Trạng thái gửi: " + submittedRfq.getIsApproved() + ", Deadline Solution: " + submittedRfq.getDeadlineSolution());
+        // System.err.println("Lưu RFQ thành công: " + submittedRfq.getId() + ", Trạng thái gửi: " + submittedRfq.getIsApproved() + ", Deadline Solution: " + submittedRfq.getDeadlineSolution());
 
         // Gửi thông báo
-        System.err.println("Gửi thông báo đến Technical cho RFQ ID: " + rfqId);
+        // System.err.println("Gửi thông báo đến Technical cho RFQ ID: " + rfqId);
         notificationUtils.sendRfqApproveToTechnical(rfqId);
 
         // Refresh RFQ Details
-        System.err.println("Refresh RFQ Details");
+        // System.err.println("Refresh RFQ Details");
         if (submittedRfq.getRfqDetails() != null) {
             for (Object detail : submittedRfq.getRfqDetails()) {
                 entityManager.refresh(detail);
             }
         }
 
-        System.err.println("=== Kết thúc xử lý submitRfq trong service ===");
+        // System.err.println("=== Kết thúc xử lý submitRfq trong service ===");
         return submittedRfq;
     }
 
