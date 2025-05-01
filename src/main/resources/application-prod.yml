@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:mysql://${AZURE_HOST}:${AZURE_PORT}/${AZURE_DB_NAME}?useSSL=true&requireSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    url: ${AZURE_URL}
     username: ${AZURE_NAME}
     password: ${AZURE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,7 +25,8 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile,email
-            redirect-uri: https://gapms-aha3aphhh0fna2dx.southeastasia-01.azurewebsites.net/login/oauth2/code/google
+            #            redirect-uri: https://gapms-aha3aphhh0fna2dx.southeastasia-01.azurewebsites.net/login/oauth2/code/google
+            redirect-uri: https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/login/oauth2/code/google
 #            redirect-uri: http://localhost:8080/login/oauth2/code/google
         provider:
           google:
@@ -53,7 +54,7 @@ logging:
   level:
     root: ERROR
     org.springframework: WARN
-    fpt.g36.gapms: INFO
+    fpt.g36.gapms: DEBUG
   file:
     name: /tmp/gapms.log
   pattern:
