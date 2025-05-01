@@ -50,9 +50,9 @@ public class SmsServiceImpl implements SmsService {
             }
 
             Message msg = Message.creator(
-                    new PhoneNumber(phoneNumber),
-                    new PhoneNumber(smsConfig.getFromNumber()),
-                    message
+                    new PhoneNumber(phoneNumber), //from
+                    new PhoneNumber(smsConfig.getFromNumber()), //to
+                    message //body
             ).create();
 
             logger.info("SMS sent to {}, SID: {}", phoneNumber, msg.getSid());
