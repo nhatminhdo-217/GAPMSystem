@@ -423,7 +423,7 @@
                             <div class="col-12"
                                  th:if="${allApprovedNoSolution == null or allApprovedNoSolution.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có RFQ nào chưa có giải pháp.</p>
+                                    <p>Không có yêu cầu báo giá nào chưa có giải pháp.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${allApprovedNoSolution}">
@@ -490,7 +490,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${withSolution == null or withSolution.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có RFQ nào đã có giải pháp.</p>
+                                    <p>Không có yêu cầu báo giá nào đã có giải pháp.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${withSolution}">
@@ -558,7 +558,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${searchResults == null or searchResults.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy RFQ nào.</p>
+                                    <p>Không tìm thấy yêu cầu báo giá nào.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${searchResults}">

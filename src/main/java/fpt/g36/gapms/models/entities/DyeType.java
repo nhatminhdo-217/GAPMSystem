@@ -15,7 +15,6 @@ public class DyeType extends BaseEntity {
     @NotNull
     private BigDecimal ratio;
 
-    @NotNull
     private BigDecimal lightPercent;
 
     @NotNull

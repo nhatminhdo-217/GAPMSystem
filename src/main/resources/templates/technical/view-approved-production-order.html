@@ -317,14 +317,15 @@
                                th:classappend="${activeTab == 'without-work-order-content' ? 'active' : ''}"
                                id="without-work-order-tab" data-bs-toggle="tab" href="#without-work-order-content"
                                role="tab" aria-controls="without-work-order-content"
-                               aria-selected="${activeTab == 'without-work-order-content'}">Chưa có Work Order</a>
+                               aria-selected="${activeTab == 'without-work-order-content'}">Chưa có kế hoạch sản
+                                xuất</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link"
                                th:classappend="${activeTab == 'with-work-order-content' ? 'active' : ''}"
                                id="with-work-order-tab" data-bs-toggle="tab" href="#with-work-order-content"
                                role="tab" aria-controls="with-work-order-content"
-                               aria-selected="${activeTab == 'with-work-order-content'}">Đã có Work Order</a>
+                               aria-selected="${activeTab == 'with-work-order-content'}">Đã có kế hoạch sản xuất</a>
                         </li>
                     </ul>
                 </div>
@@ -339,7 +340,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${productionOrdersWithoutWorkOrder.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy Production Order nào chưa có Work Order.</p>
+                                    <p>Không tìm thấy lệnh sản xuất nào chưa có kế hoạch.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="order, iterStat : ${productionOrdersWithoutWorkOrder}">
@@ -351,11 +352,11 @@
                                                   th:text="${iterStat.count + productionOrdersWithoutWorkOrderPage.number * productionOrdersWithoutWorkOrderPage.size}"></span>
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
                                                     <span th:text="${order.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Purchase Order</strong><br>
+                                                    <strong>Mã đơn hàng</strong><br>
                                                     <span th:text="${order.purchaseOrder != null ? order.purchaseOrder.id : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
@@ -363,8 +364,8 @@
                                                     <span th:text="${#temporals.format(order.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Nhân viên duyệt</strong><br>
-                                                    <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
+                                                    <strong>Nhân viên quản lý</strong><br>
+                                                    <span th:text="${order.createdBy != null ? order.createdBy.username : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
@@ -372,7 +373,7 @@
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Có Work Order</strong><br>
+                                                    <strong>Có kế hoạch</strong><br>
                                                     <span th:text="'Không'"></span>
                                                 </div>
                                             </div>
@@ -417,7 +418,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${productionOrdersWithWorkOrder.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy Production Order nào đã có Work Order.</p>
+                                    <p>Không tìm thấy lệnh sản xuất nào đã có kế hoạch.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="order, iterStat : ${productionOrdersWithWorkOrder}">
@@ -429,11 +430,11 @@
                                                   th:text="${iterStat.count + productionOrdersWithWorkOrderPage.number * productionOrdersWithWorkOrderPage.size}"></span>
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
                                                     <span th:text="${order.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Purchase Order</strong><br>
+                                                    <strong>Mã đơn hàng</strong><br>
                                                     <span th:text="${order.purchaseOrder != null ? order.purchaseOrder.id : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
@@ -441,8 +442,8 @@
                                                     <span th:text="${#temporals.format(order.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Nhân viên duyệt</strong><br>
-                                                    <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
+                                                    <strong>Nhân viên quản lý</strong><br>
+                                                    <span th:text="${order.createdBy != null ? order.createdBy.username : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
@@ -450,7 +451,7 @@
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Có Work Order</strong><br>
+                                                    <strong>Có kế hoạch</strong><br>
                                                     <span th:text="'Có'"></span>
                                                 </div>
                                             </div>

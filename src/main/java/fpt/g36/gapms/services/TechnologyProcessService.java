@@ -18,15 +18,21 @@ import java.util.List;
 
 @Service
 public interface TechnologyProcessService {
+
+    TechnologyProcess getTechnologyProcessById(Long technicalProcessId);
+
+    @Transactional
     List<TechnologyProcess> createTechnologyProcess(User currentUser,
                                                     Long workOrderId,
                                                     Long workOrderDetailId,
                                                     List<DyeTypeDTO> dyeTypesForFirstBatchesDTO,
                                                     List<DyeTypeDTO> dyeTypesForLastBatchDTO,
                                                     BigDecimal dispergatorNForFirstBatches,
-                                                    BigDecimal dispergatorNForLastBatch);
-
-    TechnologyProcess getTechnologyProcessById(Long technicalProcessId);
+                                                    BigDecimal dispergatorNForLastBatch,
+                                                    BigDecimal dfmForFirstBatches,
+                                                    BigDecimal dfmForLastBatch,
+                                                    BigDecimal anbatexForFirstBatches,
+                                                    BigDecimal anbatexForLastBatch);
 
     @Transactional
     List<TechnologyProcess> updateTechnologyProcess(Long workOrderId,
@@ -35,16 +41,17 @@ public interface TechnologyProcessService {
                                                     List<DyeTypeDTO> dyeTypesForLastBatchDTO,
                                                     BigDecimal dispergatorNForFirstBatches,
                                                     BigDecimal dispergatorNForLastBatch,
+                                                    BigDecimal dfmForFirstBatches,
+                                                    BigDecimal dfmForLastBatch,
+                                                    BigDecimal anbatexForFirstBatches,
+                                                    BigDecimal anbatexForLastBatch,
                                                     User currentUser);
 
     void submitTechnologyProcesses(Long workOrderId);
-  
+
     Page<TechnologyProcess> getAllTechnologyProcessesByCreatedBy(Pageable pageable, User createBy);
 
-  /*  Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy);*/
-
     TechnologyProcess getByDyeId(Long dyeId);
-
 
     Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy);
 

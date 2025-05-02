@@ -397,7 +397,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${draftOrders.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Work Order nào ở trạng thái Bản Nháp.</p>
+                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Bản Nháp.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="workOrder, iterStat : ${draftOrders}">
@@ -410,28 +410,28 @@
                                                       th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>Kế hoạch sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Production Order ID</strong><br>
+                                                        <strong>Lệnh sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.productionOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Deadline</strong><br>
+                                                        <strong>Hạn chót kế hoạch</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-draft'"
                                                               th:text="'Bản Nháp'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                                     </div>
@@ -450,7 +450,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${waitForUpdateOrders.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Work Order nào ở trạng thái Chờ Cập Nhật.</p>
+                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Cập Nhật.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="workOrder, iterStat : ${waitForUpdateOrders}">
@@ -463,28 +463,28 @@
                                                       th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>kế hoạch sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Production Order ID</strong><br>
+                                                        <strong>Lệnh sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.productionOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Deadline</strong><br>
+                                                        <strong>Hạn chót kế hoạch</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-wait-for-approval'"
                                                               th:text="'Chờ Cập Nhật'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                                     </div>
@@ -503,7 +503,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${notApprovedOrders.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Work Order nào ở trạng thái Từ Chối.</p>
+                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Từ Chối.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="workOrder, iterStat : ${notApprovedOrders}">
@@ -516,28 +516,28 @@
                                                       th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>Kế hoạch sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Production Order ID</strong><br>
+                                                        <strong>Lệnh sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.productionOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Deadline</strong><br>
+                                                        <strong>Hạn chót kế hoạch</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-not-approve'"
                                                               th:text="'Từ Chối'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                                     </div>
@@ -555,7 +555,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${approvedOrders.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Work Order nào ở trạng thái Đồng Ý.</p>
+                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Đồng Ý.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="workOrder, iterStat : ${approvedOrders}">
@@ -568,28 +568,28 @@
                                                       th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>Kế hoạch sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Production Order ID</strong><br>
+                                                        <strong>Lệnh sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.productionOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Deadline</strong><br>
+                                                        <strong>Hạn chót kế hoạch</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-approve'"
                                                               th:text="'Đồng Ý'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                                     </div>
@@ -608,7 +608,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${waitForApprovalOrders.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Work Order nào ở trạng thái Chờ Phê Duyệt.</p>
+                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Phê Duyệt.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="workOrder, iterStat : ${waitForApprovalOrders}">
@@ -621,28 +621,28 @@
                                                       th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>Kế hoạch sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Production Order ID</strong><br>
+                                                        <strong>Lệnh sản xuất ID</strong><br>
                                                         <span th:text="${workOrder.productionOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Deadline</strong><br>
+                                                        <strong>Hạn chót kế hoạch</strong><br>
                                                         <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-wait-for-approval'"
                                                               th:text="'Chờ Phê Duyệt'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
                                                     </div>
