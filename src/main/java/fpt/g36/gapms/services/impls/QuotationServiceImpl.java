@@ -315,7 +315,7 @@ return quotation;
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
+        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);

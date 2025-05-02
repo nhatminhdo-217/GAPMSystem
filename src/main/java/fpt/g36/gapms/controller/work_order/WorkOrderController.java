@@ -446,7 +446,7 @@ public class WorkOrderController {
     public String getAllWorkOrderForQA(Model model,
                                        @RequestParam(required = false) String workOrderId,
                                        @RequestParam(value = "page", defaultValue = "0") String pageStr,
-                                       @RequestParam(value = "size", defaultValue = "5") String sizeStr) {
+                                       @RequestParam(value = "size", defaultValue = "10") String sizeStr) {
         int page;
         try {
             page = Integer.parseInt(pageStr);
@@ -522,6 +522,10 @@ public class WorkOrderController {
             List<DyeBatch> dyeBatches = dyeBatchService.getAllDyeBatchForDyeLead(id);
             Long woId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getId();
             Long wodId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getId();
+            Long rfqId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getWorkOrder().getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId();
+            Long rfqDetailId = dyeBatches.get(0).getDyeStage().getWorkOrderDetail().getPurchaseOrderDetail().getRfqDetailId();
+            model.addAttribute("rfqId", rfqId);
+            model.addAttribute("rfqDetailId", rfqDetailId);
             model.addAttribute("dyeBatches", dyeBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);
@@ -532,6 +536,10 @@ public class WorkOrderController {
             List<WindingBatch> windingBatches = windingBatchService.getAllWindingBatchForWindingLead(id);
             Long woId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getId();
             Long wodId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getId();
+            Long rfqId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getWorkOrder().getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId();
+            Long rfqDetailId = windingBatches.get(0).getWindingStage().getWorkOrderDetail().getPurchaseOrderDetail().getRfqDetailId();
+            model.addAttribute("rfqId", rfqId);
+            model.addAttribute("rfqDetailId", rfqDetailId);
             model.addAttribute("windingBatches",windingBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);
@@ -542,6 +550,10 @@ public class WorkOrderController {
             List<PackagingBatch> packagingBatches = packagingBatchService.getAllPackagingBatchForPackagingLead(id);
             Long woId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getId();
             Long wodId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getId();
+            Long rfqId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getWorkOrder().getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId();
+            Long rfqDetailId = packagingBatches.get(0).getPackagingStage().getWorkOrderDetail().getPurchaseOrderDetail().getRfqDetailId();
+            model.addAttribute("rfqId", rfqId);
+            model.addAttribute("rfqDetailId", rfqDetailId);
             model.addAttribute("packagingBatches", packagingBatches);
             model.addAttribute("stageId", id);
             model.addAttribute("woId", woId);

@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -538,7 +538,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.id}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm</h2>
                         <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeRiskAssessment.dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="card-body">
@@ -566,7 +566,7 @@
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.plannedOutput}"></td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.coneBatchQuantity}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -855,7 +855,7 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm-WO-<span th:text="${dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${dyeBatch.dyeStage.workOrderDetail.id}"></span></h2>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Nhuộm</h2>
                             <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dyeBatch.dyeStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
@@ -882,8 +882,8 @@
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                         <td th:text="${dyeBatch.cone_batch_weight}"></td>
-                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
-                                        <td th:text="${dyeBatch.plannedOutput}"></td>
+                                        <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
+                                        <td th:text="${dyeBatch.coneBatchQuantity}"></td>
                                     </tr>
                                     </tbody>
                                 </table>

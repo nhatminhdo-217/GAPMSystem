@@ -38,7 +38,7 @@
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''CUSTOMER'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Khách Hàng</a>
+                    class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>
             <a href="#gioiThieu" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Giới thiệu</a>
 
             <a href="#sanphamnoibat" class="nav-item nav-link"><i
@@ -57,7 +57,7 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''PRODUCTION_MANAGER'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Giám Đốc Sản Xuất</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a href="/risk-solution/production-manager/view-list" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Giải Pháp Lỗi</a>
             <a href="/production-manager/view-all-submitted-work-order" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Danh sách kế hoạch</a>
@@ -69,7 +69,7 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Quản trị viên</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
 
             <a href="/admin/list_account" class="nav-item nav-link"><i class="fa-solid fa-user"></i> Quản lý tài
                 khoản</a>
@@ -78,7 +78,7 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''SALE_STAFF'')')}">
             <a href="/home_page" class="nav-item nav-link active">
-                <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                <i class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a href="/sale-staff/view-all-cus-rfq" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i> Yêu cầu báo giá</a>
             <a href="/sale-staff/view-all-rfq-solution" class="nav-item nav-link">
@@ -92,7 +92,7 @@
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''TECHNICAL'')')}">
             <a href="/home_page" class="nav-item nav-link active">
-                <i class="fa fa-tachometer-alt me-2"></i>Phòng Kỹ Thuật</a>
+                <i class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a href="/technical/view-all-rfq" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Yêu cầu báo giá</a>
             <a href="/technical/view-all-solution" class="nav-item nav-link">
@@ -109,7 +109,7 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''SALE_MANAGER'')')}">
             <a href="/home_page" class="nav-item nav-link active">
-                <i class="fa fa-tachometer-alt me-2"></i>Giám Đốc Kinh Doanh</a>
+                <i class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a href="/purchase-order/list" class="nav-item nav-link">
                 <i class="fa fa-th me-2"></i>Đơn hàng</a>
             <a href="/production-order/list" class="nav-item nav-link">
@@ -119,50 +119,50 @@
 
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_DYE'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Tổ Nhuộm</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_WINDING'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Tổ Đánh Côn</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''LEAD_PACKAGING'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Tổ Đóng Gói</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê/a>
             <a th:href="@{/work-order/team-leader/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''QA_DYE'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>KTCL Nhuộm</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a th:href="@{/work-order/quality_assurance/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh
                 Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''QA_WINDING'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>KTCL côn</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a th:href="@{/work-order/quality_assurance/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh
                 Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''QA_PACKAGING'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>KTCL Đóng Gói</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a th:href="@{/work-order/quality_assurance/list}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Lệnh
                 Làm
                 Việc</a>
         </div>
         <div class="navbar-nav w-100" th:if="${#authorization.expression('hasRole(''DYE_TECHNICAL'')')}">
             <a href="/home_page" class="nav-item nav-link active"><i
-                    class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>
+                    class="fa fa-tachometer-alt me-2"></i>Thống kê</a>
             <a href="/dye-technical/view-all-approved-work-order" class="nav-item nav-link "><i
                     class="fa fa-tachometer-alt me-2"></i>Kế hoach sản xuất</a>
             <a href="/dye-technical/view-all-technology-process" class="nav-item nav-link "><i
-                    class="fa fa-tachometer-alt me-2"></i>Hành trình công nghệ</a>
+                    class="fa fa-tachometer-alt me-2"></i>Đơn công nghệ</a>
         </div>
     </nav>
 </div>
