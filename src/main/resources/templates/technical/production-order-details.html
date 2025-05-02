@@ -304,22 +304,12 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <strong>Người tạo:</strong> <span
+                                        <strong>Nhân viên quản lý:</strong> <span
                                             th:text="${productionOrder.createdBy?.username ?: 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Người phê duyệt:</strong> <span
-                                            th:text="${productionOrder.approvedBy?.username ?: 'N/A'}"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Ngày tạo:</strong> <span
-                                            th:text="${productionOrder.createAt != null ? #temporals.format(productionOrder.createAt, 'yyyy-MM-dd') : 'N/A'}"></span>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
                                         <strong>Ngày cập nhật:</strong> <span
-                                            th:text="${productionOrder.updateAt != null ? #temporals.format(productionOrder.updateAt, 'yyyy-MM-dd') : 'N/A'}"></span>
+                                            th:text="${productionOrder.updateAt != null ? #temporals.format(productionOrder.updateAt, 'dd/MM/yyyy') : 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Trạng thái Kế hoạch sản xuất:</strong>

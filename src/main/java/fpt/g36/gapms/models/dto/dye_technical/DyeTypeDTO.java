@@ -6,7 +6,16 @@ public class DyeTypeDTO {
     private String name;
     private BigDecimal ratio;
     private BigDecimal lightPercent;
-    private BigDecimal weight;
+
+    //
+    public DyeTypeDTO() {};
+
+    //
+    public DyeTypeDTO(String name, BigDecimal ratio, BigDecimal lightPercent) {
+        this.name = name;
+        this.ratio = ratio;
+        this.lightPercent = lightPercent;
+    }
 
     // Getters and Setters
     public String getName() {
@@ -33,11 +42,4 @@ public class DyeTypeDTO {
         this.lightPercent = lightPercent;
     }
 
-    public BigDecimal getWeight() {
-        return weight;
-    }
-
-    public void setWeight(BigDecimal weight) {
-        this.weight = weight;
-    }
 }
