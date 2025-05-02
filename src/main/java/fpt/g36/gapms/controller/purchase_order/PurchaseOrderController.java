@@ -7,10 +7,7 @@ import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderInfoDTO;
 import fpt.g36.gapms.models.dto.purchase_order.PurchaseOrderItemsDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.PurchaseOrderRepository;
-import fpt.g36.gapms.services.ContractService;
-import fpt.g36.gapms.services.ProductionOrderService;
-import fpt.g36.gapms.services.PurchaseOrderService;
-import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.services.*;
 import fpt.g36.gapms.services.impls.UserServiceImpl;
 import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
@@ -47,8 +44,10 @@ public class PurchaseOrderController {
     private static String latestImagePath = null;
     private final ProductionOrderService productionOrderService;
     private final NotificationUtils notificationUtils;
+   private final QuotationService quotationService;
 
-    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService, NotificationUtils notificationUtils) {
+
+    public PurchaseOrderController(UserUtils userUtils, PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository, ContractService contractService, UserService userService, ProductionOrderService productionOrderService, NotificationUtils notificationUtils, QuotationService quotationService) {
         this.userUtils = userUtils;
         this.purchaseOrderService = purchaseOrderService;
         this.purchaseOrderRepository = purchaseOrderRepository;
@@ -56,6 +55,7 @@ public class PurchaseOrderController {
         this.userService = userService;
         this.productionOrderService = productionOrderService;
         this.notificationUtils = notificationUtils;
+        this.quotationService = quotationService;
     }
 
     @GetMapping("/list")
@@ -86,8 +86,8 @@ public class PurchaseOrderController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
         // Lấy danh sách tất cả các trạng thái của PurchaseOrder
-        List<BaseEnum> statuses = new ArrayList<>();
-        Collections.addAll(statuses, BaseEnum.values());
+        List<BaseEnum> statuses = quotationService.getAllQuotationStatuses();
+        /*Collections.addAll(statuses, BaseEnum.values());*/
 
         int totalPages = purchaseOrderPage.getTotalPages();
         if (totalPages > 0) {
@@ -134,6 +134,8 @@ public class PurchaseOrderController {
 
         BaseEnum status = purchaseOrderService.getStatusByPurchaseOrderId(id);
 
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(id).orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+
         if (status.equals(BaseEnum.NOT_APPROVED)) {
             boolean isPurchaseOrderContract = purchaseOrderService.checkContractWithStatus(status, id);
             if (!isPurchaseOrderContract) {
@@ -147,8 +149,9 @@ public class PurchaseOrderController {
         }else {
             if (status.equals(BaseEnum.WAIT_FOR_APPROVAL)) {
                 contractService.updateContractStatus(id, currUser);
-                productionOrderService.createProductionOrder(id, currUser);
-                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt, Lệnh sản xuất đã được tạo");
+               ProductionOrder productionOrder =  productionOrderService.createProductionOrder(id, currUser);
+                redirectAttributes.addFlashAttribute("success", "Đơn hàng đã được phê duyệt, lệnh sản xuất đã được tạo");
+                notificationUtils.sentProductionOrderFromSaleManagerToSaleStaff(purchaseOrder.getQuotation().getRfq().getId(), productionOrder.getId());
                 /*redirectAttributes.addFlashAttribute("successCreate", "Tạo lệnh sản xuất thành công");*/
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công");

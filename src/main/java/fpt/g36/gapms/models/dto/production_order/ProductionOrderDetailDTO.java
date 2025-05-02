@@ -19,6 +19,8 @@ public class ProductionOrderDetailDTO {
   private String threadName;
   private BigDecimal rate;
   private Long process;
+  private Long rfqId;
+  private Long rfqDetailId;
 
   public ProductionOrderDetailDTO() {
   }
@@ -159,5 +161,21 @@ public class ProductionOrderDetailDTO {
 
   public void setProcess(Long process) {
     this.process = process;
+  }
+
+  public Long getRfqId() {
+    return rfqId;
+  }
+
+  public void setRfqId(Long rfqId) {
+    this.rfqId = rfqId;
+  }
+
+  public Long getRfqDetailId() {
+    return rfqDetailId;
+  }
+
+  public void setRfqDetailId(Long rfqDetailId) {
+    this.rfqDetailId = rfqDetailId;
   }
 }

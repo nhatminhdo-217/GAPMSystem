@@ -5,6 +5,7 @@
     <title>Chi tiết RFQ</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -32,6 +33,12 @@
             padding: 20px;
         }
 
+        .btn-sent{
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
         .card {
             border: 1px solid #e9ecef;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -511,14 +518,20 @@
                                                 th:text="${company.taxNumber}"></span>
                                         </div>
                                     </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Mã số thuế:</strong> <span
+                                                th:text="${company.taxNumber}"></span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- RFQ Info -->
                                 <div class="rfq-info">
-                                    <h3 class="section-title">Thông tin RFQ</h3>
+                                    <h3 class="section-title">Thông tin lô hàng</h3>
                                     <div class="row mb-3">
                                         <div class="col-md-4">
-                                            <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                                            <strong>Mã lô:</strong> <span th:text="'RFQ-'+${rfq.id}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Số lượng sản phẩm:</strong> <span
@@ -553,7 +566,7 @@
                                     <thead>
                                     <tr class="text-dark">
                                         <th>Số thứ tự</th>
-                                        <th>Mã đơn hàng</th>
+                                        <th>Mã hàng</th>
                                         <th>Sản phẩm</th>
                                         <th>Màu</th>
                                         <th>Số lượng đặt</th>
@@ -574,7 +587,7 @@
                             <div class="btn-container"
                                  th:if="${rfq.isApproved != null and rfq.isApproved.name() == 'NOT_SENT'}">
                                 <button class="btn btn-custom" id="submitRfqBtn" data-bs-toggle="modal"
-                                        data-bs-target="#submitRfqModal">Gửi RFQ
+                                        data-bs-target="#submitRfqModal">Gửi
                                 </button>
                             </div>
                             <!-- Solution Info -->
@@ -591,7 +604,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Ngày có thể giao hàng dự kiến:</strong>
-                                            <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></span>
+                                            <span th:text="${#temporals.format(rfq.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></span>
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Trạng thái gửi:</strong>
@@ -603,7 +616,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <strong>Ngày tạo:</strong>
-                                            <span th:text="${#temporals.format(rfq.solution.createAt, 'yyyy-MM-dd')}"></span>
+                                            <span th:text="${#temporals.format(rfq.solution.createAt, 'dd/MM/yyyy')}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -622,16 +635,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="submitRfqModalLabel">Gửi RFQ</h5>
+                    <h5 class="modal-title" id="submitRfqModalLabel">Gửi yêu cầu báo giá</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="submitRfqForm" th:action="@{/sale-staff/submit-rfq/{id}(id=${rfq.id})}" method="post">
                         <input type="hidden" name="rfqId" th:value="${rfq.id}">
-                        <p>Nhập thời hạn giải pháp trước khi gửi RFQ:</p>
+                        <p>Nhập thời hạn giải pháp trước khi gửi:</p>
                         <p class="expect-delivery-info">
                             <strong>Ngày dự kiến giao hàng tối đa:</strong>
-                            <span th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd-MM-yyyy')}"></span>
+                            <span th:text="${#temporals.format(rfq.expectDeliveryDate, 'dd/MM/yyyy')}"></span>
                         </p>
                         <p class="expect-delivery-info">
                             <strong>Thời hạn giải pháp tối đa (2 ngày sau ngày hiện tại):</strong>
@@ -647,7 +660,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" id="submitRfqFormBtn" class="btn btn-primary" disabled>Gửi RFQ</button>
+                    <button type="submit" id="submitRfqFormBtn" class="btn btn-sent" disabled>Gửi</button>
                 </div>
             </div>
         </div>
@@ -702,9 +715,9 @@
         // Hàm định dạng ngày thành dd-MM-yyyy
         function formatDate(date) {
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // tháng bắt đầu từ 0
             const year = date.getFullYear();
-            return `${day}-${month}-${year}`;
+            return `${day}/${month}/${year}`;
         }
 
         // Open modal và hiển thị maxDeadline
@@ -758,7 +771,7 @@
             // Kiểm tra 3: Deadline không được vượt quá expectDeliveryDate
             const expectDeliveryDate = new Date(expectDeliveryDateStr);
             if (selectedDate > expectDeliveryDate) {
-                const formattedExpectDate = expectDeliveryDate.toISOString().split('T')[0];
+                const formattedExpectDate = expectDeliveryDate.toLocaleDateString('vi-VN');
                 errorMessage.text('Thời hạn giải pháp không được vượt quá ngày dự kiến giao hàng (' + formattedExpectDate + ').').show();
                 return;
             }
@@ -767,7 +780,7 @@
             const maxDeadline = new Date(today);
             maxDeadline.setDate(today.getDate() + 2);
             if (selectedDate > maxDeadline) {
-                const formattedMaxDeadline = maxDeadline.toISOString().split('T')[0];
+                const formattedMaxDeadline = maxDeadline.toLocaleDateString('vi-VN');
                 errorMessage.text('Thời hạn giải pháp không được vượt quá 2 ngày sau ngày hiện tại (' + formattedMaxDeadline + ').').show();
                 return;
             }

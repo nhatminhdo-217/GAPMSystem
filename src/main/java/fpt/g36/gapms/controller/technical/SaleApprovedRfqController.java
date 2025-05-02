@@ -4,6 +4,7 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class SaleApprovedRfqController {
     private QuotationService quotationService;
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     public SaleApprovedRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
         this.rfqService = rfqService;
@@ -234,7 +238,7 @@ public class SaleApprovedRfqController {
             Solution updatedSolution = solutionService.updateSolution(rfq.getSolution().getId(), solutionDTO);
             Rfq updatedRfq = rfqService.getRfqById(id);
             model.addAttribute("rfq", updatedRfq);
-            model.addAttribute("success", "Cập nhật Solution thành công!");
+            model.addAttribute("success", "Cập nhật giải pháp thành công!");
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
@@ -265,10 +269,10 @@ public class SaleApprovedRfqController {
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
-            /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), getuotationId);*/
+              notificationUtils.sentSolutionFromTechnicalToSaleStaff(updatedRfq.getId(), quotationId);
 
             model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
-            model.addAttribute("success", "Solution và Quotation đã được gửi thành công!");
+            model.addAttribute("success", "Giải pháp báo giá đã được gửi thành công!");
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         }

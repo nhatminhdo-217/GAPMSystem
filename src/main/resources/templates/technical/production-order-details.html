@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết Lệnh sản xuất</title>
+    <title>Chi tiết lệnh sản xuất</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -280,18 +280,18 @@
                 <div class="container-fluid">
                     <div class="card" th:if="${productionOrder}">
                         <div class="card-body">
-                            <h2 class="text-center mb-4">Chi tiết Lệnh sản xuất</h2>
+                            <h2 class="text-center mb-4">Chi tiết lệnh sản xuất</h2>
 
                             <!-- Thông báo lỗi nếu có -->
                             <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
 
                             <!-- Production Order Info -->
                             <div class="production-order-info">
-                                <h3 class="section-title">Thông tin Lệnh sản xuất</h3>
+                                <h3 class="section-title">Thông tin lệnh sản xuất</h3>
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <strong>Mã Lệnh sản xuất:</strong> <span
-                                            th:text="${productionOrder.id}"></span>
+                                        <strong>Mã lệnh sản xuất:</strong> <span
+                                            th:text="'PRO-'+${productionOrder.id}"></span>
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Mã Đơn đặt hàng:</strong> <span
@@ -323,11 +323,11 @@
 
                             <!-- Production Order Details -->
                             <div class="production-order-details">
-                                <h3 class="section-title">Danh sách chi tiết Lệnh sản xuất</h3>
+                                <h3 class="section-title">Danh sách chi tiết lệnh sản xuất</h3>
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr class="text-dark">
-                                        <th>ID</th>
+                                        <th>Mã quản lý</th>
                                         <th>Khối lượng sợi</th>
                                         <th>Môi trường ánh sáng</th>
                                         <th>Mô tả</th>
@@ -336,9 +336,9 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="detail : ${productionOrder.productionOrderDetails}">
-                                        <td th:text="${detail.id}"></td>
+                                        <td th:text="'RFQ-'+${detail.rfqId}+'/'+${detail.rfqDetailId}"></td>
                                         <td th:text="${detail.threadMass}"></td>
-                                        <td th:text="${detail.lightEnv} ? 'Ánh sáng tự nhiên (TN)' : 'Ánh sáng nhân tạo (AD)'"></td>
+                                        <td th:text="${detail.lightEnv} ? 'Tự nhiên (TN)' : 'Ánh đèn (AD)'"></td>
                                         <td th:text="${detail.description ?: 'N/A'}"></td>
                                         <td>
                                             <span th:if="${detail.hasWorkOrderDetail}" th:text="'Có'"></span>

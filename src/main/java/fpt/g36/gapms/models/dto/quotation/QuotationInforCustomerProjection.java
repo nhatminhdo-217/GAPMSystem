@@ -12,6 +12,7 @@ public interface QuotationInforCustomerProjection {
     String getUserName();
     String getCompanyName();
     String getTaxNumber();
+    Long getRfqDetailId();
     String getProductName();
     Date getExpectedDate();
     Date getActualDate();

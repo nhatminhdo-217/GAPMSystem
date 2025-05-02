@@ -7,6 +7,8 @@ import fpt.g36.gapms.models.entities.ProductionOrder;
 import fpt.g36.gapms.models.entities.PurchaseOrder;
 import fpt.g36.gapms.models.entities.User;
 import fpt.g36.gapms.services.ProductionOrderService;
+import fpt.g36.gapms.services.QuotationService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -24,10 +26,14 @@ public class ProductionOrderController {
 
     private final ProductionOrderService productionOrderService;
     private final UserUtils userUtils;
+    private final QuotationService quotationService;
+    private final NotificationUtils notificationUtils;
 
-    public ProductionOrderController(ProductionOrderService productionOrderService, UserUtils userUtils) {
+    public ProductionOrderController(ProductionOrderService productionOrderService, UserUtils userUtils, QuotationService quotationService, NotificationUtils notificationUtils) {
         this.productionOrderService = productionOrderService;
         this.userUtils = userUtils;
+        this.quotationService = quotationService;
+        this.notificationUtils = notificationUtils;
     }
 
     @GetMapping("/list")
@@ -55,8 +61,8 @@ public class ProductionOrderController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
-        List<BaseEnum> statuses = new ArrayList<>();
-        Collections.addAll(statuses, BaseEnum.values());
+        List<BaseEnum> statuses = quotationService.getAllProductionStatuses();
+       /* Collections.addAll(statuses, BaseEnum.values());*/
         model.addAttribute("statuses", statuses);
 
         int totalPages = pageData.getTotalPages();
@@ -82,7 +88,6 @@ public class ProductionOrderController {
         model.addAttribute("productionOrderDetailList", productionOrderDetailList);
         model.addAttribute("productionOrderDetail", new ProductionOrderDetailDTO());
 
-
         return "production_order/detail_production_order";
     }
 
@@ -97,6 +102,7 @@ public class ProductionOrderController {
 
         if (status.equals(BaseEnum.NOT_APPROVED)) {
             ProductionOrder po = productionOrderService.updateStatus(id, currUser);
+            notificationUtils.sentProductionOrderFromSaleStaffToTechnical(po.getId());
             redirectAttributes.addFlashAttribute("success", "Gửi lệnh sản xuất thành công");
             return "redirect:/production-order/detail/" + po.getId();
         }else {
@@ -127,10 +133,11 @@ public class ProductionOrderController {
     @PostMapping("/detail/update/{id}")
     public String updateProductionOrderDetail(@PathVariable("id") Long id,
                                               @ModelAttribute("productionOrderDetail") ProductionOrderDetailDTO productionOrderDetailDTO,
-                                              Model model) {
+                                              Model model,
+                                              RedirectAttributes redirectAttributes) {
 
         ProductionOrderDetailDTO dto = productionOrderService.updateProductionOrderDetail(productionOrderDetailDTO);
-
+        redirectAttributes.addFlashAttribute("update", "Lưu thông tin thành công");
         return "redirect:/production-order/detail/" + dto.getProductionOrderId();
     }
 

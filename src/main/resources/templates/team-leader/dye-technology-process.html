@@ -508,7 +508,7 @@
                                         <tbody>
                                         <tr>
                                             <td>Mã Quản Lý</td>
-                                            <td >WO-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.id}"></span></td>
+                                            <td th:text="'RFQ-'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                             <td>Khối Lượng</td>
                                             <td th:text="${technologyProcess.dyeBatch.cone_batch_weight}">9.5</td>
                                         </tr>

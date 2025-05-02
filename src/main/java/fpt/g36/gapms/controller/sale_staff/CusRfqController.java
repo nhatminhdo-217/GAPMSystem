@@ -198,7 +198,7 @@ public class CusRfqController {
             Company currentCompany = companyService.getCompanyByUserId(submittedRfq.getCreateBy().getId());
             System.err.println("Công ty sau khi gửi RFQ: " + (currentCompany != null ? currentCompany.getName() : "Không tìm thấy công ty"));
 
-            redirectAttributes.addFlashAttribute("success", "Gửi RFQ thành công!");
+            redirectAttributes.addFlashAttribute("success", "Gửi yêu cầu báo giá thành công!");
             System.err.println("Flash attribute 'success' được đặt: " + redirectAttributes.getFlashAttributes().get("success"));
             redirectAttributes.addFlashAttribute("rfq", submittedRfq);
             redirectAttributes.addFlashAttribute("company", currentCompany);

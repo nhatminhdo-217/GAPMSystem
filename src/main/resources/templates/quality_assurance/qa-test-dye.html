@@ -547,8 +547,7 @@
                             <table class="table table-striped mb-0">
                                 <thead>
                                 <tr>
-                                    <th>Phụ trách bắt đầu</th>
-                                    <th>Phụ trách kết thúc</th>
+                                    <th>Mã quản lý</th>
                                     <th>Thời gian hoàn thiện</th>
                                     <th>Mã mẻ</th>
                                     <th>Tên màu</th>
@@ -560,14 +559,13 @@
                                 </thead>
                                 <tbody id="workOrderChildTableBody">
                                 <tr>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                    <td th:text="'RFQ-'+${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                     <td th:text="${#temporals.format(dyeRiskAssessment.dyeBatch.deadline, 'dd/MM/yyyy')}"></td>
                                     <td>Mẻ-<span th:text="${dyeRiskAssessment.dyeBatch.batchNumber}"></span></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.cone_batch_weight}"></td>
-                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
+                                    <td th:text="${dyeRiskAssessment.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
                                     <td th:text="${dyeRiskAssessment.dyeBatch.plannedOutput}"></td>
                                 </tr>
                                 </tbody>
@@ -853,8 +851,7 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Phụ trách bắt đầu</th>
-                                        <th>Phụ trách kết thúc</th>
+                                        <th>Mã quản lý</th>
                                         <th>Thời gian hoàn thiện</th>
                                         <th>Mã mẻ</th>
                                         <th>Tên màu</th>
@@ -866,8 +863,7 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td th:text="${dyeBatch?.leaderStart?.username ?: 'n/a'}"></td>
-                                        <td th:text="${dyeBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td th:text="'RFQ-'+${dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                         <td th:text="${#temporals.format(dyeBatch.deadline, 'dd/MM/yyyy')}"></td>
                                         <td>Mẻ-<span th:text="${dyeBatch.batchNumber}"></span></td>
                                         <td th:text="${dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>

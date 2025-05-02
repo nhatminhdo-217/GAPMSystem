@@ -220,7 +220,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-fill-drip me-2"></i> Mẻ Nhuộm-WO-<span th:text="${woId}"></span>/WD-<span th:text="${wodId}"></span></h2>
+                        <h2><i class="fas fa-fill-drip me-2"></i> Mã quản lý  <span th:text="'RFQ-'+${rfqId}+'/'+${rfqDetailId}"></span></h2>
                         <a th:href="@{/work-order/team-leader/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">
@@ -284,7 +284,7 @@
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
                                 <td th:text="${dy.cone_batch_weight}">31.2</td>
-                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}"></td>
+                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
                                 <td th:text="${dy.liters_min}">160</td>
                                 <td th:text="${dy.liters}">187</td>
                                 <td th:text="${dy.plannedOutput}"></td>

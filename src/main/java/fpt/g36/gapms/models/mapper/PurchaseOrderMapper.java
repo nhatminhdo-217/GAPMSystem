@@ -32,6 +32,8 @@ public class PurchaseOrderMapper {
         dto.setApprovedByUserName(purchaseOrder.getApprovedBy() != null ? purchaseOrder.getApprovedBy().getUsername() : null);
         dto.setCreateByUserName(purchaseOrder.getManageBy() != null ? purchaseOrder.getManageBy().getUsername() : null);
         dto.setCreateAt(purchaseOrder.getUpdateAt().toLocalDate());
+        dto.setSaleStaffName(purchaseOrder.getQuotation().getRfq().getApprovedBy().getUsername());
+        dto.setRfqId(purchaseOrder.getQuotation().getRfq().getId());
 
         return dto;
     }

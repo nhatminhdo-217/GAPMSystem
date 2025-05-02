@@ -388,14 +388,14 @@
                                 <div class="production-info">
                                     <table class="production-info-table">
                                         <tr>
-                                            <th>Lệnh sản xuất</th>
+                                            <th>Mã lênh sản xuất</th>
                                             <th>Ngày tạo đơn</th>
                                             <th>Ngày giao hàng dự kiến</th>
                                             <th>Thời gian bắt đầu dự kiến</th>
                                             <th>Thời gian kết thúc dự kiến</th>
                                         </tr>
                                         <tr>
-                                            <td th:text="${productionOrderId}"></td>
+                                            <td th:text="'PRO-'+${productionOrderId}"></td>
                                             <td th:text="${#temporals.format(productionOrder.createAt, 'dd/MM/yyyy')}"></td>
                                             <td th:text="${#temporals.format(productionOrder.purchaseOrder.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></td>
                                             <td th:text="${#temporals.format(plannedStartAt, 'dd/MM/yyyy')}"></td>
@@ -426,13 +426,15 @@
                                                     <tr>
                                                         <th>Mã quản lý</th>
                                                         <th>Sản phẩm</th>
+                                                        <th>Loại sợi</th>
                                                         <th>Màu</th>
                                                         <th>Số lượng</th>
                                                         <th>Thread Mass (kg)</th>
                                                     </tr>
                                                     <tr>
-                                                        <td th:text="${detail.id}"></td>
+                                                        <td th:text="'RFQ-'+${detail.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${detail.purchaseOrderDetail.rfqDetailId}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
+                                                        <td th:text="${detail.purchaseOrderDetail.product.thread.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.quantity}"></td>
                                                         <td th:text="${detail.thread_mass}"></td>
@@ -555,15 +557,14 @@
             </div>
         </div>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
 </div>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script>
