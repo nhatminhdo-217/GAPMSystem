@@ -462,7 +462,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         // Lấy khối lượng dự kiến được tính trước ở Production Order
         BigDecimal threadMass = workOrderDetail.getProductionOrderDetail().getThread_mass();
 
-        //Nếu không tồn tại hoặc bị lỗi thì tự tính lại
+        // Nếu không tồn tại hoặc bị lỗi thì tự tính lại
         if (threadMass == null || threadMass.equals(BigDecimal.ZERO)) {
             threadMass = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate()
                     .multiply(BigDecimal.valueOf(workOrderDetail.getPurchaseOrderDetail().getQuantity()));
@@ -481,28 +481,43 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         }
 
         // Tính coneWeight với additionalWeight do người dùng nhập
-        BigDecimal coneWeight = threadMass.add(additionalWeight);
+        BigDecimal coneWeight = threadMass.add(additionalWeight).stripTrailingZeros();
         BigDecimal maxWeight = dyeMachine.getMaxWeight();
         BigDecimal convertRate = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
 
         BigDecimal coneBatchWeight;
+        BigDecimal maxProductPerBatch;
         int dyeBatches;
 
-        // Chia ra từng trường hợp để xử lý cho tính toán số mẻ
+        //
         if (maxWeight.compareTo(coneWeight) >= 0) {
             dyeBatches = 1;
             coneBatchWeight = coneWeight;
+            maxProductPerBatch = coneWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN)
+                    .setScale(0, RoundingMode.DOWN);
         } else {
-            BigDecimal maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN);
-            int maxProductInt = maxProductPerBatch.intValue();
-            coneBatchWeight = convertRate.multiply(BigDecimal.valueOf(maxProductInt));
-            BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.FLOOR);
-            BigDecimal remainder = coneWeight.remainder(coneBatchWeight);
-            if (remainder.compareTo(BigDecimal.ZERO) == 0) {
+            //
+            maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN)
+                    .setScale(0, RoundingMode.DOWN);
+            coneBatchWeight = maxProductPerBatch.multiply(convertRate).stripTrailingZeros();
+
+            //
+            BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.HALF_UP);
+            BigDecimal fractionalPart = division.remainder(BigDecimal.ONE);
+            BigDecimal threshold = new BigDecimal("0.0000001");
+
+            if (fractionalPart.abs().compareTo(threshold) <= 0) {
                 dyeBatches = division.intValue();
             } else {
-                dyeBatches = division.setScale(0, RoundingMode.UP).intValue();
+                dyeBatches = division.setScale(0, RoundingMode.CEILING).intValue();
             }
+
+            System.err.println("maxProductPerBatch: " + maxProductPerBatch);
+            System.err.println("coneWeight: " + coneWeight);
+            System.err.println("coneBatchWeight: " + coneBatchWeight);
+            System.err.println("division: " + division);
+            System.err.println("fractionalPart: " + fractionalPart);
+            System.err.println("dyeBatches: " + dyeBatches);
         }
 
         BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -515,8 +530,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 + " - coneWeight: " + coneWeight
                 + ", coneBatchWeight: " + coneBatchWeight
                 + ", dyeBatches: " + dyeBatches);
+
         return new BigDecimal[]{coneWeight, coneBatchWeight, BigDecimal.valueOf(dyeBatches),
-                littersBatch, coneBatchQuantity, coneQuantity, litters};
+                littersBatch, coneBatchQuantity, coneQuantity, litters, maxProductPerBatch};
     }
 
     /**
@@ -622,6 +638,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             BigDecimal currentConeBatchWeight = (i == dyeBatches - 1
                     && remainingConeWeight.compareTo(coneBatchWeight) < 0)
                     ? remainingConeWeight : coneBatchWeight;
+            //
+            BigDecimal currentConeQuantity = currentConeBatchWeight.divide(BigDecimal.valueOf(1.25), 2, BigDecimal.ROUND_HALF_UP);
+            dyeBatch.setConeBatchQuantity(currentConeQuantity);
             //
             dyeBatch.setPlannedOutput(currentConeBatchWeight.divide
                     (dyeStage.getWorkOrderDetail().getPurchaseOrderDetail().getProduct().getThread()

@@ -33,7 +33,6 @@ public class TechnologyProcess extends BaseEntity {
     private BigDecimal reducingAgent;
 
     // chất khuếch tán trong nhuộm
-    @NotNull
     private BigDecimal dfm;
 
     // axit giặt
@@ -41,7 +40,6 @@ public class TechnologyProcess extends BaseEntity {
     private BigDecimal axit;
 
     // chất đệm axit
-    @NotNull
     private BigDecimal anbatex;
 
     // dung tỷ

@@ -6,7 +6,6 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.enums.SendEnum;
 import fpt.g36.gapms.enums.WorkEnum;
 import fpt.g36.gapms.models.dto.dye_technical.DyeTypeDTO;
-import fpt.g36.gapms.models.dto.dye_technical.TechnologyProcessForm;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.DyeTypeRepository;
 
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
-
 
 @Service
 public class TechnologyProcessServiceImpl implements TechnologyProcessService {
@@ -44,9 +42,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         BigDecimal chelator;
         BigDecimal detergent;
         BigDecimal reducingAgent;
-        BigDecimal dfm;
         BigDecimal axit;
-        BigDecimal anbatex;
         BigDecimal liquorRatio;
 
         ProcessParameters(BigDecimal coneBatchWeight) {
@@ -54,9 +50,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             this.chelator = coneBatchWeight.divide(BigDecimal.valueOf(2.5), 2, BigDecimal.ROUND_HALF_UP);
             this.detergent = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
             this.reducingAgent = coneBatchWeight.divide(BigDecimal.valueOf(0.8), 2, BigDecimal.ROUND_HALF_UP);
-            this.dfm = coneBatchWeight.multiply(BigDecimal.valueOf(0.012));
             this.axit = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
-            this.anbatex = coneBatchWeight.divide(BigDecimal.valueOf(1.5), 2, BigDecimal.ROUND_HALF_UP);
             this.liquorRatio = BigDecimal.valueOf(6);
         }
     }
@@ -74,12 +68,21 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
     private List<DyeType> convertToDyeTypeEntities(List<DyeTypeDTO> dyeTypeDTOs, TechnologyProcess technologyProcess) {
         List<DyeType> dyeTypes = new ArrayList<>();
+        BigDecimal coneBatchWeight = technologyProcess.getDyeBatch().getCone_batch_weight();
+        if (coneBatchWeight == null) {
+            throw new IllegalStateException("cone_batch_weight của DyeBatch không được null.");
+        }
         for (DyeTypeDTO dto : dyeTypeDTOs) {
             DyeType dyeType = new DyeType();
             dyeType.setName(dto.getName());
             dyeType.setRatio(dto.getRatio());
             dyeType.setLightPercent(dto.getLightPercent());
-            dyeType.setWeight(dto.getWeight());
+            // Tính weight = ratio * 100% * cone_batch_weight, làm tròn đến 3 chữ số thập phân
+            BigDecimal weight = dto.getRatio()
+                    .multiply(BigDecimal.valueOf(100))
+                    .multiply(coneBatchWeight)
+                    .divide(BigDecimal.valueOf(100), 3, BigDecimal.ROUND_HALF_UP);
+            dyeType.setWeight(weight);
             dyeType.setTechnologyProcess(technologyProcess);
             dyeTypes.add(dyeType);
         }
@@ -110,13 +113,18 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
     }
 
     @Transactional
+    @Override
     public List<TechnologyProcess> createTechnologyProcess(User currentUser,
                                                            Long workOrderId,
                                                            Long workOrderDetailId,
                                                            List<DyeTypeDTO> dyeTypesForFirstBatchesDTO,
                                                            List<DyeTypeDTO> dyeTypesForLastBatchDTO,
                                                            BigDecimal dispergatorNForFirstBatches,
-                                                           BigDecimal dispergatorNForLastBatch) {
+                                                           BigDecimal dispergatorNForLastBatch,
+                                                           BigDecimal dfmForFirstBatches,
+                                                           BigDecimal dfmForLastBatch,
+                                                           BigDecimal anbatexForFirstBatches,
+                                                           BigDecimal anbatexForLastBatch) {
         try {
             System.err.println("Bắt đầu tạo TechnologyProcess cho WorkMISOrder ID: " + workOrderId + ", WorkOrderDetail ID: " + workOrderDetailId);
             WorkOrder workOrder = workOrderRepository.findById(workOrderId)
@@ -159,8 +167,8 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst);
                 System.err.println("Thông số TechnologyProcess cho các mẻ đầu: avcoLveDlxPlus=" + paramsFirst.avcoLveDlxPlus + ", chelator=" + paramsFirst.chelator + ", detergent=" + paramsFirst.detergent +
-                        ", reducingAgent=" + paramsFirst.reducingAgent + ", dfm=" + paramsFirst.dfm + ", axit=" + paramsFirst.axit + ", anbatex=" + paramsFirst.anbatex + ", liquorRatio=" + paramsFirst.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForFirstBatches);
+                        ", reducingAgent=" + paramsFirst.reducingAgent + ", axit=" + paramsFirst.axit + ", liquorRatio=" + paramsFirst.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
 
                 for (int i = 0; i < totalBatches - 1; i++) {
                     DyeBatch batch = dyeBatches.get(i);
@@ -172,9 +180,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                     processForBatch.setChelator(paramsFirst.chelator);
                     processForBatch.setDetergent(paramsFirst.detergent);
                     processForBatch.setReducingAgent(paramsFirst.reducingAgent);
-                    processForBatch.setDfm(paramsFirst.dfm);
+                    processForBatch.setDfm(dfmForFirstBatches);
                     processForBatch.setAxit(paramsFirst.axit);
-                    processForBatch.setAnbatex(paramsFirst.anbatex);
+                    processForBatch.setAnbatex(anbatexForFirstBatches);
                     processForBatch.setLiquorRatio(paramsFirst.liquorRatio);
                     processForBatch.setDispergatorN(dispergatorNForFirstBatches);
                     processForBatch.setDyeBatch(batch);
@@ -202,8 +210,8 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 System.err.println("cone_batch_weight của mẻ cuối: " + coneBatchWeightLast);
                 ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast);
                 System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus=" + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
-                        ", reducingAgent=" + paramsLast.reducingAgent + ", dfm=" + paramsLast.dfm + ", axit=" + paramsLast.axit + ", anbatex=" + paramsLast.anbatex + ", liquorRatio=" + paramsLast.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForLastBatch);
+                        ", reducingAgent=" + paramsLast.reducingAgent + ", axit=" + paramsLast.axit + ", liquorRatio=" + paramsLast.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForLastBatch + ", dfm=" + dfmForLastBatch + ", anbatex=" + anbatexForLastBatch);
 
                 TechnologyProcess lastProcess = new TechnologyProcess();
                 lastProcess.setCreatedBy(currentUser);
@@ -213,9 +221,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 lastProcess.setChelator(paramsLast.chelator);
                 lastProcess.setDetergent(paramsLast.detergent);
                 lastProcess.setReducingAgent(paramsLast.reducingAgent);
-                lastProcess.setDfm(paramsLast.dfm);
+                lastProcess.setDfm(dfmForLastBatch);
                 lastProcess.setAxit(paramsLast.axit);
-                lastProcess.setAnbatex(paramsLast.anbatex);
+                lastProcess.setAnbatex(anbatexForLastBatch);
                 lastProcess.setLiquorRatio(paramsLast.liquorRatio);
                 lastProcess.setDispergatorN(dispergatorNForLastBatch);
                 lastProcess.setDyeBatch(lastBatch);
@@ -244,8 +252,8 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 ProcessParameters params = new ProcessParameters(coneBatchWeight);
                 System.err.println("Thông số TechnologyProcess cho mẻ duy nhất: avcoLveDlxPlus=" + params.avcoLveDlxPlus + ", chelator=" + params.chelator + ", detergent=" + params.detergent +
-                        ", reducingAgent=" + params.reducingAgent + ", dfm=" + params.dfm + ", axit=" + params.axit + ", anbatex=" + params.anbatex + ", liquorRatio=" + params.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForFirstBatches);
+                        ", reducingAgent=" + params.reducingAgent + ", axit=" + params.axit + ", liquorRatio=" + params.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
 
                 TechnologyProcess process = new TechnologyProcess();
                 process.setCreatedBy(currentUser);
@@ -255,9 +263,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 process.setChelator(params.chelator);
                 process.setDetergent(params.detergent);
                 process.setReducingAgent(params.reducingAgent);
-                process.setDfm(params.dfm);
+                process.setDfm(dfmForFirstBatches);
                 process.setAxit(params.axit);
-                process.setAnbatex(params.anbatex);
+                process.setAnbatex(anbatexForFirstBatches);
                 process.setLiquorRatio(params.liquorRatio);
                 process.setDispergatorN(dispergatorNForFirstBatches);
                 process.setDyeBatch(singleBatch);
@@ -284,8 +292,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             System.err.println("Lỗi khi tạo TechnologyProcess cho WorkOrderDetail ID: " + workOrderDetailId + " trong WorkOrder ID: " + workOrderId + " - " + e.getMessage());
             throw e;
         }
-
-
     }
 
     @Transactional
@@ -296,6 +302,10 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                                                            List<DyeTypeDTO> dyeTypesForLastBatchDTO,
                                                            BigDecimal dispergatorNForFirstBatches,
                                                            BigDecimal dispergatorNForLastBatch,
+                                                           BigDecimal dfmForFirstBatches,
+                                                           BigDecimal dfmForLastBatch,
+                                                           BigDecimal anbatexForFirstBatches,
+                                                           BigDecimal anbatexForLastBatch,
                                                            User currentUser) {
         try {
             System.err.println("Bắt đầu cập nhật TechnologyProcess cho WorkOrder ID: " + workOrderId +
@@ -343,8 +353,8 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst);
                 System.err.println("Thông số TechnologyProcess cho các mẻ đầu: avcoLveDlxPlus=" + paramsFirst.avcoLveDlxPlus + ", chelator=" + paramsFirst.chelator + ", detergent=" + paramsFirst.detergent +
-                        ", reducingAgent=" + paramsFirst.reducingAgent + ", dfm=" + paramsFirst.dfm + ", axit=" + paramsFirst.axit + ", anbatex=" + paramsFirst.anbatex + ", liquorRatio=" + paramsFirst.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForFirstBatches);
+                        ", reducingAgent=" + paramsFirst.reducingAgent + ", axit=" + paramsFirst.axit + ", liquorRatio=" + paramsFirst.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
 
                 for (int i = 0; i < totalBatches - 1; i++) {
                     DyeBatch batch = dyeBatches.get(i);
@@ -374,9 +384,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                     processForBatch.setChelator(paramsFirst.chelator);
                     processForBatch.setDetergent(paramsFirst.detergent);
                     processForBatch.setReducingAgent(paramsFirst.reducingAgent);
-                    processForBatch.setDfm(paramsFirst.dfm);
+                    processForBatch.setDfm(dfmForFirstBatches);
                     processForBatch.setAxit(paramsFirst.axit);
-                    processForBatch.setAnbatex(paramsFirst.anbatex);
+                    processForBatch.setAnbatex(anbatexForFirstBatches);
                     processForBatch.setLiquorRatio(paramsFirst.liquorRatio);
                     processForBatch.setDispergatorN(dispergatorNForFirstBatches);
 
@@ -400,8 +410,8 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast);
                 System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus=" + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
-                        ", reducingAgent=" + paramsLast.reducingAgent + ", dfm=" + paramsLast.dfm + ", axit=" + paramsLast.axit + ", anbatex=" + paramsLast.anbatex + ", liquorRatio=" + paramsLast.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForLastBatch);
+                        ", reducingAgent=" + paramsLast.reducingAgent + ", axit=" + paramsLast.axit + ", liquorRatio=" + paramsLast.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForLastBatch + ", dfm=" + dfmForLastBatch + ", anbatex=" + anbatexForLastBatch);
 
                 TechnologyProcess lastProcess = lastBatch.getTechnologyProcess();
                 if (lastProcess == null) {
@@ -429,9 +439,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 lastProcess.setChelator(paramsLast.chelator);
                 lastProcess.setDetergent(paramsLast.detergent);
                 lastProcess.setReducingAgent(paramsLast.reducingAgent);
-                lastProcess.setDfm(paramsLast.dfm);
+                lastProcess.setDfm(dfmForLastBatch);
                 lastProcess.setAxit(paramsLast.axit);
-                lastProcess.setAnbatex(paramsLast.anbatex);
+                lastProcess.setAnbatex(anbatexForLastBatch);
                 lastProcess.setLiquorRatio(paramsLast.liquorRatio);
                 lastProcess.setDispergatorN(dispergatorNForLastBatch);
 
@@ -456,49 +466,35 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 ProcessParameters params = new ProcessParameters(coneBatchWeight);
                 System.err.println("Thông số TechnologyProcess cho mẻ duy nhất: avcoLveDlxPlus=" + params.avcoLveDlxPlus + ", chelator=" + params.chelator + ", detergent=" + params.detergent +
-                        ", reducingAgent=" + params.reducingAgent + ", dfm=" + params.dfm + ", axit=" + params.axit + ", anbatex=" + params.anbatex + ", liquorRatio=" + params.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForFirstBatches);
+                        ", reducingAgent=" + params.reducingAgent + ", axit=" + params.axit + ", liquorRatio=" + params.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
 
-                TechnologyProcess process = singleBatch.getTechnologyProcess();
-                if (process == null) {
-                    process = new TechnologyProcess();
-                    process.setCreatedBy(currentUser);
-                    process.setCreateAt(LocalDateTime.now());
-                    process.setDyeBatch(singleBatch);
-                    process.setSendStatus(SendEnum.NOT_SENT);
-                    process.setStatus(BaseEnum.DRAFT);
-                    process.setDyeTypes(new ArrayList<>());
-                } else {
-                    if (!process.getCreatedBy().equals(currentUser)) {
-                        throw new IllegalStateException("Chỉ người tạo TechnologyProcess mới có quyền cập nhật. Người tạo: " + process.getCreatedBy().getUsername());
-                    }
-                    if (process.getStatus() != BaseEnum.DRAFT) {
-                        throw new IllegalStateException("Chỉ có thể cập nhật TechnologyProcess ở trạng thái DRAFT. Trạng thái hiện tại của TechnologyProcess ID: " + process.getId() + " là " + process.getStatus());
-                    }
-                    // Xóa hoàn toàn DyeTypes cũ trong database
-                    dyeTypeRepository.deleteByTechnologyProcessId(process.getId());
-                    process.setDyeTypes(new ArrayList<>());
-                }
-
+                TechnologyProcess process = new TechnologyProcess();
+                process.setCreatedBy(currentUser);
+                process.setCreateAt(LocalDateTime.now());
                 process.setUpdateAt(LocalDateTime.now());
                 process.setAvcoLveDlxPlus(params.avcoLveDlxPlus);
                 process.setChelator(params.chelator);
                 process.setDetergent(params.detergent);
                 process.setReducingAgent(params.reducingAgent);
-                process.setDfm(params.dfm);
+                process.setDfm(dfmForFirstBatches);
                 process.setAxit(params.axit);
-                process.setAnbatex(params.anbatex);
+                process.setAnbatex(anbatexForFirstBatches);
                 process.setLiquorRatio(params.liquorRatio);
                 process.setDispergatorN(dispergatorNForFirstBatches);
+                process.setDyeBatch(singleBatch);
+                process.setSendStatus(SendEnum.NOT_SENT);
+                process.setStatus(BaseEnum.DRAFT);
+                process.setDyeTypes(new ArrayList<>());
 
-                List<DyeType> dyeTypesForFirstBatches = convertToDyeTypeEntities(dyeTypesForFirstBatchesDTO, process);
-                process.setDyeTypes(dyeTypesForFirstBatches);
-
-                TechnologyProcess updatedProcess = technologyProcessRepository.save(process);
-                singleBatch.setTechnologyProcess(updatedProcess);
-                updatedProcess.setQrCodeUrl(generateQrCode(updatedProcess));
-                technologyProcessRepository.save(updatedProcess);
-                technologyProcesses.add(updatedProcess);
+                TechnologyProcess savedProcess = technologyProcessRepository.save(process);
+                List<DyeType> dyeTypesForFirstBatches = convertToDyeTypeEntities(dyeTypesForFirstBatchesDTO, savedProcess);
+                savedProcess.setDyeTypes(dyeTypesForFirstBatches);
+                savedProcess = technologyProcessRepository.save(savedProcess);
+                singleBatch.setTechnologyProcess(savedProcess);
+                savedProcess.setQrCodeUrl(generateQrCode(savedProcess));
+                technologyProcessRepository.save(savedProcess);
+                technologyProcesses.add(savedProcess);
                 System.err.println("Đã cập nhật/tạo mới TechnologyProcess cho mẻ duy nhất (DyeBatch ID: " + singleBatch.getId() + ")");
             }
 
@@ -582,16 +578,6 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         System.err.println("Lấy tất cả TechnologyProcess do user " + createdBy.getUsername() + " tạo, page: " + pageable.getPageNumber() + ", size: " + pageable.getPageSize());
         return technologyProcessRepository.findByCreatedBy(createdBy, pageable);
     }
-
-    /*@Override
-    public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
-        return null;
-    }*/
-
-    /*@Override
-    public Page<TechnologyProcess> getTechnicalProcessByStatusAndCreatedBy(SendEnum status, Pageable pageable, User createBy) {
-        return null;
-    }*/
 
     @Override
     public Page<TechnologyProcess> getTechnologyProcessesByStatusAndCreatedBy(BaseEnum status, Pageable pageable, User createdBy) {

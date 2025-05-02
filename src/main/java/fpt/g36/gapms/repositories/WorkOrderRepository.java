@@ -66,7 +66,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
             "LEFT JOIN ds.dyebatches db " +
             "LEFT JOIN db.technologyProcess tp " +
             "WHERE wo.status = :status " +
-            "AND (wod.dyeStage IS NULL OR db IS NULL OR tp IS NULL)")
+            "AND tp IS NULL")
     Page<WorkOrder> findApprovedWorkOrdersWithoutTechnologyProcess(@Param("status") BaseEnum status, Pageable pageable);
 
     @Query("SELECT DISTINCT wo FROM WorkOrder wo " +

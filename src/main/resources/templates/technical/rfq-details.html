@@ -358,12 +358,12 @@
                                         <strong>Mã lô:</strong> <span th:text="'RFQ-'+${rfq.id}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Số lượng sản phẩm:</strong> <span
-                                            th:text="${rfq.rfqDetails.size()}"></span>
-                                    </div>
-                                    <div class="col-md-4">
                                         <strong>Ngày tạo đơn:</strong> <span
                                             th:text="${#temporals.format(rfq.createAt, 'dd/MM/yyyy')}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Hạn chót cho solution:</strong> <span
+                                            th:text="${#temporals.format(rfq.deadlineSolution, 'dd/MM/yyyy')}"></span>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -437,7 +437,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="btn-container">
+                                <div class="btn-container" th:if="${rfq.solution.isSent.name() != 'SENT'}">
                                     <button class="btn btn-custom" id="updateSolutionBtn" data-bs-toggle="modal"
                                             data-bs-target="#updateSolutionModal">Cập nhật giải pháp
                                     </button>

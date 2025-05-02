@@ -51,26 +51,21 @@ public class TechnicalProcessController {
     private void validateDyeTypeDTO(DyeTypeDTO dto, String batchType, Model model, Long workOrderId) {
         BigDecimal ratio = dto.getRatio();
         BigDecimal lightPercent = dto.getLightPercent();
-        BigDecimal weight = dto.getWeight();
 
         if (ratio == null || ratio.compareTo(BigDecimal.ZERO) <= 0 || ratio.compareTo(BigDecimal.valueOf(10000)) >= 0) {
             model.addAttribute("error", "Tỷ lệ (" + batchType + ") phải lớn hơn 0 và nhỏ hơn 10000.");
             throw new IllegalArgumentException("Invalid ratio for " + batchType);
         }
-        if (lightPercent == null || lightPercent.compareTo(BigDecimal.ZERO) <= 0 || lightPercent.compareTo(BigDecimal.valueOf(10000)) >= 0) {
-            model.addAttribute("error", "Phần trăm ánh sáng (" + batchType + ") phải lớn hơn 0 và nhỏ hơn 10000.");
+        if (lightPercent != null && (lightPercent.compareTo(BigDecimal.ZERO) <= 0 || lightPercent.compareTo(BigDecimal.valueOf(10000)) >= 0)) {
+            model.addAttribute("error", "Phần trăm ánh sáng (" + batchType + ") nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.");
             throw new IllegalArgumentException("Invalid lightPercent for " + batchType);
-        }
-        if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0 || weight.compareTo(BigDecimal.valueOf(10000)) >= 0) {
-            model.addAttribute("error", "Trọng lượng (" + batchType + ") phải lớn hơn 0 và nhỏ hơn 10000.");
-            throw new IllegalArgumentException("Invalid weight for " + batchType);
         }
     }
 
-    private void validateDispergatorN(BigDecimal dispergatorN, String batchType, Model model, Long workOrderId) {
-        if (dispergatorN == null || dispergatorN.compareTo(BigDecimal.ZERO) <= 0 || dispergatorN.compareTo(BigDecimal.valueOf(10000)) >= 0) {
-            model.addAttribute("error", "DispergatorN (" + batchType + ") phải lớn hơn 0 và nhỏ hơn 10000.");
-            throw new IllegalArgumentException("Invalid dispergatorN for " + batchType);
+    private void validateBigDecimalField(BigDecimal value, String fieldName, String batchType, Model model, Long workOrderId) {
+        if (value != null && (value.compareTo(BigDecimal.ZERO) <= 0 || value.compareTo(BigDecimal.valueOf(10000)) >= 0)) {
+            model.addAttribute("error", fieldName + " (" + batchType + ") nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.");
+            throw new IllegalArgumentException("Invalid " + fieldName + " for " + batchType);
         }
     }
 
@@ -276,14 +271,18 @@ public class TechnicalProcessController {
                 for (DyeTypeDTO dto : form.getDyeTypesForFirstBatches()) {
                     validateDyeTypeDTO(dto, "mẻ đầu", model, form.getWorkOrderId());
                 }
-                validateDispergatorN(form.getDispergatorNForFirstBatches(), "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getDispergatorNForFirstBatches(), "DispergatorN", "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getDfmForFirstBatches(), "DFM", "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getAnbatexForFirstBatches(), "Anbatex", "mẻ đầu", model, form.getWorkOrderId());
 
                 // Validate dyeTypesForLastBatch if present
                 if (form.getDyeTypesForLastBatch() != null && !form.getDyeTypesForLastBatch().isEmpty()) {
                     for (DyeTypeDTO dto : form.getDyeTypesForLastBatch()) {
                         validateDyeTypeDTO(dto, "mẻ cuối", model, form.getWorkOrderId());
                     }
-                    validateDispergatorN(form.getDispergatorNForLastBatch(), "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getDispergatorNForLastBatch(), "DispergatorN", "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getDfmForLastBatch(), "DFM", "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getAnbatexForLastBatch(), "Anbatex", "mẻ cuối", model, form.getWorkOrderId());
                 }
 
                 technologyProcessService.createTechnologyProcess(
@@ -293,7 +292,11 @@ public class TechnicalProcessController {
                         form.getDyeTypesForFirstBatches(),
                         form.getDyeTypesForLastBatch() != null ? form.getDyeTypesForLastBatch() : Collections.emptyList(),
                         form.getDispergatorNForFirstBatches(),
-                        form.getDispergatorNForLastBatch()
+                        form.getDispergatorNForLastBatch(),
+                        form.getDfmForFirstBatches(),
+                        form.getDfmForLastBatch(),
+                        form.getAnbatexForFirstBatches(),
+                        form.getAnbatexForLastBatch()
                 );
 
                 redirectAttributes.addFlashAttribute("success", "Tạo Hành Trình Công Nghệ thành công!");
@@ -497,16 +500,18 @@ public class TechnicalProcessController {
                 for (DyeTypeDTO dto : form.getDyeTypesForFirstBatches()) {
                     validateDyeTypeDTO(dto, "mẻ đầu", model, form.getWorkOrderId());
                 }
-                validateDispergatorN(form.getDispergatorNForFirstBatches(),
-                        "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getDispergatorNForFirstBatches(), "DispergatorN", "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getDfmForFirstBatches(), "DFM", "mẻ đầu", model, form.getWorkOrderId());
+                validateBigDecimalField(form.getAnbatexForFirstBatches(), "Anbatex", "mẻ đầu", model, form.getWorkOrderId());
 
                 // Validate dyeTypesForLastBatch nếu có
                 if (form.getDyeTypesForLastBatch() != null && !form.getDyeTypesForLastBatch().isEmpty()) {
                     for (DyeTypeDTO dto : form.getDyeTypesForLastBatch()) {
                         validateDyeTypeDTO(dto, "mẻ cuối", model, form.getWorkOrderId());
                     }
-                    validateDispergatorN(form.getDispergatorNForLastBatch(),
-                            "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getDispergatorNForLastBatch(), "DispergatorN", "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getDfmForLastBatch(), "DFM", "mẻ cuối", model, form.getWorkOrderId());
+                    validateBigDecimalField(form.getAnbatexForLastBatch(), "Anbatex", "mẻ cuối", model, form.getWorkOrderId());
                 }
 
                 // Gọi service để cập nhật TechnologyProcess
@@ -517,19 +522,21 @@ public class TechnicalProcessController {
                         form.getDyeTypesForLastBatch() != null ? form.getDyeTypesForLastBatch() : Collections.emptyList(),
                         form.getDispergatorNForFirstBatches(),
                         form.getDispergatorNForLastBatch(),
+                        form.getDfmForFirstBatches(),
+                        form.getDfmForLastBatch(),
+                        form.getAnbatexForFirstBatches(),
+                        form.getAnbatexForLastBatch(),
                         currentUser
                 );
 
-                redirectAttributes.addFlashAttribute("success",
-                        "Cập nhật Hành Trình Công Nghệ thành công!");
+                redirectAttributes.addFlashAttribute("success", "Cập nhật Hành Trình Công Nghệ thành công!");
             } catch (IllegalArgumentException e) {
                 redirectAttributes.addFlashAttribute("error", e.getMessage());
                 return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
             } catch (Exception e) {
                 System.err.println("Lỗi xảy ra: " + e.getMessage());
                 e.printStackTrace();
-                redirectAttributes.addFlashAttribute("error",
-                        "Lỗi khi cập nhật Hành Trình Công Nghệ: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật Hành Trình Công Nghệ: " + e.getMessage());
             }
             return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
         }

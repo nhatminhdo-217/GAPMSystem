@@ -236,7 +236,8 @@ public class TechnicalWorkOrderController {
                 return ResponseEntity.ok(response);
             }
 
-            ProductionOrderDetail detail = productionOrder.getProductionOrderDetails().stream().filter(d -> d.getId().equals(detailId)).findFirst().orElse(null);
+            ProductionOrderDetail detail = productionOrder.getProductionOrderDetails().stream()
+                    .filter(d -> d.getId().equals(detailId)).findFirst().orElse(null);
             if (detail == null) {
                 response.put("success", false);
                 response.put("message", "Production Order Detail không tồn tại.");
@@ -250,8 +251,8 @@ public class TechnicalWorkOrderController {
 
             List<DyeMachine> availableDyeMachines = machineService.findAvailableDyeMachinesForProductionOrder
                     (productionOrder, plannedStartAt, plannedEndAt);
-            DyeMachine dyeMachine = availableDyeMachines.stream().
-                    filter(m -> m.getId().equals(dyeMachineId))
+            DyeMachine dyeMachine = availableDyeMachines.stream()
+                    .filter(m -> m.getId().equals(dyeMachineId))
                     .findFirst().orElse(null);
             if (dyeMachine == null) {
                 response.put("success", false);
@@ -262,10 +263,10 @@ public class TechnicalWorkOrderController {
 
             BigDecimal threadMass = detail.getThread_mass() != null
                     && !detail.getThread_mass().equals(BigDecimal.ZERO)
-                    ? detail.getThread_mass() : detail.getPurchaseOrderDetail().getProduct().getThread()
+                    ? detail.getThread_mass()
+                    : detail.getPurchaseOrderDetail().getProduct().getThread()
                     .getConvert_rate().multiply(BigDecimal.valueOf(detail.getPurchaseOrderDetail().getQuantity()));
 
-            // Kiểm tra giới hạn của additionalWeight
             BigDecimal minAdditionalWeight = BigDecimal.valueOf(0.4);
             BigDecimal maxAdditionalWeight = threadMass.divide(BigDecimal.valueOf(10), 2, BigDecimal.ROUND_DOWN);
 
@@ -278,27 +279,36 @@ public class TechnicalWorkOrderController {
                 return ResponseEntity.ok(response);
             }
 
-            // Tính coneWeight với additionalWeight do người dùng nhập
-            BigDecimal coneWeight = threadMass.add(additionalWeight);
+            BigDecimal coneWeight = threadMass.add(additionalWeight).stripTrailingZeros();
             BigDecimal maxWeight = dyeMachine.getMaxWeight();
             BigDecimal convertRate = detail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
 
             BigDecimal coneBatchWeight;
+            BigDecimal maxProductPerBatch;
             int dyeBatches;
             if (maxWeight.compareTo(coneWeight) >= 0) {
                 dyeBatches = 1;
                 coneBatchWeight = coneWeight;
+                maxProductPerBatch = calculateMaxProductPerBatch(coneWeight, convertRate);
             } else {
-                BigDecimal maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN);
-                int maxProductInt = maxProductPerBatch.intValue();
-                coneBatchWeight = convertRate.multiply(BigDecimal.valueOf(maxProductInt));
-                BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.FLOOR);
-                BigDecimal remainder = coneWeight.remainder(coneBatchWeight);
-                if (remainder.compareTo(BigDecimal.ZERO) == 0) {
+                maxProductPerBatch = calculateMaxProductPerBatch(maxWeight, convertRate);
+                coneBatchWeight = maxProductPerBatch.multiply(convertRate).stripTrailingZeros();
+                BigDecimal division = coneWeight.divide(coneBatchWeight, 10, RoundingMode.HALF_UP);
+
+                BigDecimal fractionalPart = division.remainder(BigDecimal.ONE);
+                BigDecimal threshold = new BigDecimal("0.0000001");
+                if (fractionalPart.abs().compareTo(threshold) <= 0) {
                     dyeBatches = division.intValue();
                 } else {
-                    dyeBatches = division.setScale(0, RoundingMode.UP).intValue();
+                    dyeBatches = division.setScale(0, RoundingMode.CEILING).intValue();
                 }
+
+                System.err.println("maxProductPerBatch: " + maxProductPerBatch);
+                System.err.println("coneWeight: " + coneWeight);
+                System.err.println("coneBatchWeight: " + coneBatchWeight);
+                System.err.println("division: " + division);
+                System.err.println("fractionalPart: " + fractionalPart);
+                System.err.println("dyeBatches: " + dyeBatches);
             }
 
             BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -329,6 +339,7 @@ public class TechnicalWorkOrderController {
             dyeCalculations.put("coneBatchQuantity", coneBatchQuantity);
             dyeCalculations.put("dyeBatches", dyeBatches);
             dyeCalculations.put("littersBatch", littersBatch);
+            dyeCalculations.put("maxProductPerBatch", maxProductPerBatch);
 
             if (!isLittersBatchValid || !isConeBatchQuantityValid) {
                 StringBuilder errorMessage = new StringBuilder("Máy nhuộm không hợp lệ: ");
@@ -396,11 +407,9 @@ public class TechnicalWorkOrderController {
                 BigDecimal currentConeBatchWeight = (i == packagingBatches - 1
                         && remainingConeWeight.compareTo(coneBatchWeight) < 0)
                         ? remainingConeWeight : coneBatchWeight;
-                //
                 BigDecimal productsInBatch = currentConeBatchWeight.divide(convertRate, 0, RoundingMode.CEILING);
-                //
-                totalPackagingDurationMinutes = totalPackagingDurationMinutes.
-                        add(productsInBatch.multiply(packagingTimePerProduct));
+                totalPackagingDurationMinutes = totalPackagingDurationMinutes
+                        .add(productsInBatch.multiply(packagingTimePerProduct));
                 remainingConeWeight = remainingConeWeight.subtract(currentConeBatchWeight);
             }
 
@@ -427,6 +436,12 @@ public class TechnicalWorkOrderController {
             response.put("deadlines", new HashMap<>());
             return ResponseEntity.ok(response);
         }
+    }
+
+    private BigDecimal calculateMaxProductPerBatch(BigDecimal maxWeight, BigDecimal convertRate) {
+        BigDecimal maxProductPerBatch = maxWeight.divide(convertRate, 2, BigDecimal.ROUND_DOWN);
+        maxProductPerBatch = maxProductPerBatch.setScale(0, RoundingMode.DOWN);
+        return maxProductPerBatch;
     }
 
     @PostMapping("/create-work-order")

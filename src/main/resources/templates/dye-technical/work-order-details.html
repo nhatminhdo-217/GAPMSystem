@@ -88,7 +88,7 @@
 
         .work-order-info span {
             font-size: 15px;
-            color: #212529;
+            color: #212 Tract529;
         }
 
         /* Tabstrip Styles */
@@ -485,6 +485,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: center; /* Căn giữa các phần tử trên cùng một hàng */
         }
 
         .dye-type-section .form-label {
@@ -496,6 +497,12 @@
             font-size: 13px; /* Giảm font-size để gọn hơn */
             padding: 8px;
             height: 38px; /* Chiều cao cố định cho input */
+        }
+
+        .dye-type-section .col-md-4 {
+            flex: 1 1 calc(33.333% - 10px); /* Đảm bảo 3 cột có chiều rộng bằng nhau, trừ đi khoảng cách gap */
+            max-width: calc(33.333% - 10px); /* Giới hạn chiều rộng tối đa */
+            min-width: 200px; /* Đảm bảo không quá hẹp */
         }
 
         .dye-type-entry {
@@ -640,6 +647,17 @@
                 margin-bottom: 10px;
             }
 
+            .dye-type-section .row {
+                flex-direction: row; /* Giữ các cột trên cùng một hàng nếu có thể */
+                flex-wrap: wrap; /* Cho phép xuống hàng nếu không đủ chỗ */
+            }
+
+            .dye-type-section .col-md-4 {
+                flex: 1 1 calc(33.333% - 10px); /* Vẫn giữ 3 cột trên cùng một hàng nếu đủ chỗ */
+                max-width: calc(33.333% - 10px);
+                min-width: 150px; /* Giảm chiều rộng tối thiểu trên màn hình nhỏ */
+            }
+
             .modal-content {
                 padding: 15px;
                 width: 90%;
@@ -683,6 +701,11 @@
             .btn-add-dye-type, .btn-remove-dye-type {
                 font-size: 12px;
                 padding: 5px 10px;
+            }
+
+            .dye-type-section .col-md-4 {
+                flex: 1 1 100%; /* Chuyển sang cột đầy đủ trên màn hình rất nhỏ */
+                max-width: 100%;
             }
         }
 
@@ -826,7 +849,11 @@
                                                                 Thêm Hành Trình Công Nghệ
                                                             </button>
                                                         </div>
-                                                        <div th:if="${hasTechProcessMap[detail.id] and not (detail.dyeStage.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and #lists.isEmpty(detail.dyeStage.dyebatches.?[technologyProcess == null or technologyProcess.status.name() != 'APPROVED']))}">
+                                                        <div th:if="${hasTechProcessMap[detail.id]
+                                                        and not (detail.dyeStage.dyebatches != null
+                                                        and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                        and #lists.isEmpty(detail.dyeStage.dyebatches.?[technologyProcess == null
+                                                        or technologyProcess.status.name() != 'APPROVED']))}">
                                                             <button type="button" class="update-tech-process-btn"
                                                                     data-bs-toggle="modal"
                                                                     th:data-bs-target="'#updateTechProcessModal-' + ${detail.id}">
@@ -906,7 +933,7 @@
                                                                     <input type="hidden" name="dyeBatchCount"
                                                                            th:value="${detail?.dyeStage?.dyebatches != null ? detail.dyeStage.dyebatches.size() : 0}"/>
 
-                                                                    <!-- Phần 1: Dye Types và Dispergator N cho các mẻ đầu -->
+                                                                    <!-- Phần 1: Dye Types, Dispergator N, DFM, Anbatex cho các mẻ đầu -->
                                                                     <div class="dye-type-section">
                                                                         <h6>Thông tin cho các mẻ đầu</h6>
                                                                         <div th:id="'dyeTypesFirstBatchesContainer-' + ${detail.id}">
@@ -935,17 +962,7 @@
                                                                                         <input type="number" step="0.01"
                                                                                                class="form-control"
                                                                                                name="dyeTypesForFirstBatches[0].lightPercent"
-                                                                                               min="0.01" max="9999.99"
-                                                                                               required>
-                                                                                    </div>
-                                                                                    <div class="col-md-3">
-                                                                                        <label class="form-label">Trọng
-                                                                                            lượng (kg):</label>
-                                                                                        <input type="number" step="0.01"
-                                                                                               class="form-control"
-                                                                                               name="dyeTypesForFirstBatches[0].weight"
-                                                                                               min="0.01" max="9999.99"
-                                                                                               required>
+                                                                                               min="0.01" max="9999.99">
                                                                                     </div>
                                                                                 </div>
                                                                                 <button type="button"
@@ -959,9 +976,9 @@
                                                                                 th:data-container="'dyeTypesFirstBatchesContainer-' + ${detail.id}">
                                                                             Thêm Dye Type
                                                                         </button>
-                                                                        <!-- Dispergator N cho các mẻ đầu -->
+                                                                        <!-- Dispergator N, DFM, Anbatex cho các mẻ đầu -->
                                                                         <div class="row">
-                                                                            <div class="col-md-12">
+                                                                            <div class="col-md-4">
                                                                                 <label th:for="'dispergatorNFirst-' + ${detail.id}"
                                                                                        class="form-label">Dispergator N
                                                                                     (kg):</label>
@@ -969,13 +986,32 @@
                                                                                        class="form-control"
                                                                                        th:id="'dispergatorNFirst-' + ${detail.id}"
                                                                                        name="dispergatorNForFirstBatches"
-                                                                                       min="0.01" max="9999.99"
-                                                                                       required>
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'dfmFirst-' + ${detail.id}"
+                                                                                       class="form-label">DFM
+                                                                                    (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'dfmFirst-' + ${detail.id}"
+                                                                                       name="dfmForFirstBatches"
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'anbatexFirst-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex
+                                                                                    (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'anbatexFirst-' + ${detail.id}"
+                                                                                       name="anbatexForFirstBatches"
+                                                                                       min="0.01" max="9999.99">
                                                                             </div>
                                                                         </div>
                                                                     </div>
 
-                                                                    <!-- Phần 2: Dye Types và Dispergator N cho mẻ cuối -->
+                                                                    <!-- Phần 2: Dye Types, Dispergator N, DFM, Anbatex cho mẻ cuối -->
                                                                     <div class="dye-type-section"
                                                                          th:if="${detail?.dyeStage?.dyebatches != null and detail.dyeStage.dyebatches.size() > 1}">
                                                                         <h6>Thông tin cho mẻ cuối</h6>
@@ -1005,17 +1041,7 @@
                                                                                         <input type="number" step="0.01"
                                                                                                class="form-control"
                                                                                                name="dyeTypesForLastBatch[0].lightPercent"
-                                                                                               min="0.01" max="9999.99"
-                                                                                               required>
-                                                                                    </div>
-                                                                                    <div class="col-md-3">
-                                                                                        <label class="form-label">Trọng
-                                                                                            lượng (kg):</label>
-                                                                                        <input type="number" step="0.01"
-                                                                                               class="form-control"
-                                                                                               name="dyeTypesForLastBatch[0].weight"
-                                                                                               min="0.01" max="9999.99"
-                                                                                               required>
+                                                                                               min="0.01" max="9999.99">
                                                                                     </div>
                                                                                 </div>
                                                                                 <button type="button"
@@ -1029,20 +1055,37 @@
                                                                                 th:data-container="'dyeTypesLastBatchContainer-' + ${detail.id}">
                                                                             Thêm Dye Type
                                                                         </button>
-                                                                        <!-- Dispergator N cho mẻ cuối -->
-                                                                        <div th:if="${detail?.dyeStage?.dyebatches != null and detail.dyeStage.dyebatches.size() > 1}">
-                                                                            <div class="row">
-                                                                                <div class="col-md-12">
-                                                                                    <label th:for="'dispergatorNLast-' + ${detail.id}"
-                                                                                           class="form-label">Dispergator
-                                                                                        N cho mẻ cuối (kg):</label>
-                                                                                    <input type="number" step="0.01"
-                                                                                           class="form-control"
-                                                                                           th:id="'dispergatorNLast-' + ${detail.id}"
-                                                                                           name="dispergatorNForLastBatch"
-                                                                                           min="0.01" max="9999.99"
-                                                                                           required>
-                                                                                </div>
+                                                                        <!-- Dispergator N, DFM, Anbatex cho mẻ cuối -->
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'dispergatorNLast-' + ${detail.id}"
+                                                                                       class="form-label">Dispergator N
+                                                                                    cho mẻ cuối (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'dispergatorNLast-' + ${detail.id}"
+                                                                                       name="dispergatorNForLastBatch"
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'dfmLast-' + ${detail.id}"
+                                                                                       class="form-label">DFM cho mẻ
+                                                                                    cuối (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'dfmLast-' + ${detail.id}"
+                                                                                       name="dfmForLastBatch" min="0.01"
+                                                                                       max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'anbatexLast-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex cho mẻ
+                                                                                    cuối (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'anbatexLast-' + ${detail.id}"
+                                                                                       name="anbatexForLastBatch"
+                                                                                       min="0.01" max="9999.99">
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1052,7 +1095,7 @@
                                                                                 data-bs-dismiss="modal">Hủy
                                                                         </button>
                                                                         <button type="submit" class="btn btn-submit">
-                                                                            Tạo
+                                                                            Tạo hành trình công nghệ
                                                                         </button>
                                                                     </div>
                                                                 </form>
@@ -1086,7 +1129,7 @@
                                                                     <input type="hidden" name="technologyProcessId"
                                                                            th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.id : ''}"/>
 
-                                                                    <!-- Phần 1: Dye Types và Dispergator N cho các mẻ đầu -->
+                                                                    <!-- Phần 1: Dye Types, Dispergator N, DFM, Anbatex cho các mẻ đầu -->
                                                                     <div class="dye-type-section">
                                                                         <h6>Thông tin cho các mẻ đầu</h6>
                                                                         <div th:id="'updateDyeTypesFirstBatchesContainer-' + ${detail.id}">
@@ -1126,20 +1169,7 @@
                                                                                                    th:name="'dyeTypesForFirstBatches[' + ${dyeTypeIter.index} + '].lightPercent'"
                                                                                                    th:value="${dyeType?.lightPercent}"
                                                                                                    min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
-                                                                                        </div>
-                                                                                        <div class="col-md-3">
-                                                                                            <label class="form-label">Trọng
-                                                                                                lượng (kg):</label>
-                                                                                            <input type="number"
-                                                                                                   step="0.01"
-                                                                                                   class="form-control"
-                                                                                                   th:name="'dyeTypesForFirstBatches[' + ${dyeTypeIter.index} + '].weight'"
-                                                                                                   th:value="${dyeType?.weight}"
-                                                                                                   min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
+                                                                                                   max="9999.99">
                                                                                         </div>
                                                                                     </div>
                                                                                     <button type="button"
@@ -1180,19 +1210,7 @@
                                                                                                    class="form-control"
                                                                                                    name="dyeTypesForFirstBatches[0].lightPercent"
                                                                                                    min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
-                                                                                        </div>
-                                                                                        <div class="col-md-3">
-                                                                                            <label class="form-label">Trọng
-                                                                                                lượng (kg):</label>
-                                                                                            <input type="number"
-                                                                                                   step="0.01"
-                                                                                                   class="form-control"
-                                                                                                   name="dyeTypesForFirstBatches[0].weight"
-                                                                                                   min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
+                                                                                                   max="9999.99">
                                                                                         </div>
                                                                                     </div>
                                                                                     <button type="button"
@@ -1207,9 +1225,9 @@
                                                                                 th:data-container="'updateDyeTypesFirstBatchesContainer-' + ${detail.id}">
                                                                             Thêm Dye Type
                                                                         </button>
-                                                                        <!-- Dispergator N cho các mẻ đầu -->
+                                                                        <!-- Dispergator N, DFM, Anbatex cho các mẻ đầu -->
                                                                         <div class="row">
-                                                                            <div class="col-md-12">
+                                                                            <div class="col-md-4">
                                                                                 <label th:for="'updateDispergatorNFirst-' + ${detail.id}"
                                                                                        class="form-label">Dispergator N
                                                                                     (kg):</label>
@@ -1218,13 +1236,34 @@
                                                                                        th:id="'updateDispergatorNFirst-' + ${detail.id}"
                                                                                        name="dispergatorNForFirstBatches"
                                                                                        th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.dispergatorN : ''}"
-                                                                                       min="0.01" max="9999.99"
-                                                                                       required>
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'updateDfmFirst-' + ${detail.id}"
+                                                                                       class="form-label">DFM
+                                                                                    (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'updateDfmFirst-' + ${detail.id}"
+                                                                                       name="dfmForFirstBatches"
+                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.dfm : ''}"
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'updateAnbatexFirst-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex
+                                                                                    (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'updateAnbatexFirst-' + ${detail.id}"
+                                                                                       name="anbatexForFirstBatches"
+                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.anbatex : ''}"
+                                                                                       min="0.01" max="9999.99">
                                                                             </div>
                                                                         </div>
                                                                     </div>
 
-                                                                    <!-- Phần 2: Dye Types và Dispergator N cho mẻ cuối -->
+                                                                    <!-- Phần 2: Dye Types, Dispergator N, DFM, Anbatex cho mẻ cuối -->
                                                                     <div class="dye-type-section"
                                                                          th:if="${detail?.dyeStage?.dyebatches != null and detail.dyeStage.dyebatches.size() > 1}">
                                                                         <h6>Thông tin cho mẻ cuối</h6>
@@ -1265,20 +1304,7 @@
                                                                                                    th:name="'dyeTypesForLastBatch[' + ${dyeTypeIter.index} + '].lightPercent'"
                                                                                                    th:value="${dyeType?.lightPercent}"
                                                                                                    min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
-                                                                                        </div>
-                                                                                        <div class="col-md-3">
-                                                                                            <label class="form-label">Trọng
-                                                                                                lượng (kg):</label>
-                                                                                            <input type="number"
-                                                                                                   step="0.01"
-                                                                                                   class="form-control"
-                                                                                                   th:name="'dyeTypesForLastBatch[' + ${dyeTypeIter.index} + '].weight'"
-                                                                                                   th:value="${dyeType?.weight}"
-                                                                                                   min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
+                                                                                                   max="9999.99">
                                                                                         </div>
                                                                                     </div>
                                                                                     <button type="button"
@@ -1319,19 +1345,7 @@
                                                                                                    class="form-control"
                                                                                                    name="dyeTypesForLastBatch[0].lightPercent"
                                                                                                    min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
-                                                                                        </div>
-                                                                                        <div class="col-md-3">
-                                                                                            <label class="form-label">Trọng
-                                                                                                lượng (kg):</label>
-                                                                                            <input type="number"
-                                                                                                   step="0.01"
-                                                                                                   class="form-control"
-                                                                                                   name="dyeTypesForLastBatch[0].weight"
-                                                                                                   min="0.01"
-                                                                                                   max="9999.99"
-                                                                                                   required>
+                                                                                                   max="9999.99">
                                                                                         </div>
                                                                                     </div>
                                                                                     <button type="button"
@@ -1346,9 +1360,9 @@
                                                                                 th:data-container="'updateDyeTypesLastBatchContainer-' + ${detail.id}">
                                                                             Thêm Dye Type
                                                                         </button>
-                                                                        <!-- Dispergator N cho mẻ cuối -->
+                                                                        <!-- Dispergator N, DFM, Anbatex cho mẻ cuối -->
                                                                         <div class="row">
-                                                                            <div class="col-md-12">
+                                                                            <div class="col-md-4">
                                                                                 <label th:for="'updateDispergatorNLast-' + ${detail.id}"
                                                                                        class="form-label">Dispergator N
                                                                                     cho mẻ cuối (kg):</label>
@@ -1357,8 +1371,29 @@
                                                                                        th:id="'updateDispergatorNLast-' + ${detail.id}"
                                                                                        name="dispergatorNForLastBatch"
                                                                                        th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.dispergatorN : ''}"
-                                                                                       min="0.01" max="9999.99"
-                                                                                       required>
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'updateDfmLast-' + ${detail.id}"
+                                                                                       class="form-label">DFM cho mẻ
+                                                                                    cuối (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'updateDfmLast-' + ${detail.id}"
+                                                                                       name="dfmForLastBatch"
+                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.dfm : ''}"
+                                                                                       min="0.01" max="9999.99">
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label th:for="'updateAnbatexLast-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex cho mẻ
+                                                                                    cuối (kg):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
+                                                                                       th:id="'updateAnbatexLast-' + ${detail.id}"
+                                                                                       name="anbatexForLastBatch"
+                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.anbatex : ''}"
+                                                                                       min="0.01" max="9999.99">
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1754,28 +1789,24 @@
             }
             const index = container.find('.dye-type-entry').length;
             container.append(`
-                <div class="dye-type-entry">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-label">Tên thuốc nhuộm:</label>
-                            <input type="text" class="form-control" name="dyeTypesForFirstBatches[${index}].name" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Tỷ lệ (%):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForFirstBatches[${index}].ratio" min="0.01" max="9999.99" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Phần trăm ánh sáng (%):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForFirstBatches[${index}].lightPercent" min="0.01" max="9999.99" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Trọng lượng (kg):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForFirstBatches[${index}].weight" min="0.01" max="9999.99" required>
-                        </div>
+            <div class="dye-type-entry">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Tên thuốc nhuộm:</label>
+                        <input type="text" class="form-control" name="dyeTypesForFirstBatches[${index}].name" required>
                     </div>
-                    <button type="button" class="btn btn-remove-dye-type">Xóa</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Tỷ lệ (%):</label>
+                        <input type="number" step="0.01" class="form-control" name="dyeTypesForFirstBatches[${index}].ratio" min="0.01" max="9999.99" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Phần trăm ánh sáng (%):</label>
+                        <input type="number" step="0.01" class="form-control" name="dyeTypesForFirstBatches[${index}].lightPercent" min="0.01" max="9999.99">
+                    </div>
                 </div>
-            `);
+                <button type="button" class="btn btn-remove-dye-type">Xóa</button>
+            </div>
+        `);
         });
 
         // Thêm Dye Type cho mẻ cuối
@@ -1788,28 +1819,24 @@
             }
             const index = container.find('.dye-type-entry').length;
             container.append(`
-                <div class="dye-type-entry">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-label">Tên thuốc nhuộm:</label>
-                            <input type="text" class="form-control" name="dyeTypesForLastBatch[${index}].name" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Tỷ lệ (%):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForLastBatch[${index}].ratio" min="0.01" max="9999.99" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Phần trăm ánh sáng (%):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForLastBatch[${index}].lightPercent" min="0.01" max="9999.99" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Trọng lượng (kg):</label>
-                            <input type="number" step="0.01" class="form-control" name="dyeTypesForLastBatch[${index}].weight" min="0.01" max="9999.99" required>
-                        </div>
+            <div class="dye-type-entry">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Tên thuốc nhuộm:</label>
+                        <input type="text" class="form-control" name="dyeTypesForLastBatch[${index}].name" required>
                     </div>
-                    <button type="button" class="btn btn-remove-dye-type">Xóa</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Tỷ lệ (%):</label>
+                        <input type="number" step="0.01" class="form-control" name="dyeTypesForLastBatch[${index}].ratio" min="0.01" max="9999.99" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Phần trăm ánh sáng (%):</label>
+                        <input type="number" step="0.01" class="form-control" name="dyeTypesForLastBatch[${index}].lightPercent" min="0.01" max="9999.99">
+                    </div>
                 </div>
-            `);
+                <button type="button" class="btn btn-remove-dye-type">Xóa</button>
+            </div>
+        `);
         });
 
         // Xóa Dye Type
@@ -1822,7 +1849,7 @@
             }
         });
 
-        // Kiểm tra dữ liệu trước khi submit form
+        // Kiểm tra dữ liệu trước khi submit form tạo mới
         $('#techProcessForm').on('submit', function (e) {
             const dyeTypesFirstInputs = $(this).find('input[name^="dyeTypesForFirstBatches"]');
             if (dyeTypesFirstInputs.length === 0) {
@@ -1835,15 +1862,30 @@
             let hasInvalidFirst = false;
             dyeTypesFirstInputs.each(function () {
                 const value = parseFloat($(this).val());
-                if (!$(this).val().trim()) {
-                    alert('Vui lòng điền đầy đủ thông tin cho các Dye Type của mẻ đầu.');
+                const fieldName = $(this).prev('.form-label').text();
+                if ($(this).attr('name').includes('.name') && !$(this).val().trim()) {
+                    alert('Vui lòng điền đầy đủ thông tin Tên thuốc nhuộm cho các Dye Type của mẻ đầu.');
                     hasInvalidFirst = true;
                     return false;
                 }
-                if ($(this).attr('type') === 'number' && (value <= 0 || value >= 10000)) {
-                    alert($(this).prev('.form-label').text() + ' (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
-                    hasInvalidFirst = true;
-                    return false;
+                if ($(this).attr('name').includes('.ratio')) {
+                    if (!$(this).val().trim()) {
+                        alert('Tỷ lệ (mẻ đầu) không được để trống.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
+                    if (value <= 0 || value >= 10000) {
+                        alert('Tỷ lệ (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
+                }
+                if ($(this).attr('name').includes('.lightPercent') && $(this).val().trim()) {
+                    if (value <= 0 || value >= 10000) {
+                        alert('Phần trăm ánh sáng (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
                 }
             });
             if (hasInvalidFirst) {
@@ -1851,11 +1893,23 @@
                 return false;
             }
 
-            // Kiểm tra DispergatorN cho mẻ đầu
+            // Kiểm tra DispergatorN, DFM, Anbatex cho mẻ đầu
             const dispergatorNFirst = parseFloat($(this).find('input[name="dispergatorNForFirstBatches"]').val());
-            if ($(this).find('input[name="dispergatorNForFirstBatches"]').length && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
+            const dfmFirst = parseFloat($(this).find('input[name="dfmForFirstBatches"]').val());
+            const anbatexFirst = parseFloat($(this).find('input[name="anbatexForFirstBatches"]').val());
+            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
                 e.preventDefault();
-                alert('DispergatorN (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                return false;
+            }
+            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0 || dfmFirst >= 10000)) {
+                e.preventDefault();
+                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                return false;
+            }
+            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0 || anbatexFirst >= 10000)) {
+                e.preventDefault();
+                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
                 return false;
             }
 
@@ -1872,15 +1926,30 @@
                 let hasInvalidLast = false;
                 dyeTypesLastInputs.each(function () {
                     const value = parseFloat($(this).val());
-                    if (!$(this).val().trim()) {
-                        alert('Vui lòng điền đầy đủ thông tin cho các Dye Type của mẻ cuối.');
+                    const fieldName = $(this).prev('.form-label').text();
+                    if ($(this).attr('name').includes('.name') && !$(this).val().trim()) {
+                        alert('Vui lòng điền đầy đủ thông tin Tên thuốc nhuộm cho các Dye Type của mẻ cuối.');
                         hasInvalidLast = true;
                         return false;
                     }
-                    if ($(this).attr('type') === 'number' && (value <= 0 || value >= 10000)) {
-                        alert($(this).prev('.form-label').text() + ' (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
-                        hasInvalidLast = true;
-                        return false;
+                    if ($(this).attr('name').includes('.ratio')) {
+                        if (!$(this).val().trim()) {
+                            alert('Tỷ lệ (mẻ cuối) không được để trống.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
+                        if (value <= 0 || value >= 10000) {
+                            alert('Tỷ lệ (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
+                    }
+                    if ($(this).attr('name').includes('.lightPercent') && $(this).val().trim()) {
+                        if (value <= 0 || value >= 10000) {
+                            alert('Phần trăm ánh sáng (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
                     }
                 });
                 if (hasInvalidLast) {
@@ -1888,24 +1957,26 @@
                     return false;
                 }
 
-                // Kiểm tra DispergatorN cho mẻ cuối
+                // Kiểm tra DispergatorN, DFM, Anbatex cho mẻ cuối
                 const dispergatorNLast = parseFloat($(this).find('input[name="dispergatorNForLastBatch"]').val());
-                if ($(this).find('input[name="dispergatorNForLastBatch"]').length && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
+                const dfmLast = parseFloat($(this).find('input[name="dfmForLastBatch"]').val());
+                const anbatexLast = parseFloat($(this).find('input[name="anbatexForLastBatch"]').val());
+                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
                     e.preventDefault();
-                    alert('DispergatorN (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('DispergatorN (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    return false;
+                }
+                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0 || dfmLast >= 10000)) {
+                    e.preventDefault();
+                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    return false;
+                }
+                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0 || anbatexLast >= 10000)) {
+                    e.preventDefault();
+                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
                     return false;
                 }
             }
-        });
-
-        // Mở modal cho hoàn tất hành trình công nghệ
-        $('.btn-complete-tech-process').click(function () {
-            $('#completeTechProcessModal').modal('show');
-        });
-
-        // Đóng modal
-        $('#completeTechProcessModal .btn-close, #completeTechProcessModal .btn-cancel').click(function () {
-            $('#completeTechProcessModal').modal('hide');
         });
 
         // Kiểm tra dữ liệu trước khi submit form cập nhật
@@ -1921,15 +1992,30 @@
             let hasInvalidFirst = false;
             dyeTypesFirstInputs.each(function () {
                 const value = parseFloat($(this).val());
-                if (!$(this).val().trim()) {
-                    alert('Vui lòng điền đầy đủ thông tin cho các Dye Type của mẻ đầu.');
+                const fieldName = $(this).prev('.form-label').text();
+                if ($(this).attr('name').includes('.name') && !$(this).val().trim()) {
+                    alert('Vui lòng điền đầy đủ thông tin Tên thuốc nhuộm cho các Dye Type của mẻ đầu.');
                     hasInvalidFirst = true;
                     return false;
                 }
-                if ($(this).attr('type') === 'number' && (value <= 0 || value >= 10000)) {
-                    alert($(this).prev('.form-label').text() + ' (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
-                    hasInvalidFirst = true;
-                    return false;
+                if ($(this).attr('name').includes('.ratio')) {
+                    if (!$(this).val().trim()) {
+                        alert('Tỷ lệ (mẻ đầu) không được để trống.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
+                    if (value <= 0 || value >= 10000) {
+                        alert('Tỷ lệ (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
+                }
+                if ($(this).attr('name').includes('.lightPercent') && $(this).val().trim()) {
+                    if (value <= 0 || value >= 10000) {
+                        alert('Phần trăm ánh sáng (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                        hasInvalidFirst = true;
+                        return false;
+                    }
                 }
             });
             if (hasInvalidFirst) {
@@ -1937,11 +2023,23 @@
                 return false;
             }
 
-            // Kiểm tra DispergatorN cho mẻ đầu
+            // Kiểm tra DispergatorN, DFM, Anbatex cho mẻ đầu
             const dispergatorNFirst = parseFloat($(this).find('input[name="dispergatorNForFirstBatches"]').val());
-            if ($(this).find('input[name="dispergatorNForFirstBatches"]').length && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
+            const dfmFirst = parseFloat($(this).find('input[name="dfmForFirstBatches"]').val());
+            const anbatexFirst = parseFloat($(this).find('input[name="anbatexForFirstBatches"]').val());
+            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
                 e.preventDefault();
-                alert('DispergatorN (mẻ đầu) phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                return false;
+            }
+            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0 || dfmFirst >= 10000)) {
+                e.preventDefault();
+                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                return false;
+            }
+            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0 || anbatexFirst >= 10000)) {
+                e.preventDefault();
+                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
                 return false;
             }
 
@@ -1958,15 +2056,30 @@
                 let hasInvalidLast = false;
                 dyeTypesLastInputs.each(function () {
                     const value = parseFloat($(this).val());
-                    if (!$(this).val().trim()) {
-                        alert('Vui lòng điền đầy đủ thông tin cho các Dye Type của mẻ cuối.');
+                    const fieldName = $(this).prev('.form-label').text();
+                    if ($(this).attr('name').includes('.name') && !$(this).val().trim()) {
+                        alert('Vui lòng điền đầy đủ thông tin Tên thuốc nhuộm cho các Dye Type của mẻ cuối.');
                         hasInvalidLast = true;
                         return false;
                     }
-                    if ($(this).attr('type') === 'number' && (value <= 0 || value >= 10000)) {
-                        alert($(this).prev('.form-label').text() + ' (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
-                        hasInvalidLast = true;
-                        return false;
+                    if ($(this).attr('name').includes('.ratio')) {
+                        if (!$(this).val().trim()) {
+                            alert('Tỷ lệ (mẻ cuối) không được để trống.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
+                        if (value <= 0 || value >= 10000) {
+                            alert('Tỷ lệ (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
+                    }
+                    if ($(this).attr('name').includes('.lightPercent') && $(this).val().trim()) {
+                        if (value <= 0 || value >= 10000) {
+                            alert('Phần trăm ánh sáng (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                            hasInvalidLast = true;
+                            return false;
+                        }
                     }
                 });
                 if (hasInvalidLast) {
@@ -1974,14 +2087,36 @@
                     return false;
                 }
 
-                // Kiểm tra DispergatorN cho mẻ cuối
+                // Kiểm tra DispergatorN, DFM, Anbatex cho mẻ cuối
                 const dispergatorNLast = parseFloat($(this).find('input[name="dispergatorNForLastBatch"]').val());
-                if ($(this).find('input[name="dispergatorNForLastBatch"]').length && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
+                const dfmLast = parseFloat($(this).find('input[name="dfmForLastBatch"]').val());
+                const anbatexLast = parseFloat($(this).find('input[name="anbatexForLastBatch"]').val());
+                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
                     e.preventDefault();
-                    alert('DispergatorN (mẻ cuối) phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('DispergatorN (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    return false;
+                }
+                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0 || dfmLast >= 10000)) {
+                    e.preventDefault();
+                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    return false;
+                }
+                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0 || anbatexLast >= 10000)) {
+                    e.preventDefault();
+                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
                     return false;
                 }
             }
+        });
+
+        // Mở modal cho hoàn tất hành trình công nghệ
+        $('.btn-complete-tech-process').click(function () {
+            $('#completeTechProcessModal').modal('show');
+        });
+
+        // Đóng modal
+        $('#completeTechProcessModal .btn-close, #completeTechProcessModal .btn-cancel').click(function () {
+            $('#completeTechProcessModal').modal('hide');
         });
 
         // Tạo mã QR khi modal được mở

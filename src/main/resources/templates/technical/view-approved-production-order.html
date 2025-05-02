@@ -345,7 +345,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${productionOrdersWithoutWorkOrder.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy Production Order nào chưa có Work Order.</p>
+                                    <p>Không tìm thấy lệnh sản xuất nào chưa có kế hoạch.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="order, iterStat : ${productionOrdersWithoutWorkOrder}">
@@ -425,7 +425,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${productionOrdersWithWorkOrder.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy Production Order nào đã có Work Order.</p>
+                                    <p>Không tìm thấy lệnh sản xuất nào đã có kế hoạch.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="order, iterStat : ${productionOrdersWithWorkOrder}">
