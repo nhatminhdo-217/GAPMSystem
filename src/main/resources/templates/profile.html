@@ -14,6 +14,7 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         .toast {
@@ -119,6 +120,136 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 10px;
+                margin-top: 20px;
+            }
+
+            h1.text-center {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card {
+                padding: 15px;
+                margin: 0 10px;
+            }
+
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card p strong {
+                font-size: 0.95rem;
+            }
+
+            .btn-custom {
+                min-width: 100%;
+                height: 40px;
+                line-height: 40px;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .d-flex.justify-content-center {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-content {
+                width: 90%;
+                max-width: none;
+                padding: 15px;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .modal-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .modal-content .form-control {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .modal-content .btn-success {
+                width: 100%;
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .modal-content label {
+                font-size: 0.9rem;
+            }
+
+            .modal-content .close {
+                font-size: 1.2rem;
+                position: absolute;
+                top: 10px;
+                right: 15px;
+            }
+
+            .alert {
+                font-size: 0.85rem;
+                margin: 10px;
+                padding: 10px;
+            }
+
+            .toast {
+                width: 90%;
+                max-width: 300px;
+                margin: 10px auto;
+                font-size: 0.85rem;
+            }
+
+            .toast .toast-header {
+                font-size: 0.9rem;
+            }
+
+            .toast .toast-body {
+                font-size: 0.85rem;
+            }
+
+            .form-control {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            footer {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+
+            .swal2-popup {
+                width: 90% !important;
+                font-size: 0.9rem !important;
+            }
+
+            .swal2-title {
+                font-size: 1.2rem !important;
+            }
+
+            .swal2-content {
+                font-size: 0.9rem !important;
+            }
+
+            .swal2-confirm {
+                font-size: 0.9rem !important;
+                padding: 8px 16px !important;
+            }
+        }
     </style>
 </head>
 
@@ -165,18 +296,8 @@
                     <p>Vui lòng cập nhật số điện thoại của bạn.</p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div th:if="${error != null}" class="alert alert-danger mt-3 fade show" role="alert">
-                    <p th:text="${error}"></p>
-                </div>
-                <div th:if="${success != null}" class="alert alert-success mt-3 fade show" role="alert">
-                    <p th:text="${success}"></p>
-                </div>
-                <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
-                     class="alert alert-danger mt-3 fade show" role="alert">
-                    <th:block th:each="error : ${validationErrors}">
-                        <p th:text="${error.defaultMessage}"></p>
-                    </th:block>
-                </div>
+
+
             </div>
         </div>
 
@@ -200,18 +321,6 @@
                     </p>
                     <div class="d-flex justify-content-center gap-3 mt-3">
                         <button id="editCompanyBtn" class="btn btn-custom">Thay đổi thông tin công ty</button>
-                    </div>
-                    <div th:if="${errorCompany != null}" class="alert alert-danger mt-3">
-                        <p th:text="${errorCompany}"></p>
-                    </div>
-                    <div th:if="${successCompany != null}" class="alert alert-success mt-3">
-                        <p th:text="${successCompany}"></p>
-                    </div>
-                    <div th:if="${validationErrorsCompany != null and #lists.size(validationErrorsCompany) > 0}"
-                         class="alert alert-danger mt-3">
-                        <th:block th:each="error : ${validationErrorsCompany}">
-                            <p th:text="${error.defaultMessage}"></p>
-                        </th:block>
                     </div>
                 </div>
             </div>
@@ -314,70 +423,87 @@
 </div>
 
 <!-- Toast thông báo -->
-<div id="successToast" class="toast success-toast"
-     style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Thành công</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="successMessage"></p>
-    </div>
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${success}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="errorToast" class="toast error-toast"
-     style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="errorMessage"></p>
-    </div>
+<div th:if="${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${error}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${validationErrorsCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${validationErrorsCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="validationErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi Validation</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <ul id="validationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
-    </div>
+<div th:if="${errorCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${errorCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="profileSuccessToast" class="toast success-toast"
-     style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Thành công</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="profileSuccessMessage"></p>
-    </div>
+<div th:if="${successCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${successCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="profileErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="profileErrorMessage"></p>
-    </div>
-</div>
-
-<div id="profileValidationErrorToast" class="toast error-toast"
-     style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi Validation</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <ul id="profileValidationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
-    </div>
+<div th:if="${validationErrors}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${validationErrors}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
 <script>
@@ -468,55 +594,7 @@
             });
         });
 
-        // Xử lý toast thông báo
-        const hiddenSuccess = document.getElementById('hiddenSuccess');
-        if (hiddenSuccess && hiddenSuccess.textContent) {
-            const successToast = new bootstrap.Toast(document.getElementById('successToast'));
-            document.getElementById('successMessage').textContent = hiddenSuccess.textContent;
-            successToast.show();
-            setTimeout(() => successToast.hide(), 3000);
-        }
 
-        const hiddenError = document.getElementById('hiddenError');
-        if (hiddenError && hiddenError.textContent) {
-            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
-            document.getElementById('errorMessage').textContent = hiddenError.textContent;
-            errorToast.show();
-            setTimeout(() => errorToast.hide(), 3000);
-        }
-
-        const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
-        if (hiddenValidationErrors?.textContent) {
-            const validationErrors = hiddenValidationErrors.textContent.split(', ').map(errorStr => {
-                const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
-                return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
-            }).filter(error => error.defaultMessage);
-
-            if (validationErrors.length) {
-                const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
-                document.getElementById('validationErrorMessages').innerHTML = validationErrors
-                    .map(error => `<li>${error.defaultMessage}</li>`)
-                    .join('');
-                toast.show();
-                setTimeout(() => toast.hide(), 5000);
-            }
-        }
-
-        const profileSuccess = document.getElementById('hiddenProfileSuccess');
-        if (profileSuccess?.textContent) {
-            const toast = new bootstrap.Toast(document.getElementById('profileSuccessToast'));
-            document.getElementById('profileSuccessMessage').textContent = profileSuccess.textContent;
-            toast.show();
-            setTimeout(() => toast.hide(), 3000);
-        }
-
-        const profileError = document.getElementById('hiddenProfileError');
-        if (profileError?.textContent) {
-            const toast = new bootstrap.Toast(document.getElementById('profileErrorToast'));
-            document.getElementById('profileErrorMessage').textContent = profileError.textContent;
-            toast.show();
-            setTimeout(() => toast.hide(), 3000);
-        }
 
         const profileValidationErrors = document.getElementById('hiddenProfileValidationErrors');
         if (profileValidationErrors?.textContent) {
@@ -610,5 +688,6 @@
 
 <script src="/assert/lib/chart/chart.min.js"></script>
 <script src="/assert/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>

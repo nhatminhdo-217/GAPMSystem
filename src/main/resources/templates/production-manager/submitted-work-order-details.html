@@ -717,7 +717,7 @@
                                                             <th>Thời gian bắt đầu dự kiến</th>
                                                             <th>Hạn chót</th>
                                                             <th>Trạng thái công việc</th>
-                                                            <th>Máy Nhuộm ID</th>
+                                                            <th>Máy Nhuộm</th>
                                                             <th>Mức keo</th>
                                                         </tr>
                                                         </thead>
@@ -736,7 +736,7 @@
                                                             <td th:text="${detail?.dyeStage?.deadline != null ? #temporals.format(detail.dyeStage.deadline, 'dd/MM/yyyy') : 'N/A'}"></td>
                                                             <td th:classappend="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
                                                                 th:text="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.dyeStage?.workStatus?.name() ?: 'N/A'})))"></td>
-                                                            <td th:text="${detail?.dyeStage?.dyeMachine.id ?: 'N/A'}"></td>
+                                                            <td th:text="'MB-'+${detail?.dyeStage?.dyeMachine.id ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail.product.thread.process.glue_level != null ? (detail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
                                                         </tr>
                                                         </tbody>
@@ -777,7 +777,7 @@
                                                             <th>Thời gian bắt đầu dự kiến</th>
                                                             <th>Hạn chót</th>
                                                             <th>Trạng thái công việc</th>
-                                                            <th>Máy Cuốn ID</th>
+                                                            <th>Máy Cuốn </th>
                                                             <th>Tốc độ máy</th>
                                                             <th>Tốc độ bánh vót</th>
                                                             <th>Mức keo</th>
@@ -794,7 +794,7 @@
                                                             <td th:text="${detail?.windingStage?.deadline != null ? #temporals.format(detail.windingStage.deadline, 'dd/MM/yyyy') : 'N/A'}"></td>
                                                             <td th:classappend="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
                                                                 th:text="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.windingStage?.workStatus?.name() ?: 'N/A'})))"></td>
-                                                            <td th:text="${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
+                                                            <td th:text="'WB-'+${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.machine_speed ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.tocdo_banhvot != null ? detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.tocdo_banhvot + ' m/phút' : 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.glue_level != null ? (detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
@@ -897,7 +897,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="approveWorkOrderModalLabel">Đồng Ý Lệnh Làm Việc</h5>
+                    <h5 class="modal-title" id="approveWorkOrderModalLabel">Đồng ý lệnh làm việc</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

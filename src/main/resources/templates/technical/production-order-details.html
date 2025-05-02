@@ -21,6 +21,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         body {
@@ -294,12 +295,12 @@
                                             th:text="'PRO-'+${productionOrder.id}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Mã Đơn đặt hàng:</strong> <span
-                                            th:text="${productionOrder.purchaseOrder?.id ?: 'N/A'}"></span>
+                                        <strong>Số lượng trong đơn:</strong> <span
+                                            th:text="${productionOrder.purchaseOrder.purchaseOrderDetails.size() ?: 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Trạng thái:</strong> <span th:text="${productionOrder.status}"
-                                                                           style="color: #28a745;"></span>
+                                        <strong>Trạng thái lệnh sản xuất:</strong> <span
+                                                                           style="color: #28a745;">Đã gửi</span>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -312,7 +313,7 @@
                                             th:text="${productionOrder.updateAt != null ? #temporals.format(productionOrder.updateAt, 'dd/MM/yyyy') : 'N/A'}"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Trạng thái Kế hoạch sản xuất:</strong>
+                                        <strong>Trạng thái lệnh làm việc:</strong>
                                         <span th:if="${productionOrder.workOrder == null}" class="work-order-status"
                                               th:text="'CHƯA CÓ'"></span>
                                         <span th:if="${productionOrder.workOrder != null}"
@@ -360,7 +361,7 @@
                                 <div th:if="${productionOrder.workOrder != null}">
                                     <a th:href="@{/technical/work-order-details/{id}(id=${productionOrder.workOrder.id})}"
                                        class="btn-custom view-work-order">
-                                        <i class="fas fa-eye"></i> Xem Chi tiết Kế hoạch sản xuất
+                                        <i class="fas fa-eye"></i> Xem Chi tiết lệnh làm việc
                                     </a>
                                 </div>
                                 <a th:href="@{/technical/view-approved-production-order}" class="btn-secondary">

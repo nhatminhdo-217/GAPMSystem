@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -243,13 +243,14 @@
                     </div>
                 </div>
             </div>
-
+            <br>
+            <br>
             <!-- Phân trang -->
             <nav aria-label="Page navigation" th:if="${totalItems > 0}">
                 <ul class="pagination justify-content-center">
                     <!-- Nút Previous -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage - 1}, size=${pageSize})}">Trước</a>
                     </li>
                     <!-- Các trang -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
@@ -258,7 +259,7 @@
                     </li>
                     <!-- Nút Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage + 1}, size=${pageSize})}">Sau</a>
                     </li>
                 </ul>
             </nav>
@@ -271,8 +272,6 @@
     </div>
     <!-- Content End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 
 <!-- JavaScript Libraries -->

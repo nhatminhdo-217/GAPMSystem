@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -424,7 +424,7 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h2><i class="fas fa-yarn me-2"></i> Mẻ Côn-WO-<span th:text="${woId}"></span>/WD-<span th:text="${wodId}"></span></h2>
+                        <h2><i class="fas fa-yarn me-2"></i> Mã quản lý  <span th:text="'RFQ-'+${rfqId}+'/'+${rfqDetailId}"></span></h2>
                         <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${woId})}" class="btn btn-light">Quay lại</a>
                     </div>
                     <div class="table-responsive">

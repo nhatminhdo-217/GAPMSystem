@@ -260,6 +260,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return "";
     }
 
+    @Override
+    public Boolean checkContractCode(String contractCode) {
+        Optional<Contract> contract = contractRepository.findByContractCode(contractCode);
+        return contract.isPresent();
+    }
+
+    @Override
+    public Boolean checkContractCodeWithId(String contractCode, String id) {
+        Optional<Contract> contract = contractRepository.findByContractCodeAndExcludeId(contractCode, id);
+
+        return contract.isPresent();
+    }
+
     private boolean isPurchaseOrderContract(Long id){
         Optional<PurchaseOrder> purchaseOrder = getPurchaseOrderById(id);
         return purchaseOrder.filter(order -> order.getContract() != null).isPresent();
