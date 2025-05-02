@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -149,44 +150,47 @@ public class SaleApprovedRfqController {
     }
 
     @PostMapping("/submit-solution/{id}")
-    public String submitSolution(@PathVariable Long id, @Valid @ModelAttribute("solution") SolutionDTO solutionDTO, BindingResult result, Principal principal, Model model) {
+    public String submitSolution(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("solution") SolutionDTO solutionDTO,
+            BindingResult result,
+            Principal principal,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         userUtils.getOptionalUser(model);
 
         String emailOrPhone = principal.getName();
         Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
 
         if (optionalUser.isEmpty()) {
-            model.addAttribute("error", "Tài khoản đang dùng không còn tồn tại.");
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("error", "Tài khoản đang dùng không còn tồn tại.");
+            return "redirect:/technical/rfq-details/" + id;
         }
 
         User currentUser = optionalUser.get();
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null) {
-            model.addAttribute("error", "RFQ không tồn tại.");
-            model.addAttribute("rfq", null);
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("error", "RFQ không tồn tại.");
+            return "redirect:/technical/rfq-details/" + id;
         }
 
-        model.addAttribute("rfq", rfq);
-
         if (result.hasErrors()) {
-            model.addAttribute("validationErrors", result.getAllErrors());
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("validationErrors", result.getAllErrors());
+            redirectAttributes.addFlashAttribute("rfq", rfq);
+            return "redirect:/technical/rfq-details/" + id;
         }
 
         try {
             Solution solution = solutionService.addSolution(id, currentUser.getId(), solutionDTO);
-            Rfq updatedRfq = rfqService.getRfqById(id);
-            model.addAttribute("rfq", updatedRfq);
-            model.addAttribute("success", "Tạo Solution thành công!");
+            redirectAttributes.addFlashAttribute("success", "Tạo Solution thành công!");
         } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
-            model.addAttribute("error", "Unexpected Error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
-        return "technical/rfq-details";
+        return "redirect:/technical/rfq-details/" + id;
     }
 
     @GetMapping("/update-solution/{id}")
@@ -214,65 +218,67 @@ public class SaleApprovedRfqController {
     }
 
     @PostMapping("/update-solution/{id}")
-    public String updateSolution(@PathVariable Long id, @Valid @ModelAttribute("solution") SolutionDTO solutionDTO, BindingResult result, Model model) {
+    public String updateSolution(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("solution") SolutionDTO solutionDTO,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         userUtils.getOptionalUser(model);
 
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
-            model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            return "redirect:/technical/rfq-details/" + id;
         }
 
-        model.addAttribute("rfq", rfq);
-
         if (result.hasErrors()) {
-            model.addAttribute("validationErrors", result.getAllErrors());
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("validationErrors", result.getAllErrors());
+            redirectAttributes.addFlashAttribute("rfq", rfq);
+            return "redirect:/technical/rfq-details/" + id;
         }
 
         try {
             Solution updatedSolution = solutionService.updateSolution(rfq.getSolution().getId(), solutionDTO);
-            Rfq updatedRfq = rfqService.getRfqById(id);
-            model.addAttribute("rfq", updatedRfq);
-            model.addAttribute("success", "Cập nhật Solution thành công!");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật Solution thành công!");
         } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
-            model.addAttribute("error", "Unexpected Error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Unexpected Error: " + e.getMessage());
         }
 
-        return "technical/rfq-details";
+        return "redirect:/technical/rfq-details/" + id;
     }
 
     @PostMapping("/submit-solution-final/{id}")
-    public String submitSolutionFinal(@PathVariable Long id, Model model) {
+    public String submitSolutionFinal(
+            @PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         userUtils.getOptionalUser(model);
 
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
-            model.addAttribute("error", "RFQ hoặc Solution không tồn tại.");
-            return "technical/rfq-details";
+            redirectAttributes.addFlashAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            return "redirect:/technical/rfq-details/" + id;
         }
-
-        model.addAttribute("rfq", rfq);
 
         try {
             solutionService.submitSolution(rfq.getSolution().getId());
-            // Lấy lại Rfq sau khi submit để đảm bảo dữ liệu mới nhất
-            Rfq updatedRfq = rfqService.getRfqById(id);
-
             quotationService.createQuotationByRfqId(id);
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
             /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), getuotationId);*/
 
-            model.addAttribute("rfq", updatedRfq); // Cập nhật model với dữ liệu mới
-            model.addAttribute("success", "Solution và Quotation đã được gửi thành công!");
+            redirectAttributes.addFlashAttribute("success", "Solution và Quotation đã được gửi thành công!");
         } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "technical/rfq-details";
+
+        return "redirect:/technical/rfq-details/" + id;
     }
 
     private static class PageImplWrapper<T> extends org.springframework.data.domain.PageImpl<T> {

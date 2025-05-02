@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -300,13 +301,6 @@ public class TechnicalWorkOrderController {
                 } else {
                     dyeBatches = division.setScale(0, RoundingMode.CEILING).intValue();
                 }
-
-                System.err.println("maxProductPerBatch: " + maxProductPerBatch);
-                System.err.println("coneWeight: " + coneWeight);
-                System.err.println("coneBatchWeight: " + coneBatchWeight);
-                System.err.println("division: " + division);
-                System.err.println("fractionalPart: " + fractionalPart);
-                System.err.println("dyeBatches: " + dyeBatches);
             }
 
             BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -357,12 +351,13 @@ public class TechnicalWorkOrderController {
                 return ResponseEntity.ok(response);
             }
 
-            long dyeDurationMinutes = dyeBatches * 120 + (dyeBatches - 1) * 15;
+            // Tính deadline của dye
+            long dyeDurationMinutes = dyeBatches * 150; // 1 mẻ dye = 150 phút
             LocalDateTime dyeDeadline = plannedStartAt.plusMinutes(dyeDurationMinutes);
 
             Map<String, String> deadlines = new HashMap<>();
-            deadlines.put("dyeDeadline", dyeDeadline.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-            deadlines.put("plannedEndAt", plannedEndAt.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            deadlines.put("dyeDeadline", dyeDeadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            deadlines.put("plannedEndAt", plannedEndAt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
             if (windingMachineId == null) {
                 boolean dyeMeetsDeadline = !dyeDeadline.isAfter(plannedEndAt);
@@ -391,28 +386,102 @@ public class TechnicalWorkOrderController {
                 return ResponseEntity.ok(response);
             }
 
-            int windingBatches = dyeBatches;
-            long windingDurationMinutes = windingBatches * 60 + (windingBatches - 1) * 15;
+            // Tính deadline của winding
             LocalDateTime windingStart = dyeBatches > 1 ? plannedStartAt.plusMinutes(270) : dyeDeadline;
+            long windingDurationMinutes = dyeBatches * 75; // 1 mẻ winding = 75 phút
             LocalDateTime windingDeadline = windingStart.plusMinutes(windingDurationMinutes);
 
-            int packagingBatches = dyeBatches;
-            BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.5);
-            BigDecimal totalPackagingDurationMinutes = BigDecimal.ZERO;
-            BigDecimal remainingConeWeight = coneWeight;
-
-            for (int i = 0; i < packagingBatches; i++) {
-                BigDecimal currentConeBatchWeight = (i == packagingBatches - 1
-                        && remainingConeWeight.compareTo(coneBatchWeight) < 0)
-                        ? remainingConeWeight : coneBatchWeight;
-                BigDecimal productsInBatch = currentConeBatchWeight.divide(convertRate, 0, RoundingMode.CEILING);
-                totalPackagingDurationMinutes = totalPackagingDurationMinutes
-                        .add(productsInBatch.multiply(packagingTimePerProduct));
-                remainingConeWeight = remainingConeWeight.subtract(currentConeBatchWeight);
+            // Đảm bảo windingDeadline >= dyeDeadline
+            if (windingDeadline.isBefore(dyeDeadline)) {
+                windingDeadline = dyeDeadline;
             }
 
-            LocalDateTime packagingStart = packagingBatches > 1 ? windingStart.plusMinutes(150) : windingDeadline;
-            LocalDateTime packagingDeadline = packagingStart.plusMinutes(totalPackagingDurationMinutes.longValue());
+            // Tính deadline của packaging
+            LocalDateTime packagingStart = dyeBatches > 1 ? plannedStartAt.plusMinutes(150) : dyeDeadline;
+            BigDecimal totalProduct = calculateMaxProductPerBatch(coneWeight, convertRate);
+            BigDecimal[] productsPerBatch = new BigDecimal[dyeBatches];
+            if (dyeBatches > 1) {
+                for (int i = 0; i < dyeBatches - 1; i++) {
+                    productsPerBatch[i] = maxProductPerBatch;
+                }
+                BigDecimal remainingProducts = totalProduct.subtract(maxProductPerBatch
+                        .multiply(BigDecimal.valueOf(dyeBatches - 1)));
+                productsPerBatch[dyeBatches - 1] = remainingProducts.setScale(0, RoundingMode.CEILING);
+            } else {
+                productsPerBatch[0] = totalProduct;
+            }
+
+            LocalDateTime currentPackagingTime = packagingStart;
+            List<LocalDateTime> windingBatchEndTimes = new ArrayList<>();
+            LocalDateTime windingBatchStart = windingStart;
+            for (int i = 0; i < dyeBatches; i++) {
+                LocalDateTime batchEnd = windingBatchStart.plusMinutes(75); // 1 mẻ winding = 75 phút
+                windingBatchEndTimes.add(batchEnd);
+                windingBatchStart = batchEnd; // Không nghỉ giữa các mẻ để đảm bảo deadline
+            }
+
+            int windingBatchIndex = 0;
+            BigDecimal remainingProducts = BigDecimal.ZERO;
+            List<BigDecimal> productsToPack = new ArrayList<>();
+
+            for (int i = 0; i < dyeBatches; i++) {
+                BigDecimal currentBatchProducts = productsPerBatch[i];
+                productsToPack.add(currentBatchProducts);
+
+                if (i == 0 && dyeBatches >= 2) {
+                    productsToPack.add(productsPerBatch[i + 1]);
+                    i++; // Xử lý 2 mẻ đầu tiên cùng lúc
+                }
+
+                BigDecimal totalProductsToPack = productsToPack.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
+                        .add(remainingProducts);
+                BigDecimal productsPerBox = BigDecimal.valueOf(6); // 1 hộp = 6 sản phẩm
+                BigDecimal timePerProduct = BigDecimal.valueOf(0.5); // 1 sản phẩm = 30 giây
+                BigDecimal numBoxes = totalProductsToPack.divide(productsPerBox, 0, RoundingMode.CEILING);
+                BigDecimal packagingDurationMinutes = totalProductsToPack.multiply(timePerProduct).
+                        multiply(BigDecimal.valueOf(60)); // Chuyển sang phút
+
+                LocalDateTime packagingEnd = currentPackagingTime.plusMinutes(packagingDurationMinutes.longValue());
+
+                // So sánh với thời gian winding
+                LocalDateTime windingComparisonTime = windingBatchEndTimes.get(windingBatchIndex);
+                long durationBetween = Duration.between(currentPackagingTime, packagingEnd).toMinutes();
+                long windingDuration = Duration.between(currentPackagingTime, windingComparisonTime).toMinutes();
+
+                if (durationBetween > windingDuration) {
+                    BigDecimal productsCanPack = BigDecimal.valueOf(windingDuration).
+                            divide(timePerProduct, 0, RoundingMode.FLOOR).
+                            divide(BigDecimal.valueOf(60), 0, RoundingMode.FLOOR);
+                    remainingProducts = totalProductsToPack.subtract(productsCanPack);
+                    currentPackagingTime = currentPackagingTime.plusMinutes(windingDuration);
+                } else {
+                    remainingProducts = BigDecimal.ZERO;
+                    long remainingTime = windingDuration - durationBetween;
+                    if (remainingTime > 0) {
+                        currentPackagingTime = currentPackagingTime.plusMinutes(durationBetween + remainingTime);
+                    } else {
+                        currentPackagingTime = packagingEnd;
+                    }
+                }
+
+                productsToPack.clear();
+                windingBatchIndex++;
+
+                // Xử lý mẻ cuối
+                if (i == dyeBatches - 1 && remainingProducts.compareTo(BigDecimal.ZERO) > 0) {
+                    BigDecimal finalNumBoxes = remainingProducts.divide(productsPerBox, 0, RoundingMode.CEILING);
+                    BigDecimal finalDuration = finalNumBoxes.multiply(productsPerBox).
+                            multiply(timePerProduct).multiply(BigDecimal.valueOf(60));
+                    currentPackagingTime = currentPackagingTime.plusMinutes(finalDuration.longValue());
+                }
+            }
+
+            LocalDateTime packagingDeadline = currentPackagingTime;
+
+            // Đảm bảo packagingDeadline >= windingDeadline
+            if (packagingDeadline.isBefore(windingDeadline)) {
+                packagingDeadline = windingDeadline;
+            }
 
             boolean meetsDeadline = !dyeDeadline.isAfter(plannedEndAt)
                     && !windingDeadline.isAfter(plannedEndAt)
@@ -420,8 +489,8 @@ public class TechnicalWorkOrderController {
             response.put("success", meetsDeadline);
             response.put("message", meetsDeadline ? "Máy khả dụng." : "Không phù hợp do deadline vượt quá giới hạn.");
 
-            deadlines.put("windingDeadline", windingDeadline.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-            deadlines.put("packagingDeadline", packagingDeadline.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            deadlines.put("windingDeadline", windingDeadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            deadlines.put("packagingDeadline", packagingDeadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
             response.put("dyeMachine", dyeMachineInfo);
             response.put("dyeCalculations", dyeCalculations);
