@@ -43,7 +43,7 @@ public class ProfileController {
             //User
             model.addAttribute("user", optionalUser.get());
             model.addAttribute("username", optionalUser.get().getUsername());
-            model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
+            model.addAttribute("avatar",optionalUser.get().getAvatar());
             //Company
             Optional<Company> optionalCompany = companyService.findByUserId(optionalUser.get().getId());
 
@@ -106,7 +106,7 @@ public class ProfileController {
         model.addAttribute("company", optionalCompany.get());
         model.addAttribute("success", "Mật khẩu đã được thay đổi thành công.");
 
-        return "/profile";
+        return "profile";
     }
 
     @PostMapping("/updateProfile")
