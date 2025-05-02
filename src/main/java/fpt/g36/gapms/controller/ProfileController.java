@@ -50,11 +50,10 @@ public class ProfileController {
 
             if (optionalCompany.isPresent()) {
                 model.addAttribute("company", optionalCompany.get());
-                System.err.println("Find company: " + optionalCompany.get());
+
                 return "profile";
             } else {
                 model.addAttribute("company", null);
-                System.err.println("Find company: " + null);
                 return "profile";
             }
         } else {
@@ -196,7 +195,7 @@ public class ProfileController {
         }
 
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("validationErrorsCompany", result.getAllErrors());
+            redirectAttributes.addFlashAttribute("validationErrorsCompany", "Kiểm tra lại thông tin công ty");
             return "redirect:/profile";
         }
 
@@ -238,7 +237,7 @@ public class ProfileController {
 
         // Kiểm tra lỗi validation trước khi cập nhật
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("validationErrorsCompany", result.getAllErrors());
+            redirectAttributes.addFlashAttribute("validationErrorsCompany", "Kiểm tra lại thông tin công ty");
             return "redirect:/profile";
         }
 

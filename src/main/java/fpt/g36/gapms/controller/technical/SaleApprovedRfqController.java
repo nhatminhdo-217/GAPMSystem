@@ -275,7 +275,7 @@ public class SaleApprovedRfqController {
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
-            notificationUtils.sentSolutionFromTechnicalToSaleStaff(updatedRfq.getId(), quotationId);
+            notificationUtils.sentSolutionFromTechnicalToSaleStaff(rfq.getId(), quotationId);
             redirectAttributes.addFlashAttribute("success", "Giải pháp báo giá đã được gửi thành công!");
 
         } catch (RuntimeException e) {

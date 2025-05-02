@@ -1843,7 +1843,12 @@
             if (entry.siblings('.dye-type-entry').length > 0) {
                 entry.remove();
             } else {
-                alert('Phải có ít nhất một thuốc nhuộm.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cảnh báo',
+                    text: 'Phải có ít nhất một thuốc nhuộm.',
+                    confirmButtonText: 'OK'
+                });
             }
         });
 
@@ -1852,7 +1857,12 @@
             const dyeTypesFirstInputs = $(this).find('input[name^="dyeTypesForFirstBatches"]');
             if (dyeTypesFirstInputs.length === 0) {
                 e.preventDefault();
-                alert('Phải có ít nhất một Dye Type cho các mẻ đầu.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cảnh báo',
+                    text: 'Phải có ít nhất một Dye Type cho các mẻ đầu.',
+                    confirmButtonText: 'OK'
+                });
                 return false;
             }
 
