@@ -138,6 +138,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "    u.name AS username, \n" +
             "    c.name AS companyname, \n" +
             "    c.tax_number, \n" +
+            "    rd.id, \n" +
             "    p.name AS productname, \n" +
             "    b.name AS brandname, \n" +
             "    cate.name AS categoryname, \n" +
@@ -178,6 +179,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
             "    u.name AS username, \n" +
             "    c.name AS companyname, \n" +
             "    c.tax_number, \n" +
+            "    rd.id AS rfqDetailId, \n" +
             "    p.name AS productname, \n" +
             "    b.name AS brandname, \n" +
             "    cate.name AS categoryname, \n" +

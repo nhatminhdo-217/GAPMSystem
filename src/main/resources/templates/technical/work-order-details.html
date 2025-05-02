@@ -475,7 +475,7 @@
                             <h2 class="text-center mb-4">Chi tiết kế hoạch</h2>
 
                             <!-- Hiển thị thông báo thành công -->
-                            <div th:if="${success}" class="success-message" th:text="${success}"></div>
+                            <!--<div th:if="${success}" class="success-message" th:text="${success}"></div>-->
 
                             <!-- Work Order Info -->
                             <div class="work-order-info">
@@ -561,7 +561,7 @@
                                                  class="detail-section">
                                                 <div class="detail-header" data-bs-toggle="collapse"
                                                      th:data-bs-target="'#general-detail-' + ${iterStat.count}">
-                                                    <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                                    <h6 th:text="'Mã quản lý RFQ-'+ ${detail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${detail.purchaseOrderDetail.rfqDetailId}"></h6>
                                                     <button class="toggle-btn">
                                                         <i class="fas fa-plus"></i>
                                                     </button>
@@ -853,7 +853,7 @@
     </div>
 
     <!-- Toast Success -->
-    <div id="toastSuccess" class="toast"
+    <!--<div id="toastSuccess" class="toast"
          style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px; background-color: #f1f8e9; border-color: #c8e6c9;">
         <div class="toast-header" style="background-color: #c8e6c9; color: #388e3c;">
             <strong class="me-auto">Thành công</strong>
@@ -862,14 +862,26 @@
         <div class="toast-body" style="color: #388e3c;">
             <p id="successMessage"></p>
         </div>
-    </div>
+    </div>-->
 </div>
-
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                text: /*[[${success}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script>

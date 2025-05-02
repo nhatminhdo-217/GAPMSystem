@@ -5,9 +5,9 @@
     <a href="#" class="sidebar-toggler flex-shrink-0">
         <i class="fa fa-bars"></i>
     </a>
-    <form class="d-none d-md-flex ms-4">
+    <!--<form class="d-none d-md-flex ms-4">
         <input class="form-control border-0" type="search" placeholder="Search">
-    </form>
+    </form>-->
     <div class="text-end ms-auto d-flex align-items-center user-menu" th:if="${#authorization.expression('not isAuthenticated()')}">
         <a href="/login_form" class="btn btn-light btn-sm me-2">Đăng nhập</a>
         <a href="/register" class="btn btn-light btn-sm">Đăng ký</a>

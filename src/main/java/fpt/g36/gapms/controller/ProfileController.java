@@ -44,8 +44,8 @@ public class ProfileController {
             // User
             model.addAttribute("user", optionalUser.get());
             model.addAttribute("username", optionalUser.get().getUsername());
-            model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
-            // Company
+            model.addAttribute("avatar",optionalUser.get().getAvatar());
+            //Company
             Optional<Company> optionalCompany = companyService.findByUserId(optionalUser.get().getId());
 
             if (optionalCompany.isPresent()) {
@@ -96,7 +96,6 @@ public class ProfileController {
         // Cập nhật mật khẩu mới
         userService.updatePassword(currentUser, newPassword);
         redirectAttributes.addFlashAttribute("success", "Mật khẩu đã được thay đổi thành công.");
-
         return "redirect:/profile";
     }
 

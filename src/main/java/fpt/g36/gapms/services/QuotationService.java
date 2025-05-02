@@ -34,6 +34,8 @@ public interface QuotationService {
 
     List<BaseEnum> getAllQuotationStatuses();
 
+    List<BaseEnum> getAllProductionStatuses();
+
     Page<QuotationDTO> getAllQuotation(String search, BaseEnum status, int page, int size, String sortField, String sortDir);
 
     String getUserPhoneNumberByQuotationId(Long id);

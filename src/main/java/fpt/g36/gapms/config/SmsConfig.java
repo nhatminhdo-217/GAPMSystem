@@ -1,5 +1,7 @@
 package fpt.g36.gapms.config;
 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -7,9 +9,13 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @ConfigurationProperties(prefix = "sms")
 public class SmsConfig {
+    @Value("${sms.account-sid}")
     private String accountSid;
+    @Value("${sms.auth-token}")
     private String authToken;
+    @Value("${sms.from-number}")
     private String fromNumber;
+    @Value("${sms.enabled}")
     private Boolean enabled;
 
     public String getAccountSid() {

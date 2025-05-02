@@ -4,6 +4,7 @@ import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.dto.SolutionDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.services.*;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class SaleApprovedRfqController {
     private QuotationService quotationService;
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private NotificationUtils notificationUtils;
 
     public SaleApprovedRfqController(RfqService rfqService, UserUtils userUtils, UserService userService, SolutionService solutionService) {
         this.rfqService = rfqService;
@@ -101,13 +105,13 @@ public class SaleApprovedRfqController {
                         allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
                         withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
                         searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                        model.addAttribute("error", "Không tìm thấy RFQ với ID: " + searchId);
+                        model.addAttribute("error", "Không tìm thấy yêu cầu báo giá với mã: " + searchId);
                         activeTab = "search-results";
                         model.addAttribute("previousTab", activeTab);
                     }
                 } catch (NumberFormatException e) {
                     // ID không hợp lệ
-                    model.addAttribute("error", "Mã RFQ phải là số.");
+                    model.addAttribute("error", "Mã yêu cầu báo giá phải là số.");
                     allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
                     withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
                     searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
@@ -171,7 +175,7 @@ public class SaleApprovedRfqController {
         User currentUser = optionalUser.get();
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null) {
-            redirectAttributes.addFlashAttribute("error", "RFQ không tồn tại.");
+            redirectAttributes.addFlashAttribute("error", "Yêu cầu báo giá không tồn tại.");
             return "redirect:/technical/rfq-details/" + id;
         }
 
@@ -183,7 +187,7 @@ public class SaleApprovedRfqController {
 
         try {
             Solution solution = solutionService.addSolution(id, currentUser.getId(), solutionDTO);
-            redirectAttributes.addFlashAttribute("success", "Tạo Solution thành công!");
+            redirectAttributes.addFlashAttribute("success", "Tạo giải pháp thành công!");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
@@ -229,7 +233,7 @@ public class SaleApprovedRfqController {
 
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
-            redirectAttributes.addFlashAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            redirectAttributes.addFlashAttribute("error", "Yêu cầu báo giá hoặc giải pháp không tồn tại.");
             return "redirect:/technical/rfq-details/" + id;
         }
 
@@ -241,7 +245,7 @@ public class SaleApprovedRfqController {
 
         try {
             Solution updatedSolution = solutionService.updateSolution(rfq.getSolution().getId(), solutionDTO);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật Solution thành công!");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật giải pháp thành công!");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
@@ -261,7 +265,7 @@ public class SaleApprovedRfqController {
 
         Rfq rfq = rfqService.getRfqById(id);
         if (rfq == null || rfq.getSolution() == null) {
-            redirectAttributes.addFlashAttribute("error", "RFQ hoặc Solution không tồn tại.");
+            redirectAttributes.addFlashAttribute("error", "Yêu cầu báo giá hoặc giải pháp không tồn tại.");
             return "redirect:/technical/rfq-details/" + id;
         }
 
@@ -271,9 +275,9 @@ public class SaleApprovedRfqController {
             Long quotationId = quotationService.getQuotationIdByRfqId(id);
             Optional<User> customer = userService.findUsersByRfqId(id);
 
-            /*mailService.sendQuotationEmail(customer.get().getEmail(), customer.get().getUsername(), getuotationId);*/
-
-            redirectAttributes.addFlashAttribute("success", "Solution và Quotation đã được gửi thành công!");
+            notificationUtils.sentSolutionFromTechnicalToSaleStaff(updatedRfq.getId(), quotationId);
+            redirectAttributes.addFlashAttribute("success", "Giải pháp báo giá đã được gửi thành công!");
+          
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

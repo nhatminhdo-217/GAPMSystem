@@ -97,6 +97,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         item.setThreadMass(detail.getThread_mass());
         item.setLightEnv(detail.getLight_env());
         item.setHasWorkOrderDetail(detail.getWorkOrderDetail() != null);
+        item.setRfqId(detail.getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId());
+        item.setRfqDetailId(detail.getPurchaseOrderDetail().getRfqDetailId());
         return item;
     }
 
@@ -140,7 +142,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     @Override
-    public void createProductionOrder(Long id, User currUser) {
+    public ProductionOrder createProductionOrder(Long id, User currUser) {
 
         ProductionOrder productionOrder = new ProductionOrder();
 
@@ -160,6 +162,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             productionOrderDetail.setThread_mass(calculateThreadMassByPurchaseOrderDetailId(purchaseOrderDetail.getId()));
             productionOrderDetailRepository.save(productionOrderDetail);
         }
+        return savedProductionOrder;
     }
 
     @Override

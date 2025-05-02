@@ -9,6 +9,7 @@ import fpt.g36.gapms.services.MachineService;
 import fpt.g36.gapms.services.ProductionOrderService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.WorkOrderService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -42,16 +43,17 @@ public class TechnicalWorkOrderController {
     private final MachineService machineService;
     private final UserService userService;
     private final WorkOrderDetailsRepository workOrderDetailsRepository;
+    private final NotificationUtils notificationUtils;
 
-    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService, WorkOrderDetailsRepository workOrderDetailsRepository) {
+    public TechnicalWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, ProductionOrderService productionOrderService, MachineService machineService, UserService userService, WorkOrderDetailsRepository workOrderDetailsRepository, NotificationUtils notificationUtils) {
         this.workOrderService = workOrderService;
         this.userUtils = userUtils;
         this.productionOrderService = productionOrderService;
         this.machineService = machineService;
         this.userService = userService;
         this.workOrderDetailsRepository = workOrderDetailsRepository;
+        this.notificationUtils = notificationUtils;
     }
-
 
     @GetMapping("/view-all-work-order")
     public String viewAllWorkOrders(
@@ -301,6 +303,13 @@ public class TechnicalWorkOrderController {
                 } else {
                     dyeBatches = division.setScale(0, RoundingMode.CEILING).intValue();
                 }
+
+                System.err.println("maxProductPerBatch: " + maxProductPerBatch);
+                System.err.println("coneWeight: " + coneWeight);
+                System.err.println("coneBatchWeight: " + coneBatchWeight);
+                System.err.println("division: " + division);
+                System.err.println("fractionalPart: " + fractionalPart);
+                System.err.println("dyeBatches: " + dyeBatches);
             }
 
             BigDecimal littersBatch = coneBatchWeight.multiply(BigDecimal.valueOf(6));
@@ -390,7 +399,7 @@ public class TechnicalWorkOrderController {
             LocalDateTime windingStart = dyeBatches > 1 ? plannedStartAt.plusMinutes(270) : dyeDeadline;
             long windingDurationMinutes = dyeBatches * 75; // 1 mẻ winding = 75 phút
             LocalDateTime windingDeadline = windingStart.plusMinutes(windingDurationMinutes);
-
+          
             // Đảm bảo windingDeadline >= dyeDeadline
             if (windingDeadline.isBefore(dyeDeadline)) {
                 windingDeadline = dyeDeadline;
@@ -650,7 +659,8 @@ public class TechnicalWorkOrderController {
                         form.getSelectedDyeMachineIds(),
                         form.getSelectedWindingMachineIds(),
                         additionalWeights);
-                redirectAttributes.addFlashAttribute("success", "Tạo Work Order thành công!");
+
+                redirectAttributes.addFlashAttribute("success", "Tạo lệnh làm việc thành công!");
                 return "redirect:/technical/work-order-details/" + newWorkOrder.getId();
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
@@ -674,9 +684,10 @@ public class TechnicalWorkOrderController {
         try {
             // Gọi service để gửi Work Order
             WorkOrder workOrder = workOrderService.submitWorkOrder(id);
+            notificationUtils.sentWorkOrderFromTechnicalToPO(workOrder.getId());
             // Thêm thông báo thành công
             redirectAttributes.addFlashAttribute("success",
-                    "Work Order đã được gửi thành công!");
+                    "Lệnh làm việc đã được gửi thành công!");
         } catch (IllegalArgumentException e) {
             // Nếu Work Order không tồn tại
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -889,6 +900,7 @@ public class TechnicalWorkOrderController {
                         additionalWeights);
                 redirectAttributes.addFlashAttribute("success",
                         "Cập nhật Work Order thành công!");
+                notificationUtils.updateWorkOrderFromTechnicalToPo(updatedWorkOrder.getId());
                 return "redirect:/technical/work-order-details/" + updatedWorkOrder.getId();
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());

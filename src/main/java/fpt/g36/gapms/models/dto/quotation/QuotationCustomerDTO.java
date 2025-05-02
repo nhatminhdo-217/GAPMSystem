@@ -3,6 +3,7 @@ package fpt.g36.gapms.models.dto.quotation;
 import java.math.BigDecimal;
 
 public class QuotationCustomerDTO {
+    private Long rfqDetailId;
     private String productName;
     private String brandName;
     private String categoryName;
@@ -15,7 +16,8 @@ public class QuotationCustomerDTO {
     public QuotationCustomerDTO() {
     }
 
-    public QuotationCustomerDTO(String productName, String brandName, String categoryName, Boolean isColor, BigDecimal price, String noteColor, int quantity, String note) {
+    public QuotationCustomerDTO(Long rfqDetailId, String productName, String brandName, String categoryName, Boolean isColor, BigDecimal price, String noteColor, int quantity, String note) {
+        this.rfqDetailId = rfqDetailId;
         this.productName = productName;
         this.brandName = brandName;
         this.categoryName = categoryName;
@@ -88,5 +90,13 @@ public class QuotationCustomerDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Long getRfqDetailId() {
+        return rfqDetailId;
+    }
+
+    public void setRfqDetailId(Long rfqDetailId) {
+        this.rfqDetailId = rfqDetailId;
     }
 }

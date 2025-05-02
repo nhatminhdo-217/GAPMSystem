@@ -508,7 +508,7 @@
                                         <tbody>
                                         <tr>
                                             <td>Mã Quản Lý</td>
-                                            <td >WO-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.id}"></span></td>
+                                            <td th:text="'RFQ-'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                             <td>Khối Lượng (kg)</td>
                                             <td th:text="${technologyProcess.dyeBatch.cone_batch_weight}">9.5</td>
                                         </tr>
@@ -637,8 +637,11 @@
                                 <i class="fas fa-camera me-2"></i> Bật camera
                             </button>
                         </div>
-                        <div th:if="${technologyProcess.dyeBatch.windingBatch.windingPhoto != null}">
-                            <img th:src="'/uploads/' + ${technologyProcess.dyeBatch.windingBatch.windingPhoto}" class="captured-image" alt="Ảnh xác thực">
+                        <div th:if="${technologyProcess.dyeBatch.windingBatch.windingPhoto != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
+                            <img th:src="${technologyProcess.dyeBatch.windingBatch.windingPhoto}" class="captured-image" alt="Ảnh xác thực">
+                        </div>
+                        <div th:if="${technologyProcess.dyeBatch.windingBatch.windingPhoto != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+                            <img th:src="${technologyProcess.dyeBatch.windingBatch.windingPhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
                         <div th:id="'photoPreview-' + ${technologyProcess.dyeBatch.windingBatch.id}"></div>
                         <input type="file" th:id="'photoInput-' + ${technologyProcess.dyeBatch.windingBatch.id}" name="photo" style="display: none;">

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết RFQ</title>
+    <title>Chi tiết yêu cầu báo giá</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <!-- Libraries Stylesheet -->
     <link href="/assert/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
@@ -347,14 +348,14 @@
                 <div class="container-fluid">
                     <div class="card" th:data-rfq-id="${rfq.id}">
                         <div class="card-body">
-                            <h2 class="text-center mb-4">Chi tiết RFQ</h2>
+                            <h2 class="text-center mb-4">Chi tiết yêu cầu báo giá</h2>
 
                             <!-- RFQ Info -->
                             <div class="rfq-info">
-                                <h3 class="section-title">Thông tin RFQ</h3>
+                                <h3 class="section-title">Thông tin lô hàng</h3>
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <strong>Mã lô:</strong> <span th:text="${rfq.id}"></span>
+                                        <strong>Mã lô:</strong> <span th:text="'RFQ-'+${rfq.id}"></span>
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Ngày tạo đơn:</strong> <span
@@ -388,7 +389,7 @@
                                     <thead>
                                     <tr class="text-dark">
                                         <th>Số thứ tự</th>
-                                        <th>Mã đơn hàng</th>
+                                        <th>Mã hàng</th>
                                         <th>Sản phẩm</th>
                                         <th>Màu</th>
                                         <th>Số lượng đặt</th>
@@ -438,19 +439,19 @@
                                 </div>
                                 <div class="btn-container" th:if="${rfq.solution.isSent.name() != 'SENT'}">
                                     <button class="btn btn-custom" id="updateSolutionBtn" data-bs-toggle="modal"
-                                            data-bs-target="#updateSolutionModal">Cập nhật Solution
+                                            data-bs-target="#updateSolutionModal">Cập nhật giải pháp
                                     </button>
                                     <button class="btn btn-custom" id="submitSolutionBtn" data-bs-toggle="modal"
-                                            data-bs-target="#submitSolutionModal">Gửi Solution
+                                            data-bs-target="#submitSolutionModal">Gửi giải pháp
                                     </button>
                                 </div>
                             </div>
                             <div class="detail-info mt-4" th:unless="${rfq.solution != null}">
                                 <h3 class="section-title">Thông tin giải pháp</h3>
-                                <p>Chưa có giải pháp cho RFQ này.</p>
+                                <p>Chưa có giải pháp cho lô hàng này.</p>
                                 <div class="btn-container">
                                     <button class="btn btn-custom" id="createSolutionBtn" data-bs-toggle="modal"
-                                            data-bs-target="#createSolutionModal">Tạo Solution
+                                            data-bs-target="#createSolutionModal">Tạo giải pháp
                                     </button>
                                 </div>
                             </div>
@@ -460,8 +461,6 @@
             </div>
         </div>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <!-- Modal để tạo Solution -->
     <div class="modal fade" id="createSolutionModal" tabindex="-1" aria-labelledby="createSolutionModalLabel"
@@ -469,7 +468,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createSolutionModalLabel">Tạo giải pháp cho RFQ</h5>
+                    <h5 class="modal-title" id="createSolutionModalLabel">Tạo giải pháp cho lô hàng này</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -492,7 +491,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" form="solutionForm" class="btn btn-primary">Lưu Solution</button>
+                    <button type="submit" form="solutionForm" class="btn btn-primary">Lưu giải pháp</button>
                 </div>
             </div>
         </div>
@@ -545,7 +544,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="submitSolutionModalLabel">Gửi giải pháp cho RFQ</h5>
+                    <h5 class="modal-title" id="submitSolutionModalLabel">Gửi giải pháp cho lô hàng</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -565,7 +564,7 @@
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDateSubmit">Ngày có thể giao hàng dự kiến:</label>
-                            <input type="date" id="actualDeliveryDateSubmit" name="actualDeliveryDate"
+                            <input type="text" id="actualDeliveryDateSubmit" name="actualDeliveryDate"
                                    class="form-control"
                                    th:value="${rfq.solution != null ? #temporals.format(rfq.solution.actualDeliveryDate, 'dd/MM/yyyy') : ''}"
                                    th:min="${#temporals.format(rfq.expectDeliveryDate, 'dd/MM/yyyy')}" required
@@ -582,7 +581,7 @@
     </div>
 
     <!-- Toast -->
-    <div id="toastSuccess" class="toast success-toast"
+    <!--<div id="toastSuccess" class="toast success-toast"
          style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
         <div class="toast-header">
             <strong class="me-auto">Thành công</strong>
@@ -591,9 +590,9 @@
         <div class="toast-body">
             <p id="successMessage"></p>
         </div>
-    </div>
+    </div>-->
 
-    <div id="toastError" class="toast error-toast"
+    <!--<div id="toastError" class="toast error-toast"
          style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
         <div class="toast-header">
             <strong class="me-auto">Lỗi</strong>
@@ -602,7 +601,7 @@
         <div class="toast-body">
             <p id="errorMessage"></p>
         </div>
-    </div>
+    </div>-->
 
     <div id="validationErrorToast" class="toast error-toast"
          style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
@@ -623,6 +622,48 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
+
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${success}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${error}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+
+<div th:if="${validationErrors}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${validationErrors}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
 <script>
     $(document).ready(function () {
         // Hide spinner

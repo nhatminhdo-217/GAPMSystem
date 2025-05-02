@@ -224,7 +224,9 @@ public class QuotationServiceImpl implements QuotationService {
 
         List<QuotationCustomerDTO> products = quotationDetail.stream()
                 .map(p -> {
+
                     QuotationCustomerDTO product = new QuotationCustomerDTO();
+                    product.setRfqDetailId(p.getRfqDetailId());
                     product.setProductName(p.getProductName());
                     product.setBrandName(p.getBrandName());
                     product.setCategoryName(p.getCategoryName());
@@ -267,6 +269,7 @@ public class QuotationServiceImpl implements QuotationService {
             purchaseOrderDetail.setProduct(rfqDetail.getProduct());
             purchaseOrderDetail.setPurchaseOrder(purchaseOrderSaved);
             purchaseOrderDetail.setNote_color(rfqDetail.getNoteColor());
+            purchaseOrderDetail.setRfqDetailId(rfqDetail.getId());
             Boolean checkColor = rfqDetail.getNoteColor().equalsIgnoreCase("Trắng Ngà");
             BigDecimal unitPrice;
             if(checkColor) {
@@ -312,7 +315,7 @@ return quotation;
 
         Quotation quotation = new Quotation();
         quotation.setIsCanceled(false);
-        quotation.setIsAccepted(BaseEnum.NOT_APPROVED);
+        quotation.setIsAccepted(BaseEnum.WAIT_FOR_APPROVAL);
         quotation.setRfq(rfq);
 
         quotationRepository.save(quotation);
@@ -353,7 +356,12 @@ return quotation;
 
     @Override
     public List<BaseEnum> getAllQuotationStatuses() {
-        return Arrays.asList(BaseEnum.DRAFT, BaseEnum.NOT_APPROVED, BaseEnum.WAIT_FOR_APPROVAL, BaseEnum.APPROVED, BaseEnum.CANCELED);
+        return Arrays.asList(BaseEnum.NOT_APPROVED, BaseEnum.WAIT_FOR_APPROVAL, BaseEnum.APPROVED, BaseEnum.CANCELED);
+    }
+
+    @Override
+    public List<BaseEnum> getAllProductionStatuses() {
+        return Arrays.asList(BaseEnum.NOT_APPROVED, BaseEnum.APPROVED, BaseEnum.CANCELED);
     }
 
     @Override

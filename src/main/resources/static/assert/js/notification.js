@@ -72,25 +72,83 @@ function updateNotificationCount() {
 }
 
 function markAsRead(notificationId) {
+    // Validate notification ID
+    if (!notificationId) {
+        console.error("Error: Missing notification ID");
+        return;
+    }
+
+    console.log("Marking notification as read: " + notificationId);
+
+    // Get CSRF token
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+
+    // Validate CSRF token
+    if (!token || !header) {
+        console.error("Error: CSRF token or header not found");
+        console.log("Token:", token);
+        console.log("Header:", header);
+        return;
+    }
+
+    // Create a form data object
+    var formData = new FormData();
+    formData.append("_csrf", token);
+
     $.ajax({
         type: "POST",
         url: "/notifications/api/read/" + notificationId,
+        data: formData,
+        processData: false,
+        contentType: false,
         beforeSend: function(xhr) {
-            // Get CSRF token from meta tag or hidden input field
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
             xhr.setRequestHeader(header, token);
         },
-        success: function() {
+        success: function(response) {
             // Handle success
             updateNotificationCount();
-            console.log('Marked notification ' + notificationId + ' as read');
+            console.log('Successfully marked notification ' + notificationId + ' as read');
+
+            // Update UI
+            $('.notification-item[data-id="' + notificationId + '"]').removeClass('unread');
+            $('.notification-dropdown-item[data-id="' + notificationId + '"]').removeClass('unread');
+
+            // If on notifications page, refresh the list
             if (window.location.pathname.includes('/notifications')) {
                 loadNotifications();
             }
         },
         error: function(xhr, status, error) {
-            console.error("Error marking notification as read:", error);
+            console.error("Error marking notification as read:");
+            console.error("Status:", status);
+            console.error("Error:", error);
+            console.error("Response:", xhr.responseText);
+
+            // Try an alternative approach for CSRF if the current one fails
+            if (xhr.status === 403) {
+                console.log("Trying alternative CSRF approach...");
+                var csrfToken = $('input[name="_csrf"]').val();
+                if (csrfToken) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/notifications/api/read/" + notificationId,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function() {
+                            updateNotificationCount();
+                            console.log('Successfully marked notification ' + notificationId + ' as read (alternative method)');
+                            if (window.location.pathname.includes('/notifications')) {
+                                loadNotifications();
+                            }
+                        },
+                        error: function(xhr2, status2, error2) {
+                            console.error("Alternative method also failed:", error2);
+                        }
+                    });
+                }
+            }
         }
     });
 }
@@ -111,6 +169,7 @@ function markAllAsRead() {
             console.log('Marked all notifications as read');
             if (window.location.pathname.includes('/notifications')) {
                 loadNotifications();
+                loadNotificationDropdown()
             }
         }
     });
@@ -167,15 +226,6 @@ function loadNotificationDropdown() {
         // Thêm các thông báo mới ${formatTime(notification.timestamp)}
         data.notifications.forEach(function(notification) {
             console.log("Processing notification:", notification);  // Thêm log cho từng thông báo
-
-            // var item = `
-            //     <a href="${notification.targetUrl || '#'}" class="dropdown-item notification-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
-            //         <div class="notification-header">
-            //             <span class="notification-source">${notification.source || 'Hệ thống'}</span>
-            //             <span class="notification-time">${formatTime(notification.timestamp)}</span>
-            //         </div>
-            //         <div class="notification-message">${notification.message || 'Không có nội dung'}</div>
-            //     </a>`;
             var item =
             `
                 <div class="dropdown-item-text notification-dropdown-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
@@ -288,7 +338,7 @@ $(document).ready(function() {
     $(document).on('click', '.mark-as-read-btn', function(e) {
         e.preventDefault();
         console.log('Marking notification as read');
-        var notificationId = $(this).closest('.notification-item').data('id');
+        var notificationId = $(this).closest('.notification-dropdown-item').data('id');
         markAsRead(notificationId);
     });
 
@@ -303,10 +353,12 @@ $(document).ready(function() {
         e.preventDefault();
         var page = $(this).data('page');
         loadNotifications(page);
+        loadNotificationDropdown();
     });
 
     // Nếu đang ở trang thông báo, tải danh sách thông báo
     if (window.location.pathname.includes('/notifications')) {
         loadNotifications();
+        loadNotificationDropdown();
     }
 });

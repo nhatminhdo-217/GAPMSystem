@@ -486,7 +486,7 @@
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}">na</td>
                                 <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name}">na</td>
                                 <td th:text="${dy.cone_batch_weight}">31.2</td>
-                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
+                                <td th:text="${dy.dyeStage.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
                                 <td th:text="${dy.plannedOutput}"></td>
                                 <td>
                                     <a th:href="@{/work-order/technology-process/{id}(id=${dy.id})}"

@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,7 +80,13 @@
                         <div class="col-md-2">
                             <select class="form-select" name="status">
                                 <option value="">Tất cả trạng thái</option>
-                                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}" th:selected="${statusOption == status}"></option>
+                                <option th:each="statusOption : ${statuses}"
+                                        th:value="${statusOption.name()}"
+                                        th:text="${statusOption.name() == 'NOT_APPROVED' ? 'Chưa gửi' :
+
+                      statusOption.name() == 'APPROVED' ? 'Đã gửi' :
+                      statusOption.name() == 'CANCELED' ? 'Đã hủy' : statusOption.name()}"
+                                        th:selected="${selectedStatus != null ? statusOption.name() == selectedStatus.name() : false}"></option>
                             </select>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
@@ -105,10 +111,10 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th class="col">#</th>
-                                        <th class="col">Mã đơn hàng</th>
+                                        <th class="col">Mã lệnh sản xuất</th>
                                         <th class="col">Ngày tạo</th>
-                                        <th class="col">Người quản lý</th>
-                                        <th class="col">Người duyệt</th>
+                                        <th class="col">Người khởi tạo</th>
+                                        <!--<th class="col">Người duyệt</th>-->
                                         <th class="col">Trạng thái</th>
                                         <th class="col">Thao tác</th>
                                     </tr>
@@ -119,15 +125,14 @@
                                     </tr>
                                     <tr th:each="data, iterStat : ${pageData.content}">
                                         <th scope="row" th:text="${iterStat.count + pageData.number * pageData.size}"></th>
-                                        <td th:text="${data.purchaseOrderId}"></td>
+                                        <td th:text="'PRO-'+${data.purchaseOrderId}"></td>
                                         <td th:text="${#temporals.format(data.createAt, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${data.createdBy}"></td>
-                                        <td th:text="${data.approvedBy != null ? data.approvedBy : 'N/A'}"></td>
                                         <td>
                                             <span th:if="${data.status != null && data.status.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
-                                            <span th:if="${data.status != null && data.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
+                                            <span th:if="${data.status != null && data.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa gửi</span>
                                             <span th:if="${data.status != null && data.status.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ duyệt</span>
-                                            <span th:if="${data.status != null && data.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
+                                            <span th:if="${data.status != null && data.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã gửi</span>
                                             <span th:if="${data.status != null && data.status.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
                                         </td>
                                         <td>

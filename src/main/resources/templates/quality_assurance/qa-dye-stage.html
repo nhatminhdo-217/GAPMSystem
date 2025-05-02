@@ -690,7 +690,7 @@
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
                                 <td th:text="${dy.cone_weight}">31.2</td>
-                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env}">na</td>
+                                <td th:text="${dy.workOrderDetail.purchaseOrderDetail.productionOrderDetail.light_env} ? 'TN' : 'AD'">na</td>
                                 <td th:text="${dy.cone_quantity}"></td>
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"

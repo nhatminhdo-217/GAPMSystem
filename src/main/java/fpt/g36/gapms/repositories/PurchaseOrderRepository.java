@@ -75,7 +75,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
             "AND (:searchQuery IS NULL OR " +
             "LOWER(CONCAT('PO-', po.id)) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR " +
             "LOWER(contract.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))) " +
-            "ORDER BY po.createAt DESC")
+            "ORDER BY  po.createAt DESC")
     Page<PurchaseOrder> getAllPurchaseOrdersByUserIdAndSearch(@Param("userId") Long userId,
                                                               @Param("year") Integer year,
                                                               @Param("searchQuery") String searchQuery,

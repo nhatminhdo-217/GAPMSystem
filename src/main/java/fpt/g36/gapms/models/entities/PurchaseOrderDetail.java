@@ -33,6 +33,8 @@ public class PurchaseOrderDetail extends BaseEntity {
 
   private BigDecimal totalPrice;
 
+  private Long rfqDetailId;
+
   @OneToOne(mappedBy = "purchaseOrderDetail", fetch = FetchType.LAZY)
   private WorkOrderDetail workOrderDetail;
 
@@ -136,5 +138,13 @@ public class PurchaseOrderDetail extends BaseEntity {
 
   public void setProductionOrderDetail(ProductionOrderDetail productionOrderDetail) {
     this.productionOrderDetail = productionOrderDetail;
+  }
+
+  public Long getRfqDetailId() {
+    return rfqDetailId;
+  }
+
+  public void setRfqDetailId(Long rfqDetailId) {
+    this.rfqDetailId = rfqDetailId;
   }
 }
