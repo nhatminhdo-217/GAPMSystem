@@ -25,7 +25,9 @@ public class TechnicalProductionOrderDetailsDTO {
         private BigDecimal threadMass; // Khối lượng sợi
         private Boolean lightEnv; // 0: ánh đèn (AD), 1: ánh sáng tự nhiên (TN)
         private String description;
-        private boolean hasWorkOrderDetail; // Để kiểm tra xem ProductionOrderDetail đã có WorkOrderDetail chưa
+        private boolean hasWorkOrderDetail;
+        private Long rfqId;
+        private Long rfqDetailId;// Để kiểm tra xem ProductionOrderDetail đã có WorkOrderDetail chưa
 
         public Long getId() {
             return id;
@@ -65,6 +67,22 @@ public class TechnicalProductionOrderDetailsDTO {
 
         public void setHasWorkOrderDetail(boolean hasWorkOrderDetail) {
             this.hasWorkOrderDetail = hasWorkOrderDetail;
+        }
+
+        public Long getRfqId() {
+            return rfqId;
+        }
+
+        public void setRfqId(Long rfqId) {
+            this.rfqId = rfqId;
+        }
+
+        public Long getRfqDetailId() {
+            return rfqDetailId;
+        }
+
+        public void setRfqDetailId(Long rfqDetailId) {
+            this.rfqDetailId = rfqDetailId;
         }
     }
 

@@ -3,6 +3,7 @@ package fpt.g36.gapms.controller.production_manager;
 import fpt.g36.gapms.enums.BaseEnum;
 import fpt.g36.gapms.models.entities.WorkOrder;
 import fpt.g36.gapms.services.WorkOrderService;
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +24,12 @@ import java.util.List;
 public class SubmittedWorkOrderController {
     private final WorkOrderService workOrderService;
     private final UserUtils userUtils;
+    private final NotificationUtils notificationUtils;
 
-    public SubmittedWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils) {
+    public SubmittedWorkOrderController(WorkOrderService workOrderService, UserUtils userUtils, NotificationUtils notificationUtils) {
         this.workOrderService = workOrderService;
         this.userUtils = userUtils;
+        this.notificationUtils = notificationUtils;
     }
 
     @GetMapping("/view-all-submitted-work-order")
@@ -147,7 +150,8 @@ public class SubmittedWorkOrderController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
                 WorkOrder workOrder = workOrderService.approveWorkOrder(id);
-                redirectAttributes.addFlashAttribute("success", "Work Order đã được đồng ý thành công!");
+                notificationUtils.sentWorkOrderFromPOToDyeTechnical(workOrder.getId());
+                redirectAttributes.addFlashAttribute("success", "Lệnh làm việc đã được phê duyệt!");
                 return "redirect:/production-manager/submitted-work-order-details/" + id;
             } catch (RuntimeException e) {
                 redirectAttributes.addFlashAttribute("error", "Lỗi khi đồng ý Work Order: " + e.getMessage());
@@ -164,7 +168,8 @@ public class SubmittedWorkOrderController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
                 WorkOrder workOrder = workOrderService.rejectWorkOrder(id);
-                redirectAttributes.addFlashAttribute("success", "Work Order đã được từ chối thành công!");
+                notificationUtils.rejectWorkOrderPoTechnicalToTechnical(workOrder.getId());
+                redirectAttributes.addFlashAttribute("success", "Đã từ chối lệnh làm việc!");
                 return "redirect:/production-manager/submitted-work-order-details/" + id;
             } catch (RuntimeException e) {
                 redirectAttributes.addFlashAttribute("error", "Lỗi khi từ chối Work Order: " + e.getMessage());

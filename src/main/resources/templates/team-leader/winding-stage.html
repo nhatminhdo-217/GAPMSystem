@@ -429,7 +429,7 @@
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th>Mã sản phẩm côn</th>
+                                <th>Mã quản lý</th>
                                 <th>Mã Khách Hàng</th>
                                 <th>Thời gian hoàn thiện</th>
                                 <th>Tên màu</th>
@@ -454,7 +454,7 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${ws.workOrderDetail.id}"></span></td>
+                                <td th:text="'RFQ-'+${ws.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${ws.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                 <td>KH-<span th:text="${ws.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                 <td th:text="${#temporals.format(ws.deadline, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${ws.workOrderDetail.purchaseOrderDetail.note_color}">#f00000</td>

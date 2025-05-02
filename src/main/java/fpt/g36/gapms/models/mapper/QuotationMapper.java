@@ -29,7 +29,7 @@ public class QuotationMapper {
         dto.setId(quotation.getId());
         dto.setRfqId(quotation.getRfq().getId());
         dto.setIsAccepted(quotation.getIsAccepted());
-        dto.setCreateBy(quotation.getCreatedBy() != null ? quotation.getCreatedBy().getUsername() : null);
+        dto.setCreateBy(quotation.getRfq().getApprovedBy() != null ? quotation.getRfq().getApprovedBy().getUsername() : null);
         dto.setCustomerName(quotation.getRfq().getCreateBy().getUsername());
         dto.setCreateAt(quotation.getCreateAt());
 

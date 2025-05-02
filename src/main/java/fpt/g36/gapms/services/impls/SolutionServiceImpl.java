@@ -70,7 +70,7 @@ public class SolutionServiceImpl implements SolutionService {
 
         // Kiểm tra nếu solution đã được submit thì không cho phép cập nhật
         if (existingSolution.getIsSent() == SendEnum.SENT) {
-            throw new RuntimeException("Solution đã được gửi (submitted), không thể cập nhật.");
+            throw new RuntimeException("giải pháp đã được gửi, không thể cập nhật.");
         }
 
         if (solutionDTO.getActualDeliveryDate().isBefore(existingSolution.getRfq().getExpectDeliveryDate())) {
@@ -96,7 +96,7 @@ public class SolutionServiceImpl implements SolutionService {
 
         // Kiểm tra nếu đã gửi thì không cần làm gì thêm
         if (solution.getIsSent() == SendEnum.SENT) {
-            throw new RuntimeException("Solution đã được gửi trước đó.");
+            throw new RuntimeException("giải pháp đã được gửi trước đó.");
         }
 
         // Cập nhật trạng thái thành SENT

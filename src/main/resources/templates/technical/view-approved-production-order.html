@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Chỉ may Dũng Đông - Danh sách Production Order đã duyệt</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -26,7 +26,13 @@
         body {
             background-color: #f5f7fa;
         }
-
+        .btn-search{
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 3px 24px;
+            transition: 0.3s;
+        }
         .card {
             border: 1px solid #e9ecef;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -305,7 +311,7 @@
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
@@ -317,14 +323,14 @@
                                th:classappend="${activeTab == 'without-work-order-content' ? 'active' : ''}"
                                id="without-work-order-tab" data-bs-toggle="tab" href="#without-work-order-content"
                                role="tab" aria-controls="without-work-order-content"
-                               aria-selected="${activeTab == 'without-work-order-content'}">Chưa có Work Order</a>
+                               aria-selected="${activeTab == 'without-work-order-content'}">Chưa có lệnh làm việc</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link"
                                th:classappend="${activeTab == 'with-work-order-content' ? 'active' : ''}"
                                id="with-work-order-tab" data-bs-toggle="tab" href="#with-work-order-content"
                                role="tab" aria-controls="with-work-order-content"
-                               aria-selected="${activeTab == 'with-work-order-content'}">Đã có Work Order</a>
+                               aria-selected="${activeTab == 'with-work-order-content'}">Đã có lệnh làm việc</a>
                         </li>
                     </ul>
                 </div>
@@ -348,39 +354,41 @@
                                          th:onclick="|window.location.href='/technical/production-order-details/${order.id}'|">
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
-                                                  th:text="${iterStat.count + productionOrdersWithoutWorkOrderPage.number * productionOrdersWithoutWorkOrderPage.size}"></span>
+                                                 ></span>
                                             <div class="content-section d-flex flex-row">
+
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
-                                                    <span th:text="${order.id}"></span>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PRO-'+${order.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
+                                                    <strong>Nhân viên quản ý</strong><br>
+                                                    <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
+                                                </div>
+                                                <!--<div class="text-start me-3">
                                                     <strong>Mã Purchase Order</strong><br>
                                                     <span th:text="${order.purchaseOrder != null ? order.purchaseOrder.id : 'N/A'}"></span>
-                                                </div>
+                                                </div>-->
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo đơn</strong><br>
                                                     <span th:text="${#temporals.format(order.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Nhân viên duyệt</strong><br>
-                                                    <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
-                                                </div>
+
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
                                                     <span th:classappend="'status-approved'"
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
-                                                <div class="text-start me-3">
+                                                <!--<div class="text-start me-3">
                                                     <strong>Có Work Order</strong><br>
                                                     <span th:text="'Không'"></span>
-                                                </div>
+                                                </div>-->
                                             </div>
                                         </div>
                                     </div>
                                     <button class="create-work-order-btn"
                                             th:onclick="|window.location.href='/technical/create-work-order?productionOrderId=${order.id}'|">
-                                        <i class="fas fa-plus"></i> Tạo Work Order
+                                        <i class="fas fa-plus"></i> Tạo lệnh làm việc
                                     </button>
                                 </div>
                             </div>
@@ -426,33 +434,34 @@
                                          th:onclick="|window.location.href='/technical/production-order-details/${order.id}'|">
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
-                                                  th:text="${iterStat.count + productionOrdersWithWorkOrderPage.number * productionOrdersWithWorkOrderPage.size}"></span>
+                                                  ></span>
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
                                                     <span th:text="${order.id}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Mã Purchase Order</strong><br>
-                                                    <span th:text="${order.purchaseOrder != null ? order.purchaseOrder.id : 'N/A'}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Ngày tạo đơn</strong><br>
-                                                    <span th:text="${#temporals.format(order.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Nhân viên duyệt</strong><br>
                                                     <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
                                                 </div>
+                                                <!--<div class="text-start me-3">
+                                                    <strong>Mã Purchase Order</strong><br>
+                                                    <span th:text="${order.purchaseOrder != null ? order.purchaseOrder.id : 'N/A'}"></span>
+                                                </div>-->
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo đơn</strong><br>
+                                                    <span th:text="${#temporals.format(order.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
                                                     <span th:classappend="'status-approved'"
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
-                                                <div class="text-start me-3">
+                                                <!--<div class="text-start me-3">
                                                     <strong>Có Work Order</strong><br>
                                                     <span th:text="'Có'"></span>
-                                                </div>
+                                                </div>-->
                                             </div>
                                         </div>
                                     </div>
@@ -487,8 +496,6 @@
         </div>
         <!-- Content End -->
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 </div>
 

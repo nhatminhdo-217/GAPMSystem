@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -235,7 +235,8 @@
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th>Mã hàng</th>
+                                <th>Mã lô hàng</th>
+                                <th>Mã đặt hàng</th>
                                 <th>Ngày tạo</th>
                                 <th>Mã hợp đồng</th>
                                 <th>Tổng tiền</th>
@@ -246,11 +247,12 @@
                             <tbody>
                             <!-- Vòng lặp Thymeleaf để hiển thị danh sách purchaseOrders -->
                             <tr th:each="po : ${purchaseOrders}">
+                                <td th:text="'RFQ-' + ${po.quotation.rfq.id}"></td>
                                 <td th:text="'PO-' + ${po.id}"></td>
                                 <td th:text="${#temporals.format(po.quotation.rfq.createAt, 'dd/MM/yyyy')}">10/03/2025
                                 </td>
                                 <td th:text="${po.contract?.name} ?: 'Chưa có'"></td>
-                                <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 100, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                                <td th:text="${#numbers.formatDecimal(#aggregates.sum(po.purchaseOrderDetails.![totalPrice] ?: 0) * 1000, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
                                     <span th:switch="${po.productionOrder?.workOrder?.isProduction}">
     <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"

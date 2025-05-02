@@ -11,7 +11,7 @@ import java.util.List;
 public class PurchaseOrderDTO {
 
     private Long purchaseOrderId;
-
+   private Long rfqId;
     private String customerName;
 
     private BaseEnum status;
@@ -26,10 +26,11 @@ public class PurchaseOrderDTO {
 
     private LocalDate createAt;
 
+    private String saleStaffName;
     public PurchaseOrderDTO() {
     }
 
-    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, BaseEnum status, Long quotationId, String contractId, String approvedByUserName, String createByUserName, LocalDate createAt) {
+    public PurchaseOrderDTO(Long purchaseOrderId, String customerName, BaseEnum status, Long quotationId, String contractId, String approvedByUserName, String createByUserName, LocalDate createAt, String saleStaffName) {
         this.purchaseOrderId = purchaseOrderId;
         this.customerName = customerName;
         this.status = status;
@@ -38,6 +39,7 @@ public class PurchaseOrderDTO {
         this.approvedByUserName = approvedByUserName;
         this.createByUserName = createByUserName;
         this.createAt = createAt;
+        this.saleStaffName = saleStaffName;
     }
 
     public Long getPurchaseOrderId() {
@@ -103,5 +105,21 @@ public class PurchaseOrderDTO {
 
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
+    }
+
+    public String getSaleStaffName() {
+        return saleStaffName;
+    }
+
+    public void setSaleStaffName(String saleStaffName) {
+        this.saleStaffName = saleStaffName;
+    }
+
+    public Long getRfqId() {
+        return rfqId;
+    }
+
+    public void setRfqId(Long rfqId) {
+        this.rfqId = rfqId;
     }
 }

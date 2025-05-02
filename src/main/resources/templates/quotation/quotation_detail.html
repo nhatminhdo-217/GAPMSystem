@@ -6,7 +6,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
   <!-- Favicon -->
-  <link href="img/favicon.ico" rel="icon">
+  <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
   <!-- Google Web Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -234,8 +234,8 @@
                 </button>
               </div>
               <div th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}">
-                <button type="submit" class="btn btn-primary btn-action">
-                  <i class="fas fa-paper-plane me-2"></i>Gửi
+                <button type="button" id="submitBtnSaleSent" class="btn btn-primary btn-action">
+                  <i class="fas fa-paper-plane me-2"></i>Duyệt
                 </button>
               </div>
               <a th:if="${quotation_detail.isAccepted == 'APPROVED'}" href="#" onclick="printQuotation()" class="btn btn-success btn-action">
@@ -252,7 +252,7 @@
               </button>
             </div>
             <div th:if="${quotation_detail.isAccepted == 'NOT_APPROVED'}">
-              <button type="submit" class="btn btn-primary btn-action">
+              <button type="submit"  class="btn btn-primary btn-action">
                 <i class="fas fa-paper-plane me-2"></i>Gửi
               </button>
             </div>
@@ -331,6 +331,23 @@
   function printQuotation() {
     window.print();
   }
+
+
+  document.getElementById('submitBtnSaleSent').addEventListener('click', function () {
+    Swal.fire({
+      title: 'Xác nhận duyệt?',
+      text: 'Bạn có chắc chắn muốn duyệt báo giá này?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'duyệt',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Gửi form
+        this.closest('form').submit();
+      }
+    });
+  });
 </script>
 </body>
 </html>

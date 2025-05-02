@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -70,7 +70,13 @@
                         <div class="col-md-2">
                             <select class="form-select" name="status">
                                 <option value="">Tất cả trạng thái</option>
-                                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}" th:selected="${statusOption == selectedStatus}"></option>
+                                <option th:each="statusOption : ${statuses}"
+                                        th:value="${statusOption.name()}"
+                                        th:text="${statusOption.name() == 'NOT_APPROVED' ? 'Chưa duyệt' :
+                      statusOption.name() == 'WAIT_FOR_APPROVAL' ? 'Chờ phê duyệt' :
+                      statusOption.name() == 'APPROVED' ? 'Đã duyệt' :
+                      statusOption.name() == 'CANCELED' ? 'Đã hủy' : statusOption.name()}"
+                                        th:selected="${selectedStatus != null ? statusOption.name() == selectedStatus.name() : false}"></option>
                             </select>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
@@ -100,7 +106,7 @@
                                             Mã báo giá
                                         </th>
                                         <th scope="col">
-                                            Khách hàng
+                                            Nhân viên quản lý
                                         </th>
                                         <th scope="col">
                                             Ngày tạo
@@ -119,13 +125,13 @@
                                     </tr>
                                     <tr th:each="quotation, iterStat : ${quotations.content}">
                                         <th scope="row" th:text="${iterStat.count + quotations.number * quotations.size}"></th>
-                                        <td th:text="${quotation.id}"></td>
-                                        <td th:text="${quotation.customerName}"></td>
+                                        <td th:text="'RFQ-'+${quotation.rfqId}"></td>
+                                        <td th:text="${quotation.createBy}"></td>
                                         <td th:text="${#temporals.format(quotation.createAt, 'dd/MM/yyyy')}"></td>
                                         <td>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
-                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ phê duyệt</span>
+                                            <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Chờ phê duyệt</span>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
                                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
                                         </td>
@@ -180,8 +186,8 @@
                 <div th:each="quotation : ${quotations.content}" class="mobile-card">
                     <div class="card-header">
                         <div>
-                            <span class="fw-bold">Mã báo giá:</span>
-                            <span th:text="${quotation.id}"></span>
+                            <span class="fw-bold">Mã lô hàng:</span>
+                            <span th:text="'RFQ-'+${quotation.rfqId}"></span>
                         </div>
                         <div>
                             <span th:if="${quotation.isAccepted != null && quotation.isAccepted.name() == 'DRAFT'}" class="status-badge status-draft">DRAFT</span>

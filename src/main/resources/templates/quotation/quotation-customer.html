@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -98,7 +98,7 @@
 
         .quotation-table th, .quotation-table td {
             padding: 10px;
-            text-align: left;
+            text-align: center; /* Căn giữa tiêu đề và dữ liệu */
             border-bottom: 1px solid #eee;
             font-size: 13px;
         }
@@ -111,6 +111,19 @@
 
         .quotation-table td {
             color: #666;
+        }
+
+        /* Style cho cột Màu để căn giữa hộp màu và mã màu */
+        .quotation-table td .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin: 0 auto; /* Căn giữa div */
+        }
+
+        .quotation-table td span {
+            display: block; /* Đặt span thành block để căn giữa */
+            text-align: center;
         }
 
         .quotation-footer {
@@ -214,6 +227,7 @@
             .quotation-table th, .quotation-table td {
                 padding: 8px;
                 font-size: 12px;
+                text-align: center; /* Đảm bảo căn giữa */
             }
 
             .quotation-footer {
@@ -241,6 +255,7 @@
             .quotation-table th, .quotation-table td {
                 padding: 6px;
                 font-size: 11px;
+                text-align: center; /* Đảm bảo căn giữa */
             }
 
             .quotation-footer .btn {
@@ -285,6 +300,7 @@
                 <table>
                     <thead>
                     <tr>
+                        <th>Mã hàng</th>
                         <th>Sản phẩm</th>
                         <th>Thương hiệu</th>
                         <th>Loại hàng</th>
@@ -296,16 +312,13 @@
                     </thead>
                     <tbody th:each="quotation: ${quotation_customer.getProducts()}">
                     <tr>
+                        <td th:text="${quotation.rfqDetailId}"></td>
                         <td th:text="${quotation.productName}"></td>
                         <td th:text="${quotation.brandName}"></td>
                         <td th:text="${quotation.categoryName}"></td>
-                        <td >
-                            <div class="color-box" th:style="'background-color:' + ${quotation.noteColor}"></div>
-                            <span th:text="${quotation.noteColor}">#FFFFFF</span>
-                        </td>
+                        <td th:text="${quotation.noteColor}"></td>
                         <td th:text="${quotation.quantity}"></td>
                         <td th:text="${#numbers.formatDecimal(quotation.price * 1000, 0, 'COMMA', 0, 'POINT')}"></td>
-
                         <td>Đồng/ cuộn</td>
                     </tr>
                     </tbody>

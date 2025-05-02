@@ -8,6 +8,7 @@ import fpt.g36.gapms.services.TechnologyProcessService;
 import fpt.g36.gapms.services.UserService;
 import fpt.g36.gapms.services.WorkOrderService;
 
+import fpt.g36.gapms.utils.NotificationUtils;
 import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,8 @@ public class TechnicalProcessController {
     @Autowired
     private WorkOrderService workOrderService;
 
+    @Autowired
+    private NotificationUtils notificationUtils;
     private void validateDyeTypeDTO(DyeTypeDTO dto, String batchType, Model model, Long workOrderId) {
         BigDecimal ratio = dto.getRatio();
         BigDecimal lightPercent = dto.getLightPercent();
@@ -317,6 +320,8 @@ public class TechnicalProcessController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             try {
                 technologyProcessService.submitTechnologyProcesses(workOrderId);
+                notificationUtils.sentWorkOrderFromDyeTechnicalToLeader(workOrderId);
+                notificationUtils.sentWorkOrderFromDyeTechnicalToQA(workOrderId);
                 redirectAttributes.addFlashAttribute("success",
                         "Đã hoàn tất hành trình công nghệ");
             } catch (Exception e) {
