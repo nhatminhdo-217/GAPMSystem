@@ -698,9 +698,13 @@
                                 <i class="fas fa-camera me-2"></i> Bật camera
                             </button>
                         </div>
-                        <div th:if="${technologyProcess.dyeBatch.dyePhoto != null}">
-                            <img th:src="'/uploads/' + ${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
+                        <div th:if="${technologyProcess.dyeBatch.dyePhoto != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
+                            <img th:src="${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
                         </div>
+                        <div th:if="${technologyProcess.dyeBatch.dyePhoto != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+                            <img th:src="${technologyProcess.dyeBatch.dyePhoto}" class="captured-image" alt="Ảnh xác thực">
+                        </div>
+
                         <div th:id="'photoPreview-' + ${technologyProcess.dyeBatch.id}"></div>
                         <input type="file" th:id="'photoInput-' + ${technologyProcess.dyeBatch.id}" name="photo" style="display: none;">
                     </div>

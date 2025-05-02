@@ -743,10 +743,23 @@
                                 </button>
                                 <div id="photoPreview" class="photo-preview">
                                     <!-- Hiển thị ảnh từ database nếu có -->
-                                    <div th:if="${dyeRiskAssessment.photo != null}">
+                                    <div th:if="${dyeRiskAssessment.photo != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
                                         <div th:each="photo : ${dyeRiskAssessment.photo}" class="photo-item"
                                              th:attr="data-photo-name=${photo.photo}">
-                                            <img th:src="'/uploads/' + ${photo.photo}" class="captured-image" alt="Ảnh xác thực">
+                                            <img th:src="${photo.photo}" class="captured-image" alt="Ảnh xác thực">
+                                            <button type="button" class="delete-btn"
+                                                    th:if="${pass_check_delete == null}"
+                                                    th:onclick="'deletePhoto(this, true)'"
+                                                    th:class="'delete-btn'">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div th:if="${dyeRiskAssessment.photo != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
+                                        <div th:each="photo : ${dyeRiskAssessment.photo}" class="photo-item"
+                                             th:attr="data-photo-name=${photo.photo}">
+                                            <img th:src="${photo.photo}" class="captured-image" alt="Ảnh xác thực">
                                             <button type="button" class="delete-btn"
                                                     th:if="${pass_check_delete == null}"
                                                     th:onclick="'deletePhoto(this, true)'"
