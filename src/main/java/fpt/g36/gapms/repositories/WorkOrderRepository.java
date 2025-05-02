@@ -26,7 +26,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
 
     @Query("SELECT DISTINCT wo FROM WorkOrder wo " + "JOIN wo.workOrderDetails wod " + "JOIN wod.dyeStage ds " + "JOIN ds.dyebatches db " +
             "WHERE wo.isProduction != fpt.g36.gapms.enums.WorkEnum.FINISHED " + "AND (:workOrderId IS NULL OR wo.id = :workOrderId) " +
-            "AND db.technologyProcess IS NOT NULL " + "ORDER BY wo.createAt DESC, " + "CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 ELSE 1 END")
+            "AND db.technologyProcess IS NOT NULL ORDER BY  CASE WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.NOT_STARTED THEN 0 WHEN wo.isProduction = fpt.g36.gapms.enums.WorkEnum.IN_PROGRESS Then 1 ELSE 2 END, wo.createAt DESC")
     Page<WorkOrder> getAllWorkOrderTeamLeader(@Param("workOrderId") Long workOrderId, Pageable pageable);
 
     @Query("SELECT wo FROM WorkOrder wo " +
@@ -66,7 +66,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
             "LEFT JOIN ds.dyebatches db " +
             "LEFT JOIN db.technologyProcess tp " +
             "WHERE wo.status = :status " +
-            "AND (wod.dyeStage IS NULL OR db IS NULL OR tp IS NULL)")
+            "AND tp IS NULL")
     Page<WorkOrder> findApprovedWorkOrdersWithoutTechnologyProcess(@Param("status") BaseEnum status, Pageable pageable);
 
     @Query("SELECT DISTINCT wo FROM WorkOrder wo " +

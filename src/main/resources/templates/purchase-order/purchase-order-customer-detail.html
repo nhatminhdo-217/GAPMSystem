@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,6 @@
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
             background: #f4f7fc;
             color: #333;
             overflow-x: hidden;
@@ -149,6 +148,12 @@
             overflow-wrap: break-word;
         }
 
+        .details-titles p:nth-child(2),
+        .details-values p:nth-child(2) {
+            flex: 3; /* Tăng chiều rộng của cột Sản phẩm */
+            min-width: 200px; /* Đảm bảo chiều rộng tối thiểu */
+        }
+
         .details-titles p {
             font-weight: 600;
             color: #333;
@@ -172,6 +177,27 @@
         .details-left,
         .details-right {
             display: none; /* Ẩn trên desktop */
+        }
+
+        .details-left p,
+        .details-right p {
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            overflow-wrap: break-word;
+        }
+
+        .details-left p strong,
+        .details-right p strong {
+            flex: 0 0 40%; /* Đảm bảo nhãn chiếm không gian cố định */
+            text-align: left;
+        }
+
+        .details-left p span,
+        .details-right p span {
+            flex: 1;
+            text-align: right;
         }
 
         .process-bar {
@@ -300,20 +326,8 @@
             outline: none;
         }
 
-        #imagePreview_notApproved img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 10px;
-        }
-        #imagePreview_waitForApproval img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 10px;
-        }
+        #imagePreview_notApproved img,
+        #imagePreview_waitForApproval img,
         #imagePreview_approved img {
             max-width: 100%;
             height: auto;
@@ -396,6 +410,25 @@
             font-size: 20px;
         }
 
+        .table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+            background: #fff;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #F3F6F9;
+            color: #191C24;
+            font-weight: 600;
+            padding: 15px 20px;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-bottom: 2px solid #ddd;
+            text-align: center;
+        }
+
         /* Responsive cho tablet */
         @media (max-width: 768px) {
             .main-content {
@@ -454,7 +487,15 @@
                 text-align: right;
             }
 
-            .product-details p {
+            .details-left p:nth-child(2),
+            .details-left p:nth-child(3),
+            .details-left p:nth-child(4) {
+                min-width: 100%; /* Đảm bảo cột Sản phẩm, Nhãn hiệu, Loại hàng chiếm toàn bộ chiều rộng */
+                text-align: left;
+            }
+
+            .details-left p,
+            .details-right p {
                 font-size: 13px;
                 margin-bottom: 8px;
             }
@@ -468,10 +509,20 @@
             .process-step {
                 min-width: 100%;
                 margin-bottom: 15px;
+                position: relative;
             }
 
             .process-step:not(:last-child)::after {
-                display: none;
+                content: '\f0a9'; /* Giữ biểu tượng mũi tên sang phải giống desktop */
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                position: absolute;
+                bottom: -65px; /* Đặt dưới công đoạn */
+                left: 33%;
+                transform: translateX(-50%) rotate(90deg); /* Xoay 90 độ để trông như chỉ xuống */
+                font-size: 18px;
+                color: #4a90e2;
+                z-index: 1;
             }
 
             .process-step .step-circle {
@@ -501,12 +552,8 @@
                 padding: 6px 10px;
             }
 
-            #imagePreview_notApproved img {
-                padding: 5px;
-            }
-            #imagePreview_waitForApproval img {
-                padding: 5px;
-            }
+            #imagePreview_notApproved img,
+            #imagePreview_waitForApproval img,
             #imagePreview_approved img {
                 padding: 5px;
             }
@@ -565,14 +612,21 @@
                 padding: 15px;
             }
 
-            .product-details p {
-                font-size: 12px;
-                margin-bottom: 6px;
+            .product-details {
+                flex-direction: column; /* Xếp dọc trên mobile nhỏ */
+                gap: 10px;
             }
 
             .details-left,
             .details-right {
-                min-width: 100px;
+                min-width: 100%;
+                text-align: left;
+            }
+
+            .details-left p,
+            .details-right p {
+                font-size: 12px;
+                margin-bottom: 6px;
             }
 
             .process-step p {
@@ -611,7 +665,7 @@
             <div class="container">
                 <div class="card" th:object="${purchaseOrder}">
                     <div class="card-header">
-                        <h2 th:text="'Đơn hàng #' + ${purchaseOrder.id}"></h2>
+                        <h2 th:text="'Lô hàng RFQ-' + ${purchaseOrder.quotation.rfq.id}"></h2>
                         <div>
                             <button class="btn-action me-2" data-bs-toggle="modal" data-bs-target="#contractModal">
                                 <i class="fas fa-file-contract me-1"></i> Hợp đồng
@@ -660,30 +714,27 @@
                         <div th:if="${purchaseOrder.purchaseOrderDetails != null and not #lists.isEmpty(purchaseOrder.purchaseOrderDetails)}" th:each="pod: ${purchaseOrder.purchaseOrderDetails}" class="product-item">
                             <div class="product-details">
                                 <div class="details-titles">
-                                    <p>Mã sản phẩm</p>
+                                    <p>Mã hàng</p>
                                     <p>Sản phẩm</p>
-                                    <p>Nhãn hiệu</p>
-                                    <p>Loại hàng</p>
                                     <p>Màu</p>
                                     <p>Số lượng</p>
                                     <p>Đơn giá</p>
                                     <p>Thành tiền</p>
                                 </div>
                                 <div class="details-values">
-                                    <p th:text="${pod.id}"></p>
-                                    <p th:text="${pod.product.name}"></p>
-                                    <p th:text="${pod.brand.name}"></p>
-                                    <p th:text="${pod.category.name}"></p>
+                                    <p th:text="${pod.rfqDetailId}"></p>
+                                    <p th:text="${pod.getProduct().getName()} + ' - ' + ${pod.getBrand().getName()} + ' - ' + ${pod.getCategory().name}"></p>
                                     <p th:text="${pod.note_color}"></p>
                                     <p th:text="${pod.quantity}"></p>
                                     <p th:text="${#numbers.formatDecimal(pod.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></p>
                                     <p th:text="${#numbers.formatDecimal(pod.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></p>
                                 </div>
                                 <div class="details-left">
-                                    <p><strong>Mã sản phẩm:</strong> <span th:text="${pod.id}"></span></p>
-                                    <p><strong>Sản phẩm:</strong> <span th:text="${pod.product.name}"></span></p>
-                                    <p><strong>Nhãn hiệu:</strong> <span th:text="${pod.brand.name}"></span></p>
-                                    <p><strong>Loại hàng:</strong> <span th:text="${pod.category.name}"></span></p>
+                                    <p><strong>Mã sản phẩm:</strong> <span th:text="${pod.rfqDetailId}"></span></p>
+                                    <p><strong>Sản phẩm:</strong> <span th:text="${pod.getProduct().getName()}"></span></p>
+                                    <p><strong>Nhãn hiệu:</strong> <span th:text="${pod.getBrand().getName()}"></span></p>
+                                    <p><strong>Loại hàng:</strong> <span th:text="${pod.getCategory().name}"></span></p>
+
                                 </div>
                                 <div class="details-right">
                                     <p><strong>Màu:</strong> <span th:text="${pod.note_color}"></span></p>
@@ -695,32 +746,30 @@
                             <div class="process-bar">
                                 <div class="process-step completed">
                                     <div class="step-circle"><i class="fas fa-tint"></i></div>
-                                    <strong>Nhuộm</strong>
                                     <span th:switch="${pod?.workOrderDetail?.dyeStage?.workStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+                                        <!--<span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa nhuộm'" class="status-badge" style="background-color: #808080; color: #333;"></span>-->
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang nhuộm'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                        <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+                                        <span th:case="*" th:text="'Chưa nhuộm'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
                                     </span>
                                 </div>
                                 <div class="process-step in-progress">
                                     <div class="step-circle"><i class="fas fa-hammer"></i></div>
-                                    <strong>Đánh côn</strong>
                                     <span th:switch="${pod?.workOrderDetail?.windingStage?.workStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+                                        <!--<span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa côn'" class="status-badge" style="background-color: #808080; color: #333;"></span>-->
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang đánh côn'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                        <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+                                        <span th:case="*" th:text="'Chưa đánh côn'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
                                     </span>
                                 </div>
                                 <div class="process-step not-started">
                                     <div class="step-circle"><i class="fas fa-box"></i></div>
-                                    <strong>Đóng hàng</strong>
+
                                     <span th:switch="${pod?.workOrderDetail?.packagingStage?.workStatus}">
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang thực hiện'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
+                                        <!--<span th:case="${T(fpt.g36.gapms.enums.WorkEnum).NOT_STARTED}" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #808080; color: #333;"></span>-->
+                                        <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" th:text="'Đang đóng gói'" class="status-badge" style="background-color: #ffcc00; color: #333;"></span>
                                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" th:text="'Hoàn thành'" class="status-badge" style="background-color: #34c759; color: white;"></span>
-                                        <span th:case="*" th:text="'Chưa bắt đầu'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
+                                        <span th:case="*" th:text="'Chưa đóng gói'" class="status-badge" style="background-color: #ff3b30; color: white;"></span>
                                     </span>
                                 </div>
                             </div>

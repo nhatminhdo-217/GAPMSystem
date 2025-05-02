@@ -44,7 +44,7 @@ public class NotificationUtils {
 
     // This method is used to create a notification object
     public void sendRfqApproveToTechnical(Long rfqId) {
-        String msg = "Một RFQ mới (#" + rfqId + ") đã được chấp nhận và đang chờ xử lý.";
+        String msg = "Một yêu cầu báo giá mới (RFQ-" + rfqId + ") đã được chấp nhận và đang chờ xử lý.";
         String targetUrl = "/technical/rfq-details/" + rfqId;
         sendNotificationToRole("TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Quản lý RFQ", true);
     }
@@ -135,11 +135,72 @@ public class NotificationUtils {
     }
 
     public void sentContractFromCustomerToDyeSM(Long rfqId, Long poId) {
-        String msg = "Hợp đồng của Lô-" + rfqId + " đã được cập nhật, chờ duyệt.";
-        String targetUrl = "/work-order/technology-process/";
+        String msg = "Hợp đồng của lô hàng mã RFQ-" + rfqId + " đã được cập nhật, chờ duyệt.";
+        String targetUrl = "/purchase-order/detail/" +poId;
         sendNotificationToRole("SALE_MANAGER", msg, NotificationEnum.SUCCESS, targetUrl, "Hợp đồng",false);
     }
 
+
+    public void sentSolutionFromTechnicalToSaleStaff(Long rfqId, Long quotationId) {
+        String msg = "Báo giá lô hàng mã RFQ-" + rfqId + " đã được cập nhật, chờ duyệt.";
+        String targetUrl = "/quotation/detail/" + quotationId;
+        sendNotificationToRole("SALE_STAFF", msg, NotificationEnum.SUCCESS, targetUrl, "Giải pháp báo giá",false);
+    }
+
+    public void sentProductionOrderFromSaleManagerToSaleStaff(Long rfqId, Long productionOrderId) {
+        String msg = "Lệnh sản xuất mã PRO-"+productionOrderId+" cho lô hàng mã RFQ-" + rfqId + " đã được khởi tạo.";
+        String targetUrl = "/production-order/detail/" + productionOrderId;
+        sendNotificationToRole("SALE_STAFF", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh sản xuất",false);
+    }
+
+    public void sentProductionOrderFromSaleStaffToTechnical( Long productionOrderId) {
+        String msg = "Lệnh sản xuất mã PRO-"+productionOrderId;
+        String targetUrl = "/technical/production-order-details/" + productionOrderId;
+        sendNotificationToRole("TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh sản xuất",false);
+    }
+
+
+    public void sentWorkOrderFromTechnicalToPO( Long woId) {
+        String msg = "Lệnh làm việc mã WO-"+woId +" đã được tạo, chờ duyệt";
+        String targetUrl = "/production-manager/submitted-work-order-details/" + woId;
+        sendNotificationToRole("PRODUCTION_MANAGER", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc",false);
+    }
+
+    public void rejectWorkOrderPoTechnicalToTechnical( Long woId) {
+        String msg = "Lệnh làm việc mã WO-"+woId +" đã bị từ chối, hãy tạo lại";
+        String targetUrl = "/technical/work-order-details/" + woId;
+        sendNotificationToRole("TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Từ chối lênh làm việc",false);
+    }
+
+    public void updateWorkOrderFromTechnicalToPo( Long woId) {
+        String msg = "Lệnh làm việc mã WO-"+woId +" đã được chỉnh sửa, chờ duyệt";
+        String targetUrl = "/production-manager/submitted-work-order-details/" + woId;
+        sendNotificationToRole("PRODUCTION_MANAGER", msg, NotificationEnum.SUCCESS, targetUrl, "Cập nhật lệnh làm việc",false);
+    }
+
+    public void sentWorkOrderFromPOToDyeTechnical(Long woId) {
+        String msg = "Lệnh làm việc mã WO-"+woId +" đã được duyệt";
+        String targetUrl = "/dye-technical/work-order-details/" + woId;
+        sendNotificationToRole("DYE_TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc",false);
+    }
+
+    public void sentWorkOrderFromDyeTechnicalToLeader(Long woId) {
+        String msg = "lệnh làm việc WO-"+woId+" đã được tạo, bắt tay làm việc nào";
+        String targetUrl = "/work-order/team-leader/detail/" + woId;
+        sendNotificationToRole("LEAD_DYE", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+        sendNotificationToRole("LEAD_WINDING", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+        sendNotificationToRole("LEAD_PACKAGING", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+
+    }
+
+    public void sentWorkOrderFromDyeTechnicalToQA(Long woId) {
+        String msg = "lệnh làm việc WO-"+woId+" đã được tạo, bắt tay làm việc nào";
+        String targetUrl = "/work-order/quality_assurance/detail/" + woId;
+        sendNotificationToRole("QA_PACKAGING", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+        sendNotificationToRole("QA_WINDING", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+        sendNotificationToRole("QA_DYE", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc mới WO-"+woId ,false);
+
+    }
 
     public void sentSuccessStageToLeaderFromQASMS(Long dyeBatchId, String role) {
         if(role.equalsIgnoreCase("QA_DYE")){

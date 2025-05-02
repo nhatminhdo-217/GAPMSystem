@@ -485,7 +485,7 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" th:classappend="${tab == 'winding' ? 'active' : ''}" id="winding-tab"
                                data-bs-toggle="tab" href="#winding-machines" role="tab" aria-controls="winding-machines"
-                               aria-selected="${tab == 'winding'}">Máy cuốn</a>
+                               aria-selected="${tab == 'winding'}">Máy côn</a>
                         </li>
                     </ul>
                     <button class="create-machine-btn" data-bs-toggle="modal" data-bs-target="#createMachineModal">
@@ -577,7 +577,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${windingMachines == null or windingMachines.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không tìm thấy máy cuốn nào.</p>
+                                    <p>Không tìm thấy máy côn nào.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="machine, iterStat : ${windingMachines}">

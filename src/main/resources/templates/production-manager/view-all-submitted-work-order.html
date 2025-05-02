@@ -38,7 +38,13 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-
+        .btn-search{
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
+        }
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -342,7 +348,7 @@
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
                         <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
@@ -398,12 +404,12 @@
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
-                                                    <strong>ID Kế hoạch sản xuất</strong><br>
-                                                    <span th:text="${workOrder.id}"></span>
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>ID Đơn sản xuất</strong><br>
-                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PRO-'+${workOrder.productionOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
@@ -418,11 +424,11 @@
                                                     <span th:classappend="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : 'status-approve'"
                                                           th:text="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : 'Đã Phê Duyệt'"></span>
                                                 </div>
-                                                <div class="text-start me-3">
+                                                <!--<div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
-                                                </div>
+                                                </div>-->
                                             </div>
                                         </div>
                                     </div>
@@ -450,12 +456,12 @@
                                                   th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
-                                                    <strong>ID Kế hoạch sản xuất</strong><br>
-                                                    <span th:text="${workOrder.id}"></span>
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>ID Đơn sản xuất</strong><br>
-                                                    <span th:text="${workOrder.productionOrder.id}"></span>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PRO-'+${workOrder.productionOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
@@ -470,11 +476,11 @@
                                                     <span th:classappend="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : 'status-approve'"
                                                           th:text="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : 'Đã Phê Duyệt'"></span>
                                                 </div>
-                                                <div class="text-start me-3">
+                                                <!--<div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
                                                           th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
-                                                </div>
+                                                </div>-->
                                             </div>
                                         </div>
                                     </div>

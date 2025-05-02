@@ -29,6 +29,8 @@ public class DyeBatch extends BaseEntity {
     @Column(name = "cone_batch_weight", precision = 10, scale = 2)
     private BigDecimal cone_batch_weight; // khối lượng chỉ riêng của từng mẻ
 
+    private BigDecimal coneBatchQuantity; // Số quả trong mẻ
+
     @NotNull
     private LocalDateTime deadline;
 
@@ -80,13 +82,14 @@ public class DyeBatch extends BaseEntity {
     public DyeBatch() {
     }
 
-    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, TechnologyProcess technologyProcess, Boolean isPass) {
+    public DyeBatch(Long id, LocalDateTime createAt, LocalDateTime updateAt, int batchNumber, int plannedOutput, BigDecimal liters_min, BigDecimal liters, BigDecimal cone_batch_weight, BigDecimal coneBatchQuantity, LocalDateTime deadline, LocalDateTime plannedStart, LocalDateTime startAt, LocalDateTime completeAt, WorkEnum workStatus, TestEnum testStatus, String dyePhoto, User leaderStart, User leaderEnd, User qa, WindingBatch windingBatch, DyeStage dyeStage, List<DyeRiskAssessment> dyeRiskAssessments, TechnologyProcess technologyProcess, Boolean isPass) {
         super(id, createAt, updateAt);
         this.batchNumber = batchNumber;
         this.plannedOutput = plannedOutput;
         this.liters_min = liters_min;
         this.liters = liters;
         this.cone_batch_weight = cone_batch_weight;
+        this.coneBatchQuantity = coneBatchQuantity;
         this.deadline = deadline;
         this.plannedStart = plannedStart;
         this.startAt = startAt;
@@ -102,6 +105,14 @@ public class DyeBatch extends BaseEntity {
         this.dyeRiskAssessments = dyeRiskAssessments;
         this.technologyProcess = technologyProcess;
         this.isPass = isPass;
+    }
+
+    public BigDecimal getConeBatchQuantity() {
+        return coneBatchQuantity;
+    }
+
+    public void setConeBatchQuantity(BigDecimal coneBatchQuantity) {
+        this.coneBatchQuantity = coneBatchQuantity;
     }
 
     public int getBatchNumber() {

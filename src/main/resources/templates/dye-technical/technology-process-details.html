@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Chỉ may Dũng Đông - Chi tiết Technology Process</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -28,114 +28,185 @@
     <!-- HTML2PDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 
+    <!-- Custom CSS cho trang chi tiết -->
     <style>
-        body {
-            background-color: #f5f7fa;
-            font-family: 'Heebo', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        .container-fluid {
-            padding: 20px;
-        }
-
-        .bg-light {
-            background-color: #ffffff !important;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-        }
-
-        h3 {
+        /* Định dạng tiêu đề chính và trạng thái */
+        .header-container {
+            position: relative;
             text-align: center;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
-        h6 {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        .table th,
-        .table td {
-            border: 2px solid #e9ecef;
+        .header-title {
+            display: inline-block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .status-container {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
             padding: 8px 12px;
-            text-align: center;
+            border-radius: 20px;
             font-size: 14px;
-            color: #666;
-            font-weight: 700;
+            background: #f1f3f5;
+        }
+
+        .status i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .status-not-started {
+            background: #ffe5e5;
+            color: #dc3545;
+        }
+
+        .status-not-started i {
+            color: #dc3545;
+        }
+
+        .status-in-progress {
+            background: #fff3e0;
+            color: #856404;
+        }
+
+        .status-in-progress i {
+            color: #ffc107;
+        }
+
+        .status-completed {
+            background: #e6ffe6;
+            color: #155724;
+        }
+
+        .status-completed i {
+            color: #28a745;
+        }
+
+        .status-stop {
+            background: #17a2b8;
+            color: #333;
+        }
+
+        .status-stop i {
+            color: black;
+        }
+
+        .status-fix {
+            background: #e88cb4;
+            color: rgb(30, 31, 34);
+        }
+
+        .status-fix i {
+            color: rgba(234, 221, 61, 0.96);
+        }
+
+        /* Định dạng tiêu đề phần */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            border: 1px solid #000;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            /*text-transform: uppercase;*/
+        }
+
+        /* Định dạng bảng */
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 14px;
+            /*color: #333;*/
         }
 
         .table th {
             background-color: #f8f9fa;
-            font-weight: 700;
-            color: #333;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
         .table td {
-            background-color: #ffffff;
+            background-color: #fff;
         }
 
+        .highlight-cell {
+            background-color: #e9ecef;
+        }
+
+        .delta-e {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Container cho hai bảng song song */
+        .table-container {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .table-container .col-md-6 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .equal-height-table {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .equal-height-table table {
+            flex: 1;
+        }
+
+        /* Định dạng bảng mã QR */
         .qr-table {
-            width: 100%;
+            width: 200px;
+            margin: 20px auto;
             border-collapse: collapse;
         }
 
-        .qr-table th,
-        .qr-table td {
-            border: 2px solid #e9ecef;
-            padding: 8px 12px;
+        .qr-table th, .qr-table td {
+            border: 1px solid #000;
+            padding: 8px;
             text-align: center;
             font-size: 14px;
-            color: #666;
-            font-weight: 700;
+            font-weight: bold;
         }
 
         .qr-table th {
             background-color: #f8f9fa;
-            font-weight: 700;
-            color: #333;
             text-transform: uppercase;
         }
 
         .qr-table td {
-            background-color: #ffffff;
+            background-color: #fff;
         }
 
         .qr-code canvas {
-            max-width: 100px;
-            margin-top: 10px;
+            width: 150px !important;
+            height: 150px !important;
+            margin: 10px auto;
+            display: block;
         }
 
-        .dye-qr-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .dye-table-container {
-            flex: 3;
-        }
-
-        .qr-table-container {
-            flex: 1;
-            min-width: 200px;
-        }
-
+        /* Định dạng container cho thông tin người tạo và kiểm tra */
         .inspector-creator-container {
             display: flex;
             justify-content: space-between;
@@ -144,121 +215,165 @@
             margin-top: 20px;
         }
 
-        .creator-info,
-        .inspector-info {
+        .creator-info, .inspector-info {
             display: flex;
             flex-direction: column;
         }
 
-        .creator-info span,
-        .inspector-info span {
-            font-weight: 600;
+        .creator-info span, .inspector-info span {
+            font-weight: bold;
             color: #333;
         }
 
+        /* Định dạng nút */
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        .back-btn,
-        .export-pdf-btn {
-            padding: 8px 16px;
-            font-size: 14px;
+        .back-btn, .export-pdf-btn {
+            padding: 10px 20px;
+            font-size: 16px;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
         }
 
-        .back-btn:hover,
+        .back-btn {
+            background-color: #6c757d;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .export-pdf-btn {
+            background-color: #007bff;
+        }
+
         .export-pdf-btn:hover {
-            opacity: 0.9;
+            background-color: #0056b3;
         }
 
-        /* Hidden container for PDF rendering */
+        .back-btn i, .export-pdf-btn i {
+            margin-right: 8px;
+        }
+
+        /* Container ẩn cho PDF */
         #pdf-content {
             position: absolute;
             top: -9999px;
             left: -9999px;
-            width: 595px; /* A4 width in pixels at 72dpi */
-            padding: 20px;
-            background-color: #ffffff;
+            width: 595px; /* Kích thước A4 ở 72dpi */
+            padding: 15px; /* Tăng padding để thoáng hơn */
+            background-color: #fff;
             box-sizing: border-box;
-            overflow: visible;
         }
 
-        /* Styles for PDF rendering */
-        #pdf-content .bg-light {
-            box-shadow: none;
-            border-radius: 0;
-            padding: 10px;
-        }
-
-        #pdf-content .table th,
-        #pdf-content .table td,
-        #pdf-content .qr-table th,
-        #pdf-content .qr-table td {
-            font-size: 8px; /* Further reduce font size to fit A4 */
-            padding: 3px 4px;
+        /* Định dạng cho PDF */
+        #pdf-content .table th, #pdf-content .table td,
+        #pdf-content .qr-table th, #pdf-content .qr-table td {
+            font-size: 10px; /* Tăng từ 8px */
+            padding: 6px; /* Tăng từ 4px */
             word-wrap: break-word;
         }
 
-        #pdf-content .table,
-        #pdf-content .qr-table {
+        #pdf-content .table, #pdf-content .qr-table {
             width: 100%;
-            table-layout: fixed; /* Ensure table columns fit within width */
+            table-layout: fixed;
+            margin-bottom: 10px; /* Thêm khoảng cách giữa các bảng */
         }
 
-        #pdf-content .table th,
-        #pdf-content .table td {
-            width: 8.33%; /* Equal width for 12 columns (100% / 12) */
+        /* Cân đối chiều rộng cột trong bảng Thông tin chung và Hóa chất - Chất trợ */
+        #pdf-content .table col:nth-child(1),
+        #pdf-content .table col:nth-child(3) {
+            width: 25%; /* Cột nhãn */
         }
 
-        #pdf-content .dye-qr-container {
-            flex-direction: column; /* Stack vertically in PDF */
-            gap: 10px;
+        #pdf-content .table col:nth-child(2),
+        #pdf-content .table col:nth-child(4) {
+            width: 25%; /* Cột giá trị */
         }
 
-        #pdf-content .qr-table-container {
-            min-width: 100%;
+        /* Cân đối cột trong bảng Thuốc nhuộm */
+        #pdf-content .table-responsive .table col:nth-child(1) {
+            width: 30%; /* Tên Thuốc */
+        }
+
+        #pdf-content .table-responsive .table col:nth-child(2),
+        #pdf-content .table-responsive .table col:nth-child(3),
+        #pdf-content .table-responsive .table col:nth-child(4) {
+            width: 23.33%; /* Các cột còn lại */
+        }
+
+        #pdf-content .qr-table {
+            width: 180px; /* Tăng từ 150px */
+            margin: 15px auto; /* Tăng margin */
         }
 
         #pdf-content .qr-code canvas {
-            max-width: 80px; /* Tăng kích thước tối đa của mã QR trong PDF */
+            width: 120px !important; /* Tăng từ 100px */
+            height: 120px !important;
         }
 
-        #pdf-content h3 {
-            font-size: 14px;
+        #pdf-content .header-title {
+            font-size: 16px; /* Tăng từ 14px */
         }
 
-        #pdf-content h6 {
-            font-size: 10px;
+        #pdf-content .section-header {
+            font-size: 12px; /* Tăng từ 10px */
         }
 
-        @media (max-width: 768px) {
-            .table th,
-            .table td,
-            .qr-table th,
-            .qr-table td {
-                font-size: 12px;
-                padding: 6px 8px;
-            }
+        #pdf-content .table-container {
+            flex-direction: column;
+        }
 
-            h3 {
-                font-size: 18px;
-            }
+        #pdf-content .col-md-6 {
+            width: 100%;
+        }
 
-            h6 {
-                font-size: 14px;
-            }
+        /* Ẩn trạng thái và thông tin người tạo khi in */
+        #pdf-content .status-container,
+        #pdf-content .inspector-creator-container {
+            display: none;
+        }
 
-            .dye-qr-container {
+        /* Responsive cho màn hình nhỏ */
+        @media (max-width: 576px) {
+            .table-container {
                 flex-direction: column;
             }
 
-            .qr-table-container {
-                min-width: 100%;
+            .table-container .col-md-6 {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .table th, .table td, .qr-table th, .qr-table td {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .section-header {
+                font-size: 14px;
+            }
+
+            .qr-table {
+                width: 100%;
+            }
+
+            .qr-code canvas {
+                width: 120px !important;
+                height: 120px !important;
             }
 
             .inspector-creator-container {
@@ -266,52 +381,129 @@
                 gap: 10px;
             }
 
-            .creator-info,
-            .inspector-info {
-                font-size: 12px;
-            }
-
-            .qr-code canvas {
-                max-width: 80px;
-            }
-
             .button-container {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
 
-            .back-btn,
-            .export-pdf-btn {
+            .back-btn, .export-pdf-btn {
                 width: 100%;
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .status-container {
+                position: static;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .status {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .status i {
+                font-size: 14px;
             }
         }
 
+        /* Định dạng khi in */
         @media print {
-            .table th,
-            .table td,
-            .qr-table th,
-            .qr-table td {
-                font-size: 8px;
-                padding: 3px 4px;
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh; /* Đảm bảo chiều cao đầy đủ của trang */
             }
 
-            .table,
-            .qr-table {
-                table-layout: fixed;
-            }
-
-            .table th,
-            .table td {
-                width: 8.33%;
-            }
-
-            .dye-qr-container {
+            #pdf-content {
+                position: static; /* Bỏ vị trí tuyệt đối khi in */
+                width: 595px; /* Kích thước A4 ở 72dpi */
+                height: auto; /* Chiều cao tự động theo nội dung */
+                margin: 0 auto; /* Căn giữa theo chiều ngang */
+                padding: 15mm; /* Khoảng cách lề */
+                box-sizing: border-box;
+                background-color: #fff;
+                display: flex;
                 flex-direction: column;
-                gap: 10px;
+                justify-content: center; /* Căn giữa theo chiều dọc nếu cần */
             }
 
-            .qr-table-container {
-                min-width: 100%;
+            .table th, .table td, .qr-table th, .qr-table td {
+                font-size: 10px;
+                padding: 6px;
+                word-wrap: break-word;
+            }
+
+            .table, .qr-table {
+                width: 100%;
+                table-layout: fixed;
+                margin-bottom: 10px;
+            }
+
+            /* Cân đối chiều rộng cột trong bảng Thông tin chung và Hóa chất - Chất trợ */
+            .table col:nth-child(1),
+            .table col:nth-child(3) {
+                width: 25%;
+            }
+
+            .table col:nth-child(2),
+            .table col:nth-child(4) {
+                width: 25%;
+            }
+
+            /* Cân đối cột trong bảng Thuốc nhuộm */
+            .table-responsive .table col:nth-child(1) {
+                width: 30%;
+            }
+
+            .table-responsive .table col:nth-child(2),
+            .table-responsive .table col:nth-child(3),
+            .table-responsive .table col:nth-child(4) {
+                width: 23.33%;
+            }
+
+            .qr-code canvas {
+                width: 120px !important;
+                height: 120px !important;
+            }
+
+            .qr-table {
+                width: 180px;
+                margin: 15px auto;
+            }
+
+            .table-container {
+                flex-direction: column;
+            }
+
+            .col-md-6 {
+                width: 100%;
+            }
+
+            .header-title {
+                font-size: 16px;
+                text-align: center;
+            }
+
+            .section-header {
+                font-size: 12px;
+            }
+
+            /* Ẩn trạng thái và thông tin người tạo */
+            .status-container,
+            .inspector-creator-container,
+            .button-container {
+                display: none;
             }
         }
     </style>
@@ -340,136 +532,219 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4">
-                <!-- Title -->
-                <h3>ĐƠN CÔNG NGHỆ SẢN XUẤT</h3>
+                <!-- Title and Status -->
+                <div class="header-container">
+                    <div class="header-title">ĐƠN CÔNG NGHỆ SẢN XUẤT</div>
+                    <!--<div class="status-container">
+                        <span th:switch="${technologyProcess.dyeBatch.workStatus}">
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
+                                <i class="fas fa-spinner"></i> Đang Nhuộm
+                            </span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
+                                <i class="fas fa-check-circle"></i> Đã Nhuộm
+                            </span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
+                                <i class="fas fa-pause"></i> Tạm Dừng
+                            </span>
+                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
+                                <i class="fas fa-wrench"></i> Chờ Sửa
+                            </span>
+                            <span th:case="*" class="status status-not-started">
+                                <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                            </span>
+                        </span>
+                    </div>-->
+                </div>
 
-                <!-- General Information -->
-                <h6>Thông tin chung</h6>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Mã QL</th>
-                        <th>Màu</th>
-                        <th>Chỉ số</th>
-                        <th>Dung tỷ</th>
-                        <th>Avco Lve DLX Plus</th>
-                        <th>Chất càng hoá</th>
-                        <th>Chất giặt</th>
-                        <th>Chất giặt khử</th>
-                        <th>Chất khuếch tán DFM</th>
-                        <th>Axit</th>
-                        <th>Chất đệm Axit</th>
-                        <th>Dispergator N</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td th:text="${technologyProcess.id}"></td>
-                        <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color}"></td>
-                        <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.category.name}"></td>
-                        <td th:text="${technologyProcess.liquorRatio}"></td>
-                        <td th:text="${technologyProcess.avcoLveDlxPlus} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.chelator} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.detergent} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.reducingAgent} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.dfm} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.axit} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.anbatex} + ' g/L'"></td>
-                        <td th:text="${technologyProcess.dispergatorN != null ? technologyProcess.dispergatorN + ' g/L' : 'N/A'}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!-- Dye Types and QR Code -->
-                <div class="dye-qr-container">
-                    <!-- Dye Types -->
-                    <div class="dye-table-container">
-                        <h6>Thuốc nhuộm</h6>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Tên thuốc nhuộm</th>
-                                <th>Dung tỷ</th>
-                                <th>% ánh sáng</th>
-                                <th>Tỷ lệ %</th>
-                                <th>Khối lượng</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="dyeType : ${technologyProcess.dyeTypes}">
-                                <td th:text="${dyeType.name}"></td>
-                                <td th:text="${technologyProcess.liquorRatio}"></td>
-                                <td th:text="${dyeType.lightPercent} + '%'"></td>
-                                <td th:text="${dyeType.ratio} + '%'"></td>
-                                <td th:text="${dyeType.weight} + ' g'"></td>
-                            </tr>
-                            <tr th:if="${technologyProcess.dyeTypes.isEmpty()}">
-                                <td colspan="5" class="text-center">Không có thuốc nhuộm nào.</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <!-- Thông Tin Chung và Hóa Chất - Chất Trợ -->
+                <div class="table-container row">
+                    <!-- Thông Tin Chung (Bên trái) -->
+                    <div class="col-md-6">
+                        <div class="equal-height-table">
+                            <div class="section-header">
+                                <span class="delta-e">THÔNG TIN CHUNG</span>
+                                <span class="delta-e">ΔE: 0.8</span>
+                            </div>
+                            <table class="table table-bordered">
+                                <colgroup>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                <tr>
+                                    <td>Mã Quản Lý</td>
+                                    <td th:text="'RFQ-'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
+                                    <td>Khối Lượng</td>
+                                    <td th:text="${technologyProcess.dyeBatch.cone_batch_weight != null ? technologyProcess.dyeBatch.cone_batch_weight : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Mã Khách Hàng</td>
+                                    <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id != null ? 'KH-' + technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id : 'N/A'}"></td>
+                                    <td>Mẻ số</td>
+                                    <td th:text="${technologyProcess.dyeBatch.batchNumber != null ? technologyProcess.dyeBatch.batchNumber : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Màu</td>
+                                    <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color != null ? technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.note_color : 'N/A'}"></td>
+                                    <td>Mã Máy</td>
+                                    <td class="highlight-cell"><span th:text="${technologyProcess.dyeBatch.dyeStage.dyeMachine.id != null ? 'MB-' + technologyProcess.dyeBatch.dyeStage.dyeMachine.id : 'N/A'}"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Chỉ Số</td>
+                                    <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name != null ? technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.name : 'N/A'}"></td>
+                                    <td>Quy Trình</td>
+                                    <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id != null ? technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ghi chú</td>
+                                    <td colspan="3">N/A</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <!-- QR Code -->
-                    <div class="qr-table-container">
-                        <h6>Mã QR</h6>
-                        <table class="qr-table">
-                            <thead>
-                            <tr>
-                                <th>QR Code</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <div class="qr-code">
-                                        <canvas id="qrcode-canvas"></canvas>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <!-- Hóa Chất - Chất Trợ (Bên phải) -->
+                    <div class="col-md-6">
+                        <div class="equal-height-table">
+                            <table class="table table-bordered">
+                                <colgroup>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th colspan="4" class="table-header">HÓA CHẤT - CHẤT TRỢ</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Anbatex AB-45</td>
+                                    <td th:text="${technologyProcess.anbatex != null ? technologyProcess.anbatex + ' g/L' : 'N/A'}"></td>
+                                    <td>Càng Hóa</td>
+                                    <td th:text="${technologyProcess.chelator != null ? technologyProcess.chelator + ' g/L' : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>AVCO-LEV DLX PLUS</td>
+                                    <td th:text="${technologyProcess.avcoLveDlxPlus != null ? technologyProcess.avcoLveDlxPlus + ' g/L' : 'N/A'}"></td>
+                                    <td>Disper gator N</td>
+                                    <td th:text="${technologyProcess.dispergatorN != null ? technologyProcess.dispergatorN + ' g/L' : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Chất giặt</td>
+                                    <td th:text="${technologyProcess.detergent != null ? technologyProcess.detergent + ' g/L' : 'N/A'}"></td>
+                                    <td>Số Lít</td>
+                                    <td th:text="${technologyProcess.dyeBatch.liters != null ? technologyProcess.dyeBatch.liters : 'N/A'}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Univadin DFM</td>
+                                    <td th:text="${technologyProcess.dfm != null ? technologyProcess.dfm + ' g/L' : 'N/A'}"></td>
+                                    <td>Dung Tỷ</td>
+                                    <td>1/6</td>
+                                </tr>
+                                <tr>
+                                    <td>Giặt khử</td>
+                                    <td th:text="${technologyProcess.reducingAgent != null ? technologyProcess.reducingAgent + ' g/L' : 'N/A'}"></td>
+                                    <td>AXIT. Giặt</td>
+                                    <td th:text="${technologyProcess.axit != null ? technologyProcess.axit + ' g/L' : 'N/A'}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Bảng Thuốc Nhuộm -->
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-4">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th colspan="4" class="table-header">THUỐC NHUỘM</th>
+                        </tr>
+                        <tr>
+                            <th>Tên Thuốc</th>
+                            <th>% ánh sáng</th>
+                            <th>Tỷ lệ %</th>
+                            <th>Số gam</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="dyeType : ${technologyProcess.dyeTypes}">
+                            <td th:text="${dyeType.name != null ? dyeType.name : 'N/A'}"></td>
+                            <td th:text="${dyeType.lightPercent != null ? dyeType.lightPercent + '%' : 'N/A'}"></td>
+                            <td th:text="${dyeType.ratio != null ? dyeType.ratio + '%' : 'N/A'}"></td>
+                            <td th:text="${dyeType.weight != null ? dyeType.weight + ' g' : 'N/A'}"></td>
+                        </tr>
+                        <tr th:if="${technologyProcess.dyeTypes.isEmpty()}">
+                            <td colspan="4" class="text-center">Không có thuốc nhuộm nào.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- QR Code -->
+                <div class="qr-table-container">
+                    <table class="qr-table">
+                        <thead>
+                        <tr>
+                            <th>Mã QR</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="qr-code">
+                                    <canvas id="qrcode-canvas"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Creator and Inspector Information -->
                 <div class="inspector-creator-container">
-                    <!-- Creator Info (Left) -->
-                    <div class="creator-info">
-                        <p th:text="'Ngày tạo: ' + ${#temporals.format(technologyProcess.createAt, 'dd/MM/yyyy HH:mm')}"></p>
-                        <p>Người tạo: <span th:text="${technologyProcess.createdBy.username}"></span></p>
-                    </div>
-
-                    <!-- Inspector Info (Right) -->
-                    <div class="inspector-info">
-                        <p th:text="'Ngày kiểm tra: ' + ${#temporals.format(technologyProcess.updateAt != null ? technologyProcess.updateAt : technologyProcess.createAt, 'dd/MM/yyyy HH:mm')}"></p>
-                        <p>Người kiểm tra: <span th:text="${technologyProcess.createdBy.username}"></span></p>
-                    </div>
+                    <!-- Đã comment theo mã của bạn -->
+                    <!-- <div class="creator-info">
+                        <p th:text="'Ngày tạo: ' + ${#temporals.format(technologyProcess.createAt != null ? technologyProcess.createAt : null, 'dd/MM/yyyy HH:mm')}"></p>
+                        <p>Người tạo: <span th:text="${technologyProcess.createdBy.username != null ? technologyProcess.createdBy.username : 'N/A'}"></span></p>
+                    </div> -->
                 </div>
 
                 <!-- Buttons -->
                 <div class="button-container">
-                    <a th:href="@{/dye-technical/view-all-technology-process}" class="btn btn-primary back-btn">
+                    <a th:href="@{/dye-technical/view-all-technology-process}" class="btn back-btn">
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
                     <button th:if="${technologyProcess.status.name() == 'APPROVED'}"
-                            class="btn btn-success export-pdf-btn" id="export-pdf-btn">
-                        In hành trình công nghệ
+                            class="btn export-pdf-btn" id="export-pdf-btn">
+                        <i class="fas fa-print"></i> In hành trình công nghệ
                     </button>
                 </div>
             </div>
         </div>
         <!-- Content End -->
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Footer Start -->
+        <div th:replace="~{shared/footer.html :: footer}"></div>
+        <!-- Footer End -->
     </div>
 </div>
 
 <!-- Hidden QR Code URL -->
 <div id="qr-code-url" style="display: none;"
      th:text="${technologyProcess.qrCodeUrl != null ? technologyProcess.qrCodeUrl : ''}"></div>
-<div id="technology-process-id" style="display: none;" th:text="${technologyProcess.id}"></div>
+<div id="technology-process-id" style="display: none;" th:text="${technologyProcess.id != null ? technologyProcess.id : 'N/A'}"></div>
 
 <!-- Hidden container for PDF rendering -->
 <div id="pdf-content">
@@ -499,7 +774,6 @@
         const techProcessIdElement = document.getElementById('technology-process-id');
         const canvas = document.getElementById('qrcode-canvas');
 
-        // Kiểm tra các phần tử trước khi truy cập textContent
         if (!qrCodeUrlElement || !techProcessIdElement || !canvas) {
             console.error('One or more elements not found: qr-code-url, technology-process-id, or qrcode-canvas');
             if (canvas) {
@@ -518,9 +792,8 @@
         console.log('urlToEncode:', urlToEncode);
 
         if (urlToEncode && urlToEncode.trim() !== '') {
-            // Set willReadFrequently to true to improve performance
             canvas.setAttribute('willReadFrequently', 'true');
-            QRCode.toCanvas(canvas, urlToEncode, {width: 100, height: 100}, function (error) {
+            QRCode.toCanvas(canvas, urlToEncode, {width: 150, height: 150}, function (error) {
                 if (error) {
                     console.error('Lỗi khi tạo mã QR:', error);
                     canvas.parentElement.innerHTML = 'Không thể tạo mã QR';
@@ -544,7 +817,6 @@
     function previewPDF() {
         console.log('Starting PDF generation...');
 
-        // Debug Thymeleaf data
         const techProcessIdElement = document.getElementById('technology-process-id');
         if (!techProcessIdElement) {
             console.error('Technology Process ID element not found');
@@ -554,7 +826,6 @@
         const technologyProcessId = techProcessIdElement.textContent || '';
         console.log('Technology Process ID:', technologyProcessId);
 
-        // Sao chép phần nội dung chính (không bao gồm navbar và sidebar)
         const contentElement = document.querySelector('.container-fluid.pt-4.px-4');
         console.log('Content element to clone:', contentElement);
 
@@ -567,24 +838,20 @@
         const clone = contentElement.cloneNode(true);
         console.log('Cloned content element:', clone);
 
-        // Loại bỏ phần nút khỏi nội dung sao chép
         const buttonContainer = clone.querySelector('.button-container');
         if (buttonContainer) {
             buttonContainer.remove();
             console.log('Removed button container from clone');
         }
 
-        // Tạo container ẩn để render nội dung PDF
         const pdfContent = document.getElementById('pdf-content');
         const pdfBody = pdfContent.querySelector('.pdf-body');
-        pdfBody.innerHTML = ''; // Xóa nội dung cũ
+        pdfBody.innerHTML = '';
         pdfBody.appendChild(clone);
         console.log('Inserted cloned content into pdf-body');
 
-        // Debug nội dung sau khi sao chép
         console.log('PDF Body content:', pdfBody.innerHTML);
 
-        // Tái tạo mã QR trong container ẩn
         const qrCanvas = pdfBody.querySelector('#qrcode-canvas');
         const qrCodeUrlElement = document.getElementById('qr-code-url');
         const techProcessIdElementForPDF = document.getElementById('technology-process-id');
@@ -603,12 +870,11 @@
             console.log('Re-rendering QR Code in PDF with URL:', urlToEncode);
 
             if (urlToEncode && urlToEncode.trim() !== '') {
-                // Set willReadFrequently to true to improve performance
                 qrCanvas.setAttribute('willReadFrequently', 'true');
                 QRCode.toCanvas(qrCanvas, urlToEncode, {
-                    width: 80,  // Tăng kích thước mã QR
-                    height: 80,
-                    errorCorrectionLevel: 'H',  // Tăng mức sửa lỗi để mã QR rõ nét hơn
+                    width: 120, /* Điều chỉnh cho PDF */
+                    height: 120,
+                    errorCorrectionLevel: 'H',
                     margin: 1
                 }, function (error) {
                     if (error) {
@@ -626,28 +892,24 @@
             }
         }
 
-        // Đợi lâu hơn để đảm bảo QR Code và nội dung được render
         setTimeout(() => {
-            // Hiển thị tạm thời container để html2canvas render
             pdfContent.style.position = 'static';
             pdfContent.style.top = '0';
             pdfContent.style.left = '0';
 
-            // Log chiều cao của pdfContent
             console.log('PDF Content height before rendering:', pdfContent.offsetHeight);
 
             const opt = {
-                margin: 0.5,
+                margin: [10, 10, 10, 10], // Lề trên, phải, dưới, trái (mm)
                 filename: 'TechnologyProcess_' + (technologyProcessId || 'unknown') + '.pdf',
-                image: {type: 'jpeg', quality: 0.98},
-                html2canvas: {scale: 3, useCORS: false},  // Tăng scale để cải thiện độ nét
-                jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'},
-                pagebreak: {mode: ['avoid-all', 'css', 'legacy']}
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 3, useCORS: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             console.log('Generating PDF with options:', opt);
 
-            // Tạo PDF từ container ẩn
             html2pdf()
                 .set(opt)
                 .from(pdfContent)
@@ -657,7 +919,6 @@
                     const pdfUrl = URL.createObjectURL(pdfBlob);
                     window.open(pdfUrl, '_blank');
 
-                    // Ẩn lại container sau khi tạo PDF
                     pdfContent.style.position = 'absolute';
                     pdfContent.style.top = '-9999px';
                     pdfContent.style.left = '-9999px';
@@ -666,15 +927,13 @@
                     console.error('Lỗi khi tạo PDF:', error);
                     alert('Không thể tạo PDF. Vui lòng kiểm tra console để biết thêm chi tiết.');
 
-                    // Ẩn lại container nếu có lỗi
                     pdfContent.style.position = 'absolute';
                     pdfContent.style.top = '-9999px';
                     pdfContent.style.left = '-9999px';
                 });
-        }, 2000); // Thời gian chờ 2000ms
+        }, 2000);
     }
 
-    // Gán sự kiện cho nút "In hành trình công nghệ"
     document.addEventListener('DOMContentLoaded', function () {
         console.log('DOM fully loaded for PDF button event listener');
 

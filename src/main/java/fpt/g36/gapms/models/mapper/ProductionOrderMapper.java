@@ -59,6 +59,8 @@ public class ProductionOrderMapper {
     dto.setThreadName(pod.getPurchaseOrderDetail().getProduct().getThread().getName());
     dto.setRate(pod.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate());
     dto.setProcess(pod.getPurchaseOrderDetail().getProduct().getThread().getProcess().getId());
+    dto.setRfqId(pod.getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId());
+    dto.setRfqDetailId(pod.getPurchaseOrderDetail().getRfqDetailId());
 
     return dto;
   }

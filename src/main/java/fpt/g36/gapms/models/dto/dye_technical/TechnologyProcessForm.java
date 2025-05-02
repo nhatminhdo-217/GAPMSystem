@@ -10,9 +10,58 @@ public class TechnologyProcessForm {
     private List<DyeTypeDTO> dyeTypesForLastBatch;
     private BigDecimal dispergatorNForFirstBatches;
     private BigDecimal dispergatorNForLastBatch;
+    private BigDecimal dfmForFirstBatches;
+    private BigDecimal dfmForLastBatch;
+    private BigDecimal anbatexForFirstBatches;
+    private BigDecimal anbatexForLastBatch;
 
     // Constructor mặc định
-    public TechnologyProcessForm() {
+    public TechnologyProcessForm() {};
+
+    //
+    public TechnologyProcessForm(Long workOrderId, Long workOrderDetailId, List<DyeTypeDTO> dyeTypesForFirstBatches, List<DyeTypeDTO> dyeTypesForLastBatch, BigDecimal dispergatorNForFirstBatches, BigDecimal dispergatorNForLastBatch, BigDecimal dfmForFirstBatches, BigDecimal dfmForLastBatch, BigDecimal anbatexForFirstBatches, BigDecimal anbatexForLastBatch) {
+        this.workOrderId = workOrderId;
+        this.workOrderDetailId = workOrderDetailId;
+        this.dyeTypesForFirstBatches = dyeTypesForFirstBatches;
+        this.dyeTypesForLastBatch = dyeTypesForLastBatch;
+        this.dispergatorNForFirstBatches = dispergatorNForFirstBatches;
+        this.dispergatorNForLastBatch = dispergatorNForLastBatch;
+        this.dfmForFirstBatches = dfmForFirstBatches;
+        this.dfmForLastBatch = dfmForLastBatch;
+        this.anbatexForFirstBatches = anbatexForFirstBatches;
+        this.anbatexForLastBatch = anbatexForLastBatch;
+    }
+
+    public BigDecimal getDfmForFirstBatches() {
+        return dfmForFirstBatches;
+    }
+
+    public void setDfmForFirstBatches(BigDecimal dfmForFirstBatches) {
+        this.dfmForFirstBatches = dfmForFirstBatches;
+    }
+
+    public BigDecimal getDfmForLastBatch() {
+        return dfmForLastBatch;
+    }
+
+    public void setDfmForLastBatch(BigDecimal dfmForLastBatch) {
+        this.dfmForLastBatch = dfmForLastBatch;
+    }
+
+    public BigDecimal getAnbatexForFirstBatches() {
+        return anbatexForFirstBatches;
+    }
+
+    public void setAnbatexForFirstBatches(BigDecimal anbatexForFirstBatches) {
+        this.anbatexForFirstBatches = anbatexForFirstBatches;
+    }
+
+    public BigDecimal getAnbatexForLastBatch() {
+        return anbatexForLastBatch;
+    }
+
+    public void setAnbatexForLastBatch(BigDecimal anbatexForLastBatch) {
+        this.anbatexForLastBatch = anbatexForLastBatch;
     }
 
     // Getter và Setter

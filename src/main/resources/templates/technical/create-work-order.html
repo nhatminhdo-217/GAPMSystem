@@ -388,18 +388,18 @@
                                 <div class="production-info">
                                     <table class="production-info-table">
                                         <tr>
-                                            <th>Mã lô</th>
+                                            <th>Mã lênh sản xuất</th>
                                             <th>Ngày tạo đơn</th>
                                             <th>Ngày giao hàng dự kiến</th>
                                             <th>Thời gian bắt đầu dự kiến</th>
                                             <th>Thời gian kết thúc dự kiến</th>
                                         </tr>
                                         <tr>
-                                            <td th:text="${productionOrderId}"></td>
-                                            <td th:text="${#temporals.format(productionOrder.createAt, 'dd-MM-yyyy')}"></td>
-                                            <td th:text="${#temporals.format(productionOrder.purchaseOrder.solution.actualDeliveryDate, 'dd-MM-yyyy')}"></td>
-                                            <td th:text="${#temporals.format(plannedStartAt, 'dd-MM-yyyy HH:mm')}"></td>
-                                            <td th:text="${#temporals.format(plannedEndAt, 'dd-MM-yyyy HH:mm')}"></td>
+                                            <td th:text="'PRO-'+${productionOrderId}"></td>
+                                            <td th:text="${#temporals.format(productionOrder.createAt, 'dd/MM/yyyy')}"></td>
+                                            <td th:text="${#temporals.format(productionOrder.purchaseOrder.solution.actualDeliveryDate, 'dd/MM/yyyy')}"></td>
+                                            <td th:text="${#temporals.format(plannedStartAt, 'dd/MM/yyyy')}"></td>
+                                            <td th:text="${#temporals.format(plannedEndAt, 'dd/MM/yyyy')}"></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -424,15 +424,17 @@
                                             <div class="detail-content">
                                                 <table class="detail-table">
                                                     <tr>
-                                                        <th>Mã đơn hàng</th>
+                                                        <th>Mã quản lý</th>
                                                         <th>Sản phẩm</th>
+                                                        <th>Loại sợi</th>
                                                         <th>Màu</th>
                                                         <th>Số lượng</th>
                                                         <th>Thread Mass (kg)</th>
                                                     </tr>
                                                     <tr>
-                                                        <td th:text="${detail.id}"></td>
+                                                        <td th:text="'RFQ-'+${detail.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${detail.purchaseOrderDetail.rfqDetailId}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
+                                                        <td th:text="${detail.purchaseOrderDetail.product.thread.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.quantity}"></td>
                                                         <td th:text="${detail.thread_mass}"></td>
@@ -442,7 +444,7 @@
                                                 <!-- Thêm trường nhập additionalWeight cho từng detail -->
                                                 <div class="form-group">
                                                     <label th:for="'additionalWeight-' + ${iterStat.index}">Trọng lượng
-                                                        bổ sung (additionalWeight, kg):</label>
+                                                        bổ sung (kg):</label>
                                                     <input type="number" step="0.01" min="0.4"
                                                            class="form-control additional-weight"
                                                            th:id="'additionalWeight-' + ${iterStat.index}"
@@ -527,7 +529,7 @@
                                                 <!-- Packaging Stage -->
                                                 <div class="stage-section">
                                                     <p><strong>Giai đoạn đóng gói:</strong>
-                                                        <span>Không cần chọn máy (tự động tính dựa trên Dye và Winding)</span>
+                                                        <span>Không cần chọn máy</span>
                                                     </p>
                                                     <div class="stage-deadline"
                                                          th:id="'packagingDeadline-' + ${iterStat.index}"></div>
@@ -555,15 +557,14 @@
             </div>
         </div>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
 </div>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script>
@@ -626,7 +627,8 @@
                     `windingAvailabilityError=${windingAvailabilityError}, ` +
                     `additionalWeightValid=${additionalWeightValid}`);
 
-                if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
+                if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError
+                    || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
                     allValid = false;
                 }
             });
@@ -647,7 +649,8 @@
             var windingAvailabilityError = $('#windingAvailability-' + detailIndex).hasClass('error');
             var additionalWeightValid = validateAdditionalWeight(detailIndex);
 
-            if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
+            if (!dyeSelected || !windingSelected || dyeDeadlineError || windingDeadlineError
+                || dyeAvailabilityError || windingAvailabilityError || !additionalWeightValid) {
                 toggleBtn.removeClass('success').addClass('error');
                 icon.removeClass('fa-plus fa-minus fa-check').addClass('fa-times');
             } else {
@@ -705,12 +708,15 @@
                         dyeDetailsDiv.html(
                             '<table class="dye-info-table">' +
                             '<tr>' +
-                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
-                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '<th>Khối lượng thực tế</th><th>Khối lượng tối đa (máy)</th><th>Khối lượng tối đa (mẻ)</th><th>Sản phẩm tối đa (mẻ)</th>' +
+                            '<th>Số lít nước tối thiểu (máy)</th><th>Số lít nước tối đa (máy)</th><th>Số lít nước (mẻ)</th>' +
+                            '<th>Số lượng quả tối thiểu (máy)</th><th>Số lượng quả tối đa (máy)</th><th>Số lượng quả</th><th>Số lượng quả (mẻ)</th><th>Số mẻ</th>' +
                             '</tr>' +
                             '<tr>' +
                             '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
                             '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.maxProductPerBatch + '</td>' +
                             '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
                             '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
                             '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
@@ -730,21 +736,24 @@
                     } else {
                         var errorMessage = response.message.includes('Litters Batch') ?
                             'Máy nhuộm không hợp lệ:\n' +
-                            'Litters Batch (' + response.dyeCalculations.littersBatch + ') không nằm trong khoảng [' +
+                            'Số lít nước trong mẻ (' + response.dyeCalculations.littersBatch + ') không nằm trong khoảng [' +
                             response.dyeMachine.littersMin + ', ' + response.dyeMachine.littersMax + '].\n' +
-                            'Cone Batch Quantity (' + response.dyeCalculations.coneBatchQuantity + ') không nằm trong khoảng [' +
+                            'Số quả trong mẻ (' + response.dyeCalculations.coneBatchQuantity + ') không nằm trong khoảng [' +
                             response.dyeMachine.coneMin + ', ' + response.dyeMachine.coneMax + '].' :
-                            response.message || 'Máy nhuộm không phù hợp do deadline vượt quá giới hạn.';
+                            response.message || 'Máy nhuộm không phù hợp do hạn chót vượt quá giới hạn.';
                         dyeMessageDiv.text(errorMessage).addClass('error').removeClass('success');
                         dyeDetailsDiv.html(
                             '<table class="dye-info-table">' +
                             '<tr>' +
-                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
-                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '<th>Khối lượng thực tế</th><th>Khối lượng tối đa (máy)</th><th>Khối lượng tối đa (mẻ)</th><th>Sản phẩm tối đa (mẻ)</th>' +
+                            '<th>Số lít nước tối thiểu (máy)</th><th>Số lít nước tối đa (máy)</th><th>Số lít nước (mẻ)</th>' +
+                            '<th>Số lượng quả tối thiểu (máy)</th><th>Số lượng quả tối đa (máy)</th><th>Số lượng quả</th><th>Số lượng quả (mẻ)</th><th>Số mẻ</th>' +
                             '</tr>' +
                             '<tr>' +
                             '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
                             '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.maxProductPerBatch + '</td>' +
                             '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
                             '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
                             '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
@@ -757,9 +766,11 @@
                             '</table>'
                         );
                         if (response.deadlines && response.deadlines.dyeDeadline) {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
                         } else {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                     }
                     windingDeadlineDiv.html('');
@@ -831,12 +842,15 @@
                         dyeDetailsDiv.html(
                             '<table class="dye-info-table">' +
                             '<tr>' +
-                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
-                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '<th>Khối lượng thực tế</th><th>Khối lượng tối đa (máy)</th><th>Khối lượng tối đa (mẻ)</th><th>Sản phẩm tối đa (mẻ)</th>' +
+                            '<th>Số lít nước tối thiểu (máy)</th><th>Số lít nước tối đa (máy)</th><th>Số lít nước (mẻ)</th>' +
+                            '<th>Số lượng quả tối thiểu (máy)</th><th>Số lượng quả tối đa (máy)</th><th>Số lượng quả</th><th>Số lượng quả (mẻ)</th><th>Số mẻ</th>' +
                             '</tr>' +
                             '<tr>' +
                             '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
                             '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.maxProductPerBatch + '</td>' +
                             '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
                             '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
                             '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
@@ -849,32 +863,43 @@
                             '</table>'
                         );
                         if (response.deadlines && response.deadlines.dyeDeadline) {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
                         } else {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong>').addClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>Không xác định</strong>').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.windingDeadline) {
-                            windingDeadlineDiv.html('Winding Deadline: <strong>' + response.deadlines.windingDeadline + '</strong>').removeClass('error');
+                            windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
+                                '<strong>' + response.deadlines.windingDeadline + '</strong>').removeClass('error');
                         } else {
-                            windingDeadlineDiv.html('Winding Deadline: <strong>Không xác định</strong>').addClass('error');
+                            windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
+                                '<strong>Không xác định</strong>').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.packagingDeadline) {
-                            packagingDeadlineDiv.html('Packaging Deadline: <strong>' + response.deadlines.packagingDeadline + '</strong>').removeClass('error');
+                            packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
+                                '<strong>' + response.deadlines.packagingDeadline + '</strong>').removeClass('error');
                         } else {
-                            packagingDeadlineDiv.html('Packaging Deadline: <strong>Không xác định</strong>').addClass('error');
+                            packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
+                                '<strong>Không xác định</strong>').addClass('error');
                         }
                     } else {
-                        dyeMessageDiv.text(response.message || 'Máy nhuộm không phù hợp do deadline vượt quá giới hạn.').addClass('error').removeClass('success');
-                        windingMessageDiv.text(response.message || 'Máy cuốn không phù hợp do deadline vượt quá giới hạn.').addClass('error').removeClass('success');
+                        dyeMessageDiv.text(response.message || 'Máy nhuộm không phù hợp do hạn chót vượt quá giới hạn.')
+                            .addClass('error').removeClass('success');
+                        windingMessageDiv.text(response.message || 'Máy cuốn không phù hợp do hạn chót vượt quá giới hạn.')
+                            .addClass('error').removeClass('success');
                         dyeDetailsDiv.html(
                             '<table class="dye-info-table">' +
                             '<tr>' +
-                            '<th>Cone Weight</th><th>Max Weight</th><th>Litters Min</th><th>Litters Max</th><th>Litters Batch</th>' +
-                            '<th>Cone Min</th><th>Cone Max</th><th>Cone Quantity</th><th>Cone Batch Quantity</th><th>Số mẻ</th>' +
+                            '<th>Khối lượng thực tế</th><th>Khối lượng tối đa (máy)</th><th>Khối lượng tối đa (mẻ)</th><th>Sản phẩm tối đa (mẻ)</th>' +
+                            '<th>Số lít nước tối thiểu (máy)</th><th>Số lít nước tối đa (máy)</th><th>Số lít nước (mẻ)</th>' +
+                            '<th>Số lượng quả tối thiểu (máy)</th><th>Số lượng quả tối đa (máy)</th><th>Số lượng quả</th><th>Số lượng quả (mẻ)</th><th>Số mẻ</th>' +
                             '</tr>' +
                             '<tr>' +
                             '<td>' + response.dyeCalculations.coneWeight + ' kg</td>' +
                             '<td>' + response.dyeMachine.maxWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.coneBatchWeight + ' kg</td>' +
+                            '<td>' + response.dyeCalculations.maxProductPerBatch + '</td>' +
                             '<td>' + response.dyeMachine.littersMin + ' lít</td>' +
                             '<td>' + response.dyeMachine.littersMax + ' lít</td>' +
                             '<td>' + response.dyeCalculations.littersBatch + ' lít</td>' +
@@ -887,19 +912,25 @@
                             '</table>'
                         );
                         if (response.deadlines && response.deadlines.dyeDeadline) {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
                         } else {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                            dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
+                                '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.windingDeadline) {
-                            windingDeadlineDiv.html('Winding Deadline: <strong>' + response.deadlines.windingDeadline + '</strong> (Quá hạn)').addClass('error');
+                            windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
+                                '<strong>' + response.deadlines.windingDeadline + '</strong> (Quá hạn)').addClass('error');
                         } else {
-                            windingDeadlineDiv.html('Winding Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                            windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
+                                '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.packagingDeadline) {
-                            packagingDeadlineDiv.html('Packaging Deadline: <strong>' + response.deadlines.packagingDeadline + '</strong> (Quá hạn)').addClass('error');
+                            packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
+                                '<strong>' + response.deadlines.packagingDeadline + '</strong> (Quá hạn)').addClass('error');
                         } else {
-                            packagingDeadlineDiv.html('Packaging Deadline: <strong>Không xác định</strong> (Quá hạn)').addClass('error');
+                            packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
+                                '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                     }
                     updateToggleIcon(detailIndex);
@@ -1017,8 +1048,10 @@
             validateAdditionalWeight(detailIndex);
 
             // Khi thay đổi additionalWeight, kiểm tra lại máy nhuộm và máy cuốn của detail này
-            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val() || $('#queuedDyeMachine-' + detailIndex).val();
-            var windingMachineId = $('#freeWindingMachine-' + detailIndex).val() || $('#queuedWindingMachine-' + detailIndex).val();
+            var dyeMachineId = $('#freeDyeMachine-' + detailIndex).val()
+                || $('#queuedDyeMachine-' + detailIndex).val();
+            var windingMachineId = $('#freeWindingMachine-' + detailIndex).val()
+                || $('#queuedWindingMachine-' + detailIndex).val();
 
             if (dyeMachineId) {
                 checkDyeMachineAvailability(detailIndex, dyeMachineId);

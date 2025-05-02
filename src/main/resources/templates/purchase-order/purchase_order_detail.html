@@ -6,7 +6,7 @@
     <title>Đơn đặt hàng chi tiết</title>
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
 
             <!-- Page Title -->
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h3 class="mb-0">Chi tiết đơn đặt hàng</h3>
+                <h3 class="mb-0">Chi tiết đơn đặt hàng mã lô RFQ-<span th:text="${purchaseOrder.quotation.rfq.id}"></span></h3>
                 <a th:href="@{/purchase-order/list}" class="btn btn-sm btn-outline-secondary d-md-none">
                     <i class="bi bi-arrow-left"></i> Quay lại
                 </a>
@@ -166,11 +166,11 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày giao mong muốn:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày mong muốn:</div>
                                 <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày thực giao:</div>
+                                <div class="col-5 col-md-4 text-muted fw-bold">Ngày dự kiến:</div>
                                 <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
@@ -230,9 +230,10 @@
             <div class="order-info-card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="m-0">Chi tiết đơn hàng</h5>
-                    <button type="button" class="btn btn-sm btn-outline-primary d-md-none" id="toggleViewBtn">
+                    <h5 class="m-0" th:text="'Tổng tiền: '+${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0)* 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></h5>
+                    <!--<button type="button" class="btn btn-sm btn-outline-primary d-md-none" id="toggleViewBtn">
                         <i class="bi bi-table"></i> Đổi chế độ xem
-                    </button>
+                    </button>-->
                 </div>
                 <div class="card-body p-0">
                     <!-- Desktop Table View -->
@@ -240,17 +241,19 @@
                         <table class="table table-hover m-0">
                             <thead class="table-light">
                             <tr>
+                                <th>Mã hàng</th>
                                 <th>Sản phẩm</th>
                                 <th>Thương hiệu</th>
                                 <th>Danh mục</th>
                                 <th>Tên màu</th>
-                                <th>Số lượng</th>
+                                <th>Số lượng (Cuộn)</th>
                                 <th>Giá (VND)</th>
                                 <th>Thành tiền (VND)</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="item : ${purchaseOrder.purchaseOrderDetails}">
+                                <td th:text="${item.rfqDetailId}"></td>
                                 <td th:text="${item.product.name}"></td>
                                 <td th:text="${item.brand.name}"></td>
                                 <td th:text="${item.category.name}"></td>
@@ -304,7 +307,7 @@
             </div>
 
             <!-- Order Summary -->
-            <div class="order-info-card mb-4">
+            <!--<div class="order-info-card mb-4">
                 <div class="card-header">
                     <h5 class="m-0">Tổng kết đơn hàng</h5>
                 </div>
@@ -318,7 +321,7 @@
                         <div class="col-7 col-md-9 fw-bold fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0)* 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Action Buttons for Desktop -->
             <div class="action-buttons d-none d-md-flex mb-4">

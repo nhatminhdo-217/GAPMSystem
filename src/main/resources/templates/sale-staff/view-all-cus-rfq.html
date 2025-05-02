@@ -347,7 +347,7 @@
                         <div class="row g-3">
                             <div class="col-12" th:if="${rfqsNotApproved == null or rfqsNotApproved.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có RFQ chưa được phê duyệt.</p>
+                                    <p>Không có yêu cầu báo giá chưa được phê duyệt.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${rfqsNotApproved}">
@@ -422,7 +422,7 @@
                             <div class="col-12"
                                  th:if="${rfqsApprovedNoSolution == null or rfqsApprovedNoSolution.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có RFQ đã phê duyệt chưa có giải pháp.</p>
+                                    <p>Không có yêu cầu báo giá đã phê duyệt nhưng chưa có giải pháp.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${rfqsApprovedNoSolution}">
@@ -498,7 +498,7 @@
                             <div class="col-12"
                                  th:if="${rfqsApprovedWithSolution == null or rfqsApprovedWithSolution.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có RFQ đã phê duyệt và có giải pháp.</p>
+                                    <p>Không có yêu cầu báo giá đã phê duyệt và đã có giải pháp.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="rfq, iterStat : ${rfqsApprovedWithSolution}">

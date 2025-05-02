@@ -657,10 +657,24 @@
                                         <i class="fas fa-camera me-2"></i> Bật camera
                                     </button>
                                     <div id="photoPreview" class="photo-preview">
-                                        <div th:if="${windingRiskAssessment.photo != null}">
+                                        <div th:if="${windingRiskAssessment.photo != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
                                             <div th:each="photo : ${windingRiskAssessment.photo}" class="photo-item"
                                                  th:attr="data-photo-name=${photo.photo}">
-                                                <img th:src="'/uploads/' + ${photo.photo}" class="captured-image"
+                                                <img th:src="${photo.photo}" class="captured-image"
+                                                     alt="Ảnh xác thực">
+                                                <button type="button" class="delete-btn"
+                                                        th:if="${pass_check_delete == null}"
+                                                        th:onclick="'deletePhoto(this, true)'"
+                                                        th:class="'delete-btn'">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="${windingRiskAssessment.photo != null} and ${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
+                                            <div th:each="photo : ${windingRiskAssessment.photo}" class="photo-item"
+                                                 th:attr="data-photo-name=${photo.photo}">
+                                                <img th:src="${photo.photo}" class="captured-image"
                                                      alt="Ảnh xác thực">
                                                 <button type="button" class="delete-btn"
                                                         th:if="${pass_check_delete == null}"
@@ -671,6 +685,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                     <input type="hidden" name="deletedPhotos" id="deletedPhotos">
                                     <input type="file" id="photoInput" name="photos" multiple style="display: none;">
                                 </div>
