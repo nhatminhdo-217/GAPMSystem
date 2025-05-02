@@ -57,7 +57,13 @@
             text-align: center;
             margin-bottom: 4px;
         }
-
+.btn-search{
+    background: #FFD700;
+    border: none;
+    font-size: 18px;
+    padding: 4px 24px;
+    transition: 0.3s;
+}
         .text-start span {
             font-weight: 400;
             color: #666;
@@ -226,13 +232,13 @@
             <div class="bg-light rounded p-4">
                 <!-- Search and title (shared for both tabs) -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách Work Order đã duyệt</h6>
+                    <h6 class="mb-0">Danh sách lệnh sản xuất</h6>
                     <form method="get" action="/dye-technical/view-all-approved-work-order"
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input"
                                placeholder="Tìm kiếm theo ID"
                                th:value="${search}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
@@ -263,7 +269,7 @@
                             <div class="col-12"
                                  th:if="${workOrdersWithoutTechProcess == null or workOrdersWithoutTechProcess.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có Work Order nào đã được duyệt và chưa có hành trình công nghệ.</p>
+                                    <p>Không có lệnh làm việc nào đã được duyệt và chưa có hành trình công nghệ.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="workOrder, iterStat : ${workOrdersWithoutTechProcess}">
@@ -276,29 +282,26 @@
                                             <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
                                                  style="width: 100%;">
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Work Order</strong><br>
-                                                    <span th:text="${workOrder.id}"></span>
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
-                                                    <span th:text="${workOrder.productionOrder != null ? workOrder.productionOrder.id : 'N/A'}"></span>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PRO-'+${workOrder.productionOrder != null ? workOrder.productionOrder.id : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
-                                                    <span th:text="${#temporals.format(workOrder.createAt, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Hạn hoàn thành</strong><br>
-                                                    <span th:text="${#temporals.format(workOrder.deadline, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Trạng thái</strong><br>
-                                                    <span class="status-approved" th:text="'Đã duyệt'"></span>
-                                                </div>
+
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
                                                     <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : ${workOrder.sendStatus.name()})"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -342,7 +345,7 @@
                             <div class="col-12"
                                  th:if="${workOrdersWithTechProcess == null or workOrdersWithTechProcess.isEmpty()}">
                                 <div class="alert alert-info text-center">
-                                    <p>Không có Work Order nào có hành trình công nghệ do bạn tạo.</p>
+                                    <p>Không có lệnh làm việc nào có hành trình công nghệ do bạn tạo.</p>
                                 </div>
                             </div>
                             <div class="col-12" th:each="workOrder, iterStat : ${workOrdersWithTechProcess}">
@@ -355,24 +358,20 @@
                                             <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
                                                  style="width: 100%;">
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Work Order</strong><br>
-                                                    <span th:text="${workOrder.id}"></span>
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Mã Production Order</strong><br>
-                                                    <span th:text="${workOrder.productionOrder != null ? workOrder.productionOrder.id : 'N/A'}"></span>
+                                                    <strong>Mã sản xuất</strong><br>
+                                                    <span th:text="'PRO-'+${workOrder.productionOrder != null ? workOrder.productionOrder.id : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
-                                                    <span th:text="${#temporals.format(workOrder.createAt, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Hạn hoàn thành</strong><br>
-                                                    <span th:text="${#temporals.format(workOrder.deadline, 'yyyy-MM-dd')}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Trạng thái</strong><br>
-                                                    <span class="status-approved" th:text="'Đã duyệt'"></span>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>

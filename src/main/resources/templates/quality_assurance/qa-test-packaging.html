@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -538,7 +538,7 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói-WO-<span th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.workOrder.id}"></span>/WD-<span th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.id}"></span></h2>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói</h2>
                             <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingRiskAssessment.packagingBatch.packagingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
@@ -547,8 +547,7 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Phụ trách bắt đầu</th>
-                                        <th>Phụ trách kết thúc</th>
+                                        <th>Mã quản lý</th>
                                         <th>Mã khách hàng</th>
                                         <th>Mã mẻ</th>
                                         <th>Thời gian hoàn thiện</th>
@@ -559,8 +558,7 @@
                                     </thead>
                                     <tbody id="workOrderChildTableBody">
                                     <tr>
-                                        <td th:text="${packagingRiskAssessment.packagingBatch?.leaderStart?.username ?: 'n/a'}"></td>
-                                        <td th:text="${packagingRiskAssessment.packagingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td th:text="'RFQ-'+${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                         <td> KH-<span th:text="${packagingRiskAssessment.packagingBatch.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                         <td>Mẻ-<span th:text="${packagingRiskAssessment.packagingBatch.batchNumber}"></span></td>
                                         <td th:text="${#temporals.format(packagingRiskAssessment.packagingBatch.deadline, 'dd/MM/yyyy')}"></td>
@@ -774,8 +772,7 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-header">
-                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói-WD-<span
-                                    th:text="${packagingBatch.packagingStage.id}"></span></h2>
+                            <h2><i class="fas fa-fill-drip me-2"></i>Kiểm Tra Chất Lượng Sau Đóng Gói</h2>
                             <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${packagingBatch.packagingStage.id})}" class="btn btn-light">Quay lại</a>
                         </div>
                         <div class="card-body">
@@ -784,8 +781,7 @@
                                 <table class="table table-striped mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Phụ trách bắt đầu</th>
-                                        <th>Phụ trách kết thúc</th>
+                                        <th>Mã quản lý</th>
                                         <th>Mã khách hàng</th>
                                         <th>Mã mẻ</th>
                                         <th>Thời gian hoàn thiện</th>
@@ -796,8 +792,7 @@
                                     </thead>
                                     <tbody >
                                     <tr>
-                                        <td th:text="${packagingBatch?.leaderStart?.username ?: 'n/a'}"></td>
-                                        <td th:text="${packagingBatch?.leaderEnd?.username ?: 'n/a'}"></td>
+                                        <td th:text="'RFQ-'+${packagingBatch.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${packagingBatch.packagingStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                         <td> KH-<span th:text="${packagingBatch.packagingStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.createBy.id}"></span></td>
                                         <td>Mẻ-<span th:text="${packagingBatch.batchNumber}"></span></td>
                                         <td th:text="${#temporals.format(packagingBatch.deadline, 'dd/MM/yyyy')}"></td>

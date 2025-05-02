@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -660,7 +660,7 @@
                             <thead>
                             <tr>
                                 <th>Trạng Thái</th>
-                                <th>Mã sản phẩm nhuộm</th>
+                                <th>Mã quản lý</th>
                                 <th>Thời gian hoàn thiện</th>
                                 <th>Tên màu</th>
                                 <th>Loại sợi</th>
@@ -685,7 +685,7 @@
                                         </span>
                                     </span>
                                 </td>
-                                <td>WD-<span th:text="${dy.workOrderDetail.id}"></span></td>
+                                <td th:text="'RFQ-'+${dy.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${dy.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
                                 <td th:text="${#temporals.format(dy.deadline, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.note_color}"></td>
                                 <td th:text="${dy.workOrderDetail.purchaseOrderDetail.product.thread.name}"></td>
@@ -695,7 +695,7 @@
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/Batch/{id}(id=${dy.id})}"
                                        class="btn btn-dye-stage btn-action">
-                                        <i class="fas fa-eye"></i> Mẻ Nhuộm
+                                        <i class="fas fa-eye"></i> Mẻ
                                     </a>
                                 </td>
                             </tr>

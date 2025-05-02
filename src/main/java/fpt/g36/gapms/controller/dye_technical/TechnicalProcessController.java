@@ -245,7 +245,7 @@ public class TechnicalProcessController {
 
                 if (form.getDyeTypesForFirstBatches() == null || form.getDyeTypesForFirstBatches().isEmpty()) {
                     System.err.println("Lỗi ở dyeTypesForFirstBatches: " + form.getDyeTypesForFirstBatches());
-                    redirectAttributes.addFlashAttribute("error", "Dye Types cho các mẻ đầu không được để trống.");
+                    redirectAttributes.addFlashAttribute("error", "Thuốc nhuộm cho các mẻ đầu không được để trống.");
                     return "redirect:/dye-technical/work-order-details/" + form.getWorkOrderId();
                 }
 
