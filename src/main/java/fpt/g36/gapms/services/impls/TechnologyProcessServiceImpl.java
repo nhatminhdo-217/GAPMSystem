@@ -61,7 +61,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
     }
 
     private String generateQrCode(TechnologyProcess process) {
-        String qrUrl = "https://gapms-aha3aphhh0fna2dx.southeastasia-01.azurewebsites.net/work-order/technology-process/" + process.getId();
+        String qrUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + process.getId();
         System.err.println("Lưu URL mã QR cho TechnologyProcess ID: " + process.getId() + ": " + qrUrl);
         return qrUrl;
     }

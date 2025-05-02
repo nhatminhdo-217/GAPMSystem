@@ -575,8 +575,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private LocalDateTime calculateDyeDeadline(LocalDateTime plannedStart,
                                                int dyeBatches,
                                                WorkOrderDetail workOrderDetail) {
-        //
-        long dyeDurationMinutes = dyeBatches * 120 + (dyeBatches - 1) * 15;
+        // 1 mẻ dye = 150 phút, nghỉ 15 phút giữa các mẻ
+        long dyeDurationMinutes = dyeBatches * 150 + (dyeBatches - 1) * 15;
         LocalDateTime deadline = plannedStart.plusMinutes(dyeDurationMinutes);
 
         // Lấy actualDeliveryDate từ ProductionOrder
@@ -742,14 +742,20 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private LocalDateTime calculateWindingDeadline(LocalDateTime plannedStart,
                                                    int windingBatches,
                                                    WorkOrderDetail workOrderDetail) {
-        //
-        long windingDurationMinutes = windingBatches * 60 + (windingBatches - 1) * 15;
+        // 1 mẻ winding = 75 phút, nghỉ 15 phút giữa các mẻ
+        long windingDurationMinutes = windingBatches * 75 + (windingBatches - 1) * 15;
         LocalDateTime deadline = plannedStart.plusMinutes(windingDurationMinutes);
 
         // Lấy actualDeliveryDate từ ProductionOrder
         LocalDate actualDeliveryDate = workOrderDetail.getWorkOrder().getProductionOrder()
                 .getPurchaseOrder().getSolution().getActualDeliveryDate();
         LocalDateTime actualDeliveryDateTime = actualDeliveryDate.atTime(LocalTime.MAX);
+
+        // Đảm bảo windingDeadline >= dyeDeadline
+        LocalDateTime dyeDeadline = workOrderDetail.getDyeStage().getDeadline();
+        if (deadline.isBefore(dyeDeadline)) {
+            deadline = dyeDeadline;
+        }
 
         // Cộng thêm 1 ngày vào deadline
         LocalDateTime adjustedDeadline = deadline.plusDays(1);
@@ -856,15 +862,15 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * Calculates the total duration for PackagingStage.
      */
     private BigDecimal calculatePackagingDuration(WorkOrderDetail workOrderDetail, int packagingBatches) {
-        // 1 sản phẩm mất 30s để đóng gói
+        // 1 sản phẩm mất 30 giây = 0.5 phút để đóng gói
         BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.5);
         BigDecimal totalPackagingDurationMinutes = BigDecimal.ZERO;
 
         // Tính toán lại số sản phẩm có trong mẻ
         BigDecimal convertRate = workOrderDetail.getPurchaseOrderDetail().getProduct().getThread().getConvert_rate();
         for (DyeBatch dyeBatch : workOrderDetail.getDyeStage().getDyebatches()) {
-            BigDecimal productsInBatch = dyeBatch.getCone_batch_weight().
-                    divide(convertRate, 0, RoundingMode.CEILING);
+            BigDecimal productsInBatch = dyeBatch.getCone_batch_weight()
+                    .divide(convertRate, 0, RoundingMode.CEILING);
             totalPackagingDurationMinutes = totalPackagingDurationMinutes.add(productsInBatch.multiply(packagingTimePerProduct));
         }
 
@@ -884,6 +890,12 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         LocalDate actualDeliveryDate = workOrderDetail.getWorkOrder().getProductionOrder()
                 .getPurchaseOrder().getSolution().getActualDeliveryDate();
         LocalDateTime actualDeliveryDateTime = actualDeliveryDate.atTime(LocalTime.MAX);
+
+        // Đảm bảo packagingDeadline >= windingDeadline
+        LocalDateTime windingDeadline = workOrderDetail.getWindingStage().getDeadline();
+        if (deadline.isBefore(windingDeadline)) {
+            deadline = windingDeadline;
+        }
 
         // Cộng thêm 1 ngày vào deadline
         LocalDateTime adjustedDeadline = deadline.plusDays(1);

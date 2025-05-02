@@ -75,6 +75,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+            background-color: #357ABD !important;
         }
 
         .modal {
@@ -93,7 +98,7 @@
             background-color: #fff;
             position: absolute;
             top: 50%;
-            left: 55%;
+            left: 50%; /* Sửa lại để căn giữa chính xác */
             transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 8px;
@@ -187,10 +192,13 @@
                 </div>
                 <div th:if="${company != null}">
                     <p><strong>Tên công ty:</strong> <span th:text="${company.name ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Số điện thoại công ty:</strong> <span th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span>
+                    </p>
+                    <p><strong>Số điện thoại công ty:</strong> <span
+                            th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
                     <p><strong>Địa chỉ:</strong> <span th:text="${company.address ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span>
+                    </p>
                     <div class="d-flex justify-content-center gap-3 mt-3">
                         <button id="editCompanyBtn" class="btn btn-custom">Thay đổi thông tin công ty</button>
                     </div>
@@ -219,19 +227,22 @@
     <div class="modal-content">
         <span class="close">×</span>
         <h3>Thay đổi mật khẩu</h3>
-        <form id="changePasswordForm" th:action="@{/profile/changePassword}" method="post" onsubmit="return validatePassword()">
+        <form id="changePasswordForm" th:action="@{/profile/changePassword}" method="post"
+              onsubmit="return validatePassword()">
             <div class="form-group">
                 <label>Mật khẩu cũ:</label>
                 <input type="password" name="oldPassword" id="oldPassword" required class="form-control mb-2">
             </div>
             <div class="form-group">
                 <label>Mật khẩu mới:</label>
-                <input type="password" name="newPassword" id="newPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <input type="password" name="newPassword" id="newPassword" required class="form-control mb-2"
+                       onkeyup="checkPassword()">
                 <small id="newPasswordError" class="text-danger" style="display: none;"></small>
             </div>
             <div class="form-group">
                 <label>Xác nhận mật khẩu mới:</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <input type="password" name="confirmPassword" id="confirmPassword" required class="form-control mb-2"
+                       onkeyup="checkPassword()">
                 <small id="confirmPasswordError" class="text-danger" style="display: none;"></small>
             </div>
             <button type="submit" id="submitPasswordBtn" class="btn btn-success" disabled>Đổi mật khẩu</button>
@@ -304,7 +315,8 @@
 </div>
 
 <!-- Toast thông báo -->
-<div id="successToast" class="toast success-toast" style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="successToast" class="toast success-toast"
+     style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Thành công</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -314,7 +326,8 @@
     </div>
 </div>
 
-<div id="errorToast" class="toast error-toast" style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="errorToast" class="toast error-toast"
+     style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -324,7 +337,8 @@
     </div>
 </div>
 
-<div id="validationErrorToast" class="toast error-toast" style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+<div id="validationErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi Validation</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -334,7 +348,8 @@
     </div>
 </div>
 
-<div id="profileSuccessToast" class="toast success-toast" style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="profileSuccessToast" class="toast success-toast"
+     style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Thành công</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -344,7 +359,8 @@
     </div>
 </div>
 
-<div id="profileErrorToast" class="toast error-toast" style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
+<div id="profileErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -354,7 +370,8 @@
     </div>
 </div>
 
-<div id="profileValidationErrorToast" class="toast error-toast" style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
+<div id="profileValidationErrorToast" class="toast error-toast"
+     style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
     <div class="toast-header">
         <strong class="me-auto">Lỗi Validation</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -366,58 +383,93 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var editCompanyBtn = document.getElementById("editCompanyBtn");
+        // Hàm mở modal
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = "block";
+            }
+        }
+
+        // Hàm đóng tất cả modal
+        function closeAllModals() {
+            const modals = [
+                "changePasswordModal",
+                "editProfileModal",
+                "addCompanyModal",
+                "editCompanyModal"
+            ];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+
+        // Gắn sự kiện cho các nút
+        const editCompanyBtn = document.getElementById("editCompanyBtn");
         if (editCompanyBtn) {
-            editCompanyBtn.onclick = function () {
-                document.getElementById("editCompanyModal").style.display = "block";
-            };
+            editCompanyBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("editCompanyModal");
+            });
         }
 
-        var changePasswordBtn = document.getElementById("changePasswordBtn");
+        const changePasswordBtn = document.getElementById("changePasswordBtn");
         if (changePasswordBtn) {
-            changePasswordBtn.onclick = function () {
-                document.getElementById("changePasswordModal").style.display = "block";
-            };
+            changePasswordBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("changePasswordModal");
+            });
         }
 
-        var editProfileBtn = document.getElementById("editProfileBtn");
+        const editProfileBtn = document.getElementById("editProfileBtn");
         if (editProfileBtn) {
-            editProfileBtn.onclick = function () {
-                document.getElementById("editProfileModal").style.display = "block";
-            };
+            editProfileBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("editProfileModal");
+            });
         }
 
-        var addCompanyBtn = document.getElementById("addCompanyBtn");
+        const addCompanyBtn = document.getElementById("addCompanyBtn");
         if (addCompanyBtn) {
-            addCompanyBtn.onclick = function () {
-                document.getElementById("addCompanyModal").style.display = "block";
-            };
+            addCompanyBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("addCompanyModal");
+            });
         }
 
-        document.querySelectorAll(".close").forEach(btn => {
-            btn.onclick = function () {
-                document.getElementById("changePasswordModal").style.display = "none";
-                document.getElementById("editProfileModal").style.display = "none";
-                document.getElementById("addCompanyModal").style.display = "none";
-                document.getElementById("editCompanyModal").style.display = "none";
-            };
+        // Gắn sự kiện cho các nút đóng modal
+        document.querySelectorAll(".modal .close").forEach(closeBtn => {
+            closeBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                closeAllModals();
+            });
         });
 
-        window.onclick = function (event) {
-            if (event.target == document.getElementById("changePasswordModal")) {
-                document.getElementById("changePasswordModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("editProfileModal")) {
-                document.getElementById("editProfileModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("addCompanyModal")) {
-                document.getElementById("addCompanyModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("editCompanyModal")) {
-                document.getElementById("editCompanyModal").style.display = "none";
-            }
-        };
+        // Đóng modal khi click bên ngoài modal
+        window.addEventListener("click", function (event) {
+            const modals = [
+                "changePasswordModal",
+                "editProfileModal",
+                "addCompanyModal",
+                "editCompanyModal"
+            ];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && event.target === modal) {
+                    closeAllModals();
+                }
+            });
+        });
 
+        // Xử lý toast thông báo
         const hiddenSuccess = document.getElementById('hiddenSuccess');
         if (hiddenSuccess && hiddenSuccess.textContent) {
             const successToast = new bootstrap.Toast(document.getElementById('successToast'));
