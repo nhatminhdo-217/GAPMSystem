@@ -26,6 +26,8 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 ENV SPRING_PROFILES_ACTIVE=prod
 
+ENV TZ=Asia/Ho_Chi_Minh
+
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
