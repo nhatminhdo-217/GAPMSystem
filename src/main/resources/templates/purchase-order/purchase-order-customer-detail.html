@@ -866,8 +866,11 @@
                     </div>
                     <div class="col-md-6 text-center">
                         <h5>Ảnh Hợp Đồng</h5>
-                        <div id="imagePreview_approved" class="contract-placeholder">
+                        <div id="imagePreview_waitForApproval" class="contract-placeholder" th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}">
                             <img th:src="@{'/uploads/' + ${purchaseOrder.contract.path}}" alt="Ảnh hợp đồng">
+                        </div>
+                        <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}">
+                            <img th:src="@{${purchaseOrder.contract.path}}" alt="Hợp đồng" style="max-width: 100%; height: auto">
                         </div>
                     </div>
                 </div>

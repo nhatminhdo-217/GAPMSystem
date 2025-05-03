@@ -227,7 +227,7 @@ function loadNotificationDropdown() {
         data.notifications.forEach(function(notification) {
             console.log("Processing notification:", notification);  // Thêm log cho từng thông báo
             var item =
-            `
+                `
                 <div class="dropdown-item-text notification-dropdown-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
                     <div class="d-flex justify-content-between">
                         <small class="fw-bold"> ${notification.source || 'Hệ thống'} </small>
@@ -235,7 +235,7 @@ function loadNotificationDropdown() {
                     </div>
                     <p class="mb-1 notification-text"> ${notification.message || 'Không có nội dung'} </p>
                     <div class="d-flex ${notification.targetUrl ? 'justify-content-between' : 'justify-content-end'} mt-1">
-                        ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary px-2 py-0">Xem</a>' : ''}
+                        ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary px-2 py-0 notification-link" data-id="' + notification.id + '">Xem</a>' : ''}
                         ${notification.read ? '' : '<button class="btn btn-sm btn-link px-2 py-0 mark-as-read-btn">Đã đọc</button>'}
                     </div>
                 </div>
@@ -273,7 +273,7 @@ function formatTimeShort(timestamp) {
     var diffDays = Math.round(diffMs / 86400000);
 
     if (diffMins < 1) {
-        return 'vừa xong';
+        return 'Vừa xong';
     } else if (diffMins < 60) {
         return diffMins + ' phút trước';
     } else if (diffHours < 24) {
@@ -360,5 +360,13 @@ $(document).ready(function() {
     if (window.location.pathname.includes('/notifications')) {
         loadNotifications();
         loadNotificationDropdown();
-    }
+    };
+
+    $(document).on('click', '.notification-link', function(e) {
+        // Don't prevent default here to allow the link to work normally
+        var notificationId = $(this).data('id');
+        if (notificationId) {
+            markAsRead(notificationId);
+        }
+    });
 });

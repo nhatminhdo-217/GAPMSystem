@@ -250,16 +250,16 @@
                 <ul class="pagination justify-content-center">
                     <!-- Nút Previous -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
                     </li>
                     <!-- Các trang -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
                     </li>
                     <!-- Nút Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/team-leader/list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
                     </li>
                 </ul>
             </nav>
