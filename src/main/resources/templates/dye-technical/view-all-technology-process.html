@@ -10,7 +10,7 @@
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrapixels.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- Libraries Stylesheet -->
@@ -39,13 +39,14 @@
             cursor: pointer;
         }
 
-           .btn-search{
-               background: #FFD700;
-               border: none;
-               font-size: 18px;
-               padding: 4px 24px;
-               transition: 0.3s;
-           }
+        .btn-search {
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
+        }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -170,21 +171,6 @@
             opacity: 0.9;
         }
 
-        .success-toast {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            opacity: 0.9;
-        }
-
-        .success-toast .toast-header {
-            background-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .success-toast .toast-body {
-            color: #155724;
-        }
-
         .error-toast {
             background-color: #f8d7da;
             border-color: #f5c6cb;
@@ -200,19 +186,14 @@
             color: #721c24;
         }
 
-        #toastSuccess, #toastError {
+        #toastError {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
-            z-index: 1060;
+            z-index: 1050;
             min-width: 300px;
         }
 
-        #toastError {
-            bottom: 80px;
-        }
-
-        /* Status-specific styling */
         .status-draft {
             color: #f59e0b;
             font-weight: 500;
@@ -237,7 +218,6 @@
             background-color: #ecfdf5;
         }
 
-        /* Styling for content section */
         .content-section {
             flex-grow: 1;
             display: flex;
@@ -289,7 +269,7 @@
                 margin-right: 0;
                 text-align: left;
             }
-      
+
             .nav-tabs .nav-link {
                 font-size: 14px;
                 padding: 8px 12px;
@@ -323,7 +303,7 @@
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-light text-center rounded p-4">
+            <div class="bg-light rounded p-4">
                 <!-- Search and title -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách hành trình công nghệ</h6>
@@ -331,6 +311,7 @@
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="status" th:value="${selectedStatus}">
                         <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
                         <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
@@ -340,13 +321,13 @@
                 <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
                     <ul class="nav nav-tabs" id="technologyProcessTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'DRAFT' ? 'active' : ''}"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'DRAFT'} ? 'active' : ''"
                                id="draft-tab" data-bs-toggle="tab" href="#draft-technology-processes"
                                role="tab" aria-controls="draft-technology-processes"
                                aria-selected="${selectedStatus == 'DRAFT'}">Bản Nháp</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED' ? 'active' : ''}"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED'} ? 'active' : ''"
                                id="approved-tab" data-bs-toggle="tab" href="#approved-technology-processes"
                                role="tab" aria-controls="approved-technology-processes"
                                aria-selected="${selectedStatus == 'APPROVED'}">Đã hoàn thành</a>
@@ -355,51 +336,47 @@
                 </div>
 
                 <!-- Tab content -->
-                <div th:with="draftProcesses=${technologyProcesses.?[status == T(fpt.g36.gapms.enums.BaseEnum).DRAFT]},
-                              approvedProcesses=${technologyProcesses.?[status == T(fpt.g36.gapms.enums.BaseEnum).APPROVED]}">
-                    <div class="tab-content" id="technologyProcessTabContent">
-                        <!-- Draft Technology Processes Tab -->
-                        <div class="tab-pane fade"
-                             th:classappend="${selectedStatus == 'DRAFT' ? 'show active' : ''}"
-                             id="draft-technology-processes" role="tabpanel"
-                             aria-labelledby="draft-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${draftProcesses.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy đơn công nghệ nào ở trạng thái Bản Nháp.</p>
-                                    </div>
+                <div class="tab-content" id="technologyProcessTabContent">
+                    <!-- Draft Technology Processes Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'DRAFT'} ? 'show active' : ''"
+                         id="draft-technology-processes" role="tabpanel" aria-labelledby="draft-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${draftProcesses == null or draftProcesses.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy đơn công nghệ nào ở trạng thái Bản Nháp.</p>
                                 </div>
-                                <div class="col-12" th:each="process, iterStat : ${draftProcesses}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/dye-technical/technology-process-details/' + ${process.id} + '\''"
-                                             th:data-process-id="${process.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + technologyProcessPage.number * technologyProcessPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Mã đơn công nghệ</strong><br>
-                                                        <span th:text="${process.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Maã lệnh làm việc</strong><br>
-                                                        <span th:text="'WO-'+${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-draft'"
-                                                              th:text="'Bản Nháp'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${process.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${process.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${process.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="process, iterStat : ${draftProcesses}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/dye-technical/technology-process-details/' + ${process.id} + '\''"
+                                         th:data-process-id="${process.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + draftProcessesPage.number * draftProcessesPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã đơn công nghệ</strong><br>
+                                                    <span th:text="'TP-'+${process.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-draft'"
+                                                          th:text="'Bản Nháp'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -407,47 +384,70 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Bản Nháp -->
+                        <nav th:if="${draftProcessesPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${draftProcessesPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${draftProcessesPage.number - 1}, size=${draftProcessesPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, draftProcessesPage.totalPages - 1)}"
+                                    th:classappend="${i == draftProcessesPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${i}, size=${draftProcessesPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${draftProcessesPage.number == draftProcessesPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${draftProcessesPage.number + 1}, size=${draftProcessesPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                        <!-- Approved Technology Processes Tab -->
-                        <div class="tab-pane fade" th:classappend="${selectedStatus == 'APPROVED' ? 'show active' : ''}"
-                             id="approved-technology-processes" role="tabpanel" aria-labelledby="approved-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${approvedProcesses.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy đơn công nghệ nào ở trạng thái Đã hoàn thành.</p>
-                                    </div>
+                    <!-- Approved Technology Processes Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'APPROVED'} ? 'show active' : ''"
+                         id="approved-technology-processes" role="tabpanel" aria-labelledby="approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${approvedProcesses == null or approvedProcesses.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy đơn công nghệ nào ở trạng thái Đã hoàn thành.</p>
                                 </div>
-                                <div class="col-12" th:each="process, iterStat : ${approvedProcesses}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/dye-technical/technology-process-details/' + ${process.id} + '\''"
-                                             th:data-process-id="${process.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + technologyProcessPage.number * technologyProcessPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Mã đơn công ngệ</strong><br>
-                                                        <span th:text="${process.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Mã lệnh sản xuất</strong><br>
-                                                        <span th:text="${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-approved'"
-                                                              th:text="'Đã hoàn thành'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${process.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${process.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${process.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="process, iterStat : ${approvedProcesses}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/dye-technical/technology-process-details/' + ${process.id} + '\''"
+                                         th:data-process-id="${process.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + approvedProcessesPage.number * approvedProcessesPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã đơn công nghệ</strong><br>
+                                                    <span th:text="'TP-'+${process.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh làm việc</strong><br>
+                                                    <span th:text="'WO-'+${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-approved'"
+                                                          th:text="'Đã hoàn thành'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -455,30 +455,30 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Đã hoàn thành -->
+                        <nav th:if="${approvedProcessesPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${approvedProcessesPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${approvedProcessesPage.number - 1}, size=${approvedProcessesPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, approvedProcessesPage.totalPages - 1)}"
+                                    th:classappend="${i == approvedProcessesPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${i}, size=${approvedProcessesPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${approvedProcessesPage.number == approvedProcessesPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-technology-process(page=${approvedProcessesPage.number + 1}, size=${approvedProcessesPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-
-                <!-- Pagination -->
-                <nav th:if="${technologyProcessPage.totalPages > 1}">
-                    <ul class="pagination">
-                        <li class="page-item" th:classappend="${technologyProcessPage.number == 0 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               th:href="@{/dye-technical/view-all-technology-process(page=${technologyProcessPage.number - 1}, size=${technologyProcessPage.size}, search=${search}, previousStatus=${selectedStatus})}">Previous</a>
-                        </li>
-                        <li class="page-item"
-                            th:each="i : ${#numbers.sequence(0, technologyProcessPage.totalPages - 1)}"
-                            th:classappend="${i == technologyProcessPage.number ? 'active' : ''}">
-                            <a class="page-link"
-                               th:href="@{/dye-technical/view-all-technology-process(page=${i}, size=${technologyProcessPage.size}, search=${search}, previousStatus=${selectedStatus})}"
-                               th:text="${i + 1}"></a>
-                        </li>
-                        <li class="page-item"
-                            th:classappend="${technologyProcessPage.number == technologyProcessPage.totalPages - 1 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               th:href="@{/dye-technical/view-all-technology-process(page=${technologyProcessPage.number + 1}, size=${technologyProcessPage.size}, search=${search}, previousStatus=${selectedStatus})}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </div>
         <!-- Content End -->
@@ -491,15 +491,12 @@
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/assert/lib/wow/wow.min.js"></script>
-<script src="/assert/lib/easing/easing.min.js"></script>
-<script src="/assert/lib/waypoints/waypoints.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
-<!-- Toast script -->
+<!-- Toast and Tab script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const errorMessage = document.getElementById('hiddenError')?.textContent;
@@ -529,16 +526,37 @@
             toast.show();
         }
 
-        // Xử lý chuyển tab bằng URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        if (status) {
-            const tabElement = document.querySelector(`#${status.toLowerCase().replace(/_/g, '-')}-tab`);
+        // Đảm bảo tab được kích hoạt đúng khi tải trang
+        var selectedStatus = '[[${selectedStatus}]]';
+        if (selectedStatus) {
+            const tabElement = document.querySelector(`#${selectedStatus.toLowerCase()}-tab`);
             if (tabElement) {
                 const tab = new bootstrap.Tab(tabElement);
                 tab.show();
             }
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#technologyProcessTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                const newStatus = this.id === 'draft-tab' ? 'DRAFT' : 'APPROVED';
+                const currentStatus = '[[${selectedStatus}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (status thay đổi), reset page về 0
+                if (newStatus !== currentStatus) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('status', newStatus);
+                    url.searchParams.set('previousStatus', currentStatus);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>

@@ -29,13 +29,14 @@
             cursor: pointer
         }
 
-        .btn-search{
+        .btn-search {
             background: #FFD700;
             border: none;
             font-size: 18px;
             padding: 4px 24px;
             transition: 0.3s;
         }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1)
@@ -415,6 +416,7 @@
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="activeTab" th:value="${activeTab}">
                         <input type="hidden" name="previousTab" th:value="${activeTab}">
                         <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
@@ -702,6 +704,7 @@
         });
     });
     document.addEventListener('DOMContentLoaded', function () {
+        // Xử lý Toast cho thông báo lỗi
         const errorMessage = document.getElementById('hiddenError')?.textContent;
         if (errorMessage && errorMessage.trim() !== '') {
             const toastHTML = `
@@ -725,7 +728,9 @@
             const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
             toast.show();
         }
-        var activeTab = '[[${activeTab}]]';
+
+        // Xử lý chuyển tab bằng activeTab
+        const activeTab = '[[${activeTab}]]';
         if (activeTab) {
             const tabElement = document.querySelector(`#${activeTab}-tab`);
             if (tabElement) {
@@ -733,6 +738,28 @@
                 tab.show();
             }
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#solutionTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                const newTab = this.id === 'user-solutions-tab' ? 'user-solutions-content' : 'all-sented-solutions-content';
+                const currentTab = '[[${activeTab}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (tab thay đổi), reset page về 0
+                if (newTab !== currentTab) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('activeTab', newTab);
+                    url.searchParams.set('previousTab', currentTab);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>
