@@ -39,6 +39,13 @@
             cursor: pointer;
         }
 
+           .btn-search{
+               background: #FFD700;
+               border: none;
+               font-size: 18px;
+               padding: 4px 24px;
+               transition: 0.3s;
+           }
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -325,7 +332,7 @@
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
                         <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
@@ -359,7 +366,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${draftProcesses.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Technology Process nào ở trạng thái Bản Nháp.</p>
+                                        <p>Không tìm thấy đơn công nghệ nào ở trạng thái Bản Nháp.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="process, iterStat : ${draftProcesses}">
@@ -372,24 +379,24 @@
                                                       th:text="${iterStat.count + technologyProcessPage.number * technologyProcessPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Technology Process ID</strong><br>
+                                                        <strong>Mã đơn công nghệ</strong><br>
                                                         <span th:text="${process.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
-                                                        <span th:text="${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
+                                                        <strong>Maã lệnh làm việc</strong><br>
+                                                        <span th:text="'WO-'+${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-draft'"
                                                               th:text="'Bản Nháp'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${process.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${process.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${process.sendStatus.name()})"></span>
                                                     </div>
@@ -407,7 +414,7 @@
                             <div class="row g-3">
                                 <div class="col-12" th:if="${approvedProcesses.isEmpty()}">
                                     <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy Technology Process nào ở trạng thái Đã hoàn thành.</p>
+                                        <p>Không tìm thấy đơn công nghệ nào ở trạng thái Đã hoàn thành.</p>
                                     </div>
                                 </div>
                                 <div class="col-12" th:each="process, iterStat : ${approvedProcesses}">
@@ -420,24 +427,24 @@
                                                       th:text="${iterStat.count + technologyProcessPage.number * technologyProcessPage.size}"></span>
                                                 <div class="content-section d-flex flex-row">
                                                     <div class="text-start me-3">
-                                                        <strong>Technology Process ID</strong><br>
+                                                        <strong>Mã đơn công ngệ</strong><br>
                                                         <span th:text="${process.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Work Order ID</strong><br>
+                                                        <strong>Mã lệnh sản xuất</strong><br>
                                                         <span th:text="${process.dyeBatch.dyeStage.workOrderDetail.workOrder.id}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Create At</strong><br>
+                                                        <strong>Ngày tạo</strong><br>
                                                         <span th:text="${#temporals.format(process.createAt, 'dd/MM/yyyy')}"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Status</strong><br>
+                                                        <strong>Trạng thái</strong><br>
                                                         <span th:classappend="'status-approved'"
                                                               th:text="'Đã hoàn thành'"></span>
                                                     </div>
                                                     <div class="text-start me-3">
-                                                        <strong>Send Status</strong><br>
+                                                        <strong>Trạng thái gửi</strong><br>
                                                         <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${process.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
                                                               th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${process.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${process.sendStatus.name()})"></span>
                                                     </div>
