@@ -202,6 +202,13 @@ public class NotificationUtils {
 
     }
 
+
+    public void sentSolutionTechnicalToSale(Long woId) {
+        String msg = "Lệnh làm việc mã WO-"+woId +" đã được duyệt";
+        String targetUrl = "/dye-technical/work-order-details/" + woId;
+        sendNotificationToRole("DYE_TECHNICAL", msg, NotificationEnum.SUCCESS, targetUrl, "Lệnh làm việc",false);
+    }
+
     public void sentSuccessStageToLeaderFromQASMS(Long dyeBatchId, String role) {
         if(role.equalsIgnoreCase("QA_DYE")){
             String msg = "Công đoạn nhuộm đã hoàn thành, chờ kiểm tra";

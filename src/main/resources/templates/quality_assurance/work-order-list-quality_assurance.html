@@ -8,7 +8,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -204,7 +204,7 @@
                                 <th>Mã Lệnh Làm Việc</th>
                                 <th>Cán bộ Điều Hành</th>
                                 <th>Ngày Tạo</th>
-                                <th>Deadline</th>
+                                <th>Hạn Chót</th>
                                 <th>Trạng Thái</th>
                                 <th>Hành Động</th>
                             </tr>
@@ -235,7 +235,7 @@
                                 <td>
                                     <a th:href="@{/work-order/quality_assurance/detail/{id}(id=${wo.id})}"
                                        class="btn btn-primary btn-action">
-                                        <i class="fas fa-eye"></i> Xem Quy Trình Đơn Hàng
+                                        <i class="fas fa-eye"></i> Xem
                                     </a>
                                 </td>
                             </tr>
@@ -245,12 +245,15 @@
                 </div>
             </div>
 
+            <br>
+            <br>
+
             <!-- Phân trang -->
             <nav aria-label="Page navigation" th:if="${totalItems > 0}">
                 <ul class="pagination justify-content-center">
                     <!-- Nút Previous -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage - 1}, size=${pageSize})}">Trước</a>
                     </li>
                     <!-- Các trang -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
@@ -259,7 +262,7 @@
                     </li>
                     <!-- Nút Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+                        <a class="page-link" th:href="@{/work-order/quality_assurance/list(page=${currentPage + 1}, size=${pageSize})}">Sau</a>
                     </li>
                 </ul>
             </nav>

@@ -14,6 +14,7 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         .toast {
@@ -74,6 +75,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+            background-color: #357ABD !important;
         }
 
         .modal {
@@ -92,7 +98,7 @@
             background-color: #fff;
             position: absolute;
             top: 50%;
-            left: 55%;
+            left: 50%; /* Sửa lại để căn giữa chính xác */
             transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 8px;
@@ -113,6 +119,136 @@
         .btn-success:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 10px;
+                margin-top: 20px;
+            }
+
+            h1.text-center {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card {
+                padding: 15px;
+                margin: 0 10px;
+            }
+
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card p strong {
+                font-size: 0.95rem;
+            }
+
+            .btn-custom {
+                min-width: 100%;
+                height: 40px;
+                line-height: 40px;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .d-flex.justify-content-center {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-content {
+                width: 90%;
+                max-width: none;
+                padding: 15px;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .modal-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .modal-content .form-control {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .modal-content .btn-success {
+                width: 100%;
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .modal-content label {
+                font-size: 0.9rem;
+            }
+
+            .modal-content .close {
+                font-size: 1.2rem;
+                position: absolute;
+                top: 10px;
+                right: 15px;
+            }
+
+            .alert {
+                font-size: 0.85rem;
+                margin: 10px;
+                padding: 10px;
+            }
+
+            .toast {
+                width: 90%;
+                max-width: 300px;
+                margin: 10px auto;
+                font-size: 0.85rem;
+            }
+
+            .toast .toast-header {
+                font-size: 0.9rem;
+            }
+
+            .toast .toast-body {
+                font-size: 0.85rem;
+            }
+
+            .form-control {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            footer {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+
+            .swal2-popup {
+                width: 90% !important;
+                font-size: 0.9rem !important;
+            }
+
+            .swal2-title {
+                font-size: 1.2rem !important;
+            }
+
+            .swal2-content {
+                font-size: 0.9rem !important;
+            }
+
+            .swal2-confirm {
+                font-size: 0.9rem !important;
+                padding: 8px 16px !important;
+            }
         }
     </style>
 </head>
@@ -160,18 +296,8 @@
                     <p>Vui lòng cập nhật số điện thoại của bạn.</p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div th:if="${error != null}" class="alert alert-danger mt-3 fade show" role="alert">
-                    <p th:text="${error}"></p>
-                </div>
-                <div th:if="${success != null}" class="alert alert-success mt-3 fade show" role="alert">
-                    <p th:text="${success}"></p>
-                </div>
-                <div th:if="${validationErrors != null and #lists.size(validationErrors) > 0}"
-                     class="alert alert-danger mt-3 fade show" role="alert">
-                    <th:block th:each="error : ${validationErrors}">
-                        <p th:text="${error.defaultMessage}"></p>
-                    </th:block>
-                </div>
+
+
             </div>
         </div>
 
@@ -186,24 +312,15 @@
                 </div>
                 <div th:if="${company != null}">
                     <p><strong>Tên công ty:</strong> <span th:text="${company.name ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Số điện thoại công ty:</strong> <span th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Email công ty:</strong> <span th:text="${company.email ?: 'Chưa có thông tin'}"></span>
+                    </p>
+                    <p><strong>Số điện thoại công ty:</strong> <span
+                            th:text="${company.phoneNumber ?: 'Chưa có thông tin'}"></span></p>
                     <p><strong>Địa chỉ:</strong> <span th:text="${company.address ?: 'Chưa có thông tin'}"></span></p>
-                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span></p>
+                    <p><strong>Mã số thuế:</strong> <span th:text="${company.taxNumber ?: 'Chưa có thông tin'}"></span>
+                    </p>
                     <div class="d-flex justify-content-center gap-3 mt-3">
                         <button id="editCompanyBtn" class="btn btn-custom">Thay đổi thông tin công ty</button>
-                    </div>
-                    <div th:if="${errorCompany != null}" class="alert alert-danger mt-3">
-                        <p th:text="${errorCompany}"></p>
-                    </div>
-                    <div th:if="${successCompany != null}" class="alert alert-success mt-3">
-                        <p th:text="${successCompany}"></p>
-                    </div>
-                    <div th:if="${validationErrorsCompany != null and #lists.size(validationErrorsCompany) > 0}"
-                         class="alert alert-danger mt-3">
-                        <th:block th:each="error : ${validationErrorsCompany}">
-                            <p th:text="${error.defaultMessage}"></p>
-                        </th:block>
                     </div>
                 </div>
             </div>
@@ -218,19 +335,22 @@
     <div class="modal-content">
         <span class="close">×</span>
         <h3>Thay đổi mật khẩu</h3>
-        <form id="changePasswordForm" th:action="@{/profile/changePassword}" method="post" onsubmit="return validatePassword()">
+        <form id="changePasswordForm" th:action="@{/profile/changePassword}" method="post"
+              onsubmit="return validatePassword()">
             <div class="form-group">
                 <label>Mật khẩu cũ:</label>
                 <input type="password" name="oldPassword" id="oldPassword" required class="form-control mb-2">
             </div>
             <div class="form-group">
                 <label>Mật khẩu mới:</label>
-                <input type="password" name="newPassword" id="newPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <input type="password" name="newPassword" id="newPassword" required class="form-control mb-2"
+                       onkeyup="checkPassword()">
                 <small id="newPasswordError" class="text-danger" style="display: none;"></small>
             </div>
             <div class="form-group">
                 <label>Xác nhận mật khẩu mới:</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" required class="form-control mb-2" onkeyup="checkPassword()">
+                <input type="password" name="confirmPassword" id="confirmPassword" required class="form-control mb-2"
+                       onkeyup="checkPassword()">
                 <small id="confirmPasswordError" class="text-danger" style="display: none;"></small>
             </div>
             <button type="submit" id="submitPasswordBtn" class="btn btn-success" disabled>Đổi mật khẩu</button>
@@ -303,168 +423,178 @@
 </div>
 
 <!-- Toast thông báo -->
-<div id="successToast" class="toast success-toast" style="position: fixed; bottom: 20px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Thành công</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="successMessage"></p>
-    </div>
+<div th:if="${success}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${success}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="errorToast" class="toast error-toast" style="position: fixed; bottom: 80px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="errorMessage"></p>
-    </div>
+<div th:if="${error}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${error}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
+</div>
+<div th:if="${validationErrorsCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${validationErrorsCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="validationErrorToast" class="toast error-toast" style="position: fixed; bottom: 140px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi Validation</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <ul id="validationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
-    </div>
+<div th:if="${errorCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${errorCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="profileSuccessToast" class="toast success-toast" style="position: fixed; bottom: 200px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Thành công</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="profileSuccessMessage"></p>
-    </div>
+<div th:if="${successCompany}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: /*[[${successCompany}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
-<div id="profileErrorToast" class="toast error-toast" style="position: fixed; bottom: 260px; right: 20px; z-index: 1050; min-width: 300px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <p id="profileErrorMessage"></p>
-    </div>
-</div>
-
-<div id="profileValidationErrorToast" class="toast error-toast" style="position: fixed; bottom: 320px; right: 20px; z-index: 1050; min-width: 300px; max-width: 400px;">
-    <div class="toast-header">
-        <strong class="me-auto">Lỗi Validation</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        <ul id="profileValidationErrorMessages" style="list-style: none; padding: 0; margin: 0;"></ul>
-    </div>
+<div th:if="${validationErrors}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: /*[[${validationErrors}]]*/ "Default message",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    </script>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var editCompanyBtn = document.getElementById("editCompanyBtn");
+        // Hàm mở modal
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = "block";
+            }
+        }
+
+        // Hàm đóng tất cả modal
+        function closeAllModals() {
+            const modals = [
+                "changePasswordModal",
+                "editProfileModal",
+                "addCompanyModal",
+                "editCompanyModal"
+            ];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+
+        // Gắn sự kiện cho các nút
+        const editCompanyBtn = document.getElementById("editCompanyBtn");
         if (editCompanyBtn) {
-            editCompanyBtn.onclick = function () {
-                document.getElementById("editCompanyModal").style.display = "block";
-            };
+            editCompanyBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("editCompanyModal");
+            });
         }
 
-        var changePasswordBtn = document.getElementById("changePasswordBtn");
+        const changePasswordBtn = document.getElementById("changePasswordBtn");
         if (changePasswordBtn) {
-            changePasswordBtn.onclick = function () {
-                document.getElementById("changePasswordModal").style.display = "block";
-            };
+            changePasswordBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("changePasswordModal");
+            });
         }
 
-        var editProfileBtn = document.getElementById("editProfileBtn");
+        const editProfileBtn = document.getElementById("editProfileBtn");
         if (editProfileBtn) {
-            editProfileBtn.onclick = function () {
-                document.getElementById("editProfileModal").style.display = "block";
-            };
+            editProfileBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("editProfileModal");
+            });
         }
 
-        var addCompanyBtn = document.getElementById("addCompanyBtn");
+        const addCompanyBtn = document.getElementById("addCompanyBtn");
         if (addCompanyBtn) {
-            addCompanyBtn.onclick = function () {
-                document.getElementById("addCompanyModal").style.display = "block";
-            };
+            addCompanyBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                openModal("addCompanyModal");
+            });
         }
 
-        document.querySelectorAll(".close").forEach(btn => {
-            btn.onclick = function () {
-                document.getElementById("changePasswordModal").style.display = "none";
-                document.getElementById("editProfileModal").style.display = "none";
-                document.getElementById("addCompanyModal").style.display = "none";
-                document.getElementById("editCompanyModal").style.display = "none";
-            };
+        // Gắn sự kiện cho các nút đóng modal
+        document.querySelectorAll(".modal .close").forEach(closeBtn => {
+            closeBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                closeAllModals();
+            });
         });
 
-        window.onclick = function (event) {
-            if (event.target == document.getElementById("changePasswordModal")) {
-                document.getElementById("changePasswordModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("editProfileModal")) {
-                document.getElementById("editProfileModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("addCompanyModal")) {
-                document.getElementById("addCompanyModal").style.display = "none";
-            }
-            if (event.target == document.getElementById("editCompanyModal")) {
-                document.getElementById("editCompanyModal").style.display = "none";
-            }
-        };
+        // Đóng modal khi click bên ngoài modal
+        window.addEventListener("click", function (event) {
+            const modals = [
+                "changePasswordModal",
+                "editProfileModal",
+                "addCompanyModal",
+                "editCompanyModal"
+            ];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && event.target === modal) {
+                    closeAllModals();
+                }
+            });
+        });
 
-        const hiddenSuccess = document.getElementById('hiddenSuccess');
-        if (hiddenSuccess && hiddenSuccess.textContent) {
-            const successToast = new bootstrap.Toast(document.getElementById('successToast'));
-            document.getElementById('successMessage').textContent = hiddenSuccess.textContent;
-            successToast.show();
-            setTimeout(() => successToast.hide(), 3000);
-        }
 
-        const hiddenError = document.getElementById('hiddenError');
-        if (hiddenError && hiddenError.textContent) {
-            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
-            document.getElementById('errorMessage').textContent = hiddenError.textContent;
-            errorToast.show();
-            setTimeout(() => errorToast.hide(), 3000);
-        }
-
-        const hiddenValidationErrors = document.getElementById('hiddenValidationErrors');
-        if (hiddenValidationErrors?.textContent) {
-            const validationErrors = hiddenValidationErrors.textContent.split(', ').map(errorStr => {
-                const match = errorStr.match(/defaultMessage='([^']+)'/) || [];
-                return {defaultMessage: match[1] || 'Lỗi nhập sai dữ liệu! Vui lòng nhập lại theo đúng yêu cầu.'};
-            }).filter(error => error.defaultMessage);
-
-            if (validationErrors.length) {
-                const toast = new bootstrap.Toast(document.getElementById('validationErrorToast'));
-                document.getElementById('validationErrorMessages').innerHTML = validationErrors
-                    .map(error => `<li>${error.defaultMessage}</li>`)
-                    .join('');
-                toast.show();
-                setTimeout(() => toast.hide(), 5000);
-            }
-        }
-
-        const profileSuccess = document.getElementById('hiddenProfileSuccess');
-        if (profileSuccess?.textContent) {
-            const toast = new bootstrap.Toast(document.getElementById('profileSuccessToast'));
-            document.getElementById('profileSuccessMessage').textContent = profileSuccess.textContent;
-            toast.show();
-            setTimeout(() => toast.hide(), 3000);
-        }
-
-        const profileError = document.getElementById('hiddenProfileError');
-        if (profileError?.textContent) {
-            const toast = new bootstrap.Toast(document.getElementById('profileErrorToast'));
-            document.getElementById('profileErrorMessage').textContent = profileError.textContent;
-            toast.show();
-            setTimeout(() => toast.hide(), 3000);
-        }
 
         const profileValidationErrors = document.getElementById('hiddenProfileValidationErrors');
         if (profileValidationErrors?.textContent) {
@@ -558,5 +688,6 @@
 
 <script src="/assert/lib/chart/chart.min.js"></script>
 <script src="/assert/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>

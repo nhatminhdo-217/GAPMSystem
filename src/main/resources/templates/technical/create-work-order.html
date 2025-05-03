@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Tạo Work Order</title>
+    <title>Chỉ may Dũng Đông - Tạo lệnh làm việc</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -21,6 +21,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         body {
@@ -378,7 +379,7 @@
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4">
                 <div class="search-container">
-                    <h6>Tạo Work Order</h6>
+                    <h6>Tạo lệnh làm việc</h6>
                 </div>
                 <div class="row g-3">
                     <div class="col-12">
@@ -388,7 +389,7 @@
                                 <div class="production-info">
                                     <table class="production-info-table">
                                         <tr>
-                                            <th>Mã lênh sản xuất</th>
+                                            <th>Mã lệnh sản xuất</th>
                                             <th>Ngày tạo đơn</th>
                                             <th>Ngày giao hàng dự kiến</th>
                                             <th>Thời gian bắt đầu dự kiến</th>
@@ -415,7 +416,7 @@
                                          th:data-index="${iterStat.index}">
                                         <div class="detail-header" data-toggle="collapse"
                                              th:data-target="'#detail-' + ${iterStat.count}">
-                                            <h6 th:text="'Detail ' + ${iterStat.count}"></h6>
+                                            <h6 th:text="'Mã quản lý RFQ-'+ ${detail.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${detail.purchaseOrderDetail.rfqDetailId}"></h6>
                                             <button class="toggle-btn" th:id="'toggle-btn-' + ${iterStat.index}">
                                                 <i class="fas fa-plus"></i>
                                             </button>
@@ -424,15 +425,13 @@
                                             <div class="detail-content">
                                                 <table class="detail-table">
                                                     <tr>
-                                                        <th>Mã quản lý</th>
                                                         <th>Sản phẩm</th>
                                                         <th>Loại sợi</th>
                                                         <th>Màu</th>
                                                         <th>Số lượng</th>
-                                                        <th>Thread Mass (kg)</th>
+                                                        <th>Khối lượng sợi (kg)</th>
                                                     </tr>
                                                     <tr>
-                                                        <td th:text="'RFQ-'+${detail.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${detail.purchaseOrderDetail.rfqDetailId}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.name} + ' - ' + ${detail.purchaseOrderDetail.brand.name} + ' - ' + ${detail.purchaseOrderDetail.category.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.product.thread.name}"></td>
                                                         <td th:text="${detail.purchaseOrderDetail.note_color}"></td>
@@ -729,9 +728,9 @@
                             '</table>'
                         );
                         if (response.deadlines && response.deadlines.dyeDeadline) {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
+                            dyeDeadlineDiv.html('hạn chót  nhuộm: <strong>' + response.deadlines.dyeDeadline + '</strong>').removeClass('error');
                         } else {
-                            dyeDeadlineDiv.html('Dye Deadline: <strong>Không xác định</strong>').addClass('error');
+                            dyeDeadlineDiv.html('hạn chót nhuộm: <strong>Không xác định</strong>').addClass('error');
                         }
                     } else {
                         var errorMessage = response.message.includes('Litters Batch') ?
@@ -913,21 +912,24 @@
                         );
                         if (response.deadlines && response.deadlines.dyeDeadline) {
                             dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
-                                '<strong>' + response.deadlines.dyeDeadline + '</strong> (Quá hạn)').addClass('error');
+                                '<strong>' + response.deadlines.dyeDeadline
+                                + '</strong> (Quá hạn)').addClass('error');
                         } else {
                             dyeDeadlineDiv.html('Hạn chót công đoạn nhuộm: ' +
                                 '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.windingDeadline) {
                             windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
-                                '<strong>' + response.deadlines.windingDeadline + '</strong> (Quá hạn)').addClass('error');
+                                '<strong>' + response.deadlines.windingDeadline
+                                + '</strong> (Quá hạn)').addClass('error');
                         } else {
                             windingDeadlineDiv.html('Hạn chót công đoạn côn: ' +
                                 '<strong>Không xác định</strong> (Quá hạn)').addClass('error');
                         }
                         if (response.deadlines && response.deadlines.packagingDeadline) {
                             packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
-                                '<strong>' + response.deadlines.packagingDeadline + '</strong> (Quá hạn)').addClass('error');
+                                '<strong>' + response.deadlines.packagingDeadline
+                                + '</strong> (Quá hạn)').addClass('error');
                         } else {
                             packagingDeadlineDiv.html('Hạn chót công đoạn đóng gói: ' +
                                 '<strong>Không xác định</strong> (Quá hạn)').addClass('error');

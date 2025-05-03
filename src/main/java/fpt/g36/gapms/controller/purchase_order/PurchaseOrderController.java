@@ -446,6 +446,12 @@ public class PurchaseOrderController {
             optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
         }
 
+        if(purchaseOrderService.checkContractCode(contractCode)){
+
+            redirectAttributes.addFlashAttribute("contractCodeExist", "Mã hợp đồng đã tồn tại");
+            return "redirect:/purchase-order/customer/detail/" + purchaseOrderId;
+        }
+
         PurchaseOrder purchaseOrder_save = purchaseOrderService.uploadContract(purchaseOrder, contractCode, purchaseOrderId,optionalUser.get(), contractImage);
 
 
@@ -457,6 +463,12 @@ public class PurchaseOrderController {
     @PostMapping("/re-upload-contract")
     public String reUploadContract(@RequestParam("purchaseOrderId") Long purchaseOrderId, @RequestParam("contractCode") String contractCode, Model model, RedirectAttributes redirectAttributes, @RequestParam("contractImage") MultipartFile contractImage) throws IOException {
         PurchaseOrder purchaseOrder_save;
+        PurchaseOrder purchaseOrder_check = purchaseOrderService.getPurchaseOrderById(purchaseOrderId) .orElseThrow(() -> new RuntimeException("Purchase Order not found"));
+        if(purchaseOrderService.checkContractCodeWithId(contractCode, purchaseOrder_check.getContract().getId())){
+
+            redirectAttributes.addFlashAttribute("contractCodeExist", "Mã hợp đồng đã tồn tại");
+            return "redirect:/purchase-order/customer/detail/" + purchaseOrderId;
+        }
         if (contractImage == null || contractImage.isEmpty()) {
             purchaseOrder_save = purchaseOrderService.reUploadContract(contractCode, purchaseOrderId);
         } else {

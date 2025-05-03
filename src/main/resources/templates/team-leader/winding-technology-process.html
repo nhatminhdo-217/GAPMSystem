@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -534,7 +534,7 @@
                                             <td>Số lượng (cuộn)</td>
                                             <td th:text="${technologyProcess.dyeBatch.windingBatch.plannedOutput}">60/3BYA</td>
                                             <td>Số quả</td>
-                                            <td>N/A</td>
+                                            <td th:text="${technologyProcess.dyeBatch.coneBatchQuantity}"></td>
                                         </tr>
                                         </tbody>
                                     </table>

@@ -21,6 +21,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         body {
@@ -39,6 +40,13 @@
             cursor: pointer;
         }
 
+        .btn-search{
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
+        }
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -305,7 +313,7 @@
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
                         <input type="hidden" name="previousTab" th:value="${activeTab}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
@@ -361,7 +369,7 @@
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
                                                     <strong>Mã lô</strong><br>
-                                                    <span th:text="${rfq.getId()}"></span>
+                                                    <span th:text="'RFQ-'+${rfq.getId()}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Số lượng sản phẩm</strong><br>
@@ -370,10 +378,6 @@
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo đơn</strong><br>
                                                     <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Người tạo</strong><br>
-                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Nhân viên phụ trách</strong><br>
@@ -436,7 +440,7 @@
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
                                                     <strong>Mã lô</strong><br>
-                                                    <span th:text="${rfq.getId()}"></span>
+                                                    <span th:text="'RFQ-'+${rfq.getId()}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Số lượng sản phẩm</strong><br>
@@ -445,10 +449,6 @@
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo đơn</strong><br>
                                                     <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Người tạo</strong><br>
-                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Nhân viên phụ trách</strong><br>
@@ -512,7 +512,7 @@
                                             <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
                                                     <strong>Mã lô</strong><br>
-                                                    <span th:text="${rfq.getId()}"></span>
+                                                    <span th:text="'RFQ-'+${rfq.getId()}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Số lượng sản phẩm</strong><br>
@@ -521,10 +521,6 @@
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo đơn</strong><br>
                                                     <span th:text="${#temporals.format(rfq.getCreateAt(), 'dd/MM/yyyy')}"></span>
-                                                </div>
-                                                <div class="text-start me-3">
-                                                    <strong>Người tạo</strong><br>
-                                                    <span th:text="${rfq.getCreateBy() != null ? rfq.getCreateBy().getUsername() : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Nhân viên phụ trách</strong><br>

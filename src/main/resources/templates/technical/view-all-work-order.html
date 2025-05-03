@@ -21,6 +21,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         body {
@@ -38,7 +39,13 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-
+.btn-search{
+    background: #FFD700;
+    border: none;
+    font-size: 18px;
+    padding: 4px 24px;
+    transition: 0.3s;
+}
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -343,7 +350,7 @@
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
                         <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
