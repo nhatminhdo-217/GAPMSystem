@@ -700,7 +700,7 @@
         <div class="dtl-container">
             <div class="dtl-header-container">
                 <div class="dtl-header-left">
-                    <h2>Mã lệnh PO-<span th:text="${workOrderId}"></span></h2>
+                    <h2>Mã lệnh làm việc WO-<span th:text="${workOrderId}"></span></h2>
                     <span th:switch="${workOrder.isProduction}">
                         <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
                               th:text="'Đang sản xuất'"
@@ -733,7 +733,7 @@
                             <i class="fa fa-times me-1"></i> Hủy Sản Xuất
                         </button>
                     </form>
-                    <form th:if="${workOrder.isProduction != T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
+                    <!--<form th:if="${workOrder.isProduction != T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
                           th:action="@{'/work-order/production-manager/pause-work-order/' + ${workOrderId}}"
                           method="post"
                           onsubmit="return PauseProductionProcess(event)">
@@ -741,7 +741,7 @@
                                 th:disabled="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).CANCELED || workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).FINISHED}">
                             <i class="fa fa-hourglass-half me-1"></i> Tạm Dừng Sản Xuất
                         </button>
-                    </form>
+                    </form>-->
                     <form th:if="${workOrder.isProduction == T(fpt.g36.gapms.enums.WorkEnum).PAUSE}"
                           th:action="@{'/work-order/production-manager/resume-work-order/' + ${workOrderId}}"
                           method="post"
@@ -768,7 +768,7 @@
                 <tbody>
                 <!-- Lặp qua danh sách WorkOrderDetail -->
                 <tr th:each="workOrderDetail : ${workOrderDetails}">
-                    <td th:text="'WOD-'+${workOrderDetail.id}">DET001</td>
+                    <td th:text="'RFQ-'+${workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${workOrderDetail.purchaseOrderDetail.rfqDetailId}">DET001</td>
                     <td th:text="${workOrderDetail.purchaseOrderDetail.getProduct().getName()} + ' - ' + ${workOrderDetail.purchaseOrderDetail.getBrand().getName()} + ' - ' + ${workOrderDetail.purchaseOrderDetail.getCategory().getName()}"></td>
                     <td th:text="${workOrderDetail.purchaseOrderDetail.getNote_color()}"></td>
                     <td th:text="${workOrderDetail.purchaseOrderDetail.getQuantity()}"></td>
@@ -810,7 +810,7 @@
                     class="dtl-batch-row">
                     <td colspan="6">
                         <div class="dtl-batch-content">
-                            <h5>Mã quản lý WOD-<span th:text="${workOrderDetail.id}"></span></h5>
+                            <h5>Mã quản lý <span th:text="'RFQ-'+${workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${workOrderDetail.purchaseOrderDetail.rfqDetailId}"></span></h5>
                             <table class="dtl-batch-table" th:each="batch : ${workOrderDetail.dyeStage.dyebatches}">
                                 <thead>
                                 <tr>
@@ -819,7 +819,6 @@
                                     <th>Ngày bắt đầu</th>
                                     <th>Ngày kết thúc</th>
                                     <th>Trạng thái</th>
-                                    <th>Hành động</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -848,9 +847,9 @@
                                             </span>
                                         </span>
                                     </td>
-                                    <td rowspan="3">
+                                    <!--<td rowspan="3">
                                         <button class="dtl-view-btn" th:onclick="|openPopup('${batch.batchNumber}')|">Xem</button>
-                                    </td>
+                                    </td>-->
                                 </tr>
                                 <!-- Công đoạn Đánh côn -->
                                 <tr>
