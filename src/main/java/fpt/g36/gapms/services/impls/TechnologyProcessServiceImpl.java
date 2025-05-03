@@ -45,12 +45,12 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         BigDecimal axit;
         BigDecimal liquorRatio;
 
-        ProcessParameters(BigDecimal coneBatchWeight) {
+        ProcessParameters(BigDecimal coneBatchWeight, BigDecimal litters) {
             this.avcoLveDlxPlus = coneBatchWeight.multiply(BigDecimal.valueOf(0.012));
-            this.chelator = coneBatchWeight.divide(BigDecimal.valueOf(2.5), 2, BigDecimal.ROUND_HALF_UP);
-            this.detergent = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
-            this.reducingAgent = coneBatchWeight.divide(BigDecimal.valueOf(0.8), 2, BigDecimal.ROUND_HALF_UP);
-            this.axit = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
+            this.chelator = litters.multiply(BigDecimal.valueOf(2.5));
+            this.detergent = coneBatchWeight.multiply(BigDecimal.valueOf(1.2));
+            this.reducingAgent = coneBatchWeight.multiply(BigDecimal.valueOf(0.8));
+            this.axit = coneBatchWeight.multiply(BigDecimal.valueOf(1.2));
             this.liquorRatio = BigDecimal.valueOf(6);
         }
     }
@@ -160,12 +160,13 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             if (totalBatches > 1) {
                 System.err.println("Trường hợp có nhiều mẻ (" + totalBatches + " mẻ): các mẻ đầu giống nhau, mẻ cuối khác.");
                 BigDecimal coneBatchWeightFirst = dyeBatches.get(0).getCone_batch_weight();
+                BigDecimal litterFirst = dyeBatches.get(0).getLiters();
                 if (coneBatchWeightFirst == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch đầu tiên không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ đầu tiên: " + coneBatchWeightFirst);
 
-                ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst);
+                ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst, litterFirst);
                 System.err.println("Thông số TechnologyProcess cho các mẻ đầu: avcoLveDlxPlus=" + paramsFirst.avcoLveDlxPlus + ", chelator=" + paramsFirst.chelator + ", detergent=" + paramsFirst.detergent +
                         ", reducingAgent=" + paramsFirst.reducingAgent + ", axit=" + paramsFirst.axit + ", liquorRatio=" + paramsFirst.liquorRatio +
                         ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
@@ -204,14 +205,19 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 DyeBatch lastBatch = dyeBatches.get(totalBatches - 1);
                 BigDecimal coneBatchWeightLast = lastBatch.getCone_batch_weight();
+                BigDecimal litterLast = lastBatch.getLiters();
+
                 if (coneBatchWeightLast == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch cuối không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ cuối: " + coneBatchWeightLast);
-                ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast);
-                System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus=" + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
-                        ", reducingAgent=" + paramsLast.reducingAgent + ", axit=" + paramsLast.axit + ", liquorRatio=" + paramsLast.liquorRatio +
-                        ", dispergatorN=" + dispergatorNForLastBatch + ", dfm=" + dfmForLastBatch + ", anbatex=" + anbatexForLastBatch);
+                ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast, litterLast);
+                System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus="
+                        + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
+                        ", reducingAgent=" + paramsLast.reducingAgent
+                        + ", axit=" + paramsLast.axit + ", liquorRatio=" + paramsLast.liquorRatio +
+                        ", dispergatorN=" + dispergatorNForLastBatch
+                        + ", dfm=" + dfmForLastBatch + ", anbatex=" + anbatexForLastBatch);
 
                 TechnologyProcess lastProcess = new TechnologyProcess();
                 lastProcess.setCreatedBy(currentUser);
@@ -245,12 +251,13 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 System.err.println("Trường hợp chỉ có 1 mẻ: Tính toán tự động dựa trên cone_batch_weight của mẻ đó.");
                 DyeBatch singleBatch = dyeBatches.get(0);
                 BigDecimal coneBatchWeight = singleBatch.getCone_batch_weight();
+                BigDecimal litter = singleBatch.getLiters();
                 if (coneBatchWeight == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ duy nhất: " + coneBatchWeight);
 
-                ProcessParameters params = new ProcessParameters(coneBatchWeight);
+                ProcessParameters params = new ProcessParameters(coneBatchWeight, litter);
                 System.err.println("Thông số TechnologyProcess cho mẻ duy nhất: avcoLveDlxPlus=" + params.avcoLveDlxPlus + ", chelator=" + params.chelator + ", detergent=" + params.detergent +
                         ", reducingAgent=" + params.reducingAgent + ", axit=" + params.axit + ", liquorRatio=" + params.liquorRatio +
                         ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
@@ -346,12 +353,13 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
                 System.err.println("Trường hợp có nhiều mẻ (" + totalBatches + " mẻ): các mẻ đầu giống nhau, mẻ cuối khác.");
 
                 BigDecimal coneBatchWeightFirst = dyeBatches.get(0).getCone_batch_weight();
+                BigDecimal litterFirst = dyeBatches.get(0).getLiters();
                 if (coneBatchWeightFirst == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch đầu tiên không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ đầu tiên: " + coneBatchWeightFirst);
 
-                ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst);
+                ProcessParameters paramsFirst = new ProcessParameters(coneBatchWeightFirst, litterFirst);
                 System.err.println("Thông số TechnologyProcess cho các mẻ đầu: avcoLveDlxPlus=" + paramsFirst.avcoLveDlxPlus + ", chelator=" + paramsFirst.chelator + ", detergent=" + paramsFirst.detergent +
                         ", reducingAgent=" + paramsFirst.reducingAgent + ", axit=" + paramsFirst.axit + ", liquorRatio=" + paramsFirst.liquorRatio +
                         ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
@@ -403,12 +411,13 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 DyeBatch lastBatch = dyeBatches.get(totalBatches - 1);
                 BigDecimal coneBatchWeightLast = lastBatch.getCone_batch_weight();
+                BigDecimal litterLast = lastBatch.getLiters();
                 if (coneBatchWeightLast == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch cuối không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ cuối: " + coneBatchWeightLast);
 
-                ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast);
+                ProcessParameters paramsLast = new ProcessParameters(coneBatchWeightLast, litterLast);
                 System.err.println("Thông số TechnologyProcess cho mẻ cuối: avcoLveDlxPlus=" + paramsLast.avcoLveDlxPlus + ", chelator=" + paramsLast.chelator + ", detergent=" + paramsLast.detergent +
                         ", reducingAgent=" + paramsLast.reducingAgent + ", axit=" + paramsLast.axit + ", liquorRatio=" + paramsLast.liquorRatio +
                         ", dispergatorN=" + dispergatorNForLastBatch + ", dfm=" + dfmForLastBatch + ", anbatex=" + anbatexForLastBatch);
@@ -459,12 +468,13 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
 
                 DyeBatch singleBatch = dyeBatches.get(0);
                 BigDecimal coneBatchWeight = singleBatch.getCone_batch_weight();
+                BigDecimal litter = singleBatch.getLiters();
                 if (coneBatchWeight == null) {
                     throw new IllegalStateException("cone_batch_weight của DyeBatch không được null.");
                 }
                 System.err.println("cone_batch_weight của mẻ duy nhất: " + coneBatchWeight);
 
-                ProcessParameters params = new ProcessParameters(coneBatchWeight);
+                ProcessParameters params = new ProcessParameters(coneBatchWeight, litter);
                 System.err.println("Thông số TechnologyProcess cho mẻ duy nhất: avcoLveDlxPlus=" + params.avcoLveDlxPlus + ", chelator=" + params.chelator + ", detergent=" + params.detergent +
                         ", reducingAgent=" + params.reducingAgent + ", axit=" + params.axit + ", liquorRatio=" + params.liquorRatio +
                         ", dispergatorN=" + dispergatorNForFirstBatches + ", dfm=" + dfmForFirstBatches + ", anbatex=" + anbatexForFirstBatches);
