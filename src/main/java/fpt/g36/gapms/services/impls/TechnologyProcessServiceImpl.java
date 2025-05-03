@@ -51,7 +51,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
             this.detergent = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
             this.reducingAgent = coneBatchWeight.divide(BigDecimal.valueOf(0.8), 2, BigDecimal.ROUND_HALF_UP);
             this.axit = coneBatchWeight.divide(BigDecimal.valueOf(1.2), 2, BigDecimal.ROUND_HALF_UP);
-            this.liquorRatio = BigDecimal.valueOf(6);
+            this.liquorRatio = BigDecimal.valueOf(1/6);
         }
     }
 

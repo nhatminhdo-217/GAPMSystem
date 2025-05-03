@@ -576,7 +576,7 @@
                                 <tr>
                                     <td>Mã Quản Lý</td>
                                     <td th:text="'RFQ-'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.workOrder.productionOrder.purchaseOrder.quotation.rfq.id}+'/'+${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.rfqDetailId}"></td>
-                                    <td>Khối Lượng</td>
+                                    <td>Khối Lượng (Kg)</td>
                                     <td th:text="${technologyProcess.dyeBatch.cone_batch_weight != null ? technologyProcess.dyeBatch.cone_batch_weight : 'N/A'}"></td>
                                 </tr>
                                 <tr>
@@ -598,8 +598,8 @@
                                     <td th:text="${technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id != null ? technologyProcess.dyeBatch.dyeStage.workOrderDetail.purchaseOrderDetail.product.thread.process.id : 'N/A'}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Ghi chú</td>
-                                    <td colspan="3">N/A</td>
+                                    <td>Số quả (Kg)</td>
+                                    <td colspan="3" th:text="${technologyProcess.dyeBatch.coneBatchQuantity}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -673,9 +673,9 @@
                         </tr>
                         <tr>
                             <th>Tên Thuốc</th>
-                            <th>% ánh sáng</th>
-                            <th>Tỷ lệ %</th>
-                            <th>Số gam</th>
+                            <th>%+ánh</th>
+                            <th>Tỷ lệ (%)</th>
+                            <th>Số gam (g)</th>
                         </tr>
                         </thead>
                         <tbody>
