@@ -61,7 +61,6 @@ public class DyeBatchServiceImpl implements DyeBatchService {
         DyeRiskAssessment dyeRiskAssessment = new DyeRiskAssessment();
         dyeRiskAssessment.setDyeBatch(dyeBatch);
         dyeRiskAssessmentRepository.save(dyeRiskAssessment);
-        notificationUtils.sentSuccessStageToLeaderFromQA(dyeBatch.getId(), "QA_DYE");
         notificationUtils.sentSuccessStageToLeaderFromQASMS(dyeBatch.getId(), "QA_DYE");
     }
 
