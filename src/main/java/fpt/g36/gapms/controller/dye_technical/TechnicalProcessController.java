@@ -48,6 +48,7 @@ public class TechnicalProcessController {
 
     @Autowired
     private NotificationUtils notificationUtils;
+
     private void validateDyeTypeDTO(DyeTypeDTO dto, String batchType, Model model, Long workOrderId) {
         BigDecimal ratio = dto.getRatio();
         BigDecimal lightPercent = dto.getLightPercent();
@@ -74,6 +75,8 @@ public class TechnicalProcessController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "without-tech") String tab,
+            @RequestParam(required = false) String previousTab, // Thêm previousTab
             Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userUtils.getOptionalUser(model);
@@ -88,44 +91,73 @@ public class TechnicalProcessController {
             User currentUser = optionalUser.get();
             Pageable pageable = PageRequest.of(page, size);
 
-            // Mặc định hiển thị cả hai tab nếu không có tìm kiếm
-            Page<WorkOrder> workOrdersWithoutTechProcess = workOrderService.getApprovedWorkOrdersWithoutTechnologyProcess(pageable);
-            Page<WorkOrder> workOrdersWithTechProcess = workOrderService.getWorkOrdersWithTechnologyProcessByCreatedBy(pageable, currentUser);
-            String activeTab = "without-tech-content";
+            // Xác định activeTab dựa trên tham số tab
+            String activeTab = tab.equals("with-tech") ? "with-tech-content" : "without-tech-content";
+            System.err.println("Initial tab: " + tab + ", activeTab: " + activeTab);
+
+            Page<WorkOrder> workOrdersWithoutTechProcess;
+            Page<WorkOrder> workOrdersWithTechProcess;
 
             // Xử lý tìm kiếm
             if (search != null && !search.trim().isEmpty()) {
                 try {
                     Long searchId = Long.parseLong(search.trim());
+                    System.err.println("Searching for WorkOrder ID: " + searchId);
                     try {
+                        // Tìm trong tab 1: Chưa có hành trình công nghệ
                         WorkOrder workOrder = workOrderService.getApprovedWorkOrderWithoutTechnologyProcessById(searchId);
+                        System.err.println("Found WorkOrder without tech process: " + workOrder);
                         workOrdersWithoutTechProcess = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
-                        workOrdersWithTechProcess = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
+                        workOrdersWithTechProcess = workOrderService.getWorkOrdersWithTechnologyProcessByCreatedBy(pageable, currentUser); // Giữ nguyên dữ liệu tab 2
                         activeTab = "without-tech-content";
+                        tab = "without-tech";
+                        model.addAttribute("previousTab", activeTab);
                     } catch (RuntimeException e) {
+                        System.err.println("WorkOrder without tech process not found, trying with tech process: " + e.getMessage());
                         try {
+                            // Tìm trong tab 2: Đã có hành trình công nghệ
                             WorkOrder workOrder = workOrderService.getWorkOrderWithTechnologyProcessByIdAndCreatedBy(searchId, currentUser);
+                            System.err.println("Found WorkOrder with tech process: " + workOrder);
+                            workOrdersWithoutTechProcess = workOrderService.getApprovedWorkOrdersWithoutTechnologyProcess(pageable); // Giữ nguyên dữ liệu tab 1
                             workOrdersWithTechProcess = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
-                            workOrdersWithoutTechProcess = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
                             activeTab = "with-tech-content";
+                            tab = "with-tech";
+                            model.addAttribute("previousTab", activeTab);
                         } catch (RuntimeException ex) {
-                            workOrdersWithoutTechProcess = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                            workOrdersWithTechProcess = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                            model.addAttribute("errorWithoutTech", "Không tìm thấy Work Order với ID: " + searchId);
-                            activeTab = "without-tech-content";
+                            System.err.println("WorkOrder not found in both tabs: " + ex.getMessage());
+                            workOrdersWithoutTechProcess = workOrderService.getApprovedWorkOrdersWithoutTechnologyProcess(pageable);
+                            workOrdersWithTechProcess = workOrderService.getWorkOrdersWithTechnologyProcessByCreatedBy(pageable, currentUser);
+                            model.addAttribute("error", "Không tìm thấy Work Order với ID: " + searchId); // Sử dụng 'error' như mẫu
+                            activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "without-tech-content";
+                            model.addAttribute("previousTab", activeTab);
                         }
                     }
                 } catch (NumberFormatException e) {
-                    model.addAttribute("errorWithoutTech", "Mã Work Order phải là số.");
+                    System.err.println("Invalid search ID format: " + search);
+                    model.addAttribute("error", "Mã Work Order phải là số."); // Sử dụng 'error' như mẫu
+                    workOrdersWithoutTechProcess = workOrderService.getApprovedWorkOrdersWithoutTechnologyProcess(pageable);
+                    workOrdersWithTechProcess = workOrderService.getWorkOrdersWithTechnologyProcessByCreatedBy(pageable, currentUser);
+                    activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "without-tech-content";
+                    model.addAttribute("previousTab", activeTab);
                 }
+            } else {
+                // Nếu không có tìm kiếm, lấy dữ liệu đầy đủ cho cả hai tab
+                workOrdersWithoutTechProcess = workOrderService.getApprovedWorkOrdersWithoutTechnologyProcess(pageable);
+                workOrdersWithTechProcess = workOrderService.getWorkOrdersWithTechnologyProcessByCreatedBy(pageable, currentUser);
+                model.addAttribute("previousTab", activeTab);
             }
+
+            System.err.println("workOrdersWithoutTechProcess total: " + workOrdersWithoutTechProcess.getTotalElements());
+            System.err.println("workOrdersWithTechProcess total: " + workOrdersWithTechProcess.getTotalElements());
+            System.err.println("Final tab: " + tab + ", activeTab: " + activeTab);
 
             model.addAttribute("workOrdersWithoutTechProcess", workOrdersWithoutTechProcess.getContent());
             model.addAttribute("workOrdersWithoutTechProcessPage", workOrdersWithoutTechProcess);
             model.addAttribute("workOrdersWithTechProcess", workOrdersWithTechProcess.getContent());
             model.addAttribute("workOrdersWithTechProcessPage", workOrdersWithTechProcess);
             model.addAttribute("search", search);
-            model.addAttribute("activeTab", activeTab); // Truyền tab cần kích hoạt
+            model.addAttribute("tab", tab);
+            model.addAttribute("activeTab", activeTab);
 
             return "dye-technical/view-all-approved-work-order";
         }
@@ -361,7 +393,7 @@ public class TechnicalProcessController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "DRAFT") String status,
             @RequestParam(required = false) String previousStatus,
             Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -379,7 +411,8 @@ public class TechnicalProcessController {
             System.err.println("User đang đăng nhập: " + currentUser.getUsername());
 
             Pageable pageable = PageRequest.of(page, size);
-            Page<TechnologyProcess> technologyProcessPage;
+            Page<TechnologyProcess> draftProcessesPage;
+            Page<TechnologyProcess> approvedProcessesPage;
 
             // Xử lý tìm kiếm theo ID
             if (search != null && !search.trim().isEmpty()) {
@@ -388,53 +421,45 @@ public class TechnicalProcessController {
                     try {
                         TechnologyProcess technologyProcess = technologyProcessService.getTechnologyProcessByIdAndCreatedBy(searchId, currentUser);
                         String foundStatus = technologyProcess.getStatus().name();
-                        model.addAttribute("selectedStatus", foundStatus);
-                        technologyProcessPage = new PageImplWrapper<>(Collections.singletonList(technologyProcess), pageable, 1);
-                        model.addAttribute("previousStatus", status != null ? status : "DRAFT");
+                        if (foundStatus.equals("DRAFT")) {
+                            draftProcessesPage = new PageImplWrapper<>(Collections.singletonList(technologyProcess), pageable, 1);
+                            approvedProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                            model.addAttribute("selectedStatus", "DRAFT");
+                            model.addAttribute("previousStatus", "DRAFT");
+                        } else {
+                            draftProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                            approvedProcessesPage = new PageImplWrapper<>(Collections.singletonList(technologyProcess), pageable, 1);
+                            model.addAttribute("selectedStatus", "APPROVED");
+                            model.addAttribute("previousStatus", "APPROVED");
+                        }
                     } catch (RuntimeException e) {
-                        technologyProcessPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                        model.addAttribute("error",
-                                "Không tìm thấy Technology Process với ID: "
-                                        + searchId + " cho user: " + currentUser.getUsername());
-                        String fallbackStatus =
-                                (previousStatus != null && !previousStatus.isEmpty())
-                                        ? previousStatus : (status != null ? status : "DRAFT");
+                        draftProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                        approvedProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                        model.addAttribute("error", "Không tìm thấy Technology Process với ID: " + searchId);
+                        String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : "DRAFT";
                         model.addAttribute("selectedStatus", fallbackStatus);
                         model.addAttribute("previousStatus", fallbackStatus);
                     }
                 } catch (NumberFormatException e) {
                     model.addAttribute("error", "Mã Technology Process phải là số.");
-                    technologyProcessPage = technologyProcessService.getAllTechnologyProcessesByCreatedBy(pageable, currentUser);
-                    String fallbackStatus =
-                            (previousStatus != null && !previousStatus.isEmpty())
-                                    ? previousStatus : (status != null ? status : "DRAFT");
+                    draftProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                    approvedProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                    String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : "DRAFT";
                     model.addAttribute("selectedStatus", fallbackStatus);
                     model.addAttribute("previousStatus", fallbackStatus);
                 }
-            }
-            // Xử lý lọc theo trạng thái
-            else if (status != null && !status.trim().isEmpty()) {
-                try {
-                    BaseEnum statusEnum = BaseEnum.valueOf(status.trim());
-                    technologyProcessPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(statusEnum, pageable, currentUser);
-                    model.addAttribute("selectedStatus", status);
-                    model.addAttribute("previousStatus", status);
-                } catch (IllegalArgumentException e) {
-                    model.addAttribute("error", "Trạng thái không hợp lệ: " + status);
-                    technologyProcessPage = technologyProcessService.getAllTechnologyProcessesByCreatedBy(pageable, currentUser);
-                    model.addAttribute("selectedStatus", "DRAFT");
-                    model.addAttribute("previousStatus", "DRAFT");
-                }
-            }
-            // Trường hợp mặc định: hiển thị tất cả TechnologyProcess của user
-            else {
-                technologyProcessPage = technologyProcessService.getAllTechnologyProcessesByCreatedBy(pageable, currentUser);
-                model.addAttribute("selectedStatus", "DRAFT");
-                model.addAttribute("previousStatus", "DRAFT");
+            } else {
+                // Không có tìm kiếm, lấy dữ liệu đầy đủ cho cả hai tab
+                draftProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                approvedProcessesPage = technologyProcessService.getTechnologyProcessesByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                model.addAttribute("selectedStatus", status != null && !status.isEmpty() ? status : "DRAFT");
+                model.addAttribute("previousStatus", status != null && !status.isEmpty() ? status : "DRAFT");
             }
 
-            model.addAttribute("technologyProcesses", technologyProcessPage.getContent());
-            model.addAttribute("technologyProcessPage", technologyProcessPage);
+            model.addAttribute("draftProcesses", draftProcessesPage.getContent());
+            model.addAttribute("draftProcessesPage", draftProcessesPage);
+            model.addAttribute("approvedProcesses", approvedProcessesPage.getContent());
+            model.addAttribute("approvedProcessesPage", approvedProcessesPage);
             model.addAttribute("search", search);
 
             return "dye-technical/view-all-technology-process";

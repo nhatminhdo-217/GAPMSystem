@@ -60,80 +60,130 @@ public class TechnicalWorkOrderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "DRAFT") String status,
             @RequestParam(required = false) String previousStatus,
             Model model, Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userUtils.getOptionalUser(model);
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            // Lấy đối tượng User từ Authentication
             String emailOrPhone = principal.getName();
             Optional<User> optionalUser = userService.findByEmailOrPhone(emailOrPhone, emailOrPhone);
+            if (!optionalUser.isPresent()) {
+                System.err.println("Không tìm thấy User với email/phone: "
+                        + emailOrPhone + ", chuyển hướng đến trang login.");
+                return "redirect:/login";
+            }
             User currentUser = optionalUser.get();
-
             System.err.println("User đang đăng nhập: " + currentUser.getUsername());
 
             Pageable pageable = PageRequest.of(page, size);
-            Page<WorkOrder> workOrderPage;
+            Page<WorkOrder> draftOrdersPage;
+            Page<WorkOrder> waitForUpdateOrdersPage;
+            Page<WorkOrder> notApprovedOrdersPage;
+            Page<WorkOrder> approvedOrdersPage;
+            Page<WorkOrder> waitForApprovalOrdersPage;
 
             // Xử lý tìm kiếm theo ID
             if (search != null && !search.trim().isEmpty()) {
                 try {
                     Long searchId = Long.parseLong(search.trim());
                     try {
-                        // Tìm WorkOrder theo ID và createdBy
                         WorkOrder workOrder = workOrderService.getWorkOrderByIdAndCreatedBy(searchId, currentUser);
-                        // Gán selectedStatus dựa trên trạng thái của Work Order tìm thấy
                         String foundStatus = workOrder.getStatus().name();
-                        model.addAttribute("selectedStatus", foundStatus);
-                        // Trả về chỉ Work Order tìm thấy
-                        workOrderPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
-                        // Lưu trạng thái trước đó
-                        model.addAttribute("previousStatus", status != null ? status : "DRAFT");
+                        switch (foundStatus) {
+                            case "DRAFT":
+                                draftOrdersPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
+                                waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                                notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                                approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                                waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                                model.addAttribute("selectedStatus", "DRAFT");
+                                model.addAttribute("previousStatus", "DRAFT");
+                                break;
+                            case "WAIT_FOR_UPDATE":
+                                draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                                waitForUpdateOrdersPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
+                                notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                                approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                                waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                                model.addAttribute("selectedStatus", "WAIT_FOR_UPDATE");
+                                model.addAttribute("previousStatus", "WAIT_FOR_UPDATE");
+                                break;
+                            case "NOT_APPROVED":
+                                draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                                waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                                notApprovedOrdersPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
+                                approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                                waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                                model.addAttribute("selectedStatus", "NOT_APPROVED");
+                                model.addAttribute("previousStatus", "NOT_APPROVED");
+                                break;
+                            case "APPROVED":
+                                draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                                waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                                notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                                approvedOrdersPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
+                                waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                                model.addAttribute("selectedStatus", "APPROVED");
+                                model.addAttribute("previousStatus", "APPROVED");
+                                break;
+                            case "WAIT_FOR_APPROVAL":
+                                draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                                waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                                notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                                approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                                waitForApprovalOrdersPage = new PageImplWrapper<>(Collections.singletonList(workOrder), pageable, 1);
+                                model.addAttribute("selectedStatus", "WAIT_FOR_APPROVAL");
+                                model.addAttribute("previousStatus", "WAIT_FOR_APPROVAL");
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Trạng thái không hợp lệ: " + foundStatus);
+                        }
                     } catch (RuntimeException e) {
-                        workOrderPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
-                        model.addAttribute("error", "Không tìm thấy Work Order với ID: " + searchId + " cho user: " + currentUser.getUsername());
-                        // Nếu không tìm thấy, quay về tab trước đó
-                        String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
+                        draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                        waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                        notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                        approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                        waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                        model.addAttribute("error", "Không tìm thấy Work Order với ID: " + searchId);
+                        String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : "DRAFT";
                         model.addAttribute("selectedStatus", fallbackStatus);
                         model.addAttribute("previousStatus", fallbackStatus);
                     }
                 } catch (NumberFormatException e) {
                     model.addAttribute("error", "Mã Work Order phải là số.");
-                    workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
-                    String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : (status != null ? status : "DRAFT");
+                    draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                    waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                    notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                    approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                    waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                    String fallbackStatus = (previousStatus != null && !previousStatus.isEmpty()) ? previousStatus : "DRAFT";
                     model.addAttribute("selectedStatus", fallbackStatus);
                     model.addAttribute("previousStatus", fallbackStatus);
                 }
-            }
-            // Xử lý lọc theo trạng thái
-            else if (status != null && !status.trim().isEmpty()) {
-                try {
-                    BaseEnum statusEnum = BaseEnum.valueOf(status.trim());
-                    //
-                    workOrderPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(statusEnum, pageable, currentUser);
-                    model.addAttribute("selectedStatus", status);
-                    //
-                    model.addAttribute("previousStatus", status);
-                } catch (IllegalArgumentException e) {
-                    model.addAttribute("error", "Trạng thái không hợp lệ: " + status);
-                    //
-                    workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
-                    model.addAttribute("selectedStatus", "DRAFT");
-                    model.addAttribute("previousStatus", "DRAFT");
-                }
-            }
-            //
-            else {
-                workOrderPage = workOrderService.getAllWorkOrdersByCreatedBy(pageable, currentUser);
-                model.addAttribute("selectedStatus", "DRAFT");
-                model.addAttribute("previousStatus", "DRAFT");
+            } else {
+                draftOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.DRAFT, pageable, currentUser);
+                waitForUpdateOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_UPDATE, pageable, currentUser);
+                notApprovedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.NOT_APPROVED, pageable, currentUser);
+                approvedOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.APPROVED, pageable, currentUser);
+                waitForApprovalOrdersPage = workOrderService.getWorkOrdersByStatusAndCreatedBy(BaseEnum.WAIT_FOR_APPROVAL, pageable, currentUser);
+                model.addAttribute("selectedStatus", status != null && !status.isEmpty() ? status : "DRAFT");
+                model.addAttribute("previousStatus", status != null && !status.isEmpty() ? status : "DRAFT");
             }
 
-            model.addAttribute("workOrders", workOrderPage.getContent());
-            model.addAttribute("workOrderPage", workOrderPage);
+            model.addAttribute("draftOrders", draftOrdersPage.getContent());
+            model.addAttribute("draftOrdersPage", draftOrdersPage);
+            model.addAttribute("waitForUpdateOrders", waitForUpdateOrdersPage.getContent());
+            model.addAttribute("waitForUpdateOrdersPage", waitForUpdateOrdersPage);
+            model.addAttribute("notApprovedOrders", notApprovedOrdersPage.getContent());
+            model.addAttribute("notApprovedOrdersPage", notApprovedOrdersPage);
+            model.addAttribute("approvedOrders", approvedOrdersPage.getContent());
+            model.addAttribute("approvedOrdersPage", approvedOrdersPage);
+            model.addAttribute("waitForApprovalOrders", waitForApprovalOrdersPage.getContent());
+            model.addAttribute("waitForApprovalOrdersPage", waitForApprovalOrdersPage);
             model.addAttribute("search", search);
+
             return "technical/view-all-work-order";
         }
         System.err.println("User chưa đăng nhập, chuyển hướng đến trang login.");
@@ -399,7 +449,7 @@ public class TechnicalWorkOrderController {
             LocalDateTime windingStart = dyeBatches > 1 ? plannedStartAt.plusMinutes(270) : dyeDeadline;
             long windingDurationMinutes = dyeBatches * 75; // 1 mẻ winding = 75 phút
             LocalDateTime windingDeadline = windingStart.plusMinutes(windingDurationMinutes);
-          
+
             // Đảm bảo windingDeadline >= dyeDeadline
             if (windingDeadline.isBefore(dyeDeadline)) {
                 windingDeadline = dyeDeadline;

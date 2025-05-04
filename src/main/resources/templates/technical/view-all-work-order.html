@@ -39,13 +39,15 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-.btn-search{
-    background: #FFD700;
-    border: none;
-    font-size: 18px;
-    padding: 4px 24px;
-    transition: 0.3s;
-}
+
+        .btn-search {
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
+        }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -71,18 +73,6 @@
             font-size: 14px;
             text-align: center;
             line-height: 1.4;
-        }
-
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            background-color: #ffffff;
-        }
-
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #e9ecef;
         }
 
         .text-start.me-3 {
@@ -182,21 +172,6 @@
             opacity: 0.9;
         }
 
-        .success-toast {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            opacity: 0.9;
-        }
-
-        .success-toast .toast-header {
-            background-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .success-toast .toast-body {
-            color: #155724;
-        }
-
         .error-toast {
             background-color: #f8d7da;
             border-color: #f5c6cb;
@@ -212,23 +187,24 @@
             color: #721c24;
         }
 
-        #toastSuccess, #toastError {
+        #toastError {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
-            z-index: 1060;
+            z-index: 1050;
             min-width: 300px;
         }
 
-        #toastError {
-            bottom: 80px;
-        }
-
-        /* Status-specific styling */
         .status-draft, .status-wait-for-approval {
             color: #f59e0b;
             font-weight: 500;
             background-color: #fefce8;
+        }
+
+        .status-wait-for-update {
+            color: #6b7280;
+            font-weight: 500;
+            background-color: #f3f4f6;
         }
 
         .status-not-approve {
@@ -255,7 +231,6 @@
             background-color: #ecfdf5;
         }
 
-        /* Styling for content section */
         .content-section {
             flex-grow: 1;
             display: flex;
@@ -341,14 +316,15 @@
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-light text-center rounded p-4">
+            <div class="bg-light rounded p-4">
                 <!-- Search and title -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách kế hoạch</h6>
+                    <h6 class="mb-0">Danh sách kế hoạch sản xuất</h6>
                     <form method="get" action="/technical/view-all-work-order"
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="status" th:value="${selectedStatus}">
                         <input type="hidden" name="previousStatus" th:value="${selectedStatus}">
                         <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
@@ -358,32 +334,32 @@
                 <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
                     <ul class="nav nav-tabs" id="workOrderTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'DRAFT' ? 'active' : ''}"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'DRAFT'} ? 'active' : ''"
                                id="draft-tab" data-bs-toggle="tab" href="#draft-work-orders"
                                role="tab" aria-controls="draft-work-orders"
                                aria-selected="${selectedStatus == 'DRAFT'}">Bản Nháp</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE' ? 'active' : ''}"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE'} ? 'active' : ''"
                                id="wait-for-update-tab" data-bs-toggle="tab" href="#wait-for-update-work-orders"
                                role="tab" aria-controls="wait-for-update-work-orders"
                                aria-selected="${selectedStatus == 'WAIT_FOR_UPDATE'}">Chờ Cập Nhật</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'NOT_APPROVED' ? 'active' : ''}"
-                               id="not-approved-tab" data-bs-toggle="tab" href="#not-approved-work-orders" role="tab"
-                               aria-controls="not-approved-work-orders"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'NOT_APPROVED'} ? 'active' : ''"
+                               id="not-approved-tab" data-bs-toggle="tab" href="#not-approved-work-orders"
+                               role="tab" aria-controls="not-approved-work-orders"
                                aria-selected="${selectedStatus == 'NOT_APPROVED'}">Từ Chối</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED' ? 'active' : ''}"
-                               id="approved-tab" data-bs-toggle="tab" href="#approved-work-orders" role="tab"
-                               aria-controls="approved-work-orders"
+                            <a class="nav-link" th:classappend="${selectedStatus == 'APPROVED'} ? 'active' : ''"
+                               id="approved-tab" data-bs-toggle="tab" href="#approved-work-orders"
+                               role="tab" aria-controls="approved-work-orders"
                                aria-selected="${selectedStatus == 'APPROVED'}">Đồng Ý</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link"
-                               th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL' ? 'active' : ''}"
+                               th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL'} ? 'active' : ''"
                                id="wait-for-approval-tab" data-bs-toggle="tab" href="#wait-for-approval-work-orders"
                                role="tab" aria-controls="wait-for-approval-work-orders"
                                aria-selected="${selectedStatus == 'WAIT_FOR_APPROVAL'}">Chờ Phê Duyệt</a>
@@ -392,56 +368,50 @@
                 </div>
 
                 <!-- Tab content -->
-                <div th:with="draftOrders=${workOrders.?[status == T(fpt.g36.gapms.enums.BaseEnum).DRAFT]},
-                              waitForUpdateOrders=${workOrders.?[status == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_UPDATE]},
-                              notApprovedOrders=${workOrders.?[status == T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED]},
-                              approvedOrders=${workOrders.?[status == T(fpt.g36.gapms.enums.BaseEnum).APPROVED]},
-                              waitForApprovalOrders=${workOrders.?[status == T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL]}">
-                    <div class="tab-content" id="workOrderTabContent">
-                        <!-- Draft Work Orders Tab -->
-                        <div class="tab-pane fade" th:classappend="${selectedStatus == 'DRAFT' ? 'show active' : ''}"
-                             id="draft-work-orders" role="tabpanel" aria-labelledby="draft-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${draftOrders.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Bản Nháp.</p>
-                                    </div>
+                <div class="tab-content" id="workOrderTabContent">
+                    <!-- Draft Work Orders Tab -->
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'DRAFT'} ? 'show active' : ''"
+                         id="draft-work-orders" role="tabpanel" aria-labelledby="draft-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${draftOrders == null or draftOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Bản Nháp.</p>
                                 </div>
-                                <div class="col-12" th:each="workOrder, iterStat : ${draftOrders}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                             th:data-workorder-id="${workOrder.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Kế hoạch sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Lệnh sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.productionOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Hạn chót kế hoạch</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-draft'"
-                                                              th:text="'Bản Nháp'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${draftOrders}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + draftOrdersPage.number * draftOrdersPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã kế hoạch sản xuất</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PO-'+${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Hạn chót kế hoạch</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-draft'"
+                                                          th:text="'Bản Nháp'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -449,52 +419,74 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Bản Nháp -->
+                        <nav th:if="${draftOrdersPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${draftOrdersPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${draftOrdersPage.number - 1}, size=${draftOrdersPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, draftOrdersPage.totalPages - 1)}"
+                                    th:classappend="${i == draftOrdersPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${i}, size=${draftOrdersPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${draftOrdersPage.number == draftOrdersPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${draftOrdersPage.number + 1}, size=${draftOrdersPage.size}, search=${search}, status='DRAFT', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                        <!-- Wait for Update Work Orders Tab -->
-                        <div class="tab-pane fade"
-                             th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE' ? 'show active' : ''}"
-                             id="wait-for-update-work-orders" role="tabpanel" aria-labelledby="wait-for-update-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${waitForUpdateOrders.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Cập Nhật.</p>
-                                    </div>
+                    <!-- Wait for Update Work Orders Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'WAIT_FOR_UPDATE'} ? 'show active' : ''"
+                         id="wait-for-update-work-orders" role="tabpanel" aria-labelledby="wait-for-update-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${waitForUpdateOrders == null or waitForUpdateOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Cập Nhật.</p>
                                 </div>
-                                <div class="col-12" th:each="workOrder, iterStat : ${waitForUpdateOrders}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                             th:data-workorder-id="${workOrder.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>kế hoạch sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Lệnh sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.productionOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Hạn chót kế hoạch</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-wait-for-approval'"
-                                                              th:text="'Chờ Cập Nhật'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${waitForUpdateOrders}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + waitForUpdateOrdersPage.number * waitForUpdateOrdersPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã kế hoạch sản xuất</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PO-'+${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Hạn chót kế hoạch</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-wait-for-update'"
+                                                          th:text="'Chờ Cập Nhật'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -502,52 +494,73 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Chờ Cập Nhật -->
+                        <nav th:if="${waitForUpdateOrdersPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${waitForUpdateOrdersPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${waitForUpdateOrdersPage.number - 1}, size=${waitForUpdateOrdersPage.size}, search=${search}, status='WAIT_FOR_UPDATE', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, waitForUpdateOrdersPage.totalPages - 1)}"
+                                    th:classappend="${i == waitForUpdateOrdersPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${i}, size=${waitForUpdateOrdersPage.size}, search=${search}, status='WAIT_FOR_UPDATE', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${waitForUpdateOrdersPage.number == waitForUpdateOrdersPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${waitForUpdateOrdersPage.number + 1}, size=${waitForUpdateOrdersPage.size}, search=${search}, status='WAIT_FOR_UPDATE', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                        <!-- Not Approved Work Orders Tab -->
-                        <div class="tab-pane fade"
-                             th:classappend="${selectedStatus == 'NOT_APPROVED' ? 'show active' : ''}"
-                             id="not-approved-work-orders" role="tabpanel" aria-labelledby="not-approved-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${notApprovedOrders.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Từ Chối.</p>
-                                    </div>
+                    <!-- Not Approved Work Orders Tab -->
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'NOT_APPROVED'} ? 'show active' : ''"
+                         id="not-approved-work-orders" role="tabpanel" aria-labelledby="not-approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${notApprovedOrders == null or notApprovedOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Từ Chối.</p>
                                 </div>
-                                <div class="col-12" th:each="workOrder, iterStat : ${notApprovedOrders}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                             th:data-workorder-id="${workOrder.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Kế hoạch sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Lệnh sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.productionOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Hạn chót kế hoạch</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-not-approve'"
-                                                              th:text="'Từ Chối'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${notApprovedOrders}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + notApprovedOrdersPage.number * notApprovedOrdersPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã kế hoạch sản xuất</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PO-'+${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Hạn chót kế hoạch</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-not-approve'"
+                                                          th:text="'Từ Chối'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -555,51 +568,73 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Từ Chối -->
+                        <nav th:if="${notApprovedOrdersPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${notApprovedOrdersPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${notApprovedOrdersPage.number - 1}, size=${notApprovedOrdersPage.size}, search=${search}, status='NOT_APPROVED', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, notApprovedOrdersPage.totalPages - 1)}"
+                                    th:classappend="${i == notApprovedOrdersPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${i}, size=${notApprovedOrdersPage.size}, search=${search}, status='NOT_APPROVED', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${notApprovedOrdersPage.number == notApprovedOrdersPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${notApprovedOrdersPage.number + 1}, size=${notApprovedOrdersPage.size}, search=${search}, status='NOT_APPROVED', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                        <!-- Approved Work Orders Tab -->
-                        <div class="tab-pane fade" th:classappend="${selectedStatus == 'APPROVED' ? 'show active' : ''}"
-                             id="approved-work-orders" role="tabpanel" aria-labelledby="approved-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${approvedOrders.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Đồng Ý.</p>
-                                    </div>
+                    <!-- Approved Work Orders Tab -->
+                    <div class="tab-pane fade" th:classappend="${selectedStatus == 'APPROVED'} ? 'show active' : ''"
+                         id="approved-work-orders" role="tabpanel" aria-labelledby="approved-tab">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${approvedOrders == null or approvedOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Đồng Ý.</p>
                                 </div>
-                                <div class="col-12" th:each="workOrder, iterStat : ${approvedOrders}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                             th:data-workorder-id="${workOrder.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Kế hoạch sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Lệnh sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.productionOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Hạn chót kế hoạch</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-approve'"
-                                                              th:text="'Đồng Ý'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${approvedOrders}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + approvedOrdersPage.number * approvedOrdersPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã kế hoạch sản xuất</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PO-'+${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Hạn chót kế hoạch</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-approve'"
+                                                          th:text="'Đồng Ý'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -607,52 +642,75 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Đồng Ý -->
+                        <nav th:if="${approvedOrdersPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${approvedOrdersPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${approvedOrdersPage.number - 1}, size=${approvedOrdersPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, approvedOrdersPage.totalPages - 1)}"
+                                    th:classappend="${i == approvedOrdersPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${i}, size=${approvedOrdersPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${approvedOrdersPage.number == approvedOrdersPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${approvedOrdersPage.number + 1}, size=${approvedOrdersPage.size}, search=${search}, status='APPROVED', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
-                        <!-- Wait for Approval Work Orders Tab -->
-                        <div class="tab-pane fade"
-                             th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL' ? 'show active' : ''}"
-                             id="wait-for-approval-work-orders" role="tabpanel" aria-labelledby="wait-for-approval-tab">
-                            <div class="row g-3">
-                                <div class="col-12" th:if="${waitForApprovalOrders.isEmpty()}">
-                                    <div class="alert alert-info text-center">
-                                        <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Phê Duyệt.</p>
-                                    </div>
+                    <!-- Wait for Approval Work Orders Tab -->
+                    <div class="tab-pane fade"
+                         th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL'} ? 'show active' : ''"
+                         id="wait-for-approval-work-orders" role="tabpanel" aria-labelledby="wait-for-approval-tab">
+                        <div class="row g-3">
+                            <div class="col-12"
+                                 th:if="${waitForApprovalOrders == null or waitForApprovalOrders.isEmpty()}">
+                                <div class="alert alert-info text-center">
+                                    <p>Không tìm thấy kế hoạch sản xuất nào ở trạng thái Chờ Phê Duyệt.</p>
                                 </div>
-                                <div class="col-12" th:each="workOrder, iterStat : ${waitForApprovalOrders}">
-                                    <div class="card-wrapper">
-                                        <div class="card"
-                                             th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
-                                             th:data-workorder-id="${workOrder.id}">
-                                            <div class="card-body parent-row">
-                                                <span class="index-in-card"
-                                                      th:text="${iterStat.count + workOrderPage.number * workOrderPage.size}"></span>
-                                                <div class="content-section d-flex flex-row">
-                                                    <div class="text-start me-3">
-                                                        <strong>Kế hoạch sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Lệnh sản xuất ID</strong><br>
-                                                        <span th:text="${workOrder.productionOrder.id}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Ngày tạo</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Hạn chót kế hoạch</strong><br>
-                                                        <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái</strong><br>
-                                                        <span th:classappend="'status-wait-for-approval'"
-                                                              th:text="'Chờ Phê Duyệt'"></span>
-                                                    </div>
-                                                    <div class="text-start me-3">
-                                                        <strong>Trạng thái gửi</strong><br>
-                                                        <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                              th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
-                                                    </div>
+                            </div>
+                            <div class="col-12" th:each="workOrder, iterStat : ${waitForApprovalOrders}">
+                                <div class="card-wrapper">
+                                    <div class="card"
+                                         th:onclick="'location.href=\'/technical/work-order-details/' + ${workOrder.id} + '\''"
+                                         th:data-workorder-id="${workOrder.id}">
+                                        <div class="card-body parent-row">
+                                            <span class="index-in-card"
+                                                  th:text="${iterStat.count + waitForApprovalOrdersPage.number * waitForApprovalOrdersPage.size}"></span>
+                                            <div class="content-section d-flex flex-row">
+                                                <div class="text-start me-3">
+                                                    <strong>Mã kế hoạch sản xuất</strong><br>
+                                                    <span th:text="'WO-'+${workOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Mã lệnh sản xuất</strong><br>
+                                                    <span th:text="'PO-'+${workOrder.productionOrder.id}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Ngày tạo</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.createAt, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Hạn chót kế hoạch</strong><br>
+                                                    <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái</strong><br>
+                                                    <span th:classappend="'status-wait-for-approval'"
+                                                          th:text="'Chờ Phê Duyệt'"></span>
+                                                </div>
+                                                <div class="text-start me-3">
+                                                    <strong>Trạng thái gửi</strong><br>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -660,29 +718,30 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Phân trang cho tab Chờ Phê Duyệt -->
+                        <nav th:if="${waitForApprovalOrdersPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${waitForApprovalOrdersPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${waitForApprovalOrdersPage.number - 1}, size=${waitForApprovalOrdersPage.size}, search=${search}, status='WAIT_FOR_APPROVAL', previousStatus=${selectedStatus})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, waitForApprovalOrdersPage.totalPages - 1)}"
+                                    th:classappend="${i == waitForApprovalOrdersPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${i}, size=${waitForApprovalOrdersPage.size}, search=${search}, status='WAIT_FOR_APPROVAL', previousStatus=${selectedStatus})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${waitForApprovalOrdersPage.number == waitForApprovalOrdersPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/technical/view-all-work-order(page=${waitForApprovalOrdersPage.number + 1}, size=${waitForApprovalOrdersPage.size}, search=${search}, status='WAIT_FOR_APPROVAL', previousStatus=${selectedStatus})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-
-                <!-- Pagination -->
-                <nav th:if="${workOrderPage.totalPages > 1}">
-                    <ul class="pagination">
-                        <li class="page-item" th:classappend="${workOrderPage.number == 0 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number - 1}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}">Previous</a>
-                        </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, workOrderPage.totalPages - 1)}"
-                            th:classappend="${i == workOrderPage.number ? 'active' : ''}">
-                            <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${i}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}"
-                               th:text="${i + 1}"></a>
-                        </li>
-                        <li class="page-item"
-                            th:classappend="${workOrderPage.number == workOrderPage.totalPages - 1 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               th:href="@{/technical/view-all-work-order(page=${workOrderPage.number + 1}, size=${workOrderPage.size}, search=${search}, previousStatus=${selectedStatus})}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </div>
         <!-- Content End -->
@@ -695,15 +754,12 @@
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/assert/lib/wow/wow.min.js"></script>
-<script src="/assert/lib/easing/easing.min.js"></script>
-<script src="/assert/lib/waypoints/waypoints.min.js"></script>
 <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
-<!-- Toast script -->
+<!-- Toast and Tab script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const errorMessage = document.getElementById('hiddenError')?.textContent;
@@ -733,16 +789,55 @@
             toast.show();
         }
 
-        // Xử lý chuyển tab bằng URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        if (status) {
-            const tabElement = document.querySelector(`#${status.toLowerCase().replace(/_/g, '-')}-tab`);
+        // Đảm bảo tab được kích hoạt đúng khi tải trang
+        var selectedStatus = '[[${selectedStatus}]]';
+        if (selectedStatus) {
+            const tabElement = document.querySelector(`#${selectedStatus.toLowerCase().replace(/_/g, '-')}-tab`);
             if (tabElement) {
                 const tab = new bootstrap.Tab(tabElement);
                 tab.show();
             }
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#workOrderTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                let newStatus;
+                switch (this.id) {
+                    case 'draft-tab':
+                        newStatus = 'DRAFT';
+                        break;
+                    case 'wait-for-update-tab':
+                        newStatus = 'WAIT_FOR_UPDATE';
+                        break;
+                    case 'not-approved-tab':
+                        newStatus = 'NOT_APPROVED';
+                        break;
+                    case 'approved-tab':
+                        newStatus = 'APPROVED';
+                        break;
+                    case 'wait-for-approval-tab':
+                        newStatus = 'WAIT_FOR_APPROVAL';
+                        break;
+                }
+
+                const currentStatus = '[[${selectedStatus}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (status thay đổi), reset page về 0
+                if (newStatus !== currentStatus) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('status', newStatus);
+                    url.searchParams.set('previousStatus', currentStatus);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>
