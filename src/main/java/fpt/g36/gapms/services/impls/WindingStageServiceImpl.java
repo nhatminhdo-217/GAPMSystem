@@ -65,6 +65,11 @@ public class WindingStageServiceImpl implements WindingStageService {
     }
 
     @Override
+    public WindingRiskAssessment getWindingAssssmentById(Long id) {
+        return windingRiskAssessmentRepository.findById(id).orElseThrow(() -> new RuntimeException("wsId not found"));
+    }
+
+    @Override
     public WindingRiskAssessment saveTestWingding(Long id, WindingRiskAssessment windingRiskAssessment, User qaWinding, MultipartFile[] photos) throws IOException {
 
         List<PhotoStage> photoStages = new ArrayList<>();
