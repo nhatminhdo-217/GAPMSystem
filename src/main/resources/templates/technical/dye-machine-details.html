@@ -301,7 +301,7 @@
                             <table>
                                 <tr>
                                     <th>Mã máy:</th>
-                                    <td th:text="'Máy nhuộm ' + ${dyeMachine.id}"></td>
+                                    <td th:text="'MB-' + ${dyeMachine.id}"></td>
                                     <th>Đường kính:</th>
                                     <td th:text="${dyeMachine.diameter}"></td>
                                 </tr>
@@ -333,13 +333,13 @@
                                     <th>Mô tả:</th>
                                     <td th:text="${dyeMachine.description != null ? dyeMachine.description : 'N/A'}"></td>
                                     <th>Ngày tạo:</th>
-                                    <td th:text="${#temporals.format(dyeMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#temporals.format(dyeMachine.createAt, 'dd/MM/yyyy')}"></td>
                                 </tr>
                                 <tr>
                                     <th>Trạng thái:</th>
                                     <td th:text="${dyeMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></td>
                                     <th>Ngày cập nhật:</th>
-                                    <td th:text="${#temporals.format(dyeMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#temporals.format(dyeMachine.updateAt, 'dd/MM/yyyy')}"></td>
                                 </tr>
                             </table>
                         </div>

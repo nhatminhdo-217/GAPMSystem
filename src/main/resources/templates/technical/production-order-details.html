@@ -331,8 +331,7 @@
                                         <th>Mã quản lý</th>
                                         <th>Khối lượng sợi</th>
                                         <th>Môi trường ánh sáng</th>
-                                        <th>Mô tả</th>
-                                        <th>Chi tiết Kế hoạch sản xuất</th>
+                                        <th>Loại sợi</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -340,11 +339,7 @@
                                         <td th:text="'RFQ-'+${detail.rfqId}+'/'+${detail.rfqDetailId}"></td>
                                         <td th:text="${detail.threadMass}"></td>
                                         <td th:text="${detail.lightEnv} ? 'Tự nhiên (TN)' : 'Ánh đèn (AD)'"></td>
-                                        <td th:text="${detail.description ?: 'N/A'}"></td>
-                                        <td>
-                                            <span th:if="${detail.hasWorkOrderDetail}" th:text="'Có'"></span>
-                                            <span th:unless="${detail.hasWorkOrderDetail}" th:text="'Không có'"></span>
-                                        </td>
+                                        <td th:text="${detail.threadName}"></td>
                                     </tr>
                                     </tbody>
                                 </table>

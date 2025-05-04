@@ -99,6 +99,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         item.setHasWorkOrderDetail(detail.getWorkOrderDetail() != null);
         item.setRfqId(detail.getProductionOrder().getPurchaseOrder().getQuotation().getRfq().getId());
         item.setRfqDetailId(detail.getPurchaseOrderDetail().getRfqDetailId());
+        item.setThreadName(detail.getPurchaseOrderDetail().getProduct().getThread().getName());
         return item;
     }
 

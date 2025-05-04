@@ -47,7 +47,9 @@
         <!-- User Profile Dropdown -->
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/uploads/default-avatar.png'}" alt="User Image"
+                <img th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}" class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/assert/images/default-avatar.png'}" alt="User Image"
+                     style="width: 40px; height: 40px;">
+                <img th:if="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}" class="rounded-circle me-lg-2" th:src="${avatar != null ? avatar : '/assert/images/default-avatar.png'}" alt="User Image"
                      style="width: 40px; height: 40px;">
                 <span class="d-none d-lg-inline-flex" th:text="${user.username}"></span>
             </a>
@@ -62,9 +64,7 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item d-flex align-items-center" href="/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
-                <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
-                <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fas fa-chart-line me-2"></i> Sales</a></li>
+                <li><a class="dropdown-item d-flex align-items-center" href="/profile"><i class="fas fa-user me-2"></i>Hồ sơ</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

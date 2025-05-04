@@ -211,15 +211,15 @@ public class NotificationUtils {
     public void sentSuccessStageToLeaderFromQASMS(Long dyeBatchId, String role) {
         if (role.equalsIgnoreCase("QA_DYE")) {
             String msg = "Công đoạn nhuộm đã hoàn thành, chờ kiểm tra";
-            String targetUrl = "/work-order/technology-process/" + dyeBatchId;
+            String targetUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + dyeBatchId;
             sendNotificationToRole("QA_DYE", msg, NotificationEnum.SUCCESS, targetUrl, "Nhuộm Hoàn Thành", true);
         } else if (role.equalsIgnoreCase("QA_WINDING")) {
             String msg = "Công đoạn đánh côn đã hoàn thành, chờ kiểm tra";
-            String targetUrl = "/work-order/technology-process/" + dyeBatchId;
+            String targetUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + dyeBatchId;
             sendNotificationToRole("QA_WINDING", msg, NotificationEnum.SUCCESS, targetUrl, "Đánh Côn Hoàn Thành", true);
         } else {
             String msg = "Công đoạn đóng gói đã hoàn thành, chờ kiểm tra";
-            String targetUrl = "/work-order/technology-process/" + dyeBatchId;
+            String targetUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + dyeBatchId;
             sendNotificationToRole("QA_PACKAGING", msg, NotificationEnum.SUCCESS, targetUrl, "Đóng Gói Hoàn Thành", true);
         }
     }

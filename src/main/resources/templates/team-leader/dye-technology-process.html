@@ -550,35 +550,36 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td>Anbatex AB-45</td>
-                                            <td th:text="${technologyProcess.anbatex}">143</td>
-                                            <td>Càng Hóa</td>
-                                            <td th:text="${technologyProcess.chelator}">143</td>
+                                            <td>Anbatex AB-45 (g)</td>
+                                            <td th:text="${technologyProcess.anbatex != null ? T(java.lang.Math).ceil(technologyProcess.anbatex).intValue() : 'N/A'}">143</td>
+                                            <td>Càng Hóa (g)</td>
+                                            <td th:text="${technologyProcess.chelator != null ? T(java.lang.Math).ceil(technologyProcess.chelator).intValue() : 'N/A'}">143</td>
                                         </tr>
                                         <tr>
-                                            <td>AVCO-LEV DLX PLUS</td>
-                                            <td th:text="${technologyProcess.avcoLveDlxPlus}">114</td>
-                                            <td>Disper gator N</td>
-                                            <td th:text="${technologyProcess.dispergatorN}">57</td>
+                                            <td>AVCO-LEV DLX PLUS (g)</td>
+                                            <td th:text="${technologyProcess.avcoLveDlxPlus != null ? T(java.lang.Math).ceil(technologyProcess.avcoLveDlxPlus * 1000).intValue() : 'N/A'}">114</td>
+                                            <td>Dispergator N (ml)</td>
+                                            <td th:text="${technologyProcess.dispergatorN != null ? T(java.lang.Math).ceil(technologyProcess.dispergatorN).intValue() : 'N/A'}">57</td>
                                         </tr>
                                         <tr>
-                                            <td>Chất giặt</td>
-                                            <td th:text="${technologyProcess.detergent}">69</td>
+                                            <td>Chất giặt (g)</td>
+                                            <td th:text="${technologyProcess.detergent != null ? T(java.lang.Math).ceil(technologyProcess.detergent).intValue() : 'N/A'}">69</td>
                                             <td>Số Lít</td>
-                                            <td th:text="${technologyProcess.dyeBatch.liters}">57</td>
+                                            <td th:text="${technologyProcess.dyeBatch?.liters != null ? T(java.lang.Math).ceil(technologyProcess.dyeBatch.liters).intValue() : 'N/A'}">57</td>
                                         </tr>
                                         <tr>
-                                            <td>Univadin DFM</td>
-                                            <td th:text="${technologyProcess.dfm}">46</td>
+                                            <td>Univadin DFM (g)</td>
+                                            <td th:text="${technologyProcess.dfm != null ? T(java.lang.Math).ceil(technologyProcess.dfm).intValue() : 'N/A'}">46</td>
                                             <td>Dung Tỷ</td>
                                             <td>1/6</td>
                                         </tr>
                                         <tr>
-                                            <td>Giặt khử</td>
-                                            <td th:text="${technologyProcess.reducingAgent}">46</td>
-                                            <td>AXIT. Giặt</td>
-                                            <td th:text="${technologyProcess.axit}">69</td>
+                                            <td>Giặt khử (g)</td>
+                                            <td th:text="${technologyProcess.reducingAgent != null ? T(java.lang.Math).ceil(technologyProcess.reducingAgent).intValue() : 'N/A'}">46</td>
+                                            <td>AXIT. Giặt (g)</td>
+                                            <td th:text="${technologyProcess.axit != null ? T(java.lang.Math).ceil(technologyProcess.axit).intValue() : 'N/A'}">69</td>
                                         </tr>
+
                                         </tbody>
                                     </table>
                                 </div>

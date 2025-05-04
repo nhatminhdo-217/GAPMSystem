@@ -307,7 +307,7 @@
         .status-sent {
             color: #10b981;
             font-weight: 500;
-            background-color: #ecfdf5
+
         }
 
         .status-not-sent {
@@ -480,9 +480,10 @@
                                                 </div>
                                                 <div class="text-start me-3 status-sent">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
+                                                    <span th:classappend="${solution.isSent != null && solution.isSent.name() == 'SENT' ? 'text-success' : 'text-warning'}"
                                                           th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
                                                 </div>
+
                                             </div>
                                         </div>
                                         <div class="collapse"
@@ -518,7 +519,7 @@
                                                     <p><strong>Chi tiết giải pháp:</strong>
                                                         <span th:text="${solution.description}"></span>
                                                     </p>
-                                                    <p><strong>Nhân viên phụ trách RFQ:</strong>
+                                                    <p><strong>Nhân viên quản lý:</strong>
                                                         <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
                                                     </p>
                                                 </div>
@@ -596,7 +597,7 @@
                                                 </div>
                                                 <div class="text-start me-3 status-sent">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
+                                                    <span th:classappend="${solution.isSent != null && solution.isSent.name() == 'SENT' ? 'text-success' : 'text-warning'}"
                                                           th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
                                                 </div>
                                             </div>
@@ -634,7 +635,7 @@
                                                     <p><strong>Chi tiết giải pháp:</strong>
                                                         <span th:text="${solution.description}"></span>
                                                     </p>
-                                                    <p><strong>Nhân viên phụ trách RFQ:</strong>
+                                                    <p><strong>Nhân viên quản lý:</strong>
                                                         <span th:text="${solution.rfq.approvedBy != null ? solution.rfq.approvedBy.username : 'N/A'}"></span>
                                                     </p>
                                                 </div>
