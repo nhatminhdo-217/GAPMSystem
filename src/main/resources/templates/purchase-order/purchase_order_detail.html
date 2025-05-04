@@ -54,19 +54,19 @@
         <!-- Navbar End -->
 
         <div class="container-fluid pt-4 px-4">
-           <!-- &lt;!&ndash; Alerts &ndash;&gt;
-            <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
-                <span th:text="${success}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-success alert-dismissible fade show" th:if="${successCreate}" role="alert">
-                <span th:text="${successCreate}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
-                <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>-->
+            <!-- &lt;!&ndash; Alerts &ndash;&gt;
+             <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+                 <span th:text="${success}"></span>
+                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>
+             <div class="alert alert-success alert-dismissible fade show" th:if="${successCreate}" role="alert">
+                 <span th:text="${successCreate}"></span>
+                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>
+             <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+                 <span th:text="${error}"></span>
+                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>-->
 
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="mb-3">
@@ -78,7 +78,8 @@
 
             <!-- Page Title -->
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h3 class="mb-0">Chi tiết đơn đặt hàng mã lô RFQ-<span th:text="${purchaseOrder.quotation.rfq.id}"></span></h3>
+                <h3 class="mb-0">Chi tiết đơn đặt hàng mã lô RFQ-<span
+                        th:text="${purchaseOrder.quotation.rfq.id}"></span></h3>
                 <a th:href="@{/purchase-order/list}" class="btn btn-sm btn-outline-secondary d-md-none">
                     <i class="bi bi-arrow-left"></i> Quay lại
                 </a>
@@ -123,14 +124,18 @@
                                             <span class="text-muted">Hãy tạo đơn để tải ảnh lên</span>
                                         </div>
                                         <div th:unless="${orderInfo.status.name() ==  'DRAFT'}">
-                                            <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
+                                            <a th:if="${orderInfo.contractId != null}"
+                                               th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}"
+                                               class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
                                             </a>
                                             <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi khách tải ảnh lên</span>
                                         </div>
                                     </div>
                                     <div th:if="${currUser.role.name == 'SALE_MANAGER'}">
-                                        <a th:if="${orderInfo.contractId != null}" th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}" class="btn btn-sm btn-outline-primary">
+                                        <a th:if="${orderInfo.contractId != null}"
+                                           th:href="@{'/purchase-order/detail/' + ${purchaseOrderId} + '/contract/' + ${orderInfo.contractId}}"
+                                           class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-file-earmark-text"></i> Xem hợp đồng
                                         </a>
                                         <span th:unless="${orderInfo.contractId != null}" class="text-muted">Hãy đợi khách tải ảnh lên</span>
@@ -156,27 +161,35 @@
                                           orderInfo.status == T(fpt.g36.gapms.enums.BaseEnum).APPROVED ? 'status-approved' :
                                           orderInfo.status == T(fpt.g36.gapms.enums.BaseEnum).CANCELED ? 'status-canceled' : 'status-pending'
                                           }">
-                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}" th:text="'Đã được duyệt'"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}" th:text="'Chưa được phê duyệt'"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}" th:text="'Đang chờ phê duyệt'"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}" th:text="'Sơ thảo'"></span>
-                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}" th:text="'Đã hủy'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).APPROVED}"
+                                              th:text="'Đã được duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).NOT_APPROVED}"
+                                              th:text="'Chưa được phê duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).WAIT_FOR_APPROVAL}"
+                                              th:text="'Đang chờ phê duyệt'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).DRAFT}"
+                                              th:text="'Sơ thảo'"></span>
+                                        <span th:case="${T(fpt.g36.gapms.enums.BaseEnum).CANCELED}"
+                                              th:text="'Đã hủy'"></span>
                                         <span th:case="*" th:text="'Trạng thái không xác định'"></span>
                                     </span>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Ngày mong muốn:</div>
-                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd/MM/yyyy')}"></div>
+                                <div class="col-7 col-md-8"
+                                     th:text="${#temporals.format(orderInfo.expectedDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Ngày dự kiến:</div>
-                                <div class="col-7 col-md-8" th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
+                                <div class="col-7 col-md-8"
+                                     th:text="${#temporals.format(orderInfo.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 col-md-4 text-muted fw-bold">Giải pháp:</div>
                                 <div class="col-7 col-md-8">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#solutionModal">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#solutionModal">
                                         <i class="fas fa-eye me-1"></i>Xem chi tiết
                                     </button>
                                 </div>
@@ -187,7 +200,8 @@
             </div>
 
             <!-- Solution Modal Popup -->
-            <div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel" aria-hidden="true">
+            <div class="modal fade" id="solutionModal" tabindex="-1" aria-labelledby="solutionModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -202,7 +216,8 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Ngày giao hàng thực tế:</div>
-                                <div class="col-md-8" th:text="${#temporals.format(solution.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
+                                <div class="col-md-8"
+                                     th:text="${#temporals.format(solution.actualDeliveryDate, 'dd/MM/yyyy')}"></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Chi tiết:</div>
@@ -216,7 +231,8 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4 fw-bold">Tạo vào:</div>
-                                <div class="col-md-8" th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></div>
+                                <div class="col-md-8"
+                                     th:text="${#temporals.format(solution.createAt, 'dd/MM/yyyy')}"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -230,7 +246,8 @@
             <div class="order-info-card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="m-0">Chi tiết đơn hàng</h5>
-                    <h5 class="m-0" th:text="'Tổng tiền: '+${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0)* 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></h5>
+                    <h5 class="m-0"
+                        th:text="'Tổng tiền: '+${#numbers.formatDecimal(#aggregates.sum(purchaseOrder.purchaseOrderDetails.![totalPrice] ?: 0)* 1000, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></h5>
                     <!--<button type="button" class="btn btn-sm btn-outline-primary d-md-none" id="toggleViewBtn">
                         <i class="bi bi-table"></i> Đổi chế độ xem
                     </button>-->
@@ -293,11 +310,13 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-5 label">Giá (VND):</div>
-                                        <div class="col-7" th:text="${#numbers.formatDecimal(item.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></div>
+                                        <div class="col-7"
+                                             th:text="${#numbers.formatDecimal(item.unitPrice * 1000, 0, 'COMMA', 0, 'POINT')}"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-5 label">Thành tiền:</div>
-                                        <div class="col-7 fw-bold" th:text="${#numbers.formatDecimal(item.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+                                        <div class="col-7 fw-bold"
+                                             th:text="${#numbers.formatDecimal(item.totalPrice * 1000, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
                                     </div>
                                 </div>
                             </div>
@@ -362,7 +381,8 @@
                             <i class="bi bi-x-lg me-1"></i> Từ chối
                         </button>
                     </form>
-                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary" th:if="${orderInfo.status.name() == 'APPROVED' or orderInfo.status.name() == 'CANCELED'}">
+                    <a th:href="@{/purchase-order/list}" class="btn btn-secondary"
+                       th:if="${orderInfo.status.name() == 'APPROVED' or orderInfo.status.name() == 'CANCELED'}">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại
                     </a>
                 </div>
@@ -397,7 +417,8 @@
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
                     <div th:if="${orderInfo.status.name() == 'WAIT_FOR_APPROVAL'}">
-                        <form th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post" class="d-inline">
+                        <form th:action="@{'/purchase-order/detail/' + ${orderInfo.id} + '/cancel'}" method="post"
+                              class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger">
                                 <i class="bi bi-x-lg"></i> Từ chối
                             </button>
@@ -433,19 +454,19 @@
     </script>
 </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assert/lib/chart/chart.min.js"></script>
-    <script src="/assert/lib/easing/easing.min.js"></script>
-    <script src="/assert/lib/waypoints/waypoints.min.js"></script>
-    <script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assert/lib/chart/chart.min.js"></script>
+<script src="/assert/lib/easing/easing.min.js"></script>
+<script src="/assert/lib/waypoints/waypoints.min.js"></script>
+<script src="/assert/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="/assert/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="/assert/js/main.js"></script>
+<!-- Template Javascript -->
+<script src="/assert/js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function confirmApproval(event) {
@@ -458,7 +479,7 @@
             showCancelButton: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#dc3545',
-            confirmButtonText: 'phê duyệt!',
+            confirmButtonText: 'Phê duyệt!',
             cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -493,13 +514,13 @@
 </script>
 <script>
     // Toggle between table and card view on mobile
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const toggleViewBtn = document.getElementById('toggleViewBtn');
         const desktopTable = document.querySelector('.desktop-table');
         const mobileTable = document.querySelector('.mobile-table');
 
         if (toggleViewBtn) {
-            toggleViewBtn.addEventListener('click', function() {
+            toggleViewBtn.addEventListener('click', function () {
                 if (desktopTable.style.display === 'none' || getComputedStyle(desktopTable).display === 'none') {
                     desktopTable.style.display = 'table';
                     mobileTable.style.display = 'none';

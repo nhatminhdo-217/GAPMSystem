@@ -1526,17 +1526,18 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         return workOrderRepository.findApprovedWorkOrdersWithoutTechnologyProcess(BaseEnum.APPROVED, pageable);
     }
 
+    //
     @Override
     public WorkOrder getApprovedWorkOrderWithoutTechnologyProcessById(Long id) {
         WorkOrder workOrder = workOrderRepository.findByIdAndStatus(id, BaseEnum.APPROVED)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id + " ở trạng thái APPROVED."));
-        boolean hasTechnologyProcess = workOrder.getWorkOrderDetails().stream()
+        boolean hasDyeBatchWithoutTechProcess = workOrder.getWorkOrderDetails().stream()
                 .flatMap(detail -> detail.getDyeStage() != null && detail.getDyeStage().getDyebatches() != null
                         ? detail.getDyeStage().getDyebatches().stream()
                         : Collections.<DyeBatch>emptyList().stream())
-                .anyMatch(batch -> batch.getTechnologyProcess() != null);
-        if (hasTechnologyProcess) {
-            throw new RuntimeException("WorkOrder với ID: " + id + " đã có TechnologyProcess.");
+                .anyMatch(batch -> batch.getTechnologyProcess() == null);
+        if (!hasDyeBatchWithoutTechProcess) {
+            throw new RuntimeException("WorkOrder với ID: " + id + " không có DyeBatch nào thiếu TechnologyProcess.");
         }
         return workOrder;
     }
@@ -1546,17 +1547,23 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         return workOrderRepository.findWorkOrdersWithTechnologyProcessByCreatedBy(createdBy, pageable);
     }
 
+    //
     @Override
     public WorkOrder getWorkOrderWithTechnologyProcessByIdAndCreatedBy(Long id, User createdBy) {
         WorkOrder workOrder = workOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy WorkOrder với ID: " + id));
-        boolean hasTechnologyProcessByUser = workOrder.getWorkOrderDetails().stream()
+        boolean allDyeBatchesHaveTechProcess = workOrder.getWorkOrderDetails().stream()
+                .flatMap(detail -> detail.getDyeStage() != null && detail.getDyeStage().getDyebatches() != null
+                        ? detail.getDyeStage().getDyebatches().stream()
+                        : Collections.<DyeBatch>emptyList().stream())
+                .allMatch(batch -> batch.getTechnologyProcess() != null);
+        boolean hasTechProcessByUser = workOrder.getWorkOrderDetails().stream()
                 .flatMap(detail -> detail.getDyeStage() != null && detail.getDyeStage().getDyebatches() != null
                         ? detail.getDyeStage().getDyebatches().stream()
                         : Collections.<DyeBatch>emptyList().stream())
                 .anyMatch(batch -> batch.getTechnologyProcess() != null && batch.getTechnologyProcess().getCreatedBy().equals(createdBy));
-        if (!hasTechnologyProcessByUser) {
-            throw new RuntimeException("WorkOrder với ID: " + id + " không có TechnologyProcess do bạn tạo.");
+        if (!allDyeBatchesHaveTechProcess || !hasTechProcessByUser) {
+            throw new RuntimeException("WorkOrder với ID: " + id + " không thỏa mãn điều kiện.");
         }
         return workOrder;
     }

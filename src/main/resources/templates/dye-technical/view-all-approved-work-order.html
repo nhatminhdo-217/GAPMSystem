@@ -57,13 +57,15 @@
             text-align: center;
             margin-bottom: 4px;
         }
-.btn-search{
-    background: #FFD700;
-    border: none;
-    font-size: 18px;
-    padding: 4px 24px;
-    transition: 0.3s;
-}
+
+        .btn-search {
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
+        }
+
         .text-start span {
             font-weight: 400;
             color: #666;
@@ -140,44 +142,98 @@
         .nav-tabs .nav-link {
             font-size: 16px;
             font-weight: 500;
-            color: #333;
-            border-radius: 8px 8px 0 0;
+            color: #495057;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
         }
 
         .nav-tabs .nav-link.active {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            background-color: transparent;
         }
 
         .tab-content {
-            background-color: #fff;
-            border-radius: 0 0 8px 8px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding-top: 20px;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.disabled .page-link {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .toast {
+            opacity: 0.9;
+        }
+
+        .error-toast {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.9;
+        }
+
+        .error-toast .toast-header {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-toast .toast-body {
+            color: #721c24;
+        }
+
+        #toastError {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+
+        .content-section {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
             .content-section {
                 flex-direction: column;
                 width: 100%;
+                align-items: flex-start;
             }
 
             .text-start.me-3 {
                 width: 100%;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
+                text-align: left;
             }
 
             .search-container {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 15px;
+                padding: 10px;
             }
 
             .search-input {
                 max-width: 100%;
                 margin-top: 10px;
                 margin-left: 0;
+                width: 100%;
             }
 
             .card-body {
@@ -186,14 +242,15 @@
                 padding: 10px;
             }
 
-            .index-in-card {
-                margin-bottom: 8px;
-                margin-right: 0;
-            }
-
             .card-wrapper {
                 flex-direction: column;
-                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .index-in-card {
+                margin-bottom: 10px;
+                margin-right: 0;
+                text-align: left;
             }
 
             .nav-tabs .nav-link {
@@ -205,7 +262,7 @@
 </head>
 <body>
 <!-- Hidden data -->
-<div th:if="${errorWithoutTech}" id="hiddenError" style="display: none;" th:text="${errorWithoutTech}"></div>
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
 
 <div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
     <!-- Spinner Start -->
@@ -230,41 +287,43 @@
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4">
-                <!-- Search and title (shared for both tabs) -->
+                <!-- Search and title -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách lệnh sản xuất</h6>
                     <form method="get" action="/dye-technical/view-all-approved-work-order"
                           class="d-flex align-items-center flex-grow-1">
-                        <input type="text" name="search" class="form-control search-input"
-                               placeholder="Tìm kiếm theo ID"
-                               th:value="${search}">
+                        <input type="text" name="search" class="form-control search-input" id="searchInput"
+                               placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="tab" th:value="${tab}">
+                        <input type="hidden" name="previousTab" th:value="${activeTab}">
                         <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
                 <!-- Tabstrip -->
-                <ul class="nav nav-tabs" id="workOrderTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="without-tech-tab" data-bs-toggle="tab"
-                                data-bs-target="#without-tech-content" type="button" role="tab"
-                                aria-controls="without-tech-content" aria-selected="true">Chưa có hành trình
-                            công nghệ
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="with-tech-tab" data-bs-toggle="tab"
-                                data-bs-target="#with-tech-content" type="button" role="tab"
-                                aria-controls="with-tech-content" aria-selected="false">Đã có hành trình công
-                            nghệ
-                        </button>
-                    </li>
-                </ul>
+                <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
+                    <ul class="nav nav-tabs" id="workOrderTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${activeTab == 'without-tech-content'} ? 'active' : ''"
+                               id="without-tech-tab" data-bs-toggle="tab" href="#without-tech-content"
+                               role="tab" aria-controls="without-tech-content"
+                               aria-selected="${activeTab == 'without-tech-content'}">Chưa có hành trình công nghệ</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" th:classappend="${activeTab == 'with-tech-content'} ? 'active' : ''"
+                               id="with-tech-tab" data-bs-toggle="tab" href="#with-tech-content"
+                               role="tab" aria-controls="with-tech-content"
+                               aria-selected="${activeTab == 'with-tech-content'}">Đã có hành trình công nghệ</a>
+                        </li>
+                    </ul>
+                </div>
 
+                <!-- Tab content -->
                 <div class="tab-content" id="workOrderTabContent">
                     <!-- Tab 1: Work Orders without Technology Process -->
-                    <div class="tab-pane fade show active" id="without-tech-content" role="tabpanel"
-                         aria-labelledby="without-tech-tab">
-                        <!-- Work Order List -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'without-tech-content'} ? 'show active' : ''"
+                         id="without-tech-content" role="tabpanel" aria-labelledby="without-tech-tab">
                         <div class="row g-3">
                             <div class="col-12"
                                  th:if="${workOrdersWithoutTechProcess == null or workOrdersWithoutTechProcess.isEmpty()}">
@@ -275,12 +334,11 @@
                             <div class="col-12" th:each="workOrder, iterStat : ${workOrdersWithoutTechProcess}">
                                 <div class="card-wrapper">
                                     <div class="card" th:data-workorder-id="${workOrder.id}"
-                                         th:onclick="|window.location.href='/dye-technical/work-order-details/${workOrder.id}'|">
+                                         th:onclick="'location.href=\'/dye-technical/work-order-details/' + ${workOrder.id} + '\''">
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrdersWithoutTechProcessPage.number * workOrdersWithoutTechProcessPage.size}"></span>
-                                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                                 style="width: 100%;">
+                                            <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
                                                     <strong>Mã lệnh làm việc</strong><br>
                                                     <span th:text="'WO-'+${workOrder.id}"></span>
@@ -297,11 +355,10 @@
                                                     <strong>Hạn hoàn thành</strong><br>
                                                     <span th:text="${#temporals.format(workOrder.deadline, 'dd/MM/yyyy')}"></span>
                                                 </div>
-
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -309,38 +366,34 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-4"
-                             th:if="${workOrdersWithoutTechProcessPage != null and workOrdersWithoutTechProcessPage.totalPages > 1}">
-                            <nav>
-                                <ul class="pagination">
-                                    <li class="page-item"
-                                        th:classappend="${workOrdersWithoutTechProcessPage.first} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithoutTechProcessPage.number - 1}, size=${workOrdersWithoutTechProcessPage.size}, search=${search})}">Trước</a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:each="i : ${#numbers.sequence(0, workOrdersWithoutTechProcessPage.totalPages - 1)}"
-                                        th:classappend="${i == workOrdersWithoutTechProcessPage.number} ? 'active'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${i}, size=${workOrdersWithoutTechProcessPage.size}, search=${search})}"
-                                           th:text="${i + 1}"></a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:classappend="${workOrdersWithoutTechProcessPage.last} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithoutTechProcessPage.number + 1}, size=${workOrdersWithoutTechProcessPage.size}, search=${search})}">Sau</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        <!-- Phân trang cho tab 1 -->
+                        <nav th:if="${workOrdersWithoutTechProcessPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${workOrdersWithoutTechProcessPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithoutTechProcessPage.number - 1}, size=${workOrdersWithoutTechProcessPage.size}, search=${search}, tab='without-tech', previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, workOrdersWithoutTechProcessPage.totalPages - 1)}"
+                                    th:classappend="${i == workOrdersWithoutTechProcessPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${i}, size=${workOrdersWithoutTechProcessPage.size}, search=${search}, tab='without-tech', previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${workOrdersWithoutTechProcessPage.number == workOrdersWithoutTechProcessPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithoutTechProcessPage.number + 1}, size=${workOrdersWithoutTechProcessPage.size}, search=${search}, tab='without-tech', previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
 
                     <!-- Tab 2: Work Orders with Technology Process -->
-                    <div class="tab-pane fade" id="with-tech-content" role="tabpanel"
-                         aria-labelledby="with-tech-tab">
-                        <!-- Work Order List -->
+                    <div class="tab-pane fade"
+                         th:classappend="${activeTab == 'with-tech-content'} ? 'show active' : ''"
+                         id="with-tech-content" role="tabpanel" aria-labelledby="with-tech-tab">
                         <div class="row g-3">
                             <div class="col-12"
                                  th:if="${workOrdersWithTechProcess == null or workOrdersWithTechProcess.isEmpty()}">
@@ -351,18 +404,17 @@
                             <div class="col-12" th:each="workOrder, iterStat : ${workOrdersWithTechProcess}">
                                 <div class="card-wrapper">
                                     <div class="card" th:data-workorder-id="${workOrder.id}"
-                                         th:onclick="|window.location.href='/dye-technical/work-order-details/${workOrder.id}'|">
+                                         th:onclick="'location.href=\'/dye-technical/work-order-details/' + ${workOrder.id} + '\''">
                                         <div class="card-body parent-row">
                                             <span class="index-in-card"
                                                   th:text="${iterStat.count + workOrdersWithTechProcessPage.number * workOrdersWithTechProcessPage.size}"></span>
-                                            <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                                 style="width: 100%;">
+                                            <div class="content-section d-flex flex-row">
                                                 <div class="text-start me-3">
                                                     <strong>Mã lệnh làm việc</strong><br>
                                                     <span th:text="'WO-'+${workOrder.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Mã sản xuất</strong><br>
+                                                    <strong>Mã lệnh sản xuất</strong><br>
                                                     <span th:text="'PRO-'+${workOrder.productionOrder != null ? workOrder.productionOrder.id : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
@@ -375,8 +427,8 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : (${workOrder.sendStatus.name() == 'SENT'} ? 'send-status-sent' : '')"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : (${workOrder.sendStatus.name() == 'SENT'} ? 'Đã Gửi' : ${workOrder.sendStatus.name()})"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
+                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -384,32 +436,28 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-4"
-                             th:if="${workOrdersWithTechProcessPage != null and workOrdersWithTechProcessPage.totalPages > 1}">
-                            <nav>
-                                <ul class="pagination">
-                                    <li class="page-item"
-                                        th:classappend="${workOrdersWithTechProcessPage.first} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithTechProcessPage.number - 1}, size=${workOrdersWithTechProcessPage.size}, search=${search})}">Trước</a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:each="i : ${#numbers.sequence(0, workOrdersWithTechProcessPage.totalPages - 1)}"
-                                        th:classappend="${i == workOrdersWithTechProcessPage.number} ? 'active'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${i}, size=${workOrdersWithTechProcessPage.size}, search=${search})}"
-                                           th:text="${i + 1}"></a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:classappend="${workOrdersWithTechProcessPage.last} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithTechProcessPage.number + 1}, size=${workOrdersWithTechProcessPage.size}, search=${search})}">Sau</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        <!-- Phân trang cho tab 2 -->
+                        <nav th:if="${workOrdersWithTechProcessPage.totalPages > 1}">
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    th:classappend="${workOrdersWithTechProcessPage.number == 0} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithTechProcessPage.number - 1}, size=${workOrdersWithTechProcessPage.size}, search=${search}, tab='with-tech', previousTab=${activeTab})}">Trước</a>
+                                </li>
+                                <li class="page-item"
+                                    th:each="i : ${#numbers.sequence(0, workOrdersWithTechProcessPage.totalPages - 1)}"
+                                    th:classappend="${i == workOrdersWithTechProcessPage.number} ? 'active' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${i}, size=${workOrdersWithTechProcessPage.size}, search=${search}, tab='with-tech', previousTab=${activeTab})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${workOrdersWithTechProcessPage.number == workOrdersWithTechProcessPage.totalPages - 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/dye-technical/view-all-approved-work-order(page=${workOrdersWithTechProcessPage.number + 1}, size=${workOrdersWithTechProcessPage.size}, search=${search}, tab='with-tech', previousTab=${activeTab})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -426,27 +474,13 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.card').on('click', function () {
-            var workOrderId = $(this).data('workorder-id');
-            window.location.href = '/dye-technical/work-order-details/' + workOrderId;
-        });
 
-        // Kích hoạt tab dựa trên activeTab từ backend
-        var activeTab = /*[[${activeTab}]]*/ 'without-tech-content';
-        if (activeTab) {
-            $('#workOrderTabs a[data-bs-target="#' + activeTab + '"]').tab('show');
-        }
-    });
-</script>
-
-<!-- Toast script -->
+<!-- Toast and Tab script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Toast for error
-        const error = document.getElementById('hiddenError')?.textContent;
-        if (error && error.trim() !== '') {
+        const errorMessage = document.getElementById('hiddenError')?.textContent;
+
+        if (errorMessage && errorMessage.trim() !== '') {
             const toastHTML = `
                 <div class="toast error-toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
@@ -454,10 +488,11 @@
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        ${error}
+                        ${errorMessage}
                     </div>
                 </div>
             `;
+
             const toastContainer = document.createElement('div');
             toastContainer.style.position = 'fixed';
             toastContainer.style.top = '20px';
@@ -465,9 +500,42 @@
             toastContainer.style.zIndex = '1050';
             toastContainer.innerHTML = toastHTML;
             document.body.appendChild(toastContainer);
+
             const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
             toast.show();
         }
+
+        // Đảm bảo tab được kích hoạt đúng khi tải trang
+        var activeTab = '[[${activeTab}]]';
+        if (activeTab) {
+            const tabElement = document.querySelector(`#${activeTab}-tab`);
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#workOrderTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                const newTab = this.id === 'without-tech-tab' ? 'without-tech-content' : 'with-tech-content';
+                const currentTab = '[[${activeTab}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (tab thay đổi), reset page về 0
+                if (newTab !== currentTab) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tab', newTab === 'without-tech-content' ? 'without-tech' : 'with-tech');
+                    url.searchParams.set('previousTab', currentTab);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>

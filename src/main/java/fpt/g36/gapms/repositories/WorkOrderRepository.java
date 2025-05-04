@@ -60,14 +60,19 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     @Query("SELECT w FROM WorkOrder w WHERE w.status = :status ORDER BY w.updateAt DESC")
     Page<WorkOrder> getAllByStatus(BaseEnum status, Pageable pageable);
 
-    @Query("SELECT wo FROM WorkOrder wo " +
-            "LEFT JOIN wo.workOrderDetails wod " +
-            "LEFT JOIN wod.dyeStage ds " +
-            "LEFT JOIN ds.dyebatches db " +
-            "LEFT JOIN db.technologyProcess tp " +
+    @Query("SELECT DISTINCT wo FROM WorkOrder wo " +
             "WHERE wo.status = :status " +
-            "AND tp IS NULL")
-    Page<WorkOrder> findApprovedWorkOrdersWithoutTechnologyProcess(@Param("status") BaseEnum status, Pageable pageable);
+            "AND EXISTS (" +
+            "    SELECT db FROM WorkOrderDetail wod " +
+            "    JOIN wod.dyeStage ds " +
+            "    JOIN ds.dyebatches db " +
+            "    WHERE wod.workOrder = wo " +
+            "    AND db.technologyProcess IS NULL" +
+            ")")
+    Page<WorkOrder> findApprovedWorkOrdersWithoutTechnologyProcess(
+            @Param("status") BaseEnum status,
+            Pageable pageable
+    );
 
     @Query("SELECT DISTINCT wo FROM WorkOrder wo " +
             "WHERE NOT EXISTS (" +

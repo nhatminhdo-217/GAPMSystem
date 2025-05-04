@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Chỉ may Dũng Đông - Danh sách giải pháp</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,11 +22,18 @@
 
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
-    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
     <style>
         body {
             background-color: #f5f7fa;
+        }
+
+        .btn-search {
+            background: #FFD700;
+            border: none;
+            font-size: 18px;
+            padding: 4px 24px;
+            transition: 0.3s;
         }
 
         .card {
@@ -73,40 +81,35 @@
             min-width: 0;
         }
 
-        /* Điều chỉnh các cột trong content-section để Mã RFQ và Trạng thái gửi được tối ưu */
         .content-section {
             display: flex;
-            flex-wrap: wrap几种,
+            flex-wrap: wrap;
             justify-content: space-between;
             width: 100%;
-            gap: 5px; /* Giảm khoảng cách giữa các cột để tiết kiệm không gian */
+            gap: 5px;
         }
 
-        /* Giữ nguyên cột Mã RFQ như code cũ */
         .text-start.me-3.rfq-id {
-            flex: 0 0 80px; /* Giữ nguyên kích thước cột Mã RFQ */
-            max-width: 80px; /* Giới hạn chiều rộng tối đa */
-            overflow: hidden; /* Ẩn nội dung vượt quá */
-            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
-            white-space: nowrap; /* Không xuống dòng */
+            flex: 0 0 80px;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        /* Thu gọn cột Trạng thái gửi */
         .text-start.me-3.status-sent {
-            flex: 0 0 90px; /* Thu gọn cột Trạng thái gửi xuống 90px */
-            max-width: 90px; /* Giới hạn chiều rộng tối đa */
-            overflow: hidden; /* Ẩn nội dung vượt quá */
-            text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
-            white-space: nowrap; /* Không xuống dòng */
+            flex: 0 0 90px;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        /* Các cột khác (Lý do, Người tạo, Ngày tạo giải pháp, Ngày cập nhật gần nhất) sẽ tự động mở rộng */
         .text-start.me-3:not(.rfq-id):not(.status-sent) {
-            flex: 1; /* Các cột khác mở rộng linh hoạt */
-            min-width: 120px; /* Đảm bảo chiều rộng tối thiểu cho các cột khác */
+            flex: 1;
+            min-width: 120px;
         }
 
-        /* Style cho thanh search */
         .search-container {
             display: flex;
             justify-content: space-between;
@@ -134,7 +137,6 @@
             border-color: #007bff;
         }
 
-        /* Style cho số thứ tự trong card */
         .index-in-card {
             margin-right: 12px;
             font-size: 16px;
@@ -154,7 +156,6 @@
             border-radius: 8px;
         }
 
-        /* Style cho tabstrip */
         .nav-tabs .nav-link {
             font-size: 16px;
             font-weight: 500;
@@ -180,7 +181,6 @@
             padding-top: 20px;
         }
 
-        /* Style cho phân trang */
         .pagination {
             justify-content: center;
             margin-top: 20px;
@@ -191,7 +191,6 @@
             opacity: 0.6;
         }
 
-        /* Style cho toast */
         .toast {
             opacity: 0.9;
         }
@@ -219,20 +218,36 @@
             min-width: 300px;
         }
 
-        /* Style cho trạng thái gửi */
         .status-sent {
             color: #10b981;
             font-weight: 500;
-            background-color: #ecfdf5;
         }
 
         .status-not-sent {
             color: #ef4444;
             font-weight: 500;
-            background-color: #fef2f2;
         }
 
-        /* Responsive design */
+        .status-sent-wrapper {
+            color: #10b981;
+        }
+
+        .status-not-sent-wrapper {
+            color: #ef4444;
+        }
+
+        .status-background {
+            background-color: #ecfdf5;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .status-not-sent-background {
+            background-color: #fef2f2;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
             .content-section {
                 flex-direction: column;
@@ -241,30 +256,27 @@
 
             .text-start.me-3 {
                 width: 100%;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
                 text-align: left;
             }
 
-            .text-start.me-3.rfq-id {
-                flex: 1; /* Trở lại linh hoạt trên mobile */
-                max-width: none;
-            }
-
+            .text-start.me-3.rfq-id,
             .text-start.me-3.status-sent {
-                flex: 1; /* Trở lại linh hoạt trên mobile */
+                flex: 1;
                 max-width: none;
             }
 
             .search-container {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 15px;
+                padding: 10px;
             }
 
             .search-input {
                 max-width: 100%;
                 margin-top: 10px;
                 margin-left: 0;
+                width: 100%;
             }
 
             .card-body {
@@ -273,13 +285,10 @@
                 padding: 10px;
             }
 
-            .content-section {
-                flex-direction: column;
-            }
-
             .index-in-card {
-                margin-bottom: 8px;
+                margin-bottom: 10px;
                 margin-right: 0;
+                text-align: left;
             }
 
             .nav-tabs .nav-link {
@@ -290,7 +299,9 @@
     </style>
 </head>
 <body>
-<div th:if="${error}" id="hiddenError" style="display:none;" th:text="${error}"></div>
+<!-- Hidden data -->
+<div th:if="${error}" id="hiddenError" style="display: none;" th:text="${error}"></div>
+
 <div class="container-fluid position-relative d-flex p-0" style="background-color: #f5f7fa;">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -313,28 +324,28 @@
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-light text-center rounded p-4">
-                <!-- Search form -->
+            <div class="bg-light rounded p-4">
+                <!-- Search and title -->
                 <div class="search-container">
                     <h6 class="mb-0">Danh sách giải pháp</h6>
                     <form method="get" action="/technical/view-all-solution"
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="activeTab" th:value="${activeTab}">
                         <input type="hidden" name="previousTab" th:value="${activeTab}">
-                        <button type="submit" class="btn btn-primary ms-2">Tìm</button>
+                        <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
                 </div>
 
                 <!-- Tabstrip -->
-                <div class="d-flex align-items-center" style="margin-bottom:20px; flex-wrap:wrap;">
+                <div class="d-flex align-items-center" style="margin-bottom: 20px; flex-wrap: wrap;">
                     <ul class="nav nav-tabs" id="solutionTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link"
                                th:classappend="${activeTab == 'not-sent-solutions-content'} ? 'active' : ''"
                                id="not-sent-solutions-tab" data-bs-toggle="tab" href="#not-sent-solutions-content"
-                               role="tab"
-                               aria-controls="not-sent-solutions-content"
+                               role="tab" aria-controls="not-sent-solutions-content"
                                aria-selected="${activeTab == 'not-sent-solutions-content'}">Chưa gửi</a>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -360,12 +371,12 @@
                                 </div>
                             </div>
                             <div class="col-12" th:each="solution, iterStat : ${notSentSolutions}">
-                                <div class="card" th:data-solution-id="${solution.id}">
+                                <div class="card" th:data-solution-id="${solution.id}"
+                                     th:onclick="|window.location.href='/technical/solution-details/${solution.id}'|">
                                     <div class="card-body parent-row">
                                         <span class="index-in-card"
                                               th:text="${iterStat.count + notSentSolutionsPage.number * notSentSolutionsPage.size}"></span>
-                                        <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                             style="width: 100%;">
+                                        <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
                                                 <strong>Mã RFQ</strong><br>
                                                 <span th:text="${solution.rfq.id}"></span>
@@ -386,35 +397,35 @@
                                                 <strong>Ngày cập nhật gần nhất</strong><br>
                                                 <span th:text="${#temporals.format(solution.updateAt, 'dd/MM/yyyy')}"></span>
                                             </div>
-                                            <div class="text-start me-3 status-sent">
+                                            <div class="text-start me-3 status-sent status-not-sent-wrapper">
                                                 <strong>Trạng thái gửi</strong><br>
-                                                <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
-                                                      th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                                <span th:classappend="'status-not-sent status-not-sent-background'"
+                                                      th:text="'Chưa gửi'"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Phân trang cho tab Chưa gửi -->
+                        <!-- Pagination for Not Sent Solutions -->
                         <nav th:if="${notSentSolutionsPage.totalPages > 1}">
                             <ul class="pagination">
                                 <li class="page-item"
                                     th:classappend="${notSentSolutionsPage.number == 0} ? 'disabled' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number - 1},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}">Trước</a>
+                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number - 1}, size=${notSentSolutionsPage.size}, search=${search}, activeTab='not-sent-solutions-content', previousTab=${activeTab})}">Trước</a>
                                 </li>
                                 <li class="page-item"
                                     th:each="i : ${#numbers.sequence(0, notSentSolutionsPage.totalPages - 1)}"
                                     th:classappend="${i == notSentSolutionsPage.number} ? 'active' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${i},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}"
+                                       th:href="@{/technical/view-all-solution(page=${i}, size=${notSentSolutionsPage.size}, search=${search}, activeTab='not-sent-solutions-content', previousTab=${activeTab})}"
                                        th:text="${i + 1}"></a>
                                 </li>
                                 <li class="page-item"
                                     th:classappend="${notSentSolutionsPage.number == notSentSolutionsPage.totalPages - 1} ? 'disabled' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number + 1},size=${notSentSolutionsPage.size},search=${search},activeTab='not-sent-solutions-content',previousTab=${activeTab})}">Sau</a>
+                                       th:href="@{/technical/view-all-solution(page=${notSentSolutionsPage.number + 1}, size=${notSentSolutionsPage.size}, search=${search}, activeTab='not-sent-solutions-content', previousTab=${activeTab})}">Sau</a>
                                 </li>
                             </ul>
                         </nav>
@@ -431,12 +442,12 @@
                                 </div>
                             </div>
                             <div class="col-12" th:each="solution, iterStat : ${sentSolutions}">
-                                <div class="card" th:data-solution-id="${solution.id}">
+                                <div class="card" th:data-solution-id="${solution.id}"
+                                     th:onclick="|window.location.href='/technical/solution-details/${solution.id}'|">
                                     <div class="card-body parent-row">
                                         <span class="index-in-card"
                                               th:text="${iterStat.count + sentSolutionsPage.number * sentSolutionsPage.size}"></span>
-                                        <div class="flex-grow-1 ms-3 d-flex flex-wrap justify-content-between content-section"
-                                             style="width: 100%;">
+                                        <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
                                                 <strong>Mã RFQ</strong><br>
                                                 <span th:text="${solution.rfq.id}"></span>
@@ -457,35 +468,35 @@
                                                 <strong>Ngày cập nhật gần nhất</strong><br>
                                                 <span th:text="${#temporals.format(solution.updateAt, 'dd/MM/yyyy')}"></span>
                                             </div>
-                                            <div class="text-start me-3 status-sent">
+                                            <div class="text-start me-3 status-sent status-sent-wrapper">
                                                 <strong>Trạng thái gửi</strong><br>
-                                                <span th:classappend="${solution.isSent.name() == 'SENT' ? 'status-sent' : 'status-not-sent'}"
-                                                      th:text="${solution.isSent != null ? (solution.isSent.name() == 'SENT' ? 'Đã gửi' : 'Chưa gửi') : 'Chưa gửi'}"></span>
+                                                <span th:classappend="'status-sent status-background'"
+                                                      th:text="'Đã gửi'"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Phân trang cho tab Đã gửi -->
+                        <!-- Pagination for Sent Solutions -->
                         <nav th:if="${sentSolutionsPage.totalPages > 1}">
                             <ul class="pagination">
                                 <li class="page-item"
                                     th:classappend="${sentSolutionsPage.number == 0} ? 'disabled' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number - 1},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}">Trước</a>
+                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number - 1}, size=${sentSolutionsPage.size}, search=${search}, activeTab='sent-solutions-content', previousTab=${activeTab})}">Trước</a>
                                 </li>
                                 <li class="page-item"
                                     th:each="i : ${#numbers.sequence(0, sentSolutionsPage.totalPages - 1)}"
                                     th:classappend="${i == sentSolutionsPage.number} ? 'active' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${i},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}"
+                                       th:href="@{/technical/view-all-solution(page=${i}, size=${sentSolutionsPage.size}, search=${search}, activeTab='sent-solutions-content', previousTab=${activeTab})}"
                                        th:text="${i + 1}"></a>
                                 </li>
                                 <li class="page-item"
                                     th:classappend="${sentSolutionsPage.number == sentSolutionsPage.totalPages - 1} ? 'disabled' : ''">
                                     <a class="page-link"
-                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number + 1},size=${sentSolutionsPage.size},search=${search},activeTab='sent-solutions-content',previousTab=${activeTab})}">Sau</a>
+                                       th:href="@{/technical/view-all-solution(page=${sentSolutionsPage.number + 1}, size=${sentSolutionsPage.size}, search=${search}, activeTab='sent-solutions-content', previousTab=${activeTab})}">Sau</a>
                                 </li>
                             </ul>
                         </nav>
@@ -493,9 +504,11 @@
                 </div>
             </div>
         </div>
+        <!-- Content End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
 
 <!-- JavaScript Libraries -->
@@ -505,18 +518,11 @@
 
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
-<script>
-    $(document).ready(function () {
-        // Xử lý nhấp vào card để chuyển hướng sang solution-details
-        $('.card').on('click', function (event) {
-            var solutionId = $(this).data('solution-id');
-            window.location.href = '/technical/solution-details/' + solutionId;
-        });
-    });
 
-    // Xử lý hiển thị toast lỗi và tab active
+<!-- Toast and Tab Script -->
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Hiển thị toast lỗi nếu có
+        // Xử lý Toast cho thông báo lỗi
         const errorMessage = document.getElementById('hiddenError')?.textContent;
         if (errorMessage && errorMessage.trim() !== '') {
             const toastHTML = `
@@ -530,6 +536,7 @@
                     </div>
                 </div>
             `;
+
             const toastContainer = document.createElement('div');
             toastContainer.style.position = 'fixed';
             toastContainer.style.top = '20px';
@@ -537,12 +544,13 @@
             toastContainer.style.zIndex = '1050';
             toastContainer.innerHTML = toastHTML;
             document.body.appendChild(toastContainer);
+
             const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
             toast.show();
         }
 
-        // Đảm bảo tab active được kích hoạt
-        var activeTab = '[[${activeTab}]]';
+        // Xử lý chuyển tab bằng activeTab
+        const activeTab = '[[${activeTab}]]';
         if (activeTab) {
             const tabElement = document.querySelector(`#${activeTab}-tab`);
             if (tabElement) {
@@ -550,6 +558,28 @@
                 tab.show();
             }
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#solutionTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                const newTab = this.id === 'not-sent-solutions-tab' ? 'not-sent-solutions-content' : 'sent-solutions-content';
+                const currentTab = '[[${activeTab}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (tab thay đổi), reset page về 0
+                if (newTab !== currentTab) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('activeTab', newTab);
+                    url.searchParams.set('previousTab', currentTab);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>

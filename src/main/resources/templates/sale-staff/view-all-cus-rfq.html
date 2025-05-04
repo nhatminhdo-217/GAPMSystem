@@ -40,13 +40,14 @@
             cursor: pointer;
         }
 
-        .btn-search{
+        .btn-search {
             background: #FFD700;
             border: none;
             font-size: 18px;
             padding: 4px 24px;
             transition: 0.3s;
         }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -312,6 +313,7 @@
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
                                placeholder="Tìm kiếm theo ID" th:value="${search}">
+                        <input type="hidden" name="activeTab" th:value="${activeTab}">
                         <input type="hidden" name="previousTab" th:value="${activeTab}">
                         <button type="submit" class="btn btn-search ms-2">Tìm</button>
                     </form>
@@ -578,11 +580,11 @@
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
-<!-- Toast script -->
+<!-- Toast and Tab Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Xử lý Toast cho thông báo lỗi
         const errorMessage = document.getElementById('hiddenError')?.textContent;
-
         if (errorMessage && errorMessage.trim() !== '') {
             const toastHTML = `
                 <div class="toast error-toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -608,8 +610,8 @@
             toast.show();
         }
 
-        // Đảm bảo tab được kích hoạt đúng khi tải trang
-        var activeTab = '[[${activeTab}]]';
+        // Xử lý chuyển tab bằng activeTab
+        const activeTab = '[[${activeTab}]]';
         if (activeTab) {
             const tabElement = document.querySelector(`#${activeTab}-tab`);
             if (tabElement) {
@@ -617,6 +619,35 @@
                 tab.show();
             }
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#rfqTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                let newTab;
+                if (this.id === 'not-approved-tab') {
+                    newTab = 'not-approved-content';
+                } else if (this.id === 'approved-no-solution-tab') {
+                    newTab = 'approved-no-solution-content';
+                } else if (this.id === 'approved-with-solution-tab') {
+                    newTab = 'approved-with-solution-content';
+                }
+                const currentTab = '[[${activeTab}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (tab thay đổi), reset page về 0
+                if (newTab !== currentTab) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('activeTab', newTab);
+                    url.searchParams.set('previousTab', currentTab);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>
