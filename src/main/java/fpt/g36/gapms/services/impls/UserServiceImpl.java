@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,9 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
@@ -46,7 +50,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setRole(userRole);
-        user.setAvatar("default-avatar.png");
+        if (activeProfile.equals("prod")) {
+            user.setAvatar("https://gapmsstorage.blob.core.windows.net/gapms-upload-container/profile-default-icon-1024x1023-4u5mrj2v.png");
+        } else {
+            user.setAvatar("default-avatar.png");
+        }
         user.setVerified(false);
         user.setActive(true);
 

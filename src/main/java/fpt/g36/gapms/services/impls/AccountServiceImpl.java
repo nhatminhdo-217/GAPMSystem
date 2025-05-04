@@ -5,6 +5,7 @@ import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     @Override
     public Page<User> getAccounts(Pageable pageable) {
@@ -95,7 +98,11 @@ public class AccountServiceImpl implements AccountService {
         System.err.println("DEBUG_Service: " + user.getUsername());
         user.setEmail(createAccountDTO.getEmail());
         user.setPhoneNumber(createAccountDTO.getPhoneNumber());
-        user.setAvatar("default-avatar.png");
+        if (activeProfile.equals("prod")) {
+            user.setAvatar("https://gapmsstorage.blob.core.windows.net/gapms-upload-container/profile-default-icon-1024x1023-4u5mrj2v.png");
+        } else {
+            user.setAvatar("default-avatar.png");
+        }
         user.setPassword(encodedPassword);
         user.setVerified(true);
         user.setActive(true);

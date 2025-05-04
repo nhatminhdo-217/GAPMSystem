@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 
 public class RegisterController {
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     private static final Map<String, VerificationCode> verificationCode = new ConcurrentHashMap<>();
     private static final int EXPIRED_TIME = 5;
@@ -84,7 +88,11 @@ public class RegisterController {
             admin.setPassword(passwordEncoder.encode("Admin@123"));
             admin.setEmail("admin@example.com");
             admin.setPhoneNumber("+84123456789");
-            admin.setAvatar("default-avatar.png");
+            if(activeProfile.equals("prod")) {
+                admin.setAvatar("https://gapmsstorage.blob.core.windows.net/gapms-upload-container/profile-default-icon-1024x1023-4u5mrj2v.png");
+            } else {
+                admin.setAvatar("default-avatar.png");
+            }
             admin.setActive(true);
             admin.setRole(adminRole);
             admin.setVerified(true); // Thêm trạng thái verified nếu cần
