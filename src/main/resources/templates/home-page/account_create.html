@@ -91,10 +91,28 @@
               <div class="col-md-6">
                 <label class="form-label small text-muted">Vai trò</label>
                 <select class="form-select shadow-sm" th:field="*{role}">
-                  <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"></option>
+                  <option th:each="r : ${roles}" th:value="${r.id}">
+      <span th:switch="${r.name}">
+        <span th:case="'ADMIN'">Quản trị viên</span>
+        <span th:case="'CUSTOMER'">Khách hàng</span>
+        <span th:case="'TECHNICAL'">Kỹ thuật</span>
+        <span th:case="'SALE_STAFF'">Nhân viên kinh doanh</span>
+        <span th:case="'LEAD_DYE'">Tổ trưởng nhuộm</span>
+        <span th:case="'LEAD_WINDING'">Tổ trưởng côn</span>
+        <span th:case="'LEAD_PACKAGING'">Tổ trưởng đóng gói</span>
+        <span th:case="'SALE_MANAGER'">Giám đốc kinh doanh</span>
+        <span th:case="'QA_DYE'">Chất lượng nhuộm</span>
+        <span th:case="'QA_WINDING'">Chất lượng côn</span>
+        <span th:case="'QA_PACKAGING'">Chất lượng đóng gói</span>
+        <span th:case="'PRODUCTION_MANAGER'">Giám đốc sản xuất</span>
+        <span th:case="'DYE_TECHNICAL'">Kỹ thuật nhuộm</span>
+        <span th:case="*">Không rõ</span>
+      </span>
+                  </option>
                 </select>
                 <small class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></small>
               </div>
+
             </div>
 
             <div class="mt-4">
