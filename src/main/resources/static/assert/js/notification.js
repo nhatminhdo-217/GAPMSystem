@@ -236,7 +236,6 @@ function loadNotificationDropdown() {
                     <p class="mb-1 notification-text"> ${notification.message || 'Không có nội dung'} </p>
                     <div class="d-flex ${notification.targetUrl ? 'justify-content-between' : 'justify-content-end'} mt-1">
                         ${notification.targetUrl ? '<a href="' + notification.targetUrl + '" class="btn btn-sm btn-primary px-2 py-0 notification-link" data-id="' + notification.id + '">Xem</a>' : ''}
-                        ${notification.read ? '' : '<button class="btn btn-sm btn-link px-2 py-0 mark-as-read-btn">Đã đọc</button>'}
                     </div>
                 </div>
                 <li><hr class="dropdown-divider my-1"></li>             

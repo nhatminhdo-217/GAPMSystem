@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.utils.UserUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,14 +46,16 @@ public class RegisterController {
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final MailService mailService;
+    private final UserUtils userUtils;
 
     @Autowired
-    public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService) {
+    public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserService userService, MailService mailService, UserUtils userUtils) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.userUtils = userUtils;
     }
 
     //Check if DB don't have any user, create a default admin
@@ -133,13 +136,14 @@ public class RegisterController {
 
             String currentUserName = authentication.getName();
 
+            userUtils.getOptionalUser(model);
+
             // Tìm user theo email hoặc số điện thoại
             Optional<User> optionalUser = userService.findByEmailOrPhone(currentUserName, currentUserName);
 
             // Nếu tìm thấy user, thêm vào model
             if (optionalUser.isPresent()) {
                 model.addAttribute("user", optionalUser.get());
-                model.addAttribute("avatar", "/uploads/" + optionalUser.get().getAvatar());
                 System.out.println(optionalUser.get());
             }
 
@@ -152,7 +156,7 @@ public class RegisterController {
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new UserDTO());
-        return "/authencation/register";
+        return "authencation/register";
     }
 
     @PostMapping("/register")
