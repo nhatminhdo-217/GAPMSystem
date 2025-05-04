@@ -60,7 +60,7 @@
                         <i class="fa fa-check-circle"></i> <span th:text="${successMessage}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <h4 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i> Edit Account</h4>
+                    <h4 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i>Cập nhật tài khoản</h4>
 
                     <!-- Form cập nhật thông tin người dùng -->
                     <form th:action="@{'/admin/account_update/' + ${user_detail.id}}" th:object="${user_detail}" method="post">
@@ -83,22 +83,41 @@
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Role</label>
                                 <select class="form-select shadow-sm" th:field="*{role.id}">
-                                    <option value="" disabled selected>Select a role</option>
-                                    <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"
-                                            th:selected="${user_detail.role.id == r.id}"></option>
+                                    <option value="" disabled selected>Chọn vai trò</option>
+                                    <option th:each="r : ${roles}"
+                                            th:value="${r.id}"
+                                            th:selected="${user_detail.role.id == r.id}">
+    <span th:switch="${r.name}">
+      <span th:case="'ADMIN'">Quản trị viên</span>
+      <span th:case="'CUSTOMER'">Khách hàng</span>
+      <span th:case="'TECHNICAL'">Kỹ thuật</span>
+      <span th:case="'SALE_STAFF'">Nhân viên kinh doanh</span>
+      <span th:case="'LEAD_DYE'">Tổ trưởng nhuộm</span>
+      <span th:case="'LEAD_WINDING'">Tổ trưởng côn</span>
+      <span th:case="'LEAD_PACKAGING'">Tổ trưởng đóng gói</span>
+      <span th:case="'SALE_MANAGER'">Giám đốc kinh doanh</span>
+      <span th:case="'QA_DYE'">Chất lượng nhuộm</span>
+      <span th:case="'QA_WINDING'">Chất lượng côn</span>
+      <span th:case="'QA_PACKAGING'">Chất lượng đóng gói</span>
+      <span th:case="'PRODUCTION_MANAGER'">Giám đốc sản xuất</span>
+      <span th:case="'DYE_TECHNICAL'">Kỹ thuật nhuộm</span>
+      <span th:case="*">Không rõ</span>
+    </span>
+                                    </option>
                                 </select>
+
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small text-muted">Status</label>
                                 <select class="form-select shadow-sm" th:field="*{active}">
-                                    <option value="true" th:selected="${user_detail.active}">Active</option>
-                                    <option value="false" th:selected="${!user_detail.active}">Inactive</option>
+                                    <option value="true" th:selected="${user_detail.active}">hoạt động</option>
+                                    <option value="false" th:selected="${!user_detail.active}">Tắt hoạt động </option>
                                 </select>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-success">Update Profile</button>
-                            <a href="/admin/list_account" class="btn btn-secondary">Back</a>
+                            <button type="submit" class="btn btn-success">Cập nhật</button>
+                            <a href="/admin/list_account" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </form>
                 </div>
