@@ -45,9 +45,11 @@
             margin-bottom: 20px;
             cursor: default;
         }
+
         .special-case-button-container {
             text-align: left; /* Căn trái để nút luôn ở vị trí cố định */
         }
+
         .special-case-button {
             width: 220px; /* Chiều rộng cố định để không thay đổi khi văn bản dài hơn */
             text-align: center; /* Căn giữa văn bản trong nút */
@@ -55,6 +57,7 @@
             padding: 6px 12px; /* Ghi đè padding của Bootstrap để đồng nhất */
             box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều rộng */
         }
+
         .card-body {
             padding: 20px;
         }
@@ -916,10 +919,10 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                </div>
+                                                 </div>
 
                                                 <!-- Modal for adding Technology Process -->
-                                                <div class="modal fade" th:id="'addTechProcessModal-' + ${detail.id}"
+                                                 <div class="modal fade" th:id="'addTechProcessModal-' + ${detail.id}"
                                                      tabindex="-1" aria-labelledby="addTechProcessModalLabel"
                                                      aria-hidden="true">
                                                     <div class="modal-dialog modal-lg">
@@ -988,40 +991,52 @@
                                                                         <!-- Trường hợp mẻ đầu -->
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'dispergatorNFirst-' + ${detail.id}" class="form-label">Dispergator N (ml):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'dispergatorNFirst-' + ${detail.id}"
+                                                                                       class="form-label">Dispergator N
+                                                                                    (ml):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'dispergatorNFirst-' + ${detail.id}"
-                                                                                       name="dispergatorNForFirstBatches" min="0.01" max="9999.99" readonly>
+                                                                                       name="dispergatorNForFirstBatches"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${(T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 0.012 * 1000)).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
 
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'dfmFirst-' + ${detail.id}" class="form-label">DFM (g):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'dfmFirst-' + ${detail.id}"
+                                                                                       class="form-label">DFM
+                                                                                    (g):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'dfmFirst-' + ${detail.id}"
-                                                                                       name="dfmForFirstBatches" min="0.01" max="9999.99" readonly>
+                                                                                       name="dfmForFirstBatches"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
 
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'anbatexFirst-' + ${detail.id}" class="form-label">Anbatex (g):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'anbatexFirst-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex
+                                                                                    (g):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'anbatexFirst-' + ${detail.id}"
-                                                                                       name="anbatexForFirstBatches" min="0.01" max="9999.99" readonly>
+                                                                                       name="anbatexForFirstBatches"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 1.5).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
@@ -1030,7 +1045,8 @@
                                                                         <!-- Nút cho mẻ đầu -->
                                                                         <div class="row">
                                                                             <div class="col-md-12 special-case-button-container">
-                                                                                <button type="button" class="btn btn-primary special-case-button"
+                                                                                <button type="button"
+                                                                                        class="btn btn-primary special-case-button"
                                                                                         th:id="'specialCaseButtonFirst-' + ${detail.id}"
                                                                                         th:onclick="'toggleSpecialCaseValuesFirst(\'' + 'dispergatorNFirst-' + ${detail.id} + '\', \'' + 'dfmFirst-' + ${detail.id} + '\', \'' + 'anbatexFirst-' + ${detail.id} + '\', this)'"
                                                                                         th:text="'Thêm trường hợp đặc biệt'">
@@ -1087,10 +1103,14 @@
                                                                         <!-- Trường hợp mẻ cuối -->
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'dispergatorNLast-' + ${detail.id}" class="form-label">Dispergator N cho mẻ cuối (ml):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'dispergatorNLast-' + ${detail.id}"
+                                                                                       class="form-label">Dispergator N
+                                                                                    cho mẻ cuối (ml):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'dispergatorNLast-' + ${detail.id}"
-                                                                                       name="dispergatorNForLastBatch" min="0.01" max="9999.99" readonly>
+                                                                                       name="dispergatorNForLastBatch"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
@@ -1099,10 +1119,14 @@
                                                                                 </p>
                                                                             </div>
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'dfmLast-' + ${detail.id}" class="form-label">DFM cho mẻ cuối (g):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'dfmLast-' + ${detail.id}"
+                                                                                       class="form-label">DFM cho mẻ
+                                                                                    cuối (g):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'dfmLast-' + ${detail.id}"
-                                                                                       name="dfmForLastBatch" min="0.01" max="9999.99" readonly>
+                                                                                       name="dfmForLastBatch" min="0.01"
+                                                                                       readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
@@ -1111,10 +1135,14 @@
                                                                                 </p>
                                                                             </div>
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'anbatexLast-' + ${detail.id}" class="form-label">Anbatex cho mẻ cuối (g):</label>
-                                                                                <input type="number" step="0.01" class="form-control"
+                                                                                <label th:for="'anbatexLast-' + ${detail.id}"
+                                                                                       class="form-label">Anbatex cho mẻ
+                                                                                    cuối (g):</label>
+                                                                                <input type="number" step="0.01"
+                                                                                       class="form-control"
                                                                                        th:id="'anbatexLast-' + ${detail.id}"
-                                                                                       name="anbatexForLastBatch" min="0.01" max="9999.99" readonly>
+                                                                                       name="anbatexForLastBatch"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
@@ -1127,7 +1155,8 @@
                                                                         <!-- Nút cho mẻ cuối -->
                                                                         <div class="row">
                                                                             <div class="col-md-12 special-case-button-container">
-                                                                                <button type="button" class="btn btn-primary special-case-button"
+                                                                                <button type="button"
+                                                                                        class="btn btn-primary special-case-button"
                                                                                         th:id="'specialCaseButtonLast-' + ${detail.id}"
                                                                                         th:onclick="'toggleSpecialCaseValuesLast(\'' + 'dispergatorNLast-' + ${detail.id} + '\', \'' + 'dfmLast-' + ${detail.id} + '\', \'' + 'anbatexLast-' + ${detail.id} + '\', this)'"
                                                                                         th:text="'Thêm trường hợp đặc biệt'">
@@ -1149,9 +1178,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                 </div>
+
                                                 <!-- Modal for updating Technology Process -->
-                                                <div class="modal fade" th:id="'updateTechProcessModal-' + ${detail.id}"
+                                                  <div class="modal fade" th:id="'updateTechProcessModal-' + ${detail.id}"
                                                      tabindex="-1" aria-labelledby="updateTechProcessModalLabel"
                                                      aria-hidden="true">
                                                     <div class="modal-dialog modal-lg">
@@ -1273,62 +1303,68 @@
                                                                         <!-- Dispergator N, DFM, Anbatex cho các mẻ đầu -->
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateDispergatorNFirst-' + ${detail.id}"
-                                                                                       class="form-label">Dispergator N
-                                                                                    (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateDispergatorNFirst-' + ${detail.id}" class="form-label">Dispergator N (ml):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateDispergatorNFirst-' + ${detail.id}"
                                                                                        name="dispergatorNForFirstBatches"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.dispergatorN : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and detail.dyeStage.dyebatches[0].technologyProcess != null and detail.dyeStage.dyebatches[0].technologyProcess.dispergatorN != null
+                                                                                      ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].technologyProcess.dispergatorN).intValue()
+                                                                                      : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 20 px; color: red;'"
-                                                                                            th:text="${(T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 0.012 * 1000)).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${(T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 0.012 * 1000)).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
 
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateDfmFirst-' + ${detail.id}"
-                                                                                       class="form-label">DFM
-                                                                                    (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateDfmFirst-' + ${detail.id}" class="form-label">DFM (g):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateDfmFirst-' + ${detail.id}"
                                                                                        name="dfmForFirstBatches"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.dfm : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and detail.dyeStage.dyebatches[0].technologyProcess != null and detail.dyeStage.dyebatches[0].technologyProcess.dfm != null
+                                                                      ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].technologyProcess.dfm).intValue()
+                                                                          : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 20 px; color: red;'"
-                                                                                            th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
+
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateAnbatexFirst-' + ${detail.id}"
-                                                                                       class="form-label">Anbatex
-                                                                                    (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateAnbatexFirst-' + ${detail.id}" class="form-label">Anbatex (g):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateAnbatexFirst-' + ${detail.id}"
                                                                                        name="anbatexForFirstBatches"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[0].technologyProcess?.anbatex : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and detail.dyeStage.dyebatches[0].technologyProcess != null and detail.dyeStage.dyebatches[0].technologyProcess.anbatex != null
+                                                                             ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].technologyProcess.anbatex).intValue()
+                                                                              : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 20 px; color: red;'"
-                                                                                            th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 1.5).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 1.5).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
+
+                                                                        <!-- Nút cho trường hợp -->
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 special-case-button-container">
+                                                                                <button type="button"
+                                                                                        th:class="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and detail.dyeStage.dyebatches[0].technologyProcess != null and (detail.dyeStage.dyebatches[0].technologyProcess.dispergatorN != null or detail.dyeStage.dyebatches[0].technologyProcess.dfm != null or detail.dyeStage.dyebatches[0].technologyProcess.anbatex != null)} ? 'btn btn-danger special-case-button' : 'btn btn-primary special-case-button'"
+                                                                                        th:id="'specialCaseButtonUpdateFirst-' + ${detail.id}"
+                                                                                        th:onclick="'toggleSpecialCaseValuesUpdateFirst(\'' + 'updateDispergatorNFirst-' + ${detail.id} + '\', \'' + 'updateDfmFirst-' + ${detail.id} + '\', \'' + 'updateAnbatexFirst-' + ${detail.id} + '\', this)'"
+                                                                                        th:text="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches) and detail.dyeStage.dyebatches[0].technologyProcess != null and (detail.dyeStage.dyebatches[0].technologyProcess.dispergatorN != null or detail.dyeStage.dyebatches[0].technologyProcess.dfm != null or detail.dyeStage.dyebatches[0].technologyProcess.anbatex != null)} ? 'Bỏ trường hợp đặc biệt' : 'Thêm trường hợp đặc biệt'">
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
 
                                                                     <!-- Phần 2: Dye Types, Dispergator N, DFM, Anbatex cho mẻ cuối -->
                                                                     <div class="dye-type-section"
@@ -1430,58 +1466,80 @@
                                                                         <!-- Dispergator N, DFM, Anbatex cho mẻ cuối -->
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateDispergatorNLast-' + ${detail.id}"
-                                                                                       class="form-label">Dispergator N
-                                                                                    cho mẻ cuối (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateDispergatorNLast-' + ${detail.id}" class="form-label">Dispergator N cho mẻ cuối (ml):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateDispergatorNLast-' + ${detail.id}"
                                                                                        name="dispergatorNForLastBatch"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.dispergatorN : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                           and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess != null
+                                                             and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dispergatorN != null
+                                                            ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dispergatorN).intValue()
+                                                             : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 15px; color: red;'"
-                                                                                            th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].liters * 0.012 * 1000).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].liters * 0.012 * 1000).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateDfmLast-' + ${detail.id}"
-                                                                                       class="form-label">DFM cho mẻ
-                                                                                    cuối (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateDfmLast-' + ${detail.id}" class="form-label">DFM cho mẻ cuối (g):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateDfmLast-' + ${detail.id}"
                                                                                        name="dfmForLastBatch"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.dfm : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                             and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess != null
+                                                            and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dfm != null
+                                                            ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dfm).intValue()
+                                                            : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 15px; color: red;'"
-                                                                                            th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
                                                                             <div class="col-md-4">
-                                                                                <label th:for="'updateAnbatexLast-' + ${detail.id}"
-                                                                                       class="form-label">Anbatex cho mẻ
-                                                                                    cuối (kg):</label>
-                                                                                <input type="number" step="0.01"
-                                                                                       class="form-control"
+                                                                                <label th:for="'updateAnbatexLast-' + ${detail.id}" class="form-label">Anbatex cho mẻ cuối (g):</label>
+                                                                                <input type="number" step="0.01" class="form-control"
                                                                                        th:id="'updateAnbatexLast-' + ${detail.id}"
                                                                                        name="anbatexForLastBatch"
-                                                                                       th:value="${detail?.dyeStage?.dyebatches != null and not #lists.isEmpty(detail.dyeStage.dyebatches) ? detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess?.anbatex : ''}"
-                                                                                       min="0.01" max="9999.99">
+                                                                                       th:value="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                                and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess != null
+                                                                and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.anbatex != null
+                                                            ? T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.anbatex).intValue()
+                                                             : ''}"
+                                                                                       min="0.01" readonly>
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span
-                                                                                            th:style="'font-size: 15px; color: red;'"
-                                                                                            th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].liters * 1.5).intValue()}"></span>)
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
+                                                                                          th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].liters * 1.5).intValue()}"></span>)
                                                                                 </p>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Nút cho trường hợp mẻ cuối -->
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 special-case-button-container">
+                                                                                <button type="button"
+                                                                                        th:class="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                                   and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess != null
+                                                                and (detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dispergatorN != null
+                                                                or detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dfm != null
+                                                                 or detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.anbatex != null)}
+                                                                    ? 'btn btn-danger special-case-button' : 'btn btn-primary special-case-button'"
+                                                                                        th:id="'specialCaseButtonUpdateLast-' + ${detail.id}"
+                                                                                        th:onclick="'toggleSpecialCaseValuesUpdateLast(\'' + 'updateDispergatorNLast-' + ${detail.id} + '\', \'' + 'updateDfmLast-' + ${detail.id} + '\', \'' + 'updateAnbatexLast-' + ${detail.id} + '\', this)'"
+                                                                                        th:text="${detail != null and detail.dyeStage != null and not #lists.isEmpty(detail.dyeStage.dyebatches)
+                                                                           and detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess != null
+                                                                        and (detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dispergatorN != null
+                                                                     or detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.dfm != null
+                                                                    or detail.dyeStage.dyebatches[detail.dyeStage.dyebatches.size() - 1].technologyProcess.anbatex != null)}
+                                                               ? 'Bỏ trường hợp đặc biệt' : 'Thêm trường hợp đặc biệt'">
+                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1500,6 +1558,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+
                                         </div>
                                         <div th:unless="${workOrder?.workOrderDetails != null and not #lists.isEmpty(workOrder.workOrderDetails)}"
                                              class="detail-section">
@@ -1536,7 +1596,7 @@
                                                             <th>Thời gian bắt đầu</th>
                                                             <th>Thời gian hoàn thành</th>
                                                             <th>Trạng thái công việc</th>
-                                                            <th>Máy Nhuộm ID</th>
+                                                            <th>Máy Nhuộm</th>
                                                             <th>Mức keo</th>
                                                         </tr>
                                                         </thead>
@@ -1556,7 +1616,7 @@
                                                             <td th:text="${detail?.dyeStage?.completeAt != null ? #temporals.format(detail.dyeStage.completeAt, 'dd/MM/yyyy') : 'Chưa kết thúc'}"></td>
                                                             <td th:classappend="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
                                                                 th:text="${detail?.dyeStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.dyeStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.dyeStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.dyeStage?.workStatus?.name() ?: 'N/A'})))"></td>
-                                                            <td th:text="${detail?.dyeStage?.dyeMachine.id ?: 'N/A'}"></td>
+                                                            <td th:text="'MB-'+${detail?.dyeStage?.dyeMachine.id ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail.product.thread.process.glue_level != null ? (detail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
                                                         </tr>
                                                         </tbody>
@@ -1589,7 +1649,7 @@
                                                             <th>Thời gian bắt đầu</th>
                                                             <th>Thời gian hoàn thành</th>
                                                             <th>Trạng thái công việc</th>
-                                                            <th>Máy Cuốn ID</th>
+                                                            <th>Máy Cuốn</th>
                                                             <th>Tốc độ máy</th>
                                                             <th>Tốc độ bánh vót</th>
                                                             <th>Mức keo</th>
@@ -1606,7 +1666,7 @@
                                                             <td th:text="${detail?.windingStage?.completeAt != null ? #temporals.format(detail.windingStage.completeAt, 'dd/MM/yyyy') : 'Chưa kết thúc'}"></td>
                                                             <td th:classappend="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'status-not-started' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'status-finished' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'status-in-progress' : ''))"
                                                                 th:text="${detail?.windingStage?.workStatus?.name() == 'NOT_STARTED'} ? 'Chưa bắt đầu' : (${detail?.windingStage?.workStatus?.name() == 'FINISHED'} ? 'Hoàn thành' : (${detail?.windingStage?.workStatus?.name() == 'IN_PROGRESS'} ? 'Đang thực hiện' : (${detail?.windingStage?.workStatus?.name() ?: 'N/A'})))"></td>
-                                                            <td th:text="${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
+                                                            <td th:text="'WB-'+${detail?.windingStage?.windingMachine?.id ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.machine_speed ?: 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.tocdo_banhvot != null ? detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.tocdo_banhvot + ' m/phút' : 'N/A'}"></td>
                                                             <td th:text="${detail?.purchaseOrderDetail?.product?.thread?.process?.glue_level != null ? (detail.windingStage.workOrderDetail.purchaseOrderDetail.product.thread.process.glue_level ? 'Nguội' : 'Nóng') : 'N/A'}"></td>
@@ -1682,15 +1742,15 @@
                                                         <tr>
                                                             <!--<th>Technology Process ID</th>-->
                                                             <th>Thứ tự mẻ</th>
-                                                            <th>Avco Lve Dlx Plus (kg)</th>
-                                                            <th>Chất càng hóa (kg)</th>
-                                                            <th>Chất giặt (kg)</th>
-                                                            <th>Chất giặt khử (kg)</th>
-                                                            <th>DFM (kg)</th>
-                                                            <th>Axit (kg)</th>
-                                                            <th>Anbatex (kg)</th>
+                                                            <th>Avco Lve Dlx Plus (g)</th>
+                                                            <th>Chất càng hóa (g)</th>
+                                                            <th>Chất giặt (g)</th>
+                                                            <th>Chất giặt khử (g)</th>
+                                                            <th>DFM (g)</th>
+                                                            <th>Axit giặt (g)</th>
+                                                            <th>Anbatex (g)</th>
                                                             <th>Dung tỷ</th>
-                                                            <th>Dispergator N (kg)</th>
+                                                            <th>Dispergator N (ml)</th>
                                                             <th>Loại thuốc nhuộm</th>
                                                             <!--<th>Trạng thái</th>-->
                                                             <th>Hành động</th>
@@ -1701,15 +1761,38 @@
                                                             th:if="${batch?.technologyProcess != null}">
                                                             <!--<td th:text="${batch?.technologyProcess?.id ?: 'N/A'}"></td>-->
                                                             <td th:text="${batch?.batchNumber ?: 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.avcoLveDlxPlus != null ? batch.technologyProcess.avcoLveDlxPlus + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.chelator != null ? batch.technologyProcess.chelator + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.detergent != null ? batch.technologyProcess.detergent + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.reducingAgent != null ? batch.technologyProcess.reducingAgent + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.dfm != null ? batch.technologyProcess.dfm + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.axit != null ? batch.technologyProcess.axit + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.anbatex != null ? batch.technologyProcess.anbatex + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.liquorRatio != null ? batch.technologyProcess.liquorRatio : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.dispergatorN != null ? batch.technologyProcess.dispergatorN + ' kg' : 'N/A'}"></td>
+                                                            <td th:text="${batch?.technologyProcess?.avcoLveDlxPlus != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.avcoLveDlxPlus * 1000).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td th:text="${batch?.technologyProcess?.chelator != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.chelator).intValue()
+              : 'N/A'}"></td>
+                                                            <td th:text="${batch?.technologyProcess?.detergent != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.detergent).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td th:text="${batch?.technologyProcess?.reducingAgent != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.reducingAgent).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td th:text="${batch?.technologyProcess?.dfm != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.dfm).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td th:text="${batch?.technologyProcess?.axit != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.axit).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td th:text="${batch?.technologyProcess?.anbatex != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.anbatex).intValue()
+              : 'N/A'}"></td>
+
+                                                            <td>1/6</td>
+                                                            <td th:text="${batch?.technologyProcess?.dispergatorN != null
+              ? T(java.lang.Math).ceil(batch.technologyProcess.dispergatorN).intValue()
+              : 'N/A'}"></td>
+
                                                             <td>
                                                                 <th:block
                                                                         th:if="${batch?.technologyProcess != null and batch.technologyProcess.dyeTypes != null and not #lists.isEmpty(batch.technologyProcess.dyeTypes)}">
@@ -1995,19 +2078,19 @@
             const dispergatorNFirst = parseFloat($(this).find('input[name="dispergatorNForFirstBatches"]').val());
             const dfmFirst = parseFloat($(this).find('input[name="dfmForFirstBatches"]').val());
             const anbatexFirst = parseFloat($(this).find('input[name="anbatexForFirstBatches"]').val());
-            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
+            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0)) {
                 e.preventDefault();
-                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
-            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0 || dfmFirst >= 10000)) {
+            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0)) {
                 e.preventDefault();
-                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
-            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0 || anbatexFirst >= 10000)) {
+            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0)) {
                 e.preventDefault();
-                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
 
@@ -2059,19 +2142,19 @@
                 const dispergatorNLast = parseFloat($(this).find('input[name="dispergatorNForLastBatch"]').val());
                 const dfmLast = parseFloat($(this).find('input[name="dfmForLastBatch"]').val());
                 const anbatexLast = parseFloat($(this).find('input[name="anbatexForLastBatch"]').val());
-                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
+                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0)) {
                     e.preventDefault();
-                    alert('DispergatorN (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('DispergatorN (mẻ cuối) nếu nhập phải lớn hơn 0.');
                     return false;
                 }
-                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0 || dfmLast >= 10000)) {
+                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0)) {
                     e.preventDefault();
-                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0.');
                     return false;
                 }
-                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0 || anbatexLast >= 10000)) {
+                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0)) {
                     e.preventDefault();
-                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0.');
                     return false;
                 }
             }
@@ -2125,19 +2208,19 @@
             const dispergatorNFirst = parseFloat($(this).find('input[name="dispergatorNForFirstBatches"]').val());
             const dfmFirst = parseFloat($(this).find('input[name="dfmForFirstBatches"]').val());
             const anbatexFirst = parseFloat($(this).find('input[name="anbatexForFirstBatches"]').val());
-            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0 || dispergatorNFirst >= 10000)) {
+            if ($(this).find('input[name="dispergatorNForFirstBatches"]').val().trim() && (isNaN(dispergatorNFirst) || dispergatorNFirst <= 0)) {
                 e.preventDefault();
-                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DispergatorN (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
-            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0 || dfmFirst >= 10000)) {
+            if ($(this).find('input[name="dfmForFirstBatches"]').val().trim() && (isNaN(dfmFirst) || dfmFirst <= 0)) {
                 e.preventDefault();
-                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('DFM (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
-            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0 || anbatexFirst >= 10000)) {
+            if ($(this).find('input[name="anbatexForFirstBatches"]').val().trim() && (isNaN(anbatexFirst) || anbatexFirst <= 0)) {
                 e.preventDefault();
-                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                alert('Anbatex (mẻ đầu) nếu nhập phải lớn hơn 0.');
                 return false;
             }
 
@@ -2189,19 +2272,19 @@
                 const dispergatorNLast = parseFloat($(this).find('input[name="dispergatorNForLastBatch"]').val());
                 const dfmLast = parseFloat($(this).find('input[name="dfmForLastBatch"]').val());
                 const anbatexLast = parseFloat($(this).find('input[name="anbatexForLastBatch"]').val());
-                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0 || dispergatorNLast >= 10000)) {
+                if ($(this).find('input[name="dispergatorNForLastBatch"]').val().trim() && (isNaN(dispergatorNLast) || dispergatorNLast <= 0)) {
                     e.preventDefault();
                     alert('DispergatorN (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
                     return false;
                 }
-                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0 || dfmLast >= 10000)) {
+                if ($(this).find('input[name="dfmForLastBatch"]').val().trim() && (isNaN(dfmLast) || dfmLast <= 0)) {
                     e.preventDefault();
-                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('DFM (mẻ cuối) nếu nhập phải lớn hơn 0.');
                     return false;
                 }
-                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0 || anbatexLast >= 10000)) {
+                if ($(this).find('input[name="anbatexForLastBatch"]').val().trim() && (isNaN(anbatexLast) || anbatexLast <= 0)) {
                     e.preventDefault();
-                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.');
+                    alert('Anbatex (mẻ cuối) nếu nhập phải lớn hơn 0.');
                     return false;
                 }
             }
@@ -2331,6 +2414,96 @@
         }
     }
 
+    function toggleSpecialCaseValuesUpdateFirst(dispergatorId, dfmId, anbatexId, button) {
+        try {
+            // Kiểm tra trạng thái nút dựa trên nội dung văn bản
+            const isAddMode = button.textContent === 'Thêm trường hợp đặc biệt';
+
+            if (isAddMode) {
+                // Lấy giá trị tính toán từ các thẻ span
+                const dispergatorSpan = document.querySelector(`#${dispergatorId} + br + p span`);
+                const dfmSpan = document.querySelector(`#${dfmId} + br + p span`);
+                const anbatexSpan = document.querySelector(`#${anbatexId} + br + p span`);
+
+                // Kiểm tra xem các phần tử span có tồn tại không
+                if (!dispergatorSpan || !dfmSpan || !anbatexSpan) {
+                    console.error("Không tìm thấy một hoặc nhiều thẻ span cho trường hợp cập nhật mẻ đầu.");
+                    return;
+                }
+
+                const dispergatorValue = parseInt(dispergatorSpan.textContent);
+                const dfmValue = parseInt(dfmSpan.textContent);
+                const anbatexValue = parseInt(anbatexSpan.textContent);
+
+                // Gán giá trị vào các ô nhập
+                document.getElementById(dispergatorId).value = dispergatorValue;
+                document.getElementById(dfmId).value = dfmValue;
+                document.getElementById(anbatexId).value = anbatexValue;
+
+                // Chuyển nút thành "Bỏ trường hợp đặc biệt"
+                button.textContent = 'Bỏ trường hợp đặc biệt';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+            } else {
+                // Xóa giá trị trong các ô nhập
+                document.getElementById(dispergatorId).value = '';
+                document.getElementById(dfmId).value = '';
+                document.getElementById(anbatexId).value = '';
+
+                // Chuyển nút về "Thêm trường hợp đặc biệt"
+                button.textContent = 'Thêm trường hợp đặc biệt';
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-primary');
+            }
+        } catch (error) {
+            console.error("Lỗi khi xử lý giá trị cho trường hợp cập nhật mẻ đầu: ", error);
+        }
+    }
+    function toggleSpecialCaseValuesUpdateLast(dispergatorId, dfmId, anbatexId, button) {
+        try {
+            // Kiểm tra trạng thái nút dựa trên nội dung văn bản
+            const isAddMode = button.textContent === 'Thêm trường hợp đặc biệt';
+
+            if (isAddMode) {
+                // Lấy giá trị tính toán từ các thẻ span
+                const dispergatorSpan = document.querySelector(`#${dispergatorId} + br + p span`);
+                const dfmSpan = document.querySelector(`#${dfmId} + br + p span`);
+                const anbatexSpan = document.querySelector(`#${anbatexId} + br + p span`);
+
+                // Kiểm tra xem các phần tử span có tồn tại không
+                if (!dispergatorSpan || !dfmSpan || !anbatexSpan) {
+                    console.error("Không tìm thấy một hoặc nhiều thẻ span cho trường hợp cập nhật mẻ cuối.");
+                    return;
+                }
+
+                const dispergatorValue = parseInt(dispergatorSpan.textContent);
+                const dfmValue = parseInt(dfmSpan.textContent);
+                const anbatexValue = parseInt(anbatexSpan.textContent);
+
+                // Gán giá trị vào các ô nhập
+                document.getElementById(dispergatorId).value = dispergatorValue;
+                document.getElementById(dfmId).value = dfmValue;
+                document.getElementById(anbatexId).value = anbatexValue;
+
+                // Chuyển nút thành "Bỏ trường hợp đặc biệt"
+                button.textContent = 'Bỏ trường hợp đặc biệt';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+            } else {
+                // Xóa giá trị trong các ô nhập
+                document.getElementById(dispergatorId).value = '';
+                document.getElementById(dfmId).value = '';
+                document.getElementById(anbatexId).value = '';
+
+                // Chuyển nút về "Thêm trường hợp đặc biệt"
+                button.textContent = 'Thêm trường hợp đặc biệt';
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-primary');
+            }
+        } catch (error) {
+            console.error("Lỗi khi xử lý giá trị cho trường hợp cập nhật mẻ cuối: ", error);
+        }
+    }
 </script>
 
 <!-- Toast Error -->

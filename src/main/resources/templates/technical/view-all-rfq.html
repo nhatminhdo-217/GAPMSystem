@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ đã duyệt</title>
+    <title>Chỉ may Dũng Đông - Danh sách yêu cầu báo giá đã duyệt</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/assert/images/LG-removebg-preview.png" rel="icon">
 
@@ -330,7 +330,7 @@
             <div class="bg-light rounded p-4">
                 <!-- Search and title -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách RFQ đã duyệt</h6>
+                    <h6 class="mb-0">Danh sách yêu cầu báo giá đã duyệt</h6>
                     <form method="get" action="/technical/view-all-rfq"
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
@@ -349,7 +349,7 @@
                                th:classappend="${activeTab == 'all-approved-no-solution'} ? 'active' : ''"
                                id="all-approved-no-solution-tab" data-bs-toggle="tab" href="#all-approved-no-solution"
                                role="tab" aria-controls="all-approved-no-solution"
-                               aria-selected="${activeTab == 'all-approved-no-solution'}">Tất cả RFQ chưa có giải
+                               aria-selected="${activeTab == 'all-approved-no-solution'}">Chưa có giải
                                 pháp</a>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -390,7 +390,7 @@
                                         <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
                                                 <strong>Mã lô</strong><br>
-                                                <span th:text="${rfq.id}"></span>
+                                                <span th:text="'RFQ-'+${rfq.id}"></span>
                                             </div>
                                             <div class="text-start me-3">
                                                 <strong>Số lượng sản phẩm</strong><br>
@@ -405,9 +405,9 @@
                                                 <span th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
                                             </div>
                                             <div class="text-start me-3 status-sent status-approved-wrapper">
-                                                <strong>Trạng thái đơn hàng</strong><br>
-                                                <span th:classappend="'status-approved status-background'"
-                                                      th:text="'Đã được duyệt'"></span>
+                                                <strong>Trạng thái</strong><br>
+                                                <span style="color: green"
+                                                      th:text="'Đã duyệt'"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -456,7 +456,7 @@
                                         <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
                                                 <strong>Mã lô</strong><br>
-                                                <span th:text="${rfq.id}"></span>
+                                                <span th:text="'RFQ-'+${rfq.id}"></span>
                                             </div>
                                             <div class="text-start me-3">
                                                 <strong>Số lượng sản phẩm</strong><br>
@@ -471,9 +471,9 @@
                                                 <span th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
                                             </div>
                                             <div class="text-start me-3 status-sent status-approved-wrapper">
-                                                <strong>Trạng thái đơn hàng</strong><br>
-                                                <span th:classappend="'status-approved status-background'"
-                                                      th:text="'Đã được duyệt'"></span>
+                                                <strong>Trạng thái</strong><br>
+                                                <span style="color: green"
+                                                      th:text="'Đã duyệt'"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -523,7 +523,7 @@
                                         <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
                                                 <strong>Mã lô</strong><br>
-                                                <span th:text="${rfq.id}"></span>
+                                                <span th:text="'RFQ-'+${rfq.id}"></span>
                                             </div>
                                             <div class="text-start me-3">
                                                 <strong>Số lượng sản phẩm</strong><br>
@@ -538,9 +538,9 @@
                                                 <span th:text="${rfq.approvedBy != null ? rfq.approvedBy.username : 'N/A'}"></span>
                                             </div>
                                             <div class="text-start me-3 status-sent status-approved-wrapper">
-                                                <strong>Trạng thái đơn hàng</strong><br>
-                                                <span th:classappend="'status-approved status-background'"
-                                                      th:text="'Đã được duyệt'"></span>
+                                                <strong>Trạng thái</strong><br>
+                                                <span style="color: green"
+                                                      th:text="'Đã duyệt'"></span>
                                             </div>
                                         </div>
                                     </div>

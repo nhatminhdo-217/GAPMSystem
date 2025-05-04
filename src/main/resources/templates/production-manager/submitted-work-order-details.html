@@ -586,11 +586,20 @@
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Trạng thái:</strong>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'NOT_APPROVED'}">Chưa duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_APPROVAL'}">Chờ duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'APPROVED'}">Đã duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'CANCELED'}">Đã hủy</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_UPDATE'}">Chờ cập nhật</span>
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'NOT_APPROVED'}"
+                                              style="color: gray;">Chưa duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                              style="color: gold;">Chờ duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'APPROVED'}"
+                                              style="color: green;">Đã duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'CANCELED'}"
+                                              style="color: red;">Đã hủy</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_UPDATE'}"
+                                              style="color: orange;">Chờ cập nhật</span>
 
                                     </div>
                                 </div>
