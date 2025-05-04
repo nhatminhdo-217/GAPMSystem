@@ -27,7 +27,8 @@ public class TechnicalProductionOrderDetailsDTO {
         private String description;
         private boolean hasWorkOrderDetail;
         private Long rfqId;
-        private Long rfqDetailId;// Để kiểm tra xem ProductionOrderDetail đã có WorkOrderDetail chưa
+        private Long rfqDetailId;
+        private String threadName;// Để kiểm tra xem ProductionOrderDetail đã có WorkOrderDetail chưa
 
         public Long getId() {
             return id;
@@ -83,6 +84,14 @@ public class TechnicalProductionOrderDetailsDTO {
 
         public void setRfqDetailId(Long rfqDetailId) {
             this.rfqDetailId = rfqDetailId;
+        }
+
+        public String getThreadName() {
+            return threadName;
+        }
+
+        public void setThreadName(String threadName) {
+            this.threadName = threadName;
         }
     }
 

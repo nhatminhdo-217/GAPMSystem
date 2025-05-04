@@ -995,7 +995,7 @@
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${(T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 0.012 * 1000)).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
@@ -1008,7 +1008,7 @@
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].cone_batch_weight * 0.012 * 1000).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
@@ -1021,7 +1021,7 @@
                                                                                 <br>
                                                                                 <p>
                                                                                     (Tổng bằng:
-                                                                                    <span th:style="'font-size: 20px; color: red;'"
+                                                                                    <span th:style="'font-size: 15px; color: red;'"
                                                                                           th:text="${T(java.lang.Math).ceil(detail.dyeStage.dyebatches[0].liters * 1.5).intValue()}"></span>)
                                                                                 </p>
                                                                             </div>
@@ -1682,7 +1682,7 @@
                                                         <tr>
                                                             <!--<th>Technology Process ID</th>-->
                                                             <th>Thứ tự mẻ</th>
-                                                            <th>Avco Lve Dlx Plus (kg)</th>
+                                                            <th>Avco Lve Dlx Plus (g)</th>
                                                             <th>Chất càng hóa (kg)</th>
                                                             <th>Chất giặt (kg)</th>
                                                             <th>Chất giặt khử (kg)</th>
@@ -1701,14 +1701,14 @@
                                                             th:if="${batch?.technologyProcess != null}">
                                                             <!--<td th:text="${batch?.technologyProcess?.id ?: 'N/A'}"></td>-->
                                                             <td th:text="${batch?.batchNumber ?: 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.avcoLveDlxPlus != null ? batch.technologyProcess.avcoLveDlxPlus + ' kg' : 'N/A'}"></td>
+                                                            <td th:text="${batch?.technologyProcess?.avcoLveDlxPlus != null ? batch.technologyProcess.avcoLveDlxPlus * 1000 : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.chelator != null ? batch.technologyProcess.chelator + ' kg' : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.detergent != null ? batch.technologyProcess.detergent + ' kg' : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.reducingAgent != null ? batch.technologyProcess.reducingAgent + ' kg' : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.dfm != null ? batch.technologyProcess.dfm + ' kg' : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.axit != null ? batch.technologyProcess.axit + ' kg' : 'N/A'}"></td>
                                                             <td th:text="${batch?.technologyProcess?.anbatex != null ? batch.technologyProcess.anbatex + ' kg' : 'N/A'}"></td>
-                                                            <td th:text="${batch?.technologyProcess?.liquorRatio != null ? batch.technologyProcess.liquorRatio : 'N/A'}"></td>
+                                                            <td >1/6</td>
                                                             <td th:text="${batch?.technologyProcess?.dispergatorN != null ? batch.technologyProcess.dispergatorN + ' kg' : 'N/A'}"></td>
                                                             <td>
                                                                 <th:block
