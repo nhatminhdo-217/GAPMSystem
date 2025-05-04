@@ -378,8 +378,8 @@
                                               th:text="${iterStat.count + notSentSolutionsPage.number * notSentSolutionsPage.size}"></span>
                                         <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
-                                                <strong>Mã RFQ</strong><br>
-                                                <span th:text="${solution.rfq.id}"></span>
+                                                <strong>Mã lô hàng</strong><br>
+                                                <span th:text="'RFQ-'+${solution.rfq.id}"></span>
                                             </div>
                                             <div class="text-start me-3">
                                                 <strong>Lý do</strong><br>
@@ -399,7 +399,7 @@
                                             </div>
                                             <div class="text-start me-3 status-sent status-not-sent-wrapper">
                                                 <strong>Trạng thái gửi</strong><br>
-                                                <span th:classappend="'status-not-sent status-not-sent-background'"
+                                                <span style="color: yellow;"
                                                       th:text="'Chưa gửi'"></span>
                                             </div>
                                         </div>
@@ -449,8 +449,8 @@
                                               th:text="${iterStat.count + sentSolutionsPage.number * sentSolutionsPage.size}"></span>
                                         <div class="content-section">
                                             <div class="text-start me-3 rfq-id">
-                                                <strong>Mã RFQ</strong><br>
-                                                <span th:text="${solution.rfq.id}"></span>
+                                                <strong>Mã lô hàng</strong><br>
+                                                <span th:text="'RFQ-'+${solution.rfq.id}"></span>
                                             </div>
                                             <div class="text-start me-3">
                                                 <strong>Lý do</strong><br>
@@ -470,7 +470,7 @@
                                             </div>
                                             <div class="text-start me-3 status-sent status-sent-wrapper">
                                                 <strong>Trạng thái gửi</strong><br>
-                                                <span th:classappend="'status-sent status-background'"
+                                                <span style="color: green"
                                                       th:text="'Đã gửi'"></span>
                                             </div>
                                         </div>

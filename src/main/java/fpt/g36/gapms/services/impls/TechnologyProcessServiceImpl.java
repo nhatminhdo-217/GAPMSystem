@@ -48,9 +48,9 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
         ProcessParameters(BigDecimal coneBatchWeight, BigDecimal litters) {
             this.avcoLveDlxPlus = coneBatchWeight.multiply(BigDecimal.valueOf(0.012));
             this.chelator = litters.multiply(BigDecimal.valueOf(2.5));
-            this.detergent = coneBatchWeight.multiply(BigDecimal.valueOf(1.2));
-            this.reducingAgent = coneBatchWeight.multiply(BigDecimal.valueOf(0.8));
-            this.axit = coneBatchWeight.multiply(BigDecimal.valueOf(1.2));
+            this.detergent = litters.multiply(BigDecimal.valueOf(1.2));
+            this.reducingAgent = litters.multiply(BigDecimal.valueOf(0.8));
+            this.axit = litters.multiply(BigDecimal.valueOf(1.2));
             this.liquorRatio = BigDecimal.valueOf(6);
         }
     }
@@ -61,7 +61,7 @@ public class TechnologyProcessServiceImpl implements TechnologyProcessService {
     }
 
     private String generateQrCode(TechnologyProcess process) {
-        String qrUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + process.getId();
+        String qrUrl = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net/work-order/technology-process/" + process.getDyeBatch().getId();
         System.err.println("Lưu URL mã QR cho TechnologyProcess ID: " + process.getId() + ": " + qrUrl);
         return qrUrl;
     }

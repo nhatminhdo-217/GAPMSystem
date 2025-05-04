@@ -197,26 +197,21 @@
 
         .status-draft, .status-wait-for-approval {
             color: #f59e0b;
-            font-weight: 500;
-            background-color: #fefce8;
+
         }
 
         .status-wait-for-update {
             color: #6b7280;
-            font-weight: 500;
-            background-color: #f3f4f6;
+
         }
 
         .status-not-approve {
             color: #ef4444;
-            font-weight: 500;
-            background-color: #fef2f2;
         }
 
         .status-approve {
-            color: #10b981;
-            font-weight: 500;
-            background-color: #ecfdf5;
+            color: green;
+
         }
 
         .send-status-not-sent {
@@ -405,14 +400,15 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-draft'"
-                                                          th:text="'Bản Nháp'"></span>
+                                                    <span class="text-secondary" th:text="'Bản Nháp'"></span>
                                                 </div>
+
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'SENT'} ? 'text-success' : 'text-warning'"
+                                                          th:text="${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : 'Chưa gửi'"></span>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -480,13 +476,13 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-wait-for-update'"
+                                                    <span style="color: #4DC7A0"
                                                           th:text="'Chờ Cập Nhật'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'SENT'} ? 'text-success' : 'text-warning'"
+                                                          th:text="${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : 'Chưa gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -554,13 +550,13 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-not-approve'"
+                                                    <span style="color: red;"
                                                           th:text="'Từ Chối'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'SENT'} ? 'text-success' : 'text-warning'"
+                                                          th:text="${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : 'Chưa gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -628,13 +624,13 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-approve'"
-                                                          th:text="'Đồng Ý'"></span>
+                                                    <span style="color: green"
+                                                          th:text="'Đồng ý'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'SENT'} ? 'text-success' : 'text-warning'"
+                                                          th:text="${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : 'Chưa gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -704,13 +700,13 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-wait-for-approval'"
+                                                    <span style="color: yellow"
                                                           th:text="'Chờ Phê Duyệt'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:classappend="${workOrder.sendStatus.name() == 'SENT'} ? 'text-success' : 'text-warning'"
+                                                          th:text="${workOrder.sendStatus.name() == 'SENT'} ? 'Đã gửi' : 'Chưa gửi'"></span>
                                                 </div>
                                             </div>
                                         </div>

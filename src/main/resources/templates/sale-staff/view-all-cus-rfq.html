@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Chỉ may Dũng Đông - Danh sách RFQ</title>
+    <title>Chỉ may Dũng Đông - Danh sách yêu cầu báo giá</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Google Web Fonts -->
@@ -209,15 +209,15 @@
 
         /* Status-specific styling */
         .status-not-approved {
-            color: #ef4444;
+            color: yellow;
             font-weight: 500;
-            background-color: #fef2f2;
+
         }
 
         .status-approved {
-            color: #10b981;
+            color: green;
             font-weight: 500;
-            background-color: #ecfdf5;
+
         }
 
         .content-section {
@@ -308,7 +308,7 @@
             <div class="bg-light text-center rounded p-4">
                 <!-- Search and title -->
                 <div class="search-container">
-                    <h6 class="mb-0">Danh sách RFQ</h6>
+                    <h6 class="mb-0">Danh sách yêu cầu báo giá</h6>
                     <form method="get" action="/sale-staff/view-all-cus-rfq"
                           class="d-flex align-items-center flex-grow-1">
                         <input type="text" name="search" class="form-control search-input" id="searchInput"
@@ -387,7 +387,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái đơn hàng</strong><br>
-                                                    <span th:classappend="'status-not-approved'"
+                                                    <span style="color: #fbfb2a"
                                                           th:text="'Chưa phê duyệt'"></span>
                                                 </div>
                                             </div>
@@ -458,7 +458,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái đơn hàng</strong><br>
-                                                    <span th:classappend="'status-approved'"
+                                                    <span style="color: green"
                                                           th:text="'Đã phê duyệt'"></span>
                                                 </div>
                                             </div>
@@ -530,7 +530,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái đơn hàng</strong><br>
-                                                    <span th:classappend="'status-approved'"
+                                                    <span style="color: green"
                                                           th:text="'Đã phê duyệt'"></span>
                                                 </div>
                                             </div>

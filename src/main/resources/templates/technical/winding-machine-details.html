@@ -289,7 +289,7 @@
                             <table>
                                 <tr>
                                     <th>Mã máy:</th>
-                                    <td th:text="'Máy côn ' + ${windingMachine.id}"></td>
+                                    <td th:text="'WB-' + ${windingMachine.id}"></td>
                                     <th>Tốc độ động cơ:</th>
                                     <td th:text="${windingMachine.motor_speed}"></td>
                                 </tr>
@@ -303,13 +303,13 @@
                                     <th>Mô tả:</th>
                                     <td th:text="${windingMachine.description != null ? windingMachine.description : 'N/A'}"></td>
                                     <th>Ngày tạo:</th>
-                                    <td th:text="${#temporals.format(windingMachine.createAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#temporals.format(windingMachine.createAt, 'dd/MM/yyyy')}"></td>
                                 </tr>
                                 <tr>
                                     <th>Trạng thái:</th>
                                     <td th:text="${windingMachine.active} ? 'Hoạt động' : 'Không hoạt động'"></td>
                                     <th>Ngày cập nhật:</th>
-                                    <td th:text="${#temporals.format(windingMachine.updateAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#temporals.format(windingMachine.updateAt, 'dd/MM/yyyy')}"></td>
                                 </tr>
                             </table>
                         </div>

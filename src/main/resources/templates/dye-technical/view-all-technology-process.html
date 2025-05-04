@@ -370,13 +370,15 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-draft'"
-                                                          th:text="'Bản Nháp'"></span>
+                                                    <span style="color: gold"
+                                                          th:text="'chưa hoàn thành'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:style="${process.sendStatus.name() == 'NOT_SENT'} ? 'color: gold;' : 'color: green;'"
+                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'">
+</span>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -441,13 +443,15 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-approved'"
+                                                    <span style="color: green"
                                                           th:text="'Đã hoàn thành'"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${process.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'"></span>
+                                                    <span th:style="${process.sendStatus.name() == 'NOT_SENT'} ? 'color: gold;' : 'color: green;'"
+                                                          th:text="${process.sendStatus.name() == 'NOT_SENT'} ? 'Chưa Gửi' : 'Đã Gửi'">
+</span>
+
                                                 </div>
                                             </div>
                                         </div>

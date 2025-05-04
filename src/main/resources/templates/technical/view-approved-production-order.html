@@ -371,7 +371,7 @@
                                                     <span th:text="'PRO-'+${order.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
-                                                    <strong>Nhân viên duyệt</strong><br>
+                                                    <strong>Nhân viên quản lý</strong><br>
                                                     <span th:text="${order.approvedBy != null ? order.approvedBy.username : 'N/A'}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
@@ -380,7 +380,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-approved status-background'"
+                                                    <span style="color: green"
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
                                             </div>
@@ -450,7 +450,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="'status-approved status-background'"
+                                                    <span style="color: green"
                                                           th:text="'Đã duyệt'"></span>
                                                 </div>
                                             </div>

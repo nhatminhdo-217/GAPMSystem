@@ -357,9 +357,10 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"></span>
+                                                    <span th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"
+                                                          th:style="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'color: orange;' : 'color: green;'"></span>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -427,8 +428,8 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
-                                                    <span th:classappend="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'send-status-not-sent' : 'send-status-sent'"
-                                                          th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"></span>
+                                                    <span th:text="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'Chưa gửi' : 'Đã gửi'"
+                                                          th:style="${workOrder.sendStatus.name() == 'NOT_SENT'} ? 'color: orange;' : 'color: green;'"></span>
                                                 </div>
                                             </div>
                                         </div>

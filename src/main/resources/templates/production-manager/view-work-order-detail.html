@@ -830,20 +830,31 @@
                                     <td th:text="${#temporals.format(batch.deadline, 'dd/MM/yyyy')}">15/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.workStatus}">
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                                <i class="fas fa-spinner"></i> Đang Nhuộm
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                                  th:text="'Đang Nhuộm'"
+                                                  class="badgeC"
+                                                  style="background-color: #ffcc00; color: #333;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                                <i class="fas fa-check-circle"></i> Đã Nhuộm
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                                  th:text="'Đã nhuộm'"
+                                                  class="badgeC"
+                                                  style="background-color: #34c759; color: white;">
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
-                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" th:text="'Tạm dừng'"
+                                                  class="badgeC"
+                                                  style="background-color: #4992e6; color: white;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
-                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" th:text="'Chờ sửa'"
+                                                  class="badgeC"
+                                                  style="background: #e88cb4; color: rgb(30, 31, 34);">
+
                                             </span>
-                                            <span th:case="*" class="status status-not-started">
-                                                <i class="fas fa-times-circle"></i> Chưa Nhuộm
+                                            <span th:case="*" th:text="'Chưa nhuộm'"
+                                                  class="badgeC"
+                                                  style="background: #ffe5e5; color: #dc3545;">
+
                                             </span>
                                         </span>
                                     </td>
@@ -858,20 +869,31 @@
                                     <td th:text="${#temporals.format(batch.windingBatch.deadline, 'dd/MM/yyyy')}">17/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.windingBatch?.workStatus}">
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                                <i class="fas fa-spinner"></i> Đang Côn
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                                  th:text="'Đang côn'"
+                                                  class="badgeC"
+                                                  style="background-color: #ffcc00; color: #333;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                                <i class="fas fa-check-circle"></i> Đã Côn
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                                  th:text="'Đã côn'"
+                                                  class="badgeC"
+                                                  style="background-color: #34c759; color: white;">
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
-                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" th:text="'Tạm dừng'"
+                                                  class="badgeC"
+                                                  style="background-color: #4992e6; color: white;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
-                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" th:text="'Chờ sửa'"
+                                                  class="badgeC"
+                                                  style="background: #e88cb4; color: rgb(30, 31, 34);">
+
                                             </span>
-                                            <span th:case="*" class="status status-not-started">
-                                                <i class="fas fa-times-circle"></i> Chưa Côn
+                                            <span th:case="*" th:text="'Chưa côn'"
+                                                  class="badgeC"
+                                                  style="background: #ffe5e5; color: #dc3545;">
+
                                             </span>
                                         </span>
                                     </td>
@@ -883,20 +905,31 @@
                                     <td th:text="${#temporals.format(batch.windingBatch.packagingBatch.deadline, 'dd/MM/yyyy')}">19/04/2025</td>
                                     <td>
                                         <span th:switch="${batch.windingBatch?.packagingBatch?.workStatus}">
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}" class="status status-in-progress">
-                                                <i class="fas fa-spinner"></i> Đang Đóng Gói
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).IN_PROGRESS}"
+                                                  th:text="'Đang đóng gói'"
+                                                  class="badgeC"
+                                                  style="background-color: #ffcc00; color: #333;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}" class="status status-completed">
-                                                <i class="fas fa-check-circle"></i> Đã Đóng Gói
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FINISHED}"
+                                                  th:text="'Đã đóng gói'"
+                                                  class="badgeC"
+                                                  style="background-color: #34c759; color: white;">
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" class="status status-stop">
-                                                <i class="fas fa-pause"></i> Tạm Dừng
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).PAUSE}" th:text="'Tạm dừng'"
+                                                  class="badgeC"
+                                                  style="background-color: #4992e6; color: white;">
+
                                             </span>
-                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" class="status status-fix">
-                                                <i class="fas fa-wrench"></i> Chờ Sửa
+                                            <span th:case="${T(fpt.g36.gapms.enums.WorkEnum).FIX}" th:text="'Chờ sửa'"
+                                                  class="badgeC"
+                                                  style="background: #e88cb4; color: rgb(30, 31, 34);">
+
                                             </span>
-                                            <span th:case="*" class="status status-not-started">
-                                                <i class="fas fa-times-circle"></i> Chưa Đóng Gói
+                                            <span th:case="*" th:text="'Chưa đóng gói'"
+                                                  class="badgeC"
+                                                  style="background: #ffe5e5; color: #dc3545;">
+
                                             </span>
                                         </span>
                                     </td>

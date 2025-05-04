@@ -64,7 +64,7 @@ public class TechnicalProcessController {
     }
 
     private void validateBigDecimalField(BigDecimal value, String fieldName, String batchType, Model model, Long workOrderId) {
-        if (value != null && (value.compareTo(BigDecimal.ZERO) <= 0 || value.compareTo(BigDecimal.valueOf(10000)) >= 0)) {
+        if (value != null && (value.compareTo(BigDecimal.ZERO) <= 0)) {
             model.addAttribute("error", fieldName + " (" + batchType + ") nếu nhập phải lớn hơn 0 và nhỏ hơn 10000.");
             throw new IllegalArgumentException("Invalid " + fieldName + " for " + batchType);
         }

@@ -516,7 +516,7 @@
                                                  style="width: 100%;">
                                                 <div class="text-start me-3">
                                                     <strong>Mã máy</strong><br>
-                                                    <span th:text="'Máy nhuộm ' + ${machine.id}"></span>
+                                                    <span th:text="'MB-' + ${machine.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Đường kính</strong><br>
@@ -532,7 +532,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
-                                                    <span th:text="${#temporals.format(machine.createAt, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${#temporals.format(machine.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
@@ -592,7 +592,7 @@
                                                  style="width: 100%;">
                                                 <div class="text-start me-3">
                                                     <strong>Mã máy</strong><br>
-                                                    <span th:text="'Máy côn ' + ${machine.id}"></span>
+                                                    <span th:text="'WB-' + ${machine.id}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Tốc độ động cơ</strong><br>
@@ -608,7 +608,7 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Ngày tạo</strong><br>
-                                                    <span th:text="${#temporals.format(machine.createAt, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${#temporals.format(machine.createAt, 'dd/MM/yyyy')}"></span>
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>

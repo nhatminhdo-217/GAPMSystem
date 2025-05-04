@@ -424,8 +424,8 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : 'status-approve'"
-                                                          th:text="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : 'Đã Phê Duyệt'"></span>
+                                                    <span style="color: gold"
+                                                          >Chờ duyệt</span>
                                                 </div>
                                                 <!--<div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>
@@ -476,8 +476,8 @@
                                                 </div>
                                                 <div class="text-start me-3">
                                                     <strong>Trạng thái</strong><br>
-                                                    <span th:classappend="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'status-wait-for-approval' : 'status-approve'"
-                                                          th:text="${workOrder.status.name() == 'WAIT_FOR_APPROVAL'} ? 'Chờ Phê Duyệt' : 'Đã Phê Duyệt'"></span>
+                                                    <span style="color: green"
+                                                          >Đã duyệt</span>
                                                 </div>
                                                 <!--<div class="text-start me-3">
                                                     <strong>Trạng thái gửi</strong><br>

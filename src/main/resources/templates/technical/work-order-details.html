@@ -22,6 +22,8 @@
     <!-- Template Stylesheet -->
     <link href="/assert/css/style/homepage/home-page-style.css" rel="stylesheet">
 
+    <link href="/assert/images/LG-removebg-preview.png" rel="icon">
+
     <style>
         body {
             background-color: #f5f7fa;
@@ -515,16 +517,30 @@
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Trạng thái:</strong>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'NOT_APPROVED'}">Chưa duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_APPROVAL'}">Chờ duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'APPROVED'}">Đã duyệt</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'CANCELED'}">Đã hủy</span>
-                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_UPDATE'}">Chờ cập nhật</span>
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'NOT_APPROVED'}"
+                                              style="color: gray;">Chưa duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                              style="color: gold;">Chờ duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'APPROVED'}"
+                                              style="color: green;">Đã duyệt</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'CANCELED'}"
+                                              style="color: red;">Đã hủy</span>
+
+                                        <span th:if="${workOrder?.status != null && workOrder?.status.name() == 'WAIT_FOR_UPDATE'}"
+                                              style="color: orange;">Chờ cập nhật</span>
+
                                     </div>
                                     <div class="col-md-4">
                                         <strong>Trạng thái gửi:</strong>
-                                        <span th:if="${workOrder?.sendStatus != null && workOrder?.sendStatus.name() == 'SENT'}">Đã gửi</span>
-                                        <span th:if="${workOrder?.sendStatus != null && workOrder?.sendStatus.name() == 'NOT_SENT'}">Chưa gửi</span>
+                                        <span th:if="${workOrder?.sendStatus != null && workOrder?.sendStatus.name() == 'SENT'}"
+                                              style="color: green;">Đã gửi</span>
+
+                                        <span th:if="${workOrder?.sendStatus != null && workOrder?.sendStatus.name() == 'NOT_SENT'}"
+                                              style="color: gold;">Chưa gửi</span>
+
                                     </div>
                                 </div>
                             </div>
