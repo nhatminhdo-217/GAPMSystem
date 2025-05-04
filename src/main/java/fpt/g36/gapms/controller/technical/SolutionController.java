@@ -84,18 +84,14 @@ public class SolutionController {
                             throw new RuntimeException("Không tìm thấy Solution với ID: " + searchId);
                         }
                         Solution solution = solutionOpt.get();
-                        // Hiển thị kết quả tìm kiếm trong tab tương ứng, tab còn lại rỗng
+                        // Hiển thị kết quả tìm kiếm trong tab tương ứng, tab còn lại giữ danh sách đầy đủ
                         if (solution.getIsSent() == SendEnum.NOT_SENT) {
                             notSentSolutionsPage = new PageImplWrapper<>(
                                     Collections.singletonList(solution),
                                     pageable,
                                     1
                             );
-                            sentSolutionsPage = new PageImplWrapper<>(
-                                    Collections.emptyList(),
-                                    pageable,
-                                    0
-                            );
+                            sentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.SENT, pageable);
                             activeTab = "not-sent-solutions-content";
                         } else {
                             sentSolutionsPage = new PageImplWrapper<>(
@@ -103,43 +99,23 @@ public class SolutionController {
                                     pageable,
                                     1
                             );
-                            notSentSolutionsPage = new PageImplWrapper<>(
-                                    Collections.emptyList(),
-                                    pageable,
-                                    0
-                            );
+                            notSentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.NOT_SENT, pageable);
                             activeTab = "sent-solutions-content";
                         }
                         model.addAttribute("previousTab", activeTab);
                     } catch (RuntimeException e) {
-                        // Không tìm thấy Solution
-                        notSentSolutionsPage = new PageImplWrapper<>(
-                                Collections.emptyList(),
-                                pageable,
-                                0
-                        );
-                        sentSolutionsPage = new PageImplWrapper<>(
-                                Collections.emptyList(),
-                                pageable,
-                                0
-                        );
+                        // Không tìm thấy Solution, hiển thị danh sách đầy đủ cho cả hai tab
+                        notSentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.NOT_SENT, pageable);
+                        sentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.SENT, pageable);
                         model.addAttribute("error", "Không tìm thấy Solution với ID: " + searchId);
                         activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "not-sent-solutions-content";
                         model.addAttribute("previousTab", activeTab);
                     }
                 } catch (NumberFormatException e) {
-                    // ID không hợp lệ
+                    // ID không hợp lệ, hiển thị danh sách đầy đủ cho cả hai tab
                     model.addAttribute("error", "Mã Solution phải là số.");
-                    notSentSolutionsPage = new PageImplWrapper<>(
-                            Collections.emptyList(),
-                            pageable,
-                            0
-                    );
-                    sentSolutionsPage = new PageImplWrapper<>(
-                            Collections.emptyList(),
-                            pageable,
-                            0
-                    );
+                    notSentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.NOT_SENT, pageable);
+                    sentSolutionsPage = solutionService.getSolutionsByCreateByIdAndIsSentOrderByRfqDeadline(userId, SendEnum.SENT, pageable);
                     activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "not-sent-solutions-content";
                     model.addAttribute("previousTab", activeTab);
                 }

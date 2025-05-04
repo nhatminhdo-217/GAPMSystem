@@ -101,20 +101,18 @@ public class SaleApprovedRfqController {
                         }
                         searchResultPage = new PageImplWrapper<>(Collections.singletonList(rfq), pageable, 1);
                     } catch (RuntimeException e) {
-                        // Không tìm thấy RFQ hoặc không phù hợp
+                        // Không tìm thấy RFQ hoặc không phù hợp, hiển thị danh sách đầy đủ
                         allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
                         withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
-                        searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
                         model.addAttribute("error", "Không tìm thấy yêu cầu báo giá với mã: " + searchId);
-                        activeTab = "search-results";
+                        activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "all-approved-no-solution";
                         model.addAttribute("previousTab", activeTab);
                     }
                 } catch (NumberFormatException e) {
-                    // ID không hợp lệ
+                    // ID không hợp lệ, hiển thị danh sách đầy đủ
                     model.addAttribute("error", "Mã yêu cầu báo giá phải là số.");
                     allApprovedNoSolutionPage = rfqService.getApprovedRfqsWithoutSolution(pageable);
                     withSolutionPage = rfqService.getApprovedRfqsWithSolution(pageable);
-                    searchResultPage = new PageImplWrapper<>(Collections.emptyList(), pageable, 0);
                     activeTab = (previousTab != null && !previousTab.isEmpty()) ? previousTab : "all-approved-no-solution";
                     model.addAttribute("previousTab", activeTab);
                 }

@@ -39,13 +39,15 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-        .btn-search{
+
+        .btn-search {
             background: #FFD700;
             border: none;
             font-size: 18px;
             padding: 4px 24px;
             transition: 0.3s;
         }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
@@ -360,11 +362,11 @@
                             <a class="nav-link"
                                th:classappend="${selectedStatus == 'WAIT_FOR_APPROVAL' ? 'active' : ''}"
                                id="wait-for-approval-tab"
+                               data-bs-toggle="tab"
                                href="#wait-for-approval-work-orders"
                                role="tab"
                                aria-controls="wait-for-approval-work-orders"
-                               aria-selected="${selectedStatus == 'WAIT_FOR_APPROVAL'}"
-                               th:href="@{/production-manager/view-all-submitted-work-order(status='WAIT_FOR_APPROVAL', page=${workOrderPage.number}, size=${workOrderPage.size}, search=${search}, previousStatus=${previousStatus})}">
+                               aria-selected="${selectedStatus == 'WAIT_FOR_APPROVAL'}">
                                 Chờ Phê Duyệt
                             </a>
                         </li>
@@ -372,11 +374,11 @@
                             <a class="nav-link"
                                th:classappend="${selectedStatus == 'APPROVED' ? 'active' : ''}"
                                id="approved-tab"
+                               data-bs-toggle="tab"
                                href="#approved-work-orders"
                                role="tab"
                                aria-controls="approved-work-orders"
-                               aria-selected="${selectedStatus == 'APPROVED'}"
-                               th:href="@{/production-manager/view-all-submitted-work-order(status='APPROVED', page=${workOrderPage.number}, size=${workOrderPage.size}, search=${search}, previousStatus=${previousStatus})}">
+                               aria-selected="${selectedStatus == 'APPROVED'}">
                                 Đã Phê Duyệt
                             </a>
                         </li>
@@ -528,7 +530,7 @@
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 
-<!-- Toast script -->
+<!-- Toast and Tab script -->
 <script>
     $(document).ready(function () {
         // Ẩn spinner khi trang tải xong
@@ -569,24 +571,38 @@
             toast.show();
         }
 
-        // Xử lý chuyển tab bằng URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        console.log('Status from URL:', status);
-        if (status) {
-            const tabId = `#${status.toLowerCase().replace(/_/g, '-')}-tab`;
-            console.log('Tab ID:', tabId);
+        // Đảm bảo tab được kích hoạt đúng khi tải trang
+        var selectedStatus = '[[${selectedStatus}]]';
+        if (selectedStatus) {
+            const tabId = `#${selectedStatus.toLowerCase().replace(/_/g, '-')}-tab`;
             const tabElement = document.querySelector(tabId);
             if (tabElement) {
-                console.log('Tab element found:', tabElement);
                 const tab = new bootstrap.Tab(tabElement);
                 tab.show();
-            } else {
-                console.log('Tab element not found for ID:', tabId);
             }
-        } else {
-            console.log('No status parameter in URL');
         }
+
+        // Xử lý chuyển tab và reset phân trang
+        const tabs = document.querySelectorAll('#workOrderTabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                const newStatus = this.id === 'wait-for-approval-tab' ? 'WAIT_FOR_APPROVAL' : 'APPROVED';
+                const currentStatus = '[[${selectedStatus}]]';
+                const search = '[[${search}]]' || '';
+
+                // Nếu chuyển tab (status thay đổi), reset page về 0
+                if (newStatus !== currentStatus) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('status', newStatus);
+                    url.searchParams.set('previousStatus', currentStatus);
+                    url.searchParams.set('page', '0');
+                    if (search) {
+                        url.searchParams.set('search', search);
+                    }
+                    window.location.href = url.toString();
+                }
+            });
+        });
     });
 </script>
 </body>

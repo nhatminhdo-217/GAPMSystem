@@ -75,7 +75,8 @@
                     <form th:action="@{/purchase-order/list}" method="get" class="row g-3">
                         <div class="col-md-4">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="search" th:value="${search}" placeholder="Tìm kiếm...">
+                                <input type="text" class="form-control" name="search" th:value="${search}"
+                                       placeholder="Tìm kiếm...">
                                 <button class="btn btn-outline-secondary" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -110,42 +111,49 @@
                 <div class="card-body">
                     <div class="table-wrapper">
                         <div class="fade-scroll fade-scroll-left"></div>
-                        <div class="table-responsive" >
+                        <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Mã lô hàng</th>
-                                        <th scope="col">nhân viên quản lý</th>
-                                        <th scope="col">Mã hợp đồng</th>
-                                        <!--<th scope="col">Người duyệt</th>-->
-                                        <th scope="col">Trạng thái đơn hàng</th>
-                                        <th scope="col">Thao tác</th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Mã lô hàng</th>
+                                    <th scope="col">Nhân viên quản lý</th>
+                                    <th scope="col">Mã hợp đồng</th>
+                                    <!--<th scope="col">Người duyệt</th>-->
+                                    <th scope="col">Trạng thái đơn hàng</th>
+                                    <th scope="col">Thao tác</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:if="${purchaseOrderPage.empty}">
-                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
-                                    </tr>
-                                    <tr th:each="po, iterStat : ${purchaseOrderPage.content}" >
-                                        <th scope="row" th:text="${iterStat.count + purchaseOrderPage.number * purchaseOrderPage.size}"></th>
-                                        <td th:text="'RFQ-'+${po.rfqId}"></td>
-                                        <td th:text="${po.saleStaffName}"></td>
-                                        <td th:text="${po.contractId != null ? po.contractId : 'N/A'}"></td>
-                                        <!--<td th:text="${po.approvedByUserName != null ? po.approvedByUserName : 'N/A'}"></td>-->
-                                        <td>
-                                            <span th:if="${po.status != null && po.status.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
-                                            <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
-                                            <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ duyệt</span>
-                                            <span th:if="${po.status != null && po.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
-                                            <span th:if="${po.status != null && po.status.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
-                                        </td>
-                                        <td>
-                                            <a th:href="@{'/purchase-order/detail/' + ${po.purchaseOrderId}}" class="btn btn-sm btn-info">
-                                                <i class="fas fa-eye"></i> Chi tiết
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr th:if="${purchaseOrderPage.empty}">
+                                    <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                </tr>
+                                <tr th:each="po, iterStat : ${purchaseOrderPage.content}">
+                                    <th scope="row"
+                                        th:text="${iterStat.count + purchaseOrderPage.number * purchaseOrderPage.size}"></th>
+                                    <td th:text="'RFQ-'+${po.rfqId}"></td>
+                                    <td th:text="${po.saleStaffName}"></td>
+                                    <td th:text="${po.contractId != null ? po.contractId : 'N/A'}"></td>
+                                    <!--<td th:text="${po.approvedByUserName != null ? po.approvedByUserName : 'N/A'}"></td>-->
+                                    <td>
+                                        <span th:if="${po.status != null && po.status.name() == 'DRAFT'}"
+                                              class="status-badge status-draft">Sơ thảo</span>
+                                        <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}"
+                                              class="status-badge status-not-approved">Chưa duyệt</span>
+                                        <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                              class="status-badge status-wait">Đang chờ duyệt</span>
+                                        <span th:if="${po.status != null && po.status.name() == 'APPROVED'}"
+                                              class="status-badge status-approved">Đã duyệt</span>
+                                        <span th:if="${po.status != null && po.status.name() == 'CANCELED'}"
+                                              class="status-badge status-canceled">Đã hủy</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/purchase-order/detail/' + ${po.purchaseOrderId}}"
+                                           class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -154,33 +162,43 @@
                     <!-- Pagination -->
                     <div th:if="${!purchaseOrderPage.empty}" class="d-flex justify-content-between align-items-center">
                         <div>
-                            Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span th:text="${purchaseOrderPage.totalElements}"></span> kết quả
+                            Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span
+                                th:text="${purchaseOrderPage.totalElements}"></span> kết quả
                         </div>
                         <nav th:if="${purchaseOrderPage.totalPages > 0}">
                             <ul class="pagination">
-                                <li class="page-item" th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <li class="page-item"
+                                    th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                         Đầu
                                     </a>
                                 </li>
-                                <li class="page-item" th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <li class="page-item"
+                                    th:classappend="${purchaseOrderPage.number == 0 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                         Trước
                                     </a>
                                 </li>
                                 <li class="page-item" th:each="pageNum : ${pageNumbers}"
                                     th:classappend="${pageNum == purchaseOrderPage.number ? 'active' : ''}">
-                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${pageNum} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                    <a class="page-link"
+                                       th:href="@{'/purchase-order/list?page=' + ${pageNum} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                         <span th:text="${pageNum + 1}"></span>
                                     </a>
                                 </li>
-                                <li class="page-item" th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <li class="page-item"
+                                    th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                         Sau
                                     </a>
                                 </li>
-                                <li class="page-item" th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <li class="page-item"
+                                    th:classappend="${purchaseOrderPage.number == purchaseOrderPage.totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                         Cuối
                                     </a>
                                 </li>
@@ -203,11 +221,16 @@
                             <span th:text="${po.purchaseOrderId}"></span>
                         </div>
                         <div>
-                            <span th:if="${po.status != null && po.status.name() == 'DRAFT'}" class="status-badge status-draft">Sơ thảo</span>
-                            <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}" class="status-badge status-not-approved">Chưa duyệt</span>
-                            <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}" class="status-badge status-wait">Đang chờ duyệt</span>
-                            <span th:if="${po.status != null && po.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã duyệt</span>
-                            <span th:if="${po.status != null && po.status.name() == 'CANCELED'}" class="status-badge status-canceled">Đã hủy</span>
+                            <span th:if="${po.status != null && po.status.name() == 'DRAFT'}"
+                                  class="status-badge status-draft">Sơ thảo</span>
+                            <span th:if="${po.status != null && po.status.name() == 'NOT_APPROVED'}"
+                                  class="status-badge status-not-approved">Chưa duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'WAIT_FOR_APPROVAL'}"
+                                  class="status-badge status-wait">Đang chờ duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'APPROVED'}"
+                                  class="status-badge status-approved">Đã duyệt</span>
+                            <span th:if="${po.status != null && po.status.name() == 'CANCELED'}"
+                                  class="status-badge status-canceled">Đã hủy</span>
                         </div>
                     </div>
 
@@ -232,17 +255,20 @@
                 <!-- Mobile Pagination -->
                 <div th:if="${!purchaseOrderPage.empty}" class="d-flex flex-column align-items-center mt-3 mb-5">
                     <div class="mb-2 text-center">
-                        Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span th:text="${purchaseOrderPage.totalElements}"></span> kết quả
+                        Hiển thị <span th:text="${purchaseOrderPage.numberOfElements}"></span> trên <span
+                            th:text="${purchaseOrderPage.totalElements}"></span> kết quả
                     </div>
                     <nav>
                         <ul class="pagination pagination-sm">
                             <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <a class="page-link"
+                                   th:href="@{'/purchase-order/list?page=0&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                     <i class="fas fa-angle-double-left"></i>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <a class="page-link"
+                                   th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             </li>
@@ -250,12 +276,14 @@
                                 <span class="page-link" th:text="${currentPage + 1} + ' / ' + ${totalPages}"></span>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <a class="page-link"
+                                   th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.number + 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
+                                <a class="page-link"
+                                   th:href="@{'/purchase-order/list?page=' + ${purchaseOrderPage.totalPages - 1} + '&size=' + ${purchaseOrderPage.size} + '&search=' + ${search} + '&status=' + ${selectedStatus != null ? selectedStatus : ''} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
                                     <i class="fas fa-angle-double-right"></i>
                                 </a>
                             </li>
@@ -289,14 +317,14 @@
 <!-- Template Javascript -->
 <script src="/assert/js/main.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Show/hide fade effect for table scroll
         const tableWrapper = document.querySelector('.table-responsive');
         if (tableWrapper) {
             const fadeLeft = document.querySelector('.fade-scroll-left');
             const fadeRight = document.querySelector('.fade-scroll-right');
 
-            tableWrapper.addEventListener('scroll', function() {
+            tableWrapper.addEventListener('scroll', function () {
                 if (this.scrollLeft > 0) {
                     fadeLeft.style.opacity = '1';
                 } else {
