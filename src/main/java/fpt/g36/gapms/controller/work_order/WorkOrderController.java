@@ -693,6 +693,15 @@ public class WorkOrderController {
 
         }
 
+            WindingRiskAssessment windingRiskAssessment_get = windingStageService.getWindingAssssmentById(windingRiskAssessment.getId());
+        if (windingRiskAssessment.getWindingBatch().getPlannedOutput() !=
+                (windingRiskAssessment.getTrueCone() + windingRiskAssessment.getFalseCone()))
+            {
+                redirectAttributes.addFlashAttribute("false_plan_output", "Tổng số cuộn lỗi và cuộn đạt phải bằng với số cuộn của mẻ");
+                return "redirect:/work-order/technology-process/" + windingRiskAssessment.getWindingBatch().getDyeBatch().getId() ;
+            }
+
+
         if(windingRiskAssessment.getPass() != null){
             if(windingRiskAssessment.getPass()) {
                 if ((!windingRiskAssessment.getColorFading() ||

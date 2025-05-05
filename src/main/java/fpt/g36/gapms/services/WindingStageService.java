@@ -14,5 +14,7 @@ public interface WindingStageService {
 
     WindingRiskAssessment getWindingRiskAssessmentByWindingBatchId(Long wbId);
 
+    WindingRiskAssessment getWindingAssssmentById(Long id);
+
     WindingRiskAssessment saveTestWingding(Long id, WindingRiskAssessment windingRiskAssessment, User qaWinding, MultipartFile[] photos) throws IOException;
 }
