@@ -1149,5 +1149,20 @@
         });
     </script>
 </div>
+
+<div th:if="${false_plan_output}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Lỗi",
+                text: /*[[${false_plan_output}]]*/ "Default message",
+                showConfirmButton: true,
+                timer: 3000
+            });
+        });
+    </script>
+</div>
 </body>
 </html>
