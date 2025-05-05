@@ -476,11 +476,11 @@
                         <input type="hidden" name="rfqId" th:value="${rfq.id}">
                         <div class="form-group">
                             <label for="reason">Lý do:</label>
-                            <input type="text" id="reason" name="reason" class="form-control" required>
+                            <input type="text" id="reason" name="reason" class="form-control" required maxlength="50">
                         </div>
                         <div class="form-group">
                             <label for="description">Chi tiết:</label>
-                            <textarea id="description" name="description" class="form-control" required></textarea>
+                            <textarea id="description" name="description" class="form-control" required maxlength="255"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDate">Ngày có thể giao hàng dự kiến:</label>
@@ -513,13 +513,13 @@
                         <div class="form-group">
                             <label for="reasonUpdate">Lý do:</label>
                             <input type="text" id="reasonUpdate" name="reason" class="form-control"
-                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required>
+                                   th:value="${rfq.solution != null ? rfq.solution.reason : ''}" required maxlength="50">
                         </div>
                         <div class="form-group">
                             <label for="descriptionUpdate">Chi tiết:</label>
                             <textarea id="descriptionUpdate" name="description" class="form-control"
                                       th:text="${rfq.solution != null ? rfq.solution.description : ''}"
-                                      required></textarea>
+                                      required  maxlength="255"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDateUpdate">Ngày có thể giao hàng dự kiến:</label>

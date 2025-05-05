@@ -863,7 +863,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      */
     private BigDecimal calculatePackagingDuration(WorkOrderDetail workOrderDetail, int packagingBatches) {
         // 1 sản phẩm mất 30 giây = 0.5 phút để đóng gói
-        BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.5);
+        BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.05);
         BigDecimal totalPackagingDurationMinutes = BigDecimal.ZERO;
 
         // Tính toán lại số sản phẩm có trong mẻ
@@ -924,7 +924,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         //
         BigDecimal convertRate = packagingStage.getWorkOrderDetail().getPurchaseOrderDetail().
                 getProduct().getThread().getConvert_rate();
-        BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.5);
+        BigDecimal packagingTimePerProduct = BigDecimal.valueOf(0.05);
 
         //
         for (int i = 0; i < packagingBatches; i++) {

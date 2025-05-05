@@ -481,12 +481,12 @@
                         <div class="form-group">
                             <label for="reasonUpdate">Lý do:</label>
                             <input type="text" id="reasonUpdate" name="reason" class="form-control"
-                                   th:value="${solution.reason}" required>
+                                   th:value="${solution.reason}" required maxlength="50">
                         </div>
                         <div class="form-group">
                             <label for="descriptionUpdate">Chi tiết:</label>
                             <textarea id="descriptionUpdate" name="description" class="form-control"
-                                      th:text="${solution.description}" required></textarea>
+                                      th:text="${solution.description}" required maxlength="255"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="actualDeliveryDateUpdate">Ngày có thể giao hàng dự kiến:</label>

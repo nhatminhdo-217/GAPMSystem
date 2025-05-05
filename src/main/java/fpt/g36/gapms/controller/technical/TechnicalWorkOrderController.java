@@ -495,7 +495,7 @@ public class TechnicalWorkOrderController {
                 BigDecimal totalProductsToPack = productsToPack.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
                         .add(remainingProducts);
                 BigDecimal productsPerBox = BigDecimal.valueOf(6); // 1 hộp = 6 sản phẩm
-                BigDecimal timePerProduct = BigDecimal.valueOf(0.5); // 1 sản phẩm = 30 giây
+                BigDecimal timePerProduct = BigDecimal.valueOf(0.05); // 1 sản phẩm = 30 giây
                 BigDecimal numBoxes = totalProductsToPack.divide(productsPerBox, 0, RoundingMode.CEILING);
                 BigDecimal packagingDurationMinutes = totalProductsToPack.multiply(timePerProduct).
                         multiply(BigDecimal.valueOf(60)); // Chuyển sang phút
