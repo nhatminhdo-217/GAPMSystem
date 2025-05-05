@@ -4,6 +4,7 @@ import fpt.g36.gapms.models.dto.CreateAccountDTO;
 import fpt.g36.gapms.models.entities.*;
 import fpt.g36.gapms.repositories.*;
 import fpt.g36.gapms.services.AccountService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,8 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepository;
-
+    @Autowired
+    private UserUtils userUtils;
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
@@ -94,10 +96,10 @@ public class AccountServiceImpl implements AccountService {
         User user = new User();
         String encodedPassword = passwordEncoder.encode(password);
 
-        user.setUsername(createAccountDTO.getUsername());
+        user.setUsername(userUtils.cleanSpaces(createAccountDTO.getUsername()));
         System.err.println("DEBUG_Service: " + user.getUsername());
-        user.setEmail(createAccountDTO.getEmail());
-        user.setPhoneNumber(createAccountDTO.getPhoneNumber());
+        user.setEmail(userUtils.cleanSpaces(createAccountDTO.getEmail()));
+        user.setPhoneNumber(userUtils.cleanSpaces(createAccountDTO.getPhoneNumber()));
         if (activeProfile.equals("prod")) {
             user.setAvatar("https://gapmsstorage.blob.core.windows.net/gapms-upload-container/profile-default-icon-1024x1023-4u5mrj2v.png");
         } else {

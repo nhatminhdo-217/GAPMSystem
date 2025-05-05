@@ -126,7 +126,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Send SMS if required
         if (sendSms && targetUser.getSmsEnabled()) {
             String smsContent = notificationDTO.getMessage();
-            String header = "localhost:8080";
+            String header = "https://ddgapms-fzfxehb0b3eka8gu.southeastasia-01.azurewebsites.net";
             if (notificationDTO.getTargetUrl() != null && !notificationDTO.getTargetUrl().isEmpty()) {
                 smsContent += " Chi tiết tại: " + header + notificationDTO.getTargetUrl();
             }

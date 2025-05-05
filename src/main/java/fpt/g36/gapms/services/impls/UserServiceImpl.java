@@ -8,6 +8,7 @@ import fpt.g36.gapms.repositories.RoleRepository;
 import fpt.g36.gapms.repositories.UserRepository;
 import fpt.g36.gapms.services.MailService;
 import fpt.g36.gapms.services.UserService;
+import fpt.g36.gapms.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +31,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private MailServiceImpl mailService;
+   private UserUtils userUtils;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
-            RoleRepository roleRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, UserUtils userUtils) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userUtils = userUtils;
     }
 
     @Override
@@ -45,10 +47,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Error: Role USER is not found."));
 
         User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setUsername(userUtils.cleanSpaces(userDTO.getUsername()));
+        user.setPassword(userUtils.cleanSpaces(passwordEncoder.encode(userDTO.getPassword())));
+        user.setEmail(userUtils.cleanSpaces(userDTO.getEmail()));
+        user.setPhoneNumber(userUtils.cleanSpaces(userDTO.getPhoneNumber()));
         user.setRole(userRole);
         if (activeProfile.equals("prod")) {
             user.setAvatar("https://gapmsstorage.blob.core.windows.net/gapms-upload-container/profile-default-icon-1024x1023-4u5mrj2v.png");
